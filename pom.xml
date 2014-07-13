@@ -40,7 +40,7 @@
     <dependencies>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet-core</artifactId>
+            <artifactId>jersey-container-servlet</artifactId>
             <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
             <!-- artifactId>jersey-container-servlet</artifactId -->
         </dependency>
@@ -50,6 +50,11 @@
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
         -->
+        
+        <dependency>
+            <groupId>org.glassfish.jersey.containers.glassfish</groupId>
+            <artifactId>jersey-gf-cdi</artifactId>
+        </dependency>
     </dependencies>
     <properties>
         <jersey.version>2.10.1</jersey.version>
