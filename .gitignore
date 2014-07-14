@@ -70,3 +70,8 @@ Session.vim
 *.iml
 *.iws
 out/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
