@@ -49,3 +49,10 @@ local.properties
 Session.vim
 .netrwhist
 *~
+
+# Jetbrains IDEs
+.idea/
+*.ipr
+*.iml
+*.iws
+out/
