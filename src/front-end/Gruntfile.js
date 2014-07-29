@@ -51,8 +51,17 @@ module.exports = function(grunt) {
         }]
       }
     },
+    karma: {
+      dev: {
+        configFile: 'test/karma.conf.js'
+      },
+      continuous: {
+        configFile: 'test/karma.conf.js',
+        singleRun: true
+      }
+    },
     less: {
-      compileCore: {
+      development: {
         options: {
           strictMath: true
         },
@@ -66,7 +75,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
+  grunt.registerTask('test', ['karma:dev']);
 };
