@@ -2,12 +2,15 @@
 
 module.exports = function(grunt) {
 
-  var appPath = '../main/webapp/', javascriptPath = appPath + 'js/', cssPath = appPath + 'css/';
-
   // Project configuration.
   grunt.initConfig({
+
+    appPath: '../main/webapp/',
+    javascriptPath: '<%= appPath %>js/',
+    cssPath: '<%= appPath %>css/',
     pkg: grunt.file.readJSON('package.json'),
     bowerrc: grunt.file.readJSON('.bowerrc'),
+
     concat: {
       options: {
         // Append a short comment of the path for each concatenated source file
@@ -17,7 +20,7 @@ module.exports = function(grunt) {
       },
       graph: {
         src: ['app/js/**/*.js'],
-        dest: javascriptPath + '<%= pkg.name %>.js'
+        dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
     },
     copy: {
@@ -26,12 +29,12 @@ module.exports = function(grunt) {
           expand: true,
           cwd: '<%= bowerrc.directory %>/angular/',
           src: ['angular.js'],
-          dest: javascriptPath
+          dest: '<%= javascriptPath %>'
         }, {
           expand: true,
           cwd: '<%= bowerrc.directory %>/angular-route/',
           src: ['angular-route.js'],
-          dest: javascriptPath
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
@@ -44,12 +47,12 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'app/',
           src: ['index.html'],
-          dest: appPath
+          dest: '<%= appPath %>'
         }, {
           expand: true,
           cwd: 'app/partials',
           src: ['**'],
-          dest: appPath + 'partials/'
+          dest: '<%= appPath %>partials/'
         }]
       }
     }
