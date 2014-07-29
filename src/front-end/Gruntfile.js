@@ -18,7 +18,7 @@ module.exports = function(grunt) {
           return '// Source: ' + filepath + '\n' + src;
         }
       },
-      graph: {
+      app: {
         src: ['app/js/**/*.js'],
         dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
@@ -40,11 +40,6 @@ module.exports = function(grunt) {
       statics: {
         files: [{
           expand: true,
-          cwd: 'app/css/',
-          src: ['**'],
-          dest: cssPath
-        }, {
-          expand: true,
           cwd: 'app/',
           src: ['index.html'],
           dest: '<%= appPath %>'
@@ -55,12 +50,23 @@ module.exports = function(grunt) {
           dest: '<%= appPath %>partials/'
         }]
       }
+    },
+    less: {
+      compileCore: {
+        options: {
+          strictMath: true
+        },
+        files: {
+          '<%= cssPath %>style.css': 'app/less/style.less'
+        }
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
-  grunt.registerTask('build', ['copy', 'concat'])
+  grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
 };
