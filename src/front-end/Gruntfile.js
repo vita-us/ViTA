@@ -27,6 +27,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/angular/',
           src: ['angular.js'],
           dest: javascriptPath
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/angular-route/',
+          src: ['angular-route.js'],
+          dest: javascriptPath
         }]
       },
       statics: {
@@ -40,6 +45,11 @@ module.exports = function(grunt) {
           cwd: 'app/',
           src: ['index.html'],
           dest: appPath
+        }, {
+          expand: true,
+          cwd: 'app/partials',
+          src: ['**'],
+          dest: appPath + 'partials/'
         }]
       }
     }
