@@ -1,6 +1,6 @@
-package de.unistuttgart.vis.vita.services;
+package de.unistuttgart.vis.vita.services.responses;
 
-public class Api {
+public class VersionInfo {
 
 	String api;
 
