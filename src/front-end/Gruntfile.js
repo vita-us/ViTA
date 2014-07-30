@@ -35,6 +35,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/angular-route/',
           src: ['angular-route.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/angular-resource/',
+          src: ['angular-resource.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
