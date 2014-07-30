@@ -3,15 +3,15 @@ package de.unistuttgart.vis.vita.services;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import de.unistuttgart.vis.vita.services.responses.VersionInfo;
+
 @Path("get")
 public class ApiTest {
-
-	@GET
-	@Path("version")
-	public Api getApiAsJSON(){
-		Api api = new Api();
-		api.setApi("1.0-SNAPSHOT");
-		return api;
-		
-	}
+  @Path("version")
+  @GET
+  public VersionInfo getApiAsJSON() {
+    VersionInfo versionInfo = new VersionInfo();
+    versionInfo.setApi("1.0-SNAPSHOT");
+    return versionInfo;
+  }
 }
