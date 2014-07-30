@@ -5,9 +5,8 @@ import javax.ws.rs.Path;
 
 import de.unistuttgart.vis.vita.services.responses.VersionInfo;
 
-@Path("get")
-public class ApiTest {
-  @Path("version")
+@Path("version")
+public class VersionService {
   @GET
   public VersionInfo getApiAsJSON() {
     VersionInfo versionInfo = new VersionInfo();
