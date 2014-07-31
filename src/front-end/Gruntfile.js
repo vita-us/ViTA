@@ -53,6 +53,11 @@ module.exports = function(grunt) {
           cwd: 'app/partials',
           src: ['**'],
           dest: '<%= appPath %>partials/'
+        }, {
+          expand: true,
+          cwd: 'app/test_data',
+          src: ['**'],
+          dest: '<%= appPath %>test_data/'
         }]
       }
     },
