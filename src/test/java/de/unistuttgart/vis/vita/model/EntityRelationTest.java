@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.test.model;
+package de.unistuttgart.vis.vita.model;
 
 import static org.junit.Assert.*;
 
