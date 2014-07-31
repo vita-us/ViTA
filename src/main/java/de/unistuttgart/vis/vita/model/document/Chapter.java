@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.model.TextSpan;
+import de.unistuttgart.vis.vita.model.text.TextSpan;
 
 /**
  * Represents a chapter in a Document, including its id, number, title, text, length and range in
