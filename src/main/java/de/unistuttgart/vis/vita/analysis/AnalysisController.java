@@ -10,19 +10,31 @@ import java.nio.file.Path;
  */
 public class AnalysisController {
 
-  public AnalysisController(Model model) {
+  private Model model;
+  private ModuleRegistry moduleRegistry;
 
+  public AnalysisController(Model model) {
+    this.model = model;
   }
 
   public AnalysisController(Model model, ModuleRegistry moduleRegistry) {
-
+    this.model = model;
+    this.moduleRegistry = moduleRegistry;
+    
+    
+    
   }
 
-  public String schedueDocumentAnalysis(Path filepath) {
+  public String scheduleDocumentAnalysis(Path filepath) {
+    
     return null;
+  }
+  
+  public void startAnalysis(Path filepath) {
+    
   }
 
   public void cancelAnalysis(String documentID) {
-
+    
   }
 }
