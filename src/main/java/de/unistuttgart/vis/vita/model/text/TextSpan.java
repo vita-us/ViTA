@@ -7,12 +7,15 @@ package de.unistuttgart.vis.vita.model.text;
  * @version 0.1 31.07.2014
  */
 public class TextSpan {
+
+  // constants
+  private static final int MIN_LENGTH = 0;
   
   // attributes
   private final TextPosition start;
   private final TextPosition end;
   private final int length;
-  
+
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.
    * 
@@ -20,14 +23,18 @@ public class TextSpan {
    * @param pEnd - the TextPosiotion where the new TextSpan should end
    */
   public TextSpan(TextPosition pStart, TextPosition pEnd) {
+    if (pStart == null || pEnd == null) {
+      throw new IllegalArgumentException("positions must not be null!");
+    }
+
+    int diff = pEnd.getOffset() - pStart.getOffset();
+    if (diff < MIN_LENGTH) {
+      throw new IllegalArgumentException("end position must not be before start position!");
+    }
+
     this.start = pStart;
     this.end = pEnd;
-    this.length = computeLength();
-  }
-
-  private int computeLength() {
-    // TODO Auto-generated method stub
-    return 0;
+    this.length = diff;
   }
 
   /**
