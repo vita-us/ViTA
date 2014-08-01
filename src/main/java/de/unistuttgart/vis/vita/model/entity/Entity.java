@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model;
+package de.unistuttgart.vis.vita.model.entity;
 
 import java.util.Set;
 

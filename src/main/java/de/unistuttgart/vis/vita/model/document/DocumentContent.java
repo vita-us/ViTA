@@ -2,8 +2,8 @@ package de.unistuttgart.vis.vita.model.document;
 
 import java.util.List;
 
-import de.unistuttgart.vis.vita.model.Person;
-import de.unistuttgart.vis.vita.model.Place;
+import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
 
 /**
  * Represents the content of Document, including its parts, persons and places.

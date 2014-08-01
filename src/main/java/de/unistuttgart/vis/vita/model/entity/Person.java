@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model;
+package de.unistuttgart.vis.vita.model.entity;
 
 /**
  * Represents a character in a document.

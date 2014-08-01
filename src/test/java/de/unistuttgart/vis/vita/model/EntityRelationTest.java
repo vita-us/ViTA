@@ -4,12 +4,13 @@ import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.model.Entity;
-import de.unistuttgart.vis.vita.model.EntityRelation;
-import de.unistuttgart.vis.vita.model.Person;
+import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityRelation;
+import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
  * Performs some simple tests on the class EntityRelation.
