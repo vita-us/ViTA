@@ -5,8 +5,9 @@
 
   // Controller responsible for the documents page
   vitaControllers.controller('DocumentsCtrl', ['$scope', 'Document', function($scope, Document) {
-    var documentsObject = Document.get(function () {
-		$scope.documents = documentsObject.documents;
+
+    $scope.documentsWrapper = Document.get(function () {
+        $scope.documents = $scope.documentsWrapper.documents;
 	});
   }]);
 
