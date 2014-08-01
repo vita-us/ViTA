@@ -1,7 +1,8 @@
-<ol>
-<ul>
+<div>
   <p>Documents</p>
-  <li ng-repeat="document in documents">
-    <a ng-href="#/documents/{{document.id}}">{{document.metadata.title}}</a>
-  </li>
-</ul>
+  <ul>
+    <li ng-repeat="document in documents">
+      <a ng-href="#/documents/{{document.id}}">{{document.metadata.title}}</a>
+    </li>
+  </ul>
+</div>
