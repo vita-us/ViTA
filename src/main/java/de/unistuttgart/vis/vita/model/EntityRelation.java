@@ -6,9 +6,9 @@ package de.unistuttgart.vis.vita.model;
  * @author Marc Weise
  * @version 0.2 01.08.2014
  *
- * @param <TENTITY> - the type of the other entity
+ * @param <E> - the type of the other entity
  */
-public class EntityRelation<TENTITY extends Entity> {
+public class EntityRelation<E extends Entity> {
 
   // constants
   private static final int WEIGHT_MIN = 0;
@@ -16,7 +16,7 @@ public class EntityRelation<TENTITY extends Entity> {
 
   // attributes
   private double weight;
-  private TENTITY relatedEntity;
+  private E relatedEntity;
 
   /**
    * Returns how strong this relation is, returning a value between 0 (very weak) and 1 (very
@@ -42,7 +42,7 @@ public class EntityRelation<TENTITY extends Entity> {
   /**
    * @return entity which is target of this relation
    */
-  public TENTITY getRelatedEntity() {
+  public E getRelatedEntity() {
     return relatedEntity;
   }
  
@@ -51,7 +51,7 @@ public class EntityRelation<TENTITY extends Entity> {
    * 
    * @param relatedEntity - the related entity
    */
-  public void setRelatedEntity(TENTITY relatedEntity) {
+  public void setRelatedEntity(E relatedEntity) {
     this.relatedEntity = relatedEntity;
   }
 

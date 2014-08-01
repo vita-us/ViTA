@@ -28,14 +28,14 @@ public class TextPosition {
     this.chapter = pChapter;
     this.offset = pOffset;
 
-    double progress = 0.0;
+    double prog = 0.0;
     if (pChapter == null) {
-      progress = Double.NaN;
+      prog = Double.NaN;
     } else {
-      progress = calculateProgress();
+      prog = calculateProgress();
     }
     
-    this.progress = progress;
+    this.progress = prog;
 
   }
 
@@ -47,14 +47,14 @@ public class TextPosition {
   private double calculateProgress() {
     double docLength = chapter.document.getMetrics().getCharacterCount();
 
-    double progress = 0.0;
+    double prog = 0.0;
     if (docLength > 0) {
-      progress = (offset / docLength);
+      prog = (offset / docLength);
     } else {
-      progress = Double.NaN;
+      prog = Double.NaN;
     }
 
-    return progress;
+    return prog;
   }
 
   /**
