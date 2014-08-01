@@ -26,8 +26,8 @@ public class FeatureProgress {
    * @param pReady - flag whether the feature this refers to is ready or not
    */
   public FeatureProgress(double pProgress, boolean pReady) {
-    this.progress = pProgress;
-    this.isReady = pReady;
+    setProgress(pProgress);
+    setReady(pReady);
   }
 
   /**
@@ -43,6 +43,10 @@ public class FeatureProgress {
    * @param progress - the progress to set
    */
   public void setProgress(double progress) {
+    if (progress < 0.0 || progress > 1.0) {
+      throw new IllegalArgumentException("progress value must be between 0 and 1");
+    }
+    
     this.progress = progress;
   }
 
