@@ -37,9 +37,9 @@ public class VersionServiceTest extends JerseyTest {
   @Test
   public void test() {
     VersionInfo versionInfoActual = target("versiontest").request().get(VersionInfo.class);
-//    System.out.println(target("versiontest").request().get().getStatusInfo().toString());
+    // System.out.println(target("versiontest").request().get().getStatusInfo().toString());
     VersionInfo versionInfoExpected = new VersionInfo();
     versionInfoExpected.setApi("1.0-SNAPSHOT");
-    assertEquals( versionInfoExpected.getApi(), versionInfoActual.getApi());
+    assertEquals(versionInfoExpected.getApi(), versionInfoActual.getApi());
   }
 }
