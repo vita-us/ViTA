@@ -7,7 +7,7 @@
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>de.unistuttgart.vis.vita.services.tests</param-value>
+      <param-value>de.unistuttgart.vis.vita.services</param-value>
     </init-param>
 
     <init-param>
