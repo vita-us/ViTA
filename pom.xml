@@ -110,23 +110,20 @@
       <groupId>org.glassfish.jersey.containers.glassfish</groupId>
       <artifactId>jersey-gf-cdi</artifactId>
     </dependency>
-
+    
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-      <version>1.18.1</version>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-moxy</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.glassfish.jersey.test-framework.providers</groupId>
       <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
-      <version>2.11</version>
     </dependency>
 
     <dependency>
       <groupId>org.glassfish.jersey.test-framework</groupId>
       <artifactId>jersey-test-framework-core</artifactId>
-      <version>2.11</version>
     </dependency>
 
     <dependency>
