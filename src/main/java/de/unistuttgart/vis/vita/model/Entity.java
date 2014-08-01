@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model;
 
 import java.util.Set;
 
-import de.unistuttgart.vis.vita.model.text.TextSpan;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,

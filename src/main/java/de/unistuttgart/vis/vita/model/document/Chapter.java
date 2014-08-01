@@ -1,13 +1,11 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.model.text.TextSpan;
-
 /**
  * Represents a chapter in a Document, including its id, number, title, text, length and range in
  * the Document.
  * 
  * @author Marc Weise
- * @version 0.1 31.07.2014
+ * @version 0.2 01.08.2014
  */
 public class Chapter {
 
@@ -18,6 +16,16 @@ public class Chapter {
   private String text;
   private int length;
   private TextSpan range;
+  protected Document document;
+
+  /**
+   * Creates a new Chapter which belongs to the given Document.
+   * 
+   * @param pDocument - the Document this Chapter belongs to
+   */
+  public Chapter(Document pDocument) {
+    this.document = pDocument;
+  }
 
   /**
    * @return the id of this Chapter

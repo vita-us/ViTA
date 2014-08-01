@@ -1,6 +1,4 @@
-package de.unistuttgart.vis.vita.model.text;
-
-import de.unistuttgart.vis.vita.model.document.Chapter;
+package de.unistuttgart.vis.vita.model.document;
 
 /**
  * Represents a position in the text of a Document. It is specified by the chapter in lays in and
@@ -23,14 +21,40 @@ public class TextPosition {
    * @param pOffset - the global offset of this TextPosition
    */
   public TextPosition(Chapter pChapter, int pOffset) {
+    if (pOffset < 0) {
+      throw new IllegalArgumentException("offset must not be negative!");
+    }
+
     this.chapter = pChapter;
     this.offset = pOffset;
-    this.progress = calculateProgress();
+
+    double progress = 0.0;
+    if (pChapter == null) {
+      progress = Double.NaN;
+    } else {
+      progress = calculateProgress();
+    }
+    
+    this.progress = progress;
+
   }
 
+  /**
+   * Calculates the relative position of this TextPosition in the whole Document
+   * 
+   * @return relative position in the Document, or NaN if length of Document is zero
+   */
   private double calculateProgress() {
-    // TODO Auto-generated method stub
-    return 0;
+    double docLength = chapter.document.getMetrics().getCharacterCount();
+
+    double progress = 0.0;
+    if (docLength > 0) {
+      progress = (offset / docLength);
+    } else {
+      progress = Double.NaN;
+    }
+
+    return progress;
   }
 
   /**
@@ -48,7 +72,8 @@ public class TextPosition {
   }
 
   /**
-   * @return the progress the relative position in the Document as a value between zero and one
+   * @return the progress the relative position in the Document as a value between zero and one, or
+   *         NaN if Chapter is null or length of Document is 0
    */
   public double getProgress() {
     return progress;

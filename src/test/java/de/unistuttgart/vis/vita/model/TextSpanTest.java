@@ -6,22 +6,27 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.text.TextPosition;
-import de.unistuttgart.vis.vita.model.text.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Tests the creation of TextSpans and the computation of its lengths.
  * 
  * @author Marc Weise
- * @version 0.1 31.07.2014
+ * @version 0.2 01.08.2014
  */
 public class TextSpanTest {
 
+  // test data
+  private static final int DOCUMENT_LENGTH = 1000000;
   private static final int OFFSET_1 = 10000;
   private static final int OFFSET_2 = 70000;
   private static final int OFFSET_3 = 95000;
   private static final int DIFF = 25000;
 
+  // attributes
   private Chapter chapter;
 
   private TextPosition pos1;
@@ -33,7 +38,10 @@ public class TextSpanTest {
    */
   @Before
   public void setUp() {
-    chapter = new Chapter();
+    Document doc = new Document();
+    DocumentMetrics metrics = doc.getMetrics();
+    metrics.setCharacterCount(DOCUMENT_LENGTH);
+    chapter = new Chapter(doc);
 
     pos1 = new TextPosition(chapter, OFFSET_1);
     pos2 = new TextPosition(chapter, OFFSET_2);

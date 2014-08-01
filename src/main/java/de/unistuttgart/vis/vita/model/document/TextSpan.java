@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model.text;
+package de.unistuttgart.vis.vita.model.document;
 
 /**
  * Represents a text block with a specific start and end.

@@ -1,25 +1,26 @@
 package de.unistuttgart.vis.vita.model.document;
 
 /**
- * Represents a eBook file being imported into the software. Includes the id, metadata, metrics and content of this eBook.
+ * Represents a eBook file being imported into the software. Includes the id, metadata, metrics and
+ * content of this eBook.
  * 
  * @author Marc Weise
- * @version 0.1 30.07.2014
+ * @version 0.2 01.08.2014
  */
 public class Document {
-  
+
   private String id;
   private DocumentMetadata metadata;
   private DocumentMetrics metrics;
   private DocumentContent content;
-  
+
   /**
    * Creates a new empty document, setting all fields to default values.
    */
   public Document() {
-    
+    this.metrics = new DocumentMetrics();
   }
-  
+
   /**
    * Creates a new empty document with the given id.
    * 

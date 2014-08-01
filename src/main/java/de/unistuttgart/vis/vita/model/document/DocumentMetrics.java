@@ -1,10 +1,11 @@
 package de.unistuttgart.vis.vita.model.document;
 
 /**
- * Represents all metrics of a Document.
+ * Represents all metrics of a Document, including the number of characters, words, chapters,
+ * persons and places.
  * 
  * @author Marc Weise
- * @version 0.1 31.07.2014
+ * @version 0.2 01.08.2014
  */
 public class DocumentMetrics {
 
@@ -14,6 +15,22 @@ public class DocumentMetrics {
   private int chapterCount;
   private int personCount;
   private int placeCount;
+
+  /**
+   * Creates a new instance of DocumentMetrics, setting all attributes to zero.
+   */
+  public DocumentMetrics() {
+    // do nothing
+  }
+
+  /**
+   * Creates a new instance of DocumentMetrics with the given number of characters.
+   * 
+   * @param charCount - the number of characters in the whole document
+   */
+  public DocumentMetrics(int charCount) {
+    this.characterCount = charCount;
+  }
 
   /**
    * @return the total number of characters in the Document this metrics refer to
