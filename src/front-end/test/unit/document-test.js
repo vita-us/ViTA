@@ -13,19 +13,19 @@ describe('DocumentsCtrl', function(){
           publishYear: 1957,
           genre: "Fantasy",
           edition: "Limited Edition"
-        }
+          }
         },
        {
           id: 'doc14',
           metadata: {
-		  title: "Hans guck in die Luft",
+          title: "Hans guck in die Luft",
           author: "Peter Mayer",
           publisher: "ABC Verlag",
           publishYear: 1968,
           genre: "Krimi",
           edition: "Standard"
-		  }
-		}]
+        }
+        }]
       }
   };
 

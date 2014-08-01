@@ -8,7 +8,7 @@
 
     $scope.documentsWrapper = Document.get(function () {
         $scope.documents = $scope.documentsWrapper.documents;
-	});
+    });
   }]);
 
 })(angular);
