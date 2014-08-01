@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model;
+package de.unistuttgart.vis.vita.model.wordcloud;
 
 /**
  * Represents one item of a WordCloud. This includes a word and its frequency of occurrence in a
