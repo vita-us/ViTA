@@ -4,11 +4,11 @@ package de.unistuttgart.vis.vita.model;
  * Represents a Relation between two Entities.
  * 
  * @author Marc Weise
- * @version 0.1 30.07.2014
+ * @version 0.2 01.08.2014
  *
- * @param <TEntity> - the type of the other entity
+ * @param <TENTITY> - the type of the other entity
  */
-public class EntityRelation<TEntity extends Entity> {
+public class EntityRelation<TENTITY extends Entity> {
 
   // constants
   private static final int WEIGHT_MIN = 0;
@@ -16,7 +16,7 @@ public class EntityRelation<TEntity extends Entity> {
 
   // attributes
   private double weight;
-  private TEntity relatedEntity;
+  private TENTITY relatedEntity;
 
   /**
    * Returns how strong this relation is, returning a value between 0 (very weak) and 1 (very
@@ -42,7 +42,7 @@ public class EntityRelation<TEntity extends Entity> {
   /**
    * @return entity which is target of this relation
    */
-  public TEntity getRelatedEntity() {
+  public TENTITY getRelatedEntity() {
     return relatedEntity;
   }
  
@@ -51,7 +51,7 @@ public class EntityRelation<TEntity extends Entity> {
    * 
    * @param relatedEntity - the related entity
    */
-  public void setRelatedEntity(TEntity relatedEntity) {
+  public void setRelatedEntity(TENTITY relatedEntity) {
     this.relatedEntity = relatedEntity;
   }
 

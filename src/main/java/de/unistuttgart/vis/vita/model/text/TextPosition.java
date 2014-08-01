@@ -7,7 +7,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
  * the offset from the start of this Chapter.
  * 
  * @author Marc Weise
- * @version 0.1 31.07.2014
+ * @version 0.2 01.08.2014
  */
 public class TextPosition {
 
@@ -15,7 +15,13 @@ public class TextPosition {
   private Chapter chapter;
   private int offset;
   private double progress;
-  
+
+  /**
+   * Creates a new TextPosition which lays at a given offset in an also given Chapter.
+   * 
+   * @param pChapter - the chapter this TextPosition lays in
+   * @param pOffset - the global offset of this TextPosition
+   */
   public TextPosition(Chapter pChapter, int pOffset) {
     this.chapter = pChapter;
     this.offset = pOffset;
@@ -28,21 +34,21 @@ public class TextPosition {
   }
 
   /**
-   * @return the chapter
+   * @return the chapter this TextPosition lays in
    */
   public Chapter getChapter() {
     return chapter;
   }
 
   /**
-   * @return the offset
+   * @return the global offset of this TextPosition
    */
   public int getOffset() {
     return offset;
   }
 
   /**
-   * @return the progress
+   * @return the progress the relative position in the Document as a value between zero and one
    */
   public double getProgress() {
     return progress;

@@ -15,7 +15,7 @@ import de.unistuttgart.vis.vita.model.Person;
  * Performs some simple tests on the class EntityRelation.
  * 
  * @author Marc Weise
- * @version 0.1 30.07.2014
+ * @version 0.2 01.08.2014
  */
 public class EntityRelationTest {
 
@@ -29,8 +29,11 @@ public class EntityRelationTest {
   private Person testPerson;
   private EntityRelation<Entity> relation;
 
+  /**
+   * Sets up the testPerson and its relations.
+   */
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     testPerson = new Person();
     relation = new EntityRelation<Entity>();
     Set<EntityRelation<Entity>> relations = new HashSet<EntityRelation<Entity>>();
@@ -38,22 +41,36 @@ public class EntityRelationTest {
     testPerson.setEntityRelations(relations);
   }
 
+  /**
+   * Checks whether setting weight to a too low value causes an IllegalArgumentException to be
+   * thrown.
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testSetTooLowWeight() {
     relation.setWeight(TEST_TOO_LOW_WEIGHT);
   }
 
+  /**
+   * Checks whether setting weight to a too high value causes an IllegalArgumentException to be
+   * thrown.
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testSetTooHighWeight() {
     relation.setWeight(TEST_TOO_HIGH_WEIGHT);
   }
 
+  /**
+   * Checks whether Setter and Getter for the weight of an EntityRelation are working.
+   */
   @Test
   public void testSetAndGetWeight() {
     relation.setWeight(TEST_LEGAL_WEIGHT);
     assertEquals(TEST_LEGAL_WEIGHT, relation.getWeight(), TEST_DELTA);
   }
 
+  /**
+   * Checks whether Setter and Getter for the related entity of an EntityRelation are working.
+   */
   @Test
   public void testSetAndGetRelatedEntity() {
     relation.setRelatedEntity(testPerson);
