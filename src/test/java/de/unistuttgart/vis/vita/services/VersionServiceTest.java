@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.services.tests;
+package de.unistuttgart.vis.vita.services;
 
 
 import static org.junit.Assert.assertEquals;
@@ -18,6 +18,7 @@ public class VersionServiceTest extends JerseyTest {
   protected Application configure() {
     return new ResourceConfig(VersionService.class);
   }
+
 
   @Test
   public void test() {
