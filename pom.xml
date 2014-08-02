@@ -41,13 +41,15 @@
           <target>1.7</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-         <includes>de.unistuttgart.vis.vita.AllTests</includes>
+          <includes>
+            <include>**/AllTests.java</include>
+          </includes>
         </configuration>
       </plugin>
 
@@ -119,7 +121,7 @@
       <groupId>org.glassfish.jersey.containers.glassfish</groupId>
       <artifactId>jersey-gf-cdi</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-moxy</artifactId>
@@ -134,7 +136,7 @@
       <groupId>org.glassfish.jersey.test-framework</groupId>
       <artifactId>jersey-test-framework-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
