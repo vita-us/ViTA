@@ -3,17 +3,21 @@
 <head>
 <meta charset="utf-8">
 <title>ViTA</title>
-<link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-  <div id="header" class="navbar navbar-default nav-center">
+  <div id="header" class="navbar navbar-default">
     <div class="navbar-brand">ViTA</div>
-    <ul class="nav navbar-nav">
-      <li><a href="#/documents">Documents</a></li>
-      <li><a href="#/settings">Settings</a></li>
-      <li><a href="#/tutorial">Tutorial</a></li>
-      <li><a href="#/about">About</a></li>
+    <ul class="nav navbar-nav" ng-controller="PanelController as panel">
+      <li ng-class="{active: panel.isSelected(1)}"><a href="#/documents"
+        ng-click="panel.selectTab(1)">Documents</a></li>
+      <li ng-class="{active: panel.isSelected(2)}"><a href="#/settings"
+        ng-click="panel.selectTab(2)">Settings</a></li>
+      <li ng-class="{active: panel.isSelected(3)}"><a href="#/tutorial"
+        ng-click="panel.selectTab(3)">Tutorial</a></li>
+      <li ng-class="{active: panel.isSelected(4)}"><a href="#/about"
+        ng-click="panel.selectTab(4)">About</a></li>
     </ul>
   </div>
 
