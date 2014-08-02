@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
   'use strict';
 
   var app = angular.module('vita', ['ngRoute','vitaControllers','vitaServices']);

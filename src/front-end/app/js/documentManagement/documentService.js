@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
   'use strict';
 
  var vitaServices = angular.module('vitaServices', ['ngResource']);

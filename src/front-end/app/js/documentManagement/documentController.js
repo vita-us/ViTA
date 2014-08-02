@@ -1,4 +1,4 @@
-(function() {
+(function(angular) {
   'use strict';
   
   var vitaControllers = angular.module('vitaControllers', []);
