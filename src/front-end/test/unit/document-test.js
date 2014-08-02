@@ -1,23 +1,20 @@
-describe('DocumentsCtrl', function(){
-  var scope, $httpBackend, ctrl,
-    documentsData = function() {
-      return {
-        totalCount: 2,
-        documents: [
-        {
-          id: 'doc13a',
-          metadata: {
+describe('DocumentsCtrl', function() {
+  var scope, $httpBackend, ctrl, documentsData = function() {
+    return {
+      totalCount: 2,
+      documents: [{
+        id: 'doc13a',
+        metadata: {
           title: "Rotkaepchen",
           author: "Hans Mueller",
           publisher: "XY Verlag",
           publishYear: 1957,
           genre: "Fantasy",
           edition: "Limited Edition"
-          }
-        },
-       {
-          id: 'doc14',
-          metadata: {
+        }
+      }, {
+        id: 'doc14',
+        metadata: {
           title: "Hans guck in die Luft",
           author: "Peter Mayer",
           publisher: "ABC Verlag",
@@ -25,11 +22,11 @@ describe('DocumentsCtrl', function(){
           genre: "Krimi",
           edition: "Standard"
         }
-        }]
-      }
+      }]
+    }
   };
 
-  beforeEach(function(){
+  beforeEach(function() {
     this.addMatchers({
       toEqualData: function(expected) {
         return angular.equals(this.actual, expected);
@@ -39,12 +36,14 @@ describe('DocumentsCtrl', function(){
 
   beforeEach(module('vita'));
   beforeEach(module('vitaServices'));
-  
+
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-      $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('test_data/documents.json').respond(documentsData());
-      scope = $rootScope.$new();
-      ctrl = $controller('DocumentsCtrl', {$scope: scope});
+    $httpBackend = _$httpBackend_;
+    $httpBackend.expectGET('test_data/documents.json').respond(documentsData());
+    scope = $rootScope.$new();
+    ctrl = $controller('DocumentsCtrl', {
+      $scope: scope
+    });
   }));
 
   it('should create "document" model with 2 documents', inject(function($controller) {
@@ -53,7 +52,7 @@ describe('DocumentsCtrl', function(){
     $httpBackend.flush();
     expect(scope.documentsWrapper.totalCount).toEqual(2);
     expect(scope.documents).toEqualData(documentsData().documents);
-	
+
   }));
 
 });
