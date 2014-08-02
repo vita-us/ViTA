@@ -5,14 +5,19 @@
 <title>ViTA</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
 </head>
 <body>
-  <div id="header">HEADER</div>
+  <div id="header" class="navbar navbar-default nav-center">
+    <div class="navbar-brand">ViTA</div>
+    <ul class="nav navbar-nav">
+      <li><a href="#/documents">Documents</a></li>
+      <li><a href="#/settings">Settings</a></li>
+      <li><a href="#/tutorial">Tutorial</a></li>
+      <li><a href="#/about">About</a></li>
+    </ul>
+  </div>
 
   <div ng-view></div>
-
-  <div>FOOTER</div>
 
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.js"></script>
