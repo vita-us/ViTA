@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ModuleRegistry {
 
-  private Map<Class<?>, Class<? extends IModule<?>>> registry;
+  private Map<Class<?>, Class<? extends Module<?>>> registry;
 
   /**
    * Make a new instance of the registry which is empty.
@@ -35,7 +35,7 @@ public class ModuleRegistry {
    * @param resultClass The class type of the module.
    * @param moduleClass The module class which will be registered.
    */
-  public <TResult, TModule extends IModule<TResult>> void registerModule(
+  public <TResult, TModule extends Module<TResult>> void registerModule(
       Class<TResult> resultClass, Class<TModule> moduleClass) {
     registry.put(resultClass, moduleClass);
   }
@@ -46,7 +46,7 @@ public class ModuleRegistry {
    * @param resultClass The result class to look for.
    * @return Class of the correct module if found else null.
    */
-  public <TResult, TModule extends IModule<TResult>> Class<TModule> getModuleClassFor(
+  public <TResult, TModule extends Module<TResult>> Class<TModule> getModuleClassFor(
       Class<TResult> resultClass) {
     if (registry.get(resultClass) != null) {
       return (Class<TModule>) registry.get(resultClass);
@@ -65,7 +65,7 @@ public class ModuleRegistry {
   /**
    * @return The registered modules in a list.
    */
-  public List<Class<? extends IModule<?>>> getModules() {
+  public List<Class<? extends Module<?>>> getModules() {
     // TODO
     return null;
 

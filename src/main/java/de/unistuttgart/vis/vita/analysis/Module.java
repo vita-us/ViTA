@@ -7,7 +7,7 @@ import java.util.Collection;
  *
  * @param <TResult> The type of the module.
  */
-public interface IModule<TResult> {
+public interface Module<TResult> {
 
   /**
    * The dependencies of the module which have to be executed before this one can start.

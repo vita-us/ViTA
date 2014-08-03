@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * @author Vincent Link, Eduard Marbach
  */
-public class MockModule implements IModule<String> {
+public class MockModule implements Module<String> {
 
   @Override
   public <T> Collection<Class<T>> getDependencies() {
