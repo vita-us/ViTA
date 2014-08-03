@@ -21,7 +21,25 @@
     </ul>
   </div>
 
-  <div ng-view></div>
+  <div id="page" class="clearfix">
+    <h1 class="book-title">Title of the book</h1>
+    <div class="menu">
+      <h2>Visualizations</h2>
+      <ul>
+        <li><a href="#/documents/testId">Overview</a></li>
+        <li><a href="#">Profiles</a></li>
+        <li><a href="#">Places</a></li>
+        <li><a href="#">Fingerprint</a></li>
+        <li><a href="#">Graph-Network</a></li>
+        <li><a href="#">Word Cloud</a></li>
+        <li><a href="#">Document View</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <h2>Title of the partial</h2>
+      <div ng-view></div>
+    </div>
+  </div>
 
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.js"></script>
