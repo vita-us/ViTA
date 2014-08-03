@@ -17,10 +17,11 @@ public interface IModule<TResult> {
   public <T> Collection<Class<T>> getDependencies();
 
   /**
-   * 
-   * @param resultClass
-   * @param progress
-   * @param isReady
+   * Observes the progress of the module.
+   * TODO not sure what this method is used for.
+   * @param resultClass The result class.
+   * @param progress The progress.
+   * @param isReady If the module is ready.
    */
   public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady);
 
