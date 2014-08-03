@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.document;
 /**
  * Represents a eBook file being imported into the software. Includes the id, metadata, metrics and
  * content of this eBook.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class Document {
 

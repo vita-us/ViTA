@@ -1,17 +1,13 @@
 package de.unistuttgart.vis.vita.model.progress;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
-
 /**
  * Performs some simple tests on FeatureProgress class, checking legal and illegal progress values.
- * 
- * @author Marc Weise
- * @version 0.1 01.08.2014
  */
 public class TestFeatureProgress {
 

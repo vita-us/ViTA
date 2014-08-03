@@ -3,10 +3,7 @@ package de.unistuttgart.vis.vita.model;
 import javax.persistence.EntityManager;
 
 /**
- * Represents the Model of the application. 
- * 
- * @author Marc Weise
- * @version 0.1 01.08.2014
+ * Represents the Model of the application.
  */
 public class Model {
   

@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.document;
 /**
  * Represents all metrics of a Document, including the number of characters, words, chapters,
  * persons and places.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class DocumentMetrics {
 

@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +14,6 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
  * Performs some simple tests on the class EntityRelation.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class EntityRelationTest {
 

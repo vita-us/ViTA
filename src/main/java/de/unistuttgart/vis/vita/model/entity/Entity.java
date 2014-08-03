@@ -7,9 +7,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,
  * ranking value, occurrences, fingerprint and relations to other entities.
- * 
- * @author Marc Weise
- * @version 0.1 29.07.2014
  */
 public class Entity {
 

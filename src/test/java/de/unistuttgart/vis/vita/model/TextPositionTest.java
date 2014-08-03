@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +12,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 
 /**
- * Performs some simple test on the TestPosition class.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
+ * Performs some simple tests on the TestPosition class.
  */
 public class TextPositionTest {
 

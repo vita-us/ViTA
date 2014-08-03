@@ -7,9 +7,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents one attribute of an entity found in the document. This contains an id, type, content
  * and a set of occurrences in the document.
- * 
- * @author Marc Weise
- * @version 0.1 30.07.2014
  */
 public class Attribute {
 

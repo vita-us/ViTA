@@ -2,9 +2,6 @@ package de.unistuttgart.vis.vita.model.document;
 
 /**
  * Represents a text block with a specific start and end.
- * 
- * @author Marc Weise
- * @version 0.1 31.07.2014
  */
 public class TextSpan {
 

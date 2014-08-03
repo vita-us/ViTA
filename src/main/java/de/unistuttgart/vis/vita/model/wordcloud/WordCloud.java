@@ -6,10 +6,6 @@ import java.util.Set;
 /**
  * Represents the model for a WordCloud. A WordCloud shows a set of words in different font sizes,
  * depending on how often they are used in a document.
- * 
- * @author Marc Weise
- * @version 0.1 30.07.2014
- *
  */
 public class WordCloud {
 

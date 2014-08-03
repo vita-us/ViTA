@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.document;
 /**
  * Represents a chapter in a Document, including its id, number, title, text, length and range in
  * the Document.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class Chapter {
 

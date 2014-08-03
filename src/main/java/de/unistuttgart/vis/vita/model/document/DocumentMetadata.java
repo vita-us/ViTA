@@ -5,9 +5,6 @@ import java.util.Date;
 /**
  * Represents the meta data of a Document, including information like title, author, publisher, year
  * of publication, genre and edition of the Document.
- * 
- * @author Marc Weise
- * @version 0.1 30.07.2014
  */
 public class DocumentMetadata {
   

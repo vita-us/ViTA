@@ -7,9 +7,6 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 
 /**
  * Represents the content of Document, including its parts, persons and places.
- * 
- * @author Marc Weise
- * @version 0.1 30.07.2014
  */
 public class DocumentContent {
   

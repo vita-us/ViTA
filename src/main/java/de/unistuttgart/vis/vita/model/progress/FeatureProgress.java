@@ -2,9 +2,6 @@ package de.unistuttgart.vis.vita.model.progress;
 
 /**
  * Represents the progress of the analysis for a specific feature of the software.
- * 
- * @author Marc Weise
- * @version 0.1 01.08.2014
  */
 public class FeatureProgress {
   

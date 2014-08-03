@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.progress;
 /**
  * Represents the progress of a document analysis, holding the progresses of the separate software
  * features.
- * 
- * @author Marc Weise
- * @version 0.1 01.08.2014
  */
 public class AnalysisProgress {
 

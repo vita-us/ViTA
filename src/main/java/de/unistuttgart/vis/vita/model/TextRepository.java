@@ -6,9 +6,6 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**
  * Manages texts for the model.
- * 
- * @author Marc Weise
- * @version 0.1 01.08.2014
  */
 public class TextRepository {
   

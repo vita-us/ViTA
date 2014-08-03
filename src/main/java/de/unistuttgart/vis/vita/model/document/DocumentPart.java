@@ -4,9 +4,6 @@ import java.util.List;
 
 /**
  * Represents a part of a Document including number, title and chapters of this DocumentPart.
- * 
- * @author Marc Weise
- * @version 0.1 31.07.2014
  */
 public class DocumentPart {
 

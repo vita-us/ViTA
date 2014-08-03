@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.document;
 /**
  * Represents a position in the text of a Document. It is specified by the chapter in lays in and
  * the offset from the start of this Chapter.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class TextPosition {
 

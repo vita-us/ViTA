@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita.model.wordcloud;
 /**
  * Represents one item of a WordCloud. This includes a word and its frequency of occurrence in a
  * document.
- * 
- * @author Marc Weise
- * @version 0.1 30.07.2014
  */
 public class WordCloudItem {
 

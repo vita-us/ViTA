@@ -2,9 +2,6 @@ package de.unistuttgart.vis.vita.model.entity;
 
 /**
  * Represents a Relation between two Entities.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  *
  * @param <E> - the type of the other entity
  */

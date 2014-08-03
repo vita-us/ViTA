@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +13,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Tests the creation of TextSpans and the computation of its lengths.
- * 
- * @author Marc Weise
- * @version 0.2 01.08.2014
  */
 public class TextSpanTest {
 
