@@ -18,7 +18,7 @@ public class AnalysisController {
 
   private Model model;
   private ModuleRegistry moduleRegistry;
-  private List<IModule<?>> moduleList;
+  private List<Module<?>> moduleList;
 
 
 
@@ -46,7 +46,7 @@ public class AnalysisController {
 
   private void createModules() {
     moduleList = new ArrayList<>();
-    List<Class<? extends IModule<?>>> moduleClassList = moduleRegistry.getModules();
+    List<Class<? extends Module<?>>> moduleClassList = moduleRegistry.getModules();
 
     for (int i = 0; i < moduleClassList.size(); i++) {
       Class<?> c = moduleClassList.get(i);
@@ -69,7 +69,7 @@ public class AnalysisController {
         e.printStackTrace();
       }
       
-      IModule<?> currentModule = (IModule<?>) object;
+      Module<?> currentModule = (Module<?>) object;
       moduleList.add(currentModule);
     }
   }
@@ -83,11 +83,11 @@ public class AnalysisController {
    * @return The name of the document
    */
   public String scheduleDocumentAnalysis(Path filepath) {    
-    List<IModule<?>> executionSeq = new ArrayList<>();
-    Map<IModule<?>, List<Class<?>>> moduleDependencies = new HashMap<>();
+    List<Module<?>> executionSeq = new ArrayList<>();
+    Map<Module<?>, List<Class<?>>> moduleDependencies = new HashMap<>();
     createModules();
     
-    for(IModule<?> currentModule : moduleList) {
+    for(Module<?> currentModule : moduleList) {
       List<Class<?>> dependenciesList = new ArrayList<>();
       dependenciesList.addAll(currentModule.getDependencies());
       moduleDependencies.put(currentModule, dependenciesList);
