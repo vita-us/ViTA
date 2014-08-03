@@ -33,5 +33,5 @@ public interface Module<TResult> {
    * @param progressListener A listener to observe the execution.
    * @return The result of the module.
    */
-  public TResult execute(ModuleResultProvider result, IProgressListener progressListener);
+  public TResult execute(ModuleResultProvider result, ProgressListener progressListener);
 }

@@ -32,7 +32,7 @@ public class MockModule implements Module<String> {
   }
 
   @Override
-  public String execute(ModuleResultProvider result, IProgressListener progressListener) {
+  public String execute(ModuleResultProvider result, ProgressListener progressListener) {
     // TODO Auto-generated method stub
     return null;
   }
