@@ -17,8 +17,8 @@ public interface Module<TResult> {
   public <T> Collection<Class<T>> getDependencies();
 
   /**
-   * Observes the progress of the module.
-   * TODO not sure what this method is used for.
+   * Observes the progress of the module. TODO not sure what this method is used for.
+   * 
    * @param resultClass The result class.
    * @param progress The progress.
    * @param isReady If the module is ready.
