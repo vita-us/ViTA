@@ -27,6 +27,13 @@
               </excludes>
               <followSymlinks>false</followSymlinks>
             </fileset>
+            <fileset>
+              <directory>test-results</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
           </filesets>
         </configuration>
       </plugin>
@@ -88,6 +95,16 @@
             </goals>
             <configuration>
               <arguments>--no-color</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>javascript tests</id>
+            <goals>
+              <goal>karma</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <karmaConfPath>test/karma.conf.ci.js</karmaConfPath>
             </configuration>
           </execution>
         </executions>

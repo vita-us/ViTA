@@ -56,8 +56,7 @@ module.exports = function(grunt) {
         configFile: 'test/karma.conf.js'
       },
       continuous: {
-        configFile: 'test/karma.conf.js',
-        singleRun: true
+        configFile: 'test/karma.conf.ci.js'
       }
     },
     less: {
