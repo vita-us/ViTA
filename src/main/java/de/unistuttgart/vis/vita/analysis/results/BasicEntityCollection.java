@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.results;
 
+import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+
 import java.util.Collection;
 
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -11,7 +13,7 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
  * names to one entity; the names will be available via getNameAttributes(). No other attributes
  * will be detected. The basic relations between the entities is analyzed.
  */
-public interface BasicEntityCollection {
+public interface BasicEntityCollection extends Collection<BasicEntity> {
   /**
    * Gets the detected entities
    * 
