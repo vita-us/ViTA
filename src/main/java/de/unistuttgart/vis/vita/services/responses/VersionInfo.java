@@ -4,7 +4,7 @@ package de.unistuttgart.vis.vita.services.responses;
  * Holds version information about the REST API
  */
 public class VersionInfo {
-  String api;
+  private String api;
 
   /**
    * Gets the REST API version, as version string (e.g. 1.3-beta1)
