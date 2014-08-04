@@ -4,23 +4,23 @@ package de.unistuttgart.vis.vita.model.progress;
  * Represents the progress of the analysis for a specific feature of the software.
  */
 public class FeatureProgress {
-  
+
   // attributes
   private double progress;
   private boolean isReady;
-  
+
   /**
    * Creates a new instance of Feature Progress, setting the progress to 0 and ready flag to false.
    */
   public FeatureProgress() {
     this(0.0, false);
   }
-  
+
   /**
    * Creates a new instance of FeatureProgress with the given progress value and ready flag.
-   * 
+   *
    * @param pProgress - the progress value between 0.0 and 1.0
-   * @param pReady - flag whether the feature this refers to is ready or not
+   * @param pReady    - flag whether the feature this refers to is ready or not
    */
   public FeatureProgress(double pProgress, boolean pReady) {
     setProgress(pProgress);
@@ -43,7 +43,7 @@ public class FeatureProgress {
     if (progress < 0.0 || progress > 1.0) {
       throw new IllegalArgumentException("progress value must be between 0 and 1");
     }
-    
+
     this.progress = progress;
   }
 
@@ -62,5 +62,5 @@ public class FeatureProgress {
   public void setReady(boolean isReady) {
     this.isReady = isReady;
   }
-  
+
 }

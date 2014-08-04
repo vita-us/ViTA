@@ -22,8 +22,8 @@ public class WordCloudItem {
 
   /**
    * Creates a new item of a WordCloud with given word and frequency of usage.
-   * 
-   * @param pWord - the word which should be shown in the WordCloud
+   *
+   * @param pWord      - the word which should be shown in the WordCloud
    * @param pFrequency - how often this word occurs in the document
    */
   public WordCloudItem(String pWord, int pFrequency) {
@@ -40,7 +40,7 @@ public class WordCloudItem {
 
   /**
    * Sets the name for this item of the WordCloud.
-   * 
+   *
    * @param word - the word which should be shown in the WordCloud
    */
   public void setWord(String word) {
@@ -56,7 +56,7 @@ public class WordCloudItem {
 
   /**
    * Sets the frequency of occurrences for this word.
-   * 
+   *
    * @param frequency - number of occurrences in a document, must be greater or equals 1
    */
   public void setFrequency(int frequency) {

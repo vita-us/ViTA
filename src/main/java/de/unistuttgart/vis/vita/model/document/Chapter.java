@@ -17,7 +17,7 @@ public class Chapter {
 
   /**
    * Creates a new Chapter which belongs to the given Document.
-   * 
+   *
    * @param pDocument - the Document this Chapter belongs to
    */
   public Chapter(Document pDocument) {

@@ -13,9 +13,9 @@ public class TextPosition {
 
   /**
    * Creates a new TextPosition which lays at a given offset in an also given Chapter.
-   * 
+   *
    * @param pChapter - the chapter this TextPosition lays in
-   * @param pOffset - the global offset of this TextPosition
+   * @param pOffset  - the global offset of this TextPosition
    */
   public TextPosition(Chapter pChapter, int pOffset) {
     if (pOffset < 0) {
@@ -31,20 +31,20 @@ public class TextPosition {
     } else {
       prog = calculateProgress();
     }
-    
+
     this.progress = prog;
 
   }
 
   /**
    * Calculates the relative position of this TextPosition in the whole Document
-   * 
+   *
    * @return relative position in the Document, or NaN if length of Document is zero
    */
   private double calculateProgress() {
     double docLength = chapter.document.getMetrics().getCharacterCount();
-
     double prog = 0.0;
+
     if (docLength > 0) {
       prog = (offset / docLength);
     } else {
@@ -70,7 +70,7 @@ public class TextPosition {
 
   /**
    * @return the progress the relative position in the Document as a value between zero and one, or
-   *         NaN if Chapter is null or length of Document is 0
+   * NaN if Chapter is null or length of Document is 0
    */
   public double getProgress() {
     return progress;

@@ -18,7 +18,7 @@ public class EntityRelation<E extends Entity> {
   /**
    * Returns how strong this relation is, returning a value between 0 (very weak) and 1 (very
    * strong).
-   * 
+   *
    * @return the weight of this relation
    */
   public double getWeight() {
@@ -27,6 +27,7 @@ public class EntityRelation<E extends Entity> {
 
   /**
    * Sets the weight of this relation, indicating how strong it is.
+   *
    * @param weight - value from 0.0 (very weak relation) to 1.0 (very strong relation)
    */
   public void setWeight(double weight) {
@@ -42,10 +43,10 @@ public class EntityRelation<E extends Entity> {
   public E getRelatedEntity() {
     return relatedEntity;
   }
- 
+
   /**
    * Sets the entity which is target of this relation.
-   * 
+   *
    * @param relatedEntity - the related entity
    */
   public void setRelatedEntity(E relatedEntity) {

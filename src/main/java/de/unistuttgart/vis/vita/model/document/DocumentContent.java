@@ -1,9 +1,10 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import java.util.List;
-
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the content of Document, including its parts, persons and places.
@@ -14,9 +15,14 @@ public class DocumentContent {
   private List<DocumentPart> parts;
   private List<Person> persons;
   private List<Place> places;
-  
+
+  /**
+   * Creates a new content which is completely empty.
+   */
   public DocumentContent() {
-    
+    parts = new ArrayList<>();
+    persons = new ArrayList<>();
+    places = new ArrayList<>();
   }
 
   /**

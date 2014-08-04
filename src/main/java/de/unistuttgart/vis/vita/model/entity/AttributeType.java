@@ -5,7 +5,7 @@ package de.unistuttgart.vis.vita.model.entity;
  */
 public enum AttributeType {
   AGE,
-  NAME, 
+  NAME,
   SIZE,
   UNKNOWN
 }

@@ -20,7 +20,7 @@ public class WordCloud {
 
   /**
    * Creates a new WordCloud with the given items.
-   * 
+   *
    * @param pItems - the items for the new WordCloud
    */
   public WordCloud(Set<WordCloudItem> pItems) {
@@ -36,8 +36,6 @@ public class WordCloud {
 
   /**
    * Sets the items for this WordCloud
-   * 
-   * @param newItems
    */
   public void setItems(Set<WordCloudItem> newItems) {
     this.items = newItems;

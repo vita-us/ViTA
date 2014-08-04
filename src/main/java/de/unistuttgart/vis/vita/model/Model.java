@@ -9,7 +9,10 @@ public class Model {
   
   // attributes
   private TextRepository textRepo;
-  
+
+  /**
+   * @return The entity manager.
+   */
   public EntityManager getEntityManager() {
     // TODO not implemented yet
     return null;

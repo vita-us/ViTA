@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.model.document;
 
 /**
- * Represents a eBook file being imported into the software. Includes the id, metadata, metrics and
+ * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
  * content of this eBook.
  */
 public class Document {

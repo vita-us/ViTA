@@ -7,7 +7,7 @@ public class TextSpan {
 
   // constants
   private static final int MIN_LENGTH = 0;
-  
+
   // attributes
   private final TextPosition start;
   private final TextPosition end;
@@ -15,9 +15,9 @@ public class TextSpan {
 
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.
-   * 
+   *
    * @param pStart - the TextPosition where the new TextSpan should begin
-   * @param pEnd - the TextPosiotion where the new TextSpan should end
+   * @param pEnd   - the TextPosiotion where the new TextSpan should end
    */
   public TextSpan(TextPosition pStart, TextPosition pEnd) {
     if (pStart == null || pEnd == null) {

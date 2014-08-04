@@ -1,8 +1,9 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import java.util.Set;
-
 import de.unistuttgart.vis.vita.model.document.TextSpan;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,
@@ -19,9 +20,14 @@ public class Entity {
   private Set<TextSpan> occurrences;
   private boolean[] fingerprint;
   private Set<EntityRelation<Entity>> entityRelations;
-  
+
+  /**
+   * Creates a new entity with default values.
+   */
   public Entity() {
-    
+    attributes = new TreeSet<>();
+    occurrences = new TreeSet<>();
+    entityRelations = new TreeSet<>();
   }
 
   /**
@@ -40,8 +46,6 @@ public class Entity {
 
   /**
    * Sets a new Id for the entity.
-   * 
-   * @param newId
    */
   public void setId(int newId) {
     this.id = newId;
@@ -67,7 +71,7 @@ public class Entity {
 
   /**
    * Sets the name under which this entity is shown in the graphical user interface.
-   * 
+   *
    * @param newDisplayName - the new name under which this entity should be shown
    */
   public void setDisplayName(String newDisplayName) {
@@ -83,7 +87,7 @@ public class Entity {
 
   /**
    * Sets the attributes for this entity.
-   * 
+   *
    * @param newAttributes - the new attributes for this entity
    */
   public void setAttributes(Set<Attribute> newAttributes) {
@@ -99,13 +103,13 @@ public class Entity {
 
   /**
    * Sets a new ranking value for this entity.
-   * 
+   *
    * @param newRankingValue - the new ranking value must be 1 or greater
    */
   public void setRankingValue(int newRankingValue) {
     if (newRankingValue < MIN_RANK_VALUE) {
       throw new IllegalArgumentException("the ranking value must be " + MIN_RANK_VALUE
-          + " or greater!");
+                                         + " or greater!");
     }
     this.rankingValue = newRankingValue;
   }
@@ -119,7 +123,7 @@ public class Entity {
 
   /**
    * Sets the occurrences for this entity.
-   * 
+   *
    * @param newOccurences - a set of new occurrences for this entity
    */
   public void setOccurences(Set<TextSpan> newOccurences) {
@@ -135,7 +139,7 @@ public class Entity {
 
   /**
    * Sets the fingerprint vector for this entity
-   * 
+   *
    * @param newFingerprint - the new fingerprint vector for this entity
    */
   public void setFingerprint(boolean[] newFingerprint) {
@@ -151,7 +155,7 @@ public class Entity {
 
   /**
    * Sets the relations for this entity.
-   * 
+   *
    * @param newEntityRelations - a set of new relations for this entity
    */
   public void setEntityRelations(Set<EntityRelation<Entity>> newEntityRelations) {

@@ -22,7 +22,7 @@ public class DocumentMetrics {
 
   /**
    * Creates a new instance of DocumentMetrics with the given number of characters.
-   * 
+   *
    * @param charCount - the number of characters in the whole document
    */
   public DocumentMetrics(int charCount) {
@@ -38,7 +38,7 @@ public class DocumentMetrics {
 
   /**
    * Sets the number of characters in the Document.
-   * 
+   *
    * @param characterCount - the total number of characters in the Document this metrics refer to.
    */
   public void setCharacterCount(int characterCount) {
@@ -54,7 +54,7 @@ public class DocumentMetrics {
 
   /**
    * Sets the number of words in the Document.
-   * 
+   *
    * @param wordCount - the total number of words in the Document this metrics refer to
    */
   public void setWordCount(int wordCount) {
@@ -70,7 +70,7 @@ public class DocumentMetrics {
 
   /**
    * Sets the number of chapters in the Document.
-   * 
+   *
    * @param chapterCount - the total number of chapters in the Document this metrics refer to
    */
   public void setChapterCount(int chapterCount) {
@@ -86,9 +86,9 @@ public class DocumentMetrics {
 
   /**
    * Sets the number of persons mentioned in the Document.
-   * 
+   *
    * @param personCount - the total number of persons appearing in the Document this metrics refer
-   *        to.
+   *                    to.
    */
   public void setPersonCount(int personCount) {
     this.personCount = personCount;
@@ -103,8 +103,9 @@ public class DocumentMetrics {
 
   /**
    * Sets the number of places mentioned in the Document.
-   * 
-   * @param placeCount - the total number of places mentioned in the Document this metrics refer to.
+   *
+   * @param placeCount - the total number of places mentioned in the Document this metrics refer
+   *                   to.
    */
   public void setPlaceCount(int placeCount) {
     this.placeCount = placeCount;

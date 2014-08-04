@@ -42,8 +42,8 @@ public class DocumentMetadata {
   
   /**
    * Sets the title for the Document.
-   * 
-   * @param newTitle
+   *
+   * @param newTitle The new title of the document.
    */
   public void setTitle(String newTitle) {
     this.title = newTitle;
