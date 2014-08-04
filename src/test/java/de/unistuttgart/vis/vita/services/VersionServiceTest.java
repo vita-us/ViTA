@@ -1,19 +1,20 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.assertEquals;
-
-import javax.ws.rs.core.Application;
+import de.unistuttgart.vis.vita.services.responses.VersionInfo;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.services.responses.VersionInfo;
+import javax.ws.rs.core.Application;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test the Version service
  */
 public class VersionServiceTest extends JerseyTest {
+
   @Override
   protected Application configure() {
     return new ResourceConfig(VersionService.class);

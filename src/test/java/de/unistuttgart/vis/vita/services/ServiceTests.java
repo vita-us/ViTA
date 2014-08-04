@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({VersionServiceTest.class})
 public class ServiceTests {
+
   /**
    * Configures jersey tests
    */
