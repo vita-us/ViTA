@@ -44,36 +44,6 @@ public class AnalysisController {
     this.moduleRegistry = moduleRegistry;
   }
 
-  private void createModules() {
-    moduleList = new ArrayList<>();
-    List<Class<? extends Module<?>>> moduleClassList = moduleRegistry.getModules();
-
-    for (int i = 0; i < moduleClassList.size(); i++) {
-      Class<?> c = moduleClassList.get(i);
-      Constructor<?> constructor1 = null;
-      
-      try {
-        constructor1 = c.getConstructor();
-      } catch (NoSuchMethodException | SecurityException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      
-      Object object = null;
-      
-      try {
-        object = constructor1.newInstance();
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-          | InvocationTargetException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      
-      Module<?> currentModule = (Module<?>) object;
-      moduleList.add(currentModule);
-    }
-  }
-
   /**
    * Starts the schedule of all modules registered in the registry. It calculates which modules can
    * be started first and which have to wait for other modules. This algorithm also checks how many
@@ -82,22 +52,7 @@ public class AnalysisController {
    * @param filepath The path to the document.
    * @return The name of the document
    */
-  public String scheduleDocumentAnalysis(Path filepath) {    
-    List<Module<?>> executionSeq = new ArrayList<>();
-    Map<Module<?>, List<Class<?>>> moduleDependencies = new HashMap<>();
-    createModules();
-    
-    for(Module<?> currentModule : moduleList) {
-      List<Class<?>> dependenciesList = new ArrayList<>();
-      dependenciesList.addAll(currentModule.getDependencies());
-      moduleDependencies.put(currentModule, dependenciesList);
-      
-      if(moduleDependencies.values().size() == 0) {
-        executionSeq.add(currentModule);
-      } 
-    }
-    
-    
+  public String scheduleDocumentAnalysis(Path filepath) {
     return null;
   }
 
