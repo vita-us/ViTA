@@ -5,7 +5,7 @@ package de.unistuttgart.vis.vita.model.entity;
  *
  * @param <E> - the type of the other entity
  */
-public class EntityRelation<E extends Entity> {
+public class EntityRelation<E> {
 
   // constants
   private static final int WEIGHT_MIN = 0;
