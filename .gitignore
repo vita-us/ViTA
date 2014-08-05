@@ -84,5 +84,3 @@ Desktop.ini
 ## build directories
 /src/main/webapp/*
 !/src/main/webapp/WEB-INF/
-## test results
-/test-results/**

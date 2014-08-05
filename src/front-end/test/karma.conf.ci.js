@@ -16,7 +16,7 @@ module.exports = function(config) {
     plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter'],
     
     junitReporter: {
-      outputFile: '../../test-results/front-end-test-results.xml',
+      outputFile: '../../target/surefire-reports/TEST-front-end.xml',
       suite: 'unit'
     }
 
