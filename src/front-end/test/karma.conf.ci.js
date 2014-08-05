@@ -10,14 +10,25 @@ module.exports = function(config) {
     singleRun: true,
 
     browsers: ['PhantomJS'],
-    
-    reporters: ['progress', 'junit'],
 
-    plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter'],
-    
+    reporters: ['progress', 'junit', 'coverage'],
+
+    plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter',
+              'karma-coverage'],
+
     junitReporter: {
       outputFile: '../../target/surefire-reports/TEST-front-end.xml',
       suite: 'unit'
+    },
+
+    preprocessors: {
+      'app/js/**/*.js': ['coverage']
+    },
+
+    coverageReporter: {
+      type: 'lcovonly',
+      dir: '../../target/',
+      subdir: '.'
     }
 
   });
