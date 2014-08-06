@@ -17,17 +17,17 @@ module.exports = function(config) {
               'karma-coverage'],
 
     junitReporter: {
-      outputFile: '../../target/surefire-reports/TEST-front-end.xml',
+      outputFile: '../target/surefire-reports/TEST-front-end.xml',
       suite: 'unit'
     },
 
     preprocessors: {
-      'app/js/**/*.js': ['coverage']
+      'main/front-end/app/js/**/*.js': ['coverage']
     },
 
     coverageReporter: {
       type: 'lcovonly',
-      dir: '../../target/',
+      dir: '../target/',
       subdir: '.'
     }
 
