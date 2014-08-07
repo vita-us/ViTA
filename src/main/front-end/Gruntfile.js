@@ -26,6 +26,21 @@ module.exports = function(grunt) {
         dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
     },
+    connect: {
+      options: {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: 8080,
+        base: '<%= appPath %>',
+        directory: '<%= appPath %>'
+      },
+      devserver: {
+        options: {
+          livereload: true,
+          open: "http://localhost:8080/index.html"
+        }
+      }
+    },
     copy: {
       dependencies: {
         files: [{
@@ -111,15 +126,35 @@ module.exports = function(grunt) {
           '<%= cssPath %>style.css': 'app/less/style.less'
         }
       }
+    },
+    watch: {
+      options: {
+        livereload: true
+      },
+      less: {
+        files: ['app/less/**/*.less'],
+        tasks: ['less']
+      },
+      statics: {
+        files: ['app/**/*.html', 'app/test_data/**', 'app/img/**'],
+        tasks: ['copy:statics']
+      },
+      scripts: {
+        files: ['app/js/**/*.js'],
+        tasks: ['concat']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-karma');
 
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
   grunt.registerTask('test', ['karma:dev']);
+  grunt.registerTask('webserver', ['build', 'connect:devserver', 'watch']);
 };
