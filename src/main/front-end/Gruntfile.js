@@ -5,7 +5,8 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
 
-    appPath: '../main/webapp/',
+    mvnSrcDirectory: '../../',
+    appPath: '<%= mvnSrcDirectory %>main/webapp/',
     javascriptPath: '<%= appPath %>js/',
     cssPath: '<%= appPath %>css/',
     fontPath: '<%= appPath %>fonts/',
@@ -90,11 +91,10 @@ module.exports = function(grunt) {
     },
     karma: {
       dev: {
-        configFile: 'test/karma.conf.js'
+        configFile: '<%= mvnSrcDirectory %>test/front-end/karma.conf.js'
       },
       continuous: {
-        configFile: 'test/karma.conf.js',
-        singleRun: true
+        configFile: '<%= mvnSrcDirectory %>test/front-end/karma.conf.ci.js'
       }
     },
     less: {
