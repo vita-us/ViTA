@@ -78,9 +78,9 @@ Desktop.ini
 
 # Front-End
 ## dependency directories
-/src/front-end/node
-/src/front-end/node_modules
-/src/front-end/app/bower_components
+/src/main/front-end/node
+/src/main/front-end/node_modules
+/src/main/front-end/app/bower_components
 ## build directories
 /src/main/webapp/*
 !/src/main/webapp/WEB-INF/
