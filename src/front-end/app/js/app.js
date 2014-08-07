@@ -1,7 +1,7 @@
-(function() {
+(function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute']);
+  var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
@@ -15,7 +15,7 @@
       controller: ''
     }).when('/about', {
       templateUrl: 'partials/about.html',
-      controller: ''
+      controller: 'DocumentsCtrl'
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: ''

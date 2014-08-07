@@ -43,6 +43,17 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <includes>
+            <include>**/AllTests.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
         <version>0.0.15</version>
@@ -110,7 +121,67 @@
       <groupId>org.glassfish.jersey.containers.glassfish</groupId>
       <artifactId>jersey-gf-cdi</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-moxy</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+      <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.test-framework</groupId>
+      <artifactId>jersey-test-framework-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>4.9.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>7.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.stanford.nlp</groupId>
+      <artifactId>stanford-corenlp</artifactId>
+      <version>3.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.stanford.nlp</groupId>
+      <artifactId>stanford-corenlp</artifactId>
+      <version>3.4</version>
+      <classifier>models</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.ac.gate</groupId>
+      <artifactId>gate-core</artifactId>
+      <version>6.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.11.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+
   <properties>
     <jersey.version>2.10.1</jersey.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

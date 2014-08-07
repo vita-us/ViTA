@@ -1,2 +1,8 @@
-<p>Documents</p>
-<a href="#/documents/testId">Click for redirect to overview</a>
+<div>
+  <p>Documents</p>
+  <ul>
+    <li ng-repeat="document in documents">
+      <a ng-href="#/documents/{{document.id}}">{{document.metadata.title}}</a>
+    </li>
+  </ul>
+</div>

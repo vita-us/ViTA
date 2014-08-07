@@ -57,6 +57,16 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/jquery/dist/',
           src: ['jquery.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/angular-resource/',
+          src: ['angular-resource.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/angular-mocks/',
+          src: ['angular-mocks.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
@@ -70,6 +80,11 @@ module.exports = function(grunt) {
           cwd: 'app/partials',
           src: ['**'],
           dest: '<%= appPath %>partials/'
+        }, {
+          expand: true,
+          cwd: 'app/test_data',
+          src: ['**'],
+          dest: '<%= appPath %>test_data/'
         }]
       }
     },
