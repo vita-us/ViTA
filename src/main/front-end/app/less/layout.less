@@ -1,0 +1,49 @@
+#header {
+  background-color: @light-grey-background-color;
+}
+
+#page {
+  padding: 0 15px;
+  
+  .book-title {
+    color: @book-title-color;
+    margin-bottom: 20px;
+  }
+    
+  .menu {
+    padding: 15px;
+    margin-right: 40px;
+    border: 1px solid @border-color;
+    background-color: @light-grey-background-color;
+  
+    ul {
+      padding-left: 10px;
+      list-style-position: inside;
+      
+      li {
+        margin-bottom: 3px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  .content {  
+
+  }
+  
+  .menu, .content {
+    float: left;
+    padding-top: 10px;
+    
+    h2 {
+      margin-top: 0;
+    }
+  }
+}
+
+#page.clearfix:after, #page.clearfix:before {
+  display: block;  
+}
