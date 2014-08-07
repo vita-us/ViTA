@@ -6,7 +6,7 @@
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
       templateUrl: 'partials/documents.html',
-      controller: ''
+      controller: 'DocumentsCtrl'
     }).when('/settings', {
       templateUrl: 'partials/settings.html',
       controller: ''
@@ -15,7 +15,7 @@
       controller: ''
     }).when('/about', {
       templateUrl: 'partials/about.html',
-      controller: 'DocumentsCtrl'
+      controller: ''
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: ''
