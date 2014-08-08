@@ -7,6 +7,7 @@
   vitaControllers.controller('AboutCtrl', ['$scope', 'Page', function($scope, Page) {
     Page.setTitle('About ViTA');
     Page.setShowMenu(false);
+    Page.setTab(4);
   }]);
 
 })(angular);

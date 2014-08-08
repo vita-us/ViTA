@@ -7,6 +7,7 @@
   vitaControllers.controller('TutorialCtrl', ['$scope', 'Page', function($scope, Page) {
     Page.setTitle('Tutorial');
     Page.setShowMenu(false);
+    Page.setTab(3);
   }]);
 
 })(angular);

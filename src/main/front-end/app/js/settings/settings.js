@@ -7,6 +7,7 @@
   vitaControllers.controller('SettingsCtrl', ['$scope', 'Page', function($scope, Page) {
     Page.setTitle('Settings');
     Page.setShowMenu(false);
+    Page.setTab(2);
   }]);
 
 })(angular);

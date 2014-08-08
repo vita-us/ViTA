@@ -50,6 +50,7 @@
     var title = "Default page title"; // set this in every controller
     var breadcrumbs = null;           // set this in those controllers where a document is selected
     var showMenu = true;              // set to false where no document is selected
+    var tab = 1;
     
     return {
       title: function() {
@@ -69,6 +70,12 @@
       },
       setShowMenu: function(setShowMenu) {
         showMenu = setShowMenu;
+      },
+      tab: function() {
+        return tab;
+      },
+      setTab: function(setTab) {
+        tab = setTab;
       }
     };
   });
@@ -76,17 +83,5 @@
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
     $scope.Page = Page;
   }]);
-  
-  app.controller("PanelController", function() {
-    this.tab = 1;
-    
-    this.selectTab = function(setTab) {
-      this.tab = setTab;
-    };
-
-    this.isSelected = function(checkTab) {
-      return this.tab === checkTab;
-    };
-  });
 
 })(angular);
