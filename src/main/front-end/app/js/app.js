@@ -26,6 +26,37 @@
     });
   }]);
 
+  app.factory('Page', function() {
+    var title = "Default page title"; // set this in every controller
+    var breadcrumbs = null;           // set this in those controllers where a document is selected
+    var showMenu = true;              // set to false where no document is selected
+    
+    return {
+      title: function() {
+        return title;
+      },
+      setTitle: function(setTitle) {
+        title = setTitle;
+      },
+      breadcrumbs: function() {
+        return breadcrumbs;
+      },
+      setBreadcrumbs: function(setBreadcrumbs) {
+        breadcrumbs = setBreadcrumbs;
+      },
+      showMenu: function() {
+        return showMenu;
+      },
+      setShowMenu: function(setShowMenu) {
+        showMenu = setShowMenu;
+      }
+    };
+  });
+ 
+  app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
+    $scope.Page = Page;
+  }]);
+  
   app.controller("PanelController", function() {
     this.tab = 1;
     

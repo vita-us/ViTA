@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="vita">
+<html lang="en" ng-app="vita" ng-controller="PageCtrl">
 <head>
 <meta charset="utf-8">
 <title>ViTA</title>
@@ -34,8 +34,8 @@
   </div>
 
   <div id="page" class="clearfix">
-    <h1 class="book-title">Title of the book</h1>
-    <div class="menu">
+    <h1 class="page-title">{{ Page.title() }}</h1>
+    <div class="menu" ng-show="{{ Page.showMenu() }}">
       <h2>Visualizations</h2>
       <ul>
         <li><a href="#/documents/testId">Overview</a></li>
@@ -48,7 +48,7 @@
       </ul>
     </div>
     <div class="content">
-      <h2>Title of the partial</h2>
+      <h2 ng-show="Page.breadcrumbs()">{{ Page.breadcrumbs() }}</h2>
       <div ng-view></div>
     </div>
   </div>
