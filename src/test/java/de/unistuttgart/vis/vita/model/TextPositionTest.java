@@ -44,6 +44,14 @@ public class TextPositionTest {
     chapter = new Chapter(doc);
   }
 
+  @Test
+  public void testGetters() {
+    TextPosition pos = new TextPosition(chapter, 7);
+    assertEquals(chapter, pos.getChapter());
+    assertEquals(7, pos.getOffset());
+    // offset ist tested in depth below
+  }
+
   /**
    * Checks whether a negative offset causes an IllegalArgumentException to be thrown.
    */
