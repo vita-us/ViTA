@@ -21,6 +21,24 @@
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: ''
+    }).when('/documents/:documentId/profiles', {
+      templateUrl: 'partials/profiles.html',
+      controller: ''
+    }).when('/documents/:documentId/places', {
+      templateUrl: 'partials/places.html',
+      controller: ''
+    }).when('/documents/:documentId/fingerprint', {
+      templateUrl: 'partials/fingerprint.html',
+      controller: ''
+    }).when('/documents/:documentId/graphnetwork', {
+      templateUrl: 'partials/graphnetwork.html',
+      controller: ''
+    }).when('/documents/:documentId/wordcloud', {
+      templateUrl: 'partials/wordcloud.html',
+      controller: ''
+    }).when('/documents/:documentId/documentview', {
+      templateUrl: 'partials/documentview.html',
+      controller: ''
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
     }).otherwise({

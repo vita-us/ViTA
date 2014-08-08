@@ -38,13 +38,13 @@
     <div class="menu" ng-show="Page.showMenu()">
       <h2>Visualizations</h2>
       <ul>
-        <li><a href="#/documents/testId">Overview</a></li>
-        <li><a href="#">Profiles</a></li>
-        <li><a href="#">Places</a></li>
-        <li><a href="#">Fingerprint</a></li>
-        <li><a href="#">Graph-Network</a></li>
-        <li><a href="#">Word Cloud</a></li>
-        <li><a href="#">Document View</a></li>
+        <li><a href="#/documents/{{document.id}}">Overview</a></li>
+        <li><a href="#/documents/{{document.id}}/profiles">Profiles</a></li>
+        <li><a href="#/documents/{{document.id}}/places">Places</a></li>
+        <li><a href="#/documents/{{document.id}}/fingerprint">Fingerprint</a></li>
+        <li><a href="#/documents/{{document.id}}/graphnetwork">Graph-Network</a></li>
+        <li><a href="#/documents/{{document.id}}/wordcloud">Word Cloud</a></li>
+        <li><a href="#/documents/{{document.id}}/documentview">Document View</a></li>
       </ul>
     </div>
     <div class="content">
