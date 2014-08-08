@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         }
       },
       app: {
-        src: ['app/js/**/*.js'],
+        src: ['app/js/app.js', 'app/js/*/*.js'],
         dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
     },
