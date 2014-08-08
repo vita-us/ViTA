@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Performs some simple tests on FeatureProgress class, checking legal and illegal progress values.
  */
-public class TestFeatureProgress {
+public class FeatureProgressTest {
 
   // constants
   private static final double DELTA = 0.001;

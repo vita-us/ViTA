@@ -45,6 +45,13 @@ public class TextSpanTest {
     pos3 = new TextPosition(chapter, OFFSET_3);
   }
 
+  @Test
+  public void testStartAndEnd() {
+    TextSpan span = new TextSpan(pos1, pos2);
+    assertEquals(pos1, span.getStart());
+    assertEquals(pos2, span.getEnd());
+  }
+
   /**
    * Checks whether an exception is thrown if start position > end position
    */

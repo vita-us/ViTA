@@ -5,9 +5,12 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
 
-    appPath: '../main/webapp/',
+    mvnSrcDirectory: '../../',
+    appPath: '<%= mvnSrcDirectory %>main/webapp/',
     javascriptPath: '<%= appPath %>js/',
     cssPath: '<%= appPath %>css/',
+    fontPath: '<%= appPath %>fonts/',
+
     pkg: grunt.file.readJSON('package.json'),
     bowerrc: grunt.file.readJSON('.bowerrc'),
 
@@ -34,6 +37,26 @@ module.exports = function(grunt) {
           expand: true,
           cwd: '<%= bowerrc.directory %>/angular-route/',
           src: ['angular-route.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/bootstrap/dist/js/',
+          src: ['bootstrap.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/bootstrap/dist/css/',
+          src: ['bootstrap.css', 'bootstrap-theme.css'],
+          dest: '<%= cssPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/bootstrap/dist/fonts/',
+          src: ['**'],
+          dest: '<%= fontPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery/dist/',
+          src: ['jquery.js'],
           dest: '<%= javascriptPath %>'
         }, {
           expand: true,
@@ -68,11 +91,10 @@ module.exports = function(grunt) {
     },
     karma: {
       dev: {
-        configFile: 'test/karma.conf.js'
+        configFile: '<%= mvnSrcDirectory %>test/front-end/karma.conf.js'
       },
       continuous: {
-        configFile: 'test/karma.conf.js',
-        singleRun: true
+        configFile: '<%= mvnSrcDirectory %>test/front-end/karma.conf.ci.js'
       }
     },
     less: {
