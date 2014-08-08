@@ -2,6 +2,8 @@
   'use strict';
 
   var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
+  
+  angular.module('vitaControllers', []);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
@@ -9,13 +11,13 @@
       controller: 'DocumentsCtrl'
     }).when('/settings', {
       templateUrl: 'partials/settings.html',
-      controller: ''
+      controller: 'SettingsCtrl'
     }).when('/tutorial', {
       templateUrl: 'partials/tutorial.html',
-      controller: ''
+      controller: 'TutorialCtrl'
     }).when('/about', {
       templateUrl: 'partials/about.html',
-      controller: ''
+      controller: 'AboutCtrl'
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: ''
