@@ -4,6 +4,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Target;
+import org.hibernate.annotations.Type;
+
 /**
  * Represents a Relation between two Entities.
  *
@@ -23,6 +26,7 @@ public class EntityRelation<E> {
   private double weight;
   
   @ManyToOne
+  @Target(Entity.class) // only Entity relations will be peristed
   private E relatedEntity;
 
   /**
