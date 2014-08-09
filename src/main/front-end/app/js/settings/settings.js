@@ -5,9 +5,9 @@
 
   // Controller responsible for the settings page
   vitaControllers.controller('SettingsCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.setTitle('Settings');
-    Page.setShowMenu(false);
-    Page.setTab(2);
+    Page.title = 'Settings';
+    Page.showMenu = false;
+    Page.tab = 2;
   }]);
 
 })(angular);

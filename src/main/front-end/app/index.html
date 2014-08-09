@@ -2,7 +2,7 @@
 <html lang="en" ng-app="vita" ng-controller="PageCtrl">
 <head>
 <meta charset="utf-8">
-<title>ViTA - {{ Page.title() }}</title>
+<title>ViTA - {{ Page.title }}</title>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
@@ -20,22 +20,18 @@
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li ng-class="{active: Page.tab() === 1}"><a href="#/documents"
-            ng-click="Page.setTab(1)">Documents</a></li>
-          <li ng-class="{active: Page.tab() === 2}"><a href="#/settings"
-            ng-click="Page.setTab(2)">Settings</a></li>
-          <li ng-class="{active: Page.tab() === 3}"><a href="#/tutorial"
-            ng-click="Page.setTab(3)">Tutorial</a></li>
-          <li ng-class="{active: Page.tab() === 4}"><a href="#/about"
-            ng-click="Page.setTab(4)">About</a></li>
+          <li ng-class="{active: Page.tab === 1}"><a href="#/documents">Documents</a></li>
+          <li ng-class="{active: Page.tab === 2}"><a href="#/settings">Settings</a></li>
+          <li ng-class="{active: Page.tab === 3}"><a href="#/tutorial">Tutorial</a></li>
+          <li ng-class="{active: Page.tab === 4}"><a href="#/about">About</a></li>
         </ul>
       </div>
     </div>
   </div>
 
   <div id="page" class="clearfix">
-    <h1 class="page-title">{{ Page.title() }}</h1>
-    <div class="menu" ng-show="Page.showMenu()">
+    <h1 class="page-title">{{ Page.title }}</h1>
+    <div class="menu" ng-show="Page.showMenu">
       <h2>Visualizations</h2>
       <ul>
         <li><a ng-href="#/documents/{{document.id}}/overview">Overview</a></li>
@@ -48,7 +44,7 @@
       </ul>
     </div>
     <div class="content">
-      <h2 ng-show="Page.breadcrumbs()">{{ Page.breadcrumbs() }}</h2>
+      <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs() }}</h2>
       <div ng-view></div>
     </div>
   </div>

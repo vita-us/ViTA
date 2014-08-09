@@ -5,9 +5,9 @@
 
   // Controller responsible for the tutorial page
   vitaControllers.controller('TutorialCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.setTitle('Tutorial');
-    Page.setShowMenu(false);
-    Page.setTab(3);
+    Page.title = 'Tutorial';
+    Page.showMenu = false;
+    Page.tab = 3;
   }]);
 
 })(angular);

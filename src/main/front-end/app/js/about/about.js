@@ -5,9 +5,9 @@
 
   // Controller responsible for the about page
   vitaControllers.controller('AboutCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.setTitle('About ViTA');
-    Page.setShowMenu(false);
-    Page.setTab(4);
+    Page.title = 'About ViTA';
+    Page.showMenu = false;
+    Page.tab = 4;
   }]);
 
 })(angular);
