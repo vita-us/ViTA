@@ -2,47 +2,20 @@ package de.unistuttgart.vis.vita.model.entity;
 
 import java.util.Set;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * The information about an entity that can be collected in the first pass
+ * 
+ * This class can not be persisted and should be converted to Entity for that.
  */
-@javax.persistence.Entity
 public class BasicEntity {
-  
-  @GeneratedValue
-  @Id
-  private int id;
-  
   private String displayName;
   private EntityType type;
   
-  @OneToMany
   private Set<Attribute> nameAttributes;
-  @OneToMany
   private Set<TextSpan> occurrences;
-  @OneToMany
   private Set<EntityRelation<BasicEntity>> entityRelations;
-
-  /**
-   * @return the id of this BasicEntity
-   */
-  public int getId() {
-    return id;
-  }
-
-  /**
-   * Sets the new id for this BasicEntity
-   *
-   * @param newId - the new id for this BasicEntity
-   */
-  public void setId(int newId) {
-    this.id = newId;
-  }
 
   /**
    * Gets the name under which this entity will be shown
