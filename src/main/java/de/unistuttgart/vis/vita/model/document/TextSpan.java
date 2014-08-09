@@ -1,8 +1,13 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Represents a text block with a specific start and end.
  */
+@Entity
 public class TextSpan {
 
   // constants
@@ -12,6 +17,10 @@ public class TextSpan {
   private final TextPosition start;
   private final TextPosition end;
   private final int length;
+  
+  @GeneratedValue
+  @Id
+  private int id;
 
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.

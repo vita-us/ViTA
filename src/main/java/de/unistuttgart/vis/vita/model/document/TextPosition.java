@@ -1,15 +1,23 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Represents a position in the text of a Document. It is specified by the chapter in lays in and
  * the offset from the start of this Chapter.
  */
+@javax.persistence.Entity
 public class TextPosition {
 
   // attributes
   private Chapter chapter;
   private int offset;
   private double progress;
+  
+  @GeneratedValue
+  @Id
+  private int id;
 
   /**
    * Creates a new TextPosition which lays at a given offset in an also given Chapter.
