@@ -1,19 +1,28 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents one attribute of an entity found in the document. This contains an id, type, content
  * and a set of occurrences in the document.
  */
+@javax.persistence.Entity
 public class Attribute {
 
+  @GeneratedValue
+  @Id
   private int id;
   private AttributeType type;
   private String content;
+  
+  @OneToMany
   private Set<TextSpan> occurrences;
 
   /**
