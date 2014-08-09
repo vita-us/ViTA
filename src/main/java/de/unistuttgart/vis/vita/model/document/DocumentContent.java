@@ -6,14 +6,21 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
 /**
  * Represents the content of Document, including its parts, persons and places.
  */
+@Embeddable
 public class DocumentContent {
-  
-  // attributes
+  @OneToMany
   private List<DocumentPart> parts;
+
+  @OneToMany
   private List<Person> persons;
+
+  @OneToMany
   private List<Place> places;
 
   /**

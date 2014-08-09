@@ -1,18 +1,32 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 /**
  * Represents a chapter in a Document, including its id, number, title, text, length and range in
  * the Document.
  */
+@Entity
 public class Chapter {
 
   // attributes
+  @GeneratedValue
+  @Id
   private String id;
   private int number;
   private String title;
   private String text;
   private int length;
+  
+  @OneToOne
   private TextSpan range;
+  
+  @ManyToOne
   protected Document document;
 
   /**

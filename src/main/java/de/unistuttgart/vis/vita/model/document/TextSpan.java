@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,14 +14,17 @@ public class TextSpan {
   // constants
   private static final int MIN_LENGTH = 0;
 
-  // attributes
-  private final TextPosition start;
-  private final TextPosition end;
-  private final int length;
-  
-  @GeneratedValue
   @Id
-  private int id;
+  @GeneratedValue
+  public int id;
+
+  @Embedded
+  private final TextPosition start;
+  
+  @Embedded
+  private final TextPosition end;
+  
+  private final int length;
 
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.

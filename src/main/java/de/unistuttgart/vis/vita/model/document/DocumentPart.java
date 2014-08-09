@@ -2,14 +2,24 @@ package de.unistuttgart.vis.vita.model.document;
 
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 /**
  * Represents a part of a Document including number, title and chapters of this DocumentPart.
  */
+@Entity
 public class DocumentPart {
-
-  // attributes
+  @Id
+  @GeneratedValue
+  private String id;
+  
   private int number;
   private String title;
+  
+  @OneToMany
   private List<Chapter> chapters;
 
   /**

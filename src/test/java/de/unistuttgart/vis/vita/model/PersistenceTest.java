@@ -29,7 +29,8 @@ public class PersistenceTest {
     entityManager = model.getEntityManager();
     entityManager.getTransaction().begin();
     List<Person> result = entityManager.createQuery( "from Person", Person.class ).getResultList();
-    assertThat(result, equalTo(Arrays.asList(p)));
+    assertEquals(1, result.size());
+    assertEquals("Frodo Baggins", result.get(0).getDisplayName());
     entityManager.getTransaction().commit();
     entityManager.close();
   }

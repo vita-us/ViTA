@@ -2,10 +2,13 @@ package de.unistuttgart.vis.vita.model.document;
 
 import java.util.Date;
 
+import javax.persistence.Embeddable;
+
 /**
  * Represents the meta data of a Document, including information like title, author, publisher, year
  * of publication, genre and edition of the Document.
  */
+@Embeddable
 public class DocumentMetadata {
   
   // attributes

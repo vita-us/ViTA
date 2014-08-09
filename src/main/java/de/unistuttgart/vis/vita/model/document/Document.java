@@ -1,12 +1,20 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
  * content of this eBook.
  */
+@Entity
 public class Document {
 
+  @GeneratedValue
+  @Id
   private String id;
+  
   private DocumentMetadata metadata;
   private DocumentMetrics metrics;
   private DocumentContent content;

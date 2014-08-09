@@ -1,23 +1,22 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  * Represents a position in the text of a Document. It is specified by the chapter in lays in and
  * the offset from the start of this Chapter.
  */
-@javax.persistence.Entity
+@Embeddable
 public class TextPosition {
-
-  // attributes
+  @ManyToOne
   private Chapter chapter;
-  private int offset;
-  private double progress;
   
-  @GeneratedValue
-  @Id
-  private int id;
+  private int offset;
+  
+  @Transient
+  private Double progress;
 
   /**
    * Creates a new TextPosition which lays at a given offset in an also given Chapter.
@@ -32,16 +31,6 @@ public class TextPosition {
 
     this.chapter = pChapter;
     this.offset = pOffset;
-
-    double prog = 0.0;
-    if (pChapter == null) {
-      prog = Double.NaN;
-    } else {
-      prog = calculateProgress();
-    }
-
-    this.progress = prog;
-
   }
 
   /**
@@ -50,16 +39,17 @@ public class TextPosition {
    * @return relative position in the Document, or NaN if length of Document is zero
    */
   private double calculateProgress() {
-    double docLength = chapter.document.getMetrics().getCharacterCount();
-    double prog = 0.0;
-
-    if (docLength > 0) {
-      prog = (offset / docLength);
-    } else {
-      prog = Double.NaN;
+    if (chapter == null) {
+      return Double.NaN;
     }
-
-    return prog;
+    
+    double docLength = chapter.document.getMetrics().getCharacterCount();
+    
+    if (docLength == 0) {
+      return Double.NaN;
+    }
+    
+    return offset / docLength;
   }
 
   /**
@@ -81,6 +71,10 @@ public class TextPosition {
    * NaN if Chapter is null or length of Document is 0
    */
   public double getProgress() {
+    if (progress == null){
+      progress = calculateProgress();
+    }
+    
     return progress;
   }
 
