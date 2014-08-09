@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,8 +16,11 @@ public class Document {
   @Id
   private String id;
   
+  @Embedded
   private DocumentMetadata metadata;
+  @Embedded
   private DocumentMetrics metrics;
+  @Embedded
   private DocumentContent content;
 
   /**
