@@ -4,6 +4,7 @@
   var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
 
   angular.module('vitaControllers', []);
+  angular.module('vitaServices', ['ngResource']);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
