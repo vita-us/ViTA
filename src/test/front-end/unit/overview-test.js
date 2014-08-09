@@ -38,7 +38,6 @@ describe('OverviewCtrl', function() {
   });
 
   beforeEach(module('vita'));
-  beforeEach(module('vitaServices'));
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
     $httpBackend = _$httpBackend_;
