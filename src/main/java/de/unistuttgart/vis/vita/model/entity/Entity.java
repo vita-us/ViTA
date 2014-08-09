@@ -1,24 +1,44 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.OneToMany;
+
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,
  * ranking value, occurrences, fingerprint and relations to other entities.
  */
-public class Entity {
+@javax.persistence.Entity
+@Inheritance
+@DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
+public abstract class Entity {
 
+  // constants
   private static final int MIN_RANK_VALUE = 1;
+
+  @GeneratedValue
+  @Id
   private int id;
-  private EntityType type;
+
   private String displayName;
-  private Set<Attribute> attributes;
-  private int rankingValue;
-  private Set<TextSpan> occurrences;
   private boolean[] fingerprint;
+  private int rankingValue;
+
+  @OneToMany
+  private Set<Attribute> attributes;
+
+  @OneToMany
+  private Set<TextSpan> occurrences;
+
+  @OneToMany
   private Set<EntityRelation<Entity>> entityRelations;
 
   /**
@@ -54,14 +74,8 @@ public class Entity {
   /**
    * @return the type of the entity
    */
-  public EntityType getType() {
-    return type;
-  }
-
-  public void setType(EntityType newType) {
-    this.type = newType;
-  }
-
+  public abstract EntityType getType();
+  
   /**
    * @return the name under which this entity will be shown
    */
@@ -109,7 +123,7 @@ public class Entity {
   public void setRankingValue(int newRankingValue) {
     if (newRankingValue < MIN_RANK_VALUE) {
       throw new IllegalArgumentException("the ranking value must be " + MIN_RANK_VALUE
-                                         + " or greater!");
+          + " or greater!");
     }
     this.rankingValue = newRankingValue;
   }
