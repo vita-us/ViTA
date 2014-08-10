@@ -50,7 +50,7 @@ public class AnalysisController {
    * cores the CPU has and optimize it for multi-threading.
    * 
    * @param filepath The path to the document.
-   * @return The name of the document
+   * @return The document id.
    */
   public String scheduleDocumentAnalysis(Path filepath) {
     return null;
