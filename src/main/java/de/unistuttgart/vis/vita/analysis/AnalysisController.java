@@ -99,4 +99,8 @@ public class AnalysisController {
   public void cancelAnalysis(String documentID) {
 
   }
+
+  public void restartAnalysis(String documentId) {
+
+  }
 }
