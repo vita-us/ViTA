@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model;
+package de.unistuttgart.vis.vita.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentContent;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;

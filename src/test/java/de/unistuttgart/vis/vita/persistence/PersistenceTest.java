@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model;
+package de.unistuttgart.vis.vita.persistence;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 public class PersistenceTest {

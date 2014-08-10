@@ -5,6 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import de.unistuttgart.vis.vita.model.progress.FeatureProgressTest;
+import de.unistuttgart.vis.vita.persistence.DocumentPersistenceTest;
+import de.unistuttgart.vis.vita.persistence.PersistenceTest;
 
 /**
  * Test suite which runs all tests related to model classes.
