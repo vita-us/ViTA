@@ -57,10 +57,11 @@ public class AnalysisController {
 
   /**
    * Generates a list with module objects.
+   * 
    * @return List with modules.
    * @throws IllegalStateException If any object creation fails.
    */
-  private List<Module<?>> getModuleInstances() throws IllegalStateException{
+  private List<Module<?>> getModuleInstances() throws IllegalStateException {
     List<Module<?>> moduleList = new ArrayList<>();
     List<Class<? extends Module<?>>> moduleClassList = moduleRegistry.getModules();
 
@@ -88,7 +89,13 @@ public class AnalysisController {
    * @param filepath The path to the document. TODO do we need this method?
    */
   public void startAnalysis(Path filepath) {
+    int processors = Runtime.getRuntime().availableProcessors();
 
+    for (int i = 0; i < processors; i++) {
+      // TODO each thread takes out a module and executes it
+      Thread theThread = new Thread();
+      theThread.start();
+    }
   }
 
   /**
@@ -100,6 +107,10 @@ public class AnalysisController {
 
   }
 
+  /**
+   * 
+   * @param documentId
+   */
   public void restartAnalysis(String documentId) {
 
   }
