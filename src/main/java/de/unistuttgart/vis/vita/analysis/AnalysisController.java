@@ -18,7 +18,6 @@ public class AnalysisController {
 
   private Model model;
   private ModuleRegistry moduleRegistry;
-  private List<Module<?>> moduleList;
 
 
 
@@ -54,6 +53,33 @@ public class AnalysisController {
    */
   public String scheduleDocumentAnalysis(Path filepath) {
     return null;
+  }
+
+  /**
+   * Generates a list with module objects.
+   * @return List with modules.
+   * @throws IllegalStateException If any object creation fails.
+   */
+  private List<Module<?>> getModuleInstances() throws IllegalStateException{
+    List<Module<?>> moduleList = new ArrayList<>();
+    List<Class<? extends Module<?>>> moduleClassList = moduleRegistry.getModules();
+
+    for (Class<?> currentClass : moduleClassList) {
+      Constructor<?> moduleConstructor = null;
+      Object theModule = null;
+
+      try {
+        moduleConstructor = currentClass.getConstructor();
+        theModule = moduleConstructor.newInstance();
+      } catch (NoSuchMethodException | SecurityException | InstantiationException
+          | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        throw new IllegalStateException("Not successful creation.");
+      }
+
+      moduleList.add((Module<?>) theModule);
+    }
+
+    return moduleList;
   }
 
   /**
