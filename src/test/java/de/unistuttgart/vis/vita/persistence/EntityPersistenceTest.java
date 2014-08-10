@@ -13,7 +13,7 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
-public class PersistenceTest {
+public class EntityPersistenceTest {
   @Test
   public void test() {
     Model model = new Model();
