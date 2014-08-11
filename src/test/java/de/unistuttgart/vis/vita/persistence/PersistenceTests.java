@@ -5,8 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ChapterPersistenceTest.class, DocumentPersistenceTest.class,
-    DocumentPartPersistenceTest.class, EntityPersistenceTest.class})
+@SuiteClasses({AttributePersistenceTest.class, ChapterPersistenceTest.class,
+    DocumentPersistenceTest.class, DocumentPartPersistenceTest.class, EntityPersistenceTest.class})
 public class PersistenceTests {
 
 }
