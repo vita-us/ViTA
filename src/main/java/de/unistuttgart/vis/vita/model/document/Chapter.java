@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,6 +27,13 @@ public class Chapter {
   
   @ManyToOne
   protected Document document;
+  
+  /**
+   * Creates a new Chapter, setting all fields to default values.
+   */
+  public Chapter() {
+    this.document = new Document();
+  }
 
   /**
    * Creates a new Chapter which belongs to the given Document.
