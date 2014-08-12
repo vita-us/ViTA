@@ -60,7 +60,7 @@ public class AnalysisController {
    * @param filepath The path to the document.
    * @return The document id.
    */
-  public String scheduleDocumentAnalysis(Path filepath) {
+  public String scheduleDocumentAnalysis(File document) {
     return null;
   }
 
@@ -126,5 +126,13 @@ public class AnalysisController {
    */
   public void restartAnalysis(String documentId) {
 
+  }
+  
+  public int documentsInQueue() {
+    return analysisQueue.size();
+  }
+
+  public Boolean isWorking() {
+    return analyseRunning;
   }
 }
