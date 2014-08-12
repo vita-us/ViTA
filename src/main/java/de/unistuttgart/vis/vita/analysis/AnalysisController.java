@@ -90,14 +90,18 @@ public class AnalysisController {
   /**
    * Starts the analyze for the document.
    * 
-   * @param filepath The path to the document. TODO do we need this method?
    */
-  public void startAnalysis(Path filepath) {
+  public void startAnalysis() {
+    if (analyseRunning) {
+      return;
+    }
+
+    analyseRunning = true;
     int processors = Runtime.getRuntime().availableProcessors();
 
     for (int i = 0; i < processors; i++) {
       // TODO each thread takes out a module and executes it
-      Thread theThread = new Thread();
+      Thread theThread = new ModuleExecutionThread();
       theThread.start();
     }
   }
