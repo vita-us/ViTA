@@ -3,10 +3,16 @@ package de.unistuttgart.vis.vita.analysis;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * The AnalysisController resolves the dependencies of every module. It also provides a optimized
@@ -20,8 +26,7 @@ public class AnalysisController {
   private ModuleRegistry moduleRegistry;
   private ModuleResultProvider moduleResultProvider;
   private boolean analyseRunning;
-
-
+  private Queue<Document> analysisQueue = new PriorityQueue<>();
 
   /**
    * New instance of the controller with given model. It will be created a new empty module
