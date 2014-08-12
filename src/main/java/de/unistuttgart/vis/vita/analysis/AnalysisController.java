@@ -18,6 +18,8 @@ public class AnalysisController {
 
   private Model model;
   private ModuleRegistry moduleRegistry;
+  private ModuleResultProvider moduleResultProvider;
+  private boolean analyseRunning;
 
 
 
@@ -29,7 +31,8 @@ public class AnalysisController {
    */
   public AnalysisController(Model model) {
     this.model = model;
-    this.moduleRegistry = ModuleRegistry.getDefaultRegistry();
+    moduleRegistry = ModuleRegistry.getDefaultRegistry();
+    moduleResultProvider = new ModuleResultProvider();
   }
 
   /**
@@ -41,6 +44,7 @@ public class AnalysisController {
   public AnalysisController(Model model, ModuleRegistry moduleRegistry) {
     this.model = model;
     this.moduleRegistry = moduleRegistry;
+    moduleResultProvider = new ModuleResultProvider();
   }
 
   /**
