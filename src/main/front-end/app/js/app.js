@@ -3,6 +3,9 @@
 
   var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
 
+  angular.module('vitaControllers', []);
+  angular.module('vitaServices', ['ngResource']);
+
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
       templateUrl: 'partials/documents.html',
@@ -18,7 +21,7 @@
       controller: ''
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
-      controller: ''
+      controller: 'OverviewCtrl'
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
     }).otherwise({
