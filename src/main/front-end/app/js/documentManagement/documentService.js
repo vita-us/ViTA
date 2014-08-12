@@ -8,7 +8,7 @@
     return $resource('test_data/:documentId.json', {}, {
       // method for retrieving a single document
       query: {
-        method: 'GET',
+        method: 'GET'
       },
       // Custom method for retrieving all documents
       getAll: {
