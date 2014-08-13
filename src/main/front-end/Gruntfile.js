@@ -129,13 +129,20 @@ module.exports = function(grunt) {
       }
     },
     protractor: {
-      development: {
+      options: {
+        configFile: '<%= mvnSrcDirectory %>test/front-end/protractor.conf.js'
+      },
+      firefox: {
         options: {
-          configFile: '<%= mvnSrcDirectory %>test/front-end/protractor.conf.js',
           args: {
-            capabilities: {
-              'phantomjs.binary.path': 'node_modules/.bin/phantomjs'
-            }
+            browser: 'firefox'
+          }
+        }
+      },
+      chrome: {
+        options: {
+          args: {
+            browser: 'chrome'
           }
         }
       }
@@ -170,7 +177,9 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
   grunt.registerTask('test', ['test:unit']);
-  grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor:development']);
+  grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor']);
+  grunt.registerTask('test:gui:chrome', ['build', 'connect:testserver', 'protractor:chrome']);
+  grunt.registerTask('test:gui:firefox', ['build', 'connect:testserver', 'protractor:firefox']);
   grunt.registerTask('test:unit', ['karma:dev']);
   grunt.registerTask('webserver', ['build', 'connect:devserver', 'watch']);
 };
