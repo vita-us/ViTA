@@ -15,10 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentContent;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 /**
  * Checks whether a Document can be persisted.
@@ -39,6 +41,10 @@ public class DocumentPersistenceTest {
       "The Lord of the Rings - The Fellowship of the Ring";
   private static final String TEST_DOCUMENT_TITLE_2 = 
       "The Lord of the Rings - The Two Towers";
+  private static final String TEST_PART_TITLE = "Part I";
+  private static final int TEST_PART_NUMBER = 1;
+  private static final String TEST_CHAPTER_TITLE = "A long-expected party";
+  private static final int TEST_CHAPTER_NUMBER = 1;
 
   // attributes
   private EntityManager em;
@@ -76,6 +82,56 @@ public class DocumentPersistenceTest {
     assertEquals(1, docs.size());
     Document savedDocument = docs.get(0);
     assertNotNull(savedDocument);
+
+    checkData(savedDocument);
+  }
+
+  /**
+   * Tests whether one document and its content can be persisted.
+   */
+  @Test
+  public void testPersistOneDocumentWithContent() {
+    // create and set up a new test document
+    Document doc = createTestDocument(TEST_DOCUMENT_TITLE_1);
+
+    // add some parts and chapters
+    DocumentPart part1 = new DocumentPart();
+    part1.setTitle(TEST_PART_TITLE);
+    part1.setNumber(TEST_PART_NUMBER);
+    doc.getContent().getParts().add(part1);
+    
+    Chapter chapter1 = new Chapter(doc);
+    chapter1.setTitle(TEST_CHAPTER_TITLE);
+    chapter1.setNumber(TEST_CHAPTER_NUMBER);
+    part1.getChapters().add(chapter1);
+
+    // persist test document and its content
+    em.persist(doc);
+    em.persist(part1);
+    em.persist(chapter1);
+    em.getTransaction().commit();
+    em.close();
+
+    // read document from database
+    List<Document> docs = readFromDb();
+
+    // check if all data is correct
+    assertEquals(1, docs.size());
+    Document savedDocument = docs.get(0);
+    assertNotNull(savedDocument);
+
+    
+    DocumentContent savedContent = savedDocument.getContent();
+    assertNotNull(savedContent);
+    assertEquals(1, savedContent.getParts().size());
+    DocumentPart savedPart = savedContent.getParts().get(0);
+    assertEquals(TEST_PART_NUMBER, savedPart.getNumber());
+    assertEquals(TEST_PART_TITLE, savedPart.getTitle());
+    assertEquals(1, savedPart.getChapters().size());
+    
+    Chapter savedChapter = savedPart.getChapters().get(0);
+    assertEquals(TEST_CHAPTER_NUMBER, savedChapter.getNumber());
+    assertEquals(TEST_CHAPTER_TITLE, savedChapter.getTitle());
 
     checkData(savedDocument);
   }
@@ -130,7 +186,7 @@ public class DocumentPersistenceTest {
     testDoc.setContent(content);
     testDoc.setMetadata(metaData);
     testDoc.setMetrics(metrics);
-
+    
     return testDoc;
   }
 
