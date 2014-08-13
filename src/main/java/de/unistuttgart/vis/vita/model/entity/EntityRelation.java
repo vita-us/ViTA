@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Target;
-import org.hibernate.annotations.Type;
 
 /**
  * Represents a Relation between two Entities.

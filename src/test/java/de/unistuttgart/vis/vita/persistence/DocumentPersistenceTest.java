@@ -7,14 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentContent;
@@ -25,9 +21,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * Checks whether a Document can be persisted.
  */
-public class DocumentPersistenceTest {
-
-  // test data
+public class DocumentPersistenceTest extends AbstractPersistenceTest {
   private static final String TEST_DOCUMENT_AUTHOR = "J. R. R. Tolkien";
   private static final int TEST_DOCUMENT_CHAPTER_COUNT = 22;
   private static final int TEST_DOCUMENT_CHARACTER_COUNT = 83920212;
@@ -46,22 +40,6 @@ public class DocumentPersistenceTest {
   private static final String TEST_CHAPTER_TITLE = "A long-expected party";
   private static final int TEST_CHAPTER_NUMBER = 1;
 
-  // attributes
-  private EntityManager em;
-  private Model model;
-
-  /**
-   * Creates model and EntityManager and starts first transaction.
-   * 
-   * @throws Exception
-   */
-  @Before
-  public void setUp() {
-    model = new Model();
-    em = model.getEntityManager();
-    em.getTransaction().begin();
-  }
-
   /**
    * Tests whether one document can be persisted.
    */
@@ -72,8 +50,7 @@ public class DocumentPersistenceTest {
 
     // persist test document
     em.persist(doc);
-    em.getTransaction().commit();
-    em.close();
+    startNewTransaction();
 
     // read document from database
     List<Document> docs = readFromDb();
@@ -109,8 +86,7 @@ public class DocumentPersistenceTest {
     em.persist(doc);
     em.persist(part1);
     em.persist(chapter1);
-    em.getTransaction().commit();
-    em.close();
+    startNewTransaction();
 
     // read document from database
     List<Document> docs = readFromDb();
@@ -196,11 +172,7 @@ public class DocumentPersistenceTest {
    * @return list of Documents
    */
   private List<Document> readFromDb() {
-    em = model.getEntityManager();
-    em.getTransaction().begin();
-    List<Document> docs = em.createQuery("from Document", Document.class).getResultList();
-    em.getTransaction().commit();
-    return docs;
+    return em.createQuery("from Document", Document.class).getResultList();
   }
   
   /**
@@ -213,8 +185,7 @@ public class DocumentPersistenceTest {
     
     em.persist(d1);
     em.persist(d2);
-    em.getTransaction().commit();
-    em.close();
+    startNewTransaction();
     
     // read document from database
     List<Document> docs = readFromDb();
@@ -231,14 +202,10 @@ public class DocumentPersistenceTest {
     Document doc = createTestDocument(TEST_DOCUMENT_TITLE_1);
 
     em.persist(doc);
-    em.getTransaction().commit();
-    em.close();
+    startNewTransaction();
 
-    em = model.getEntityManager();
-    em.getTransaction().begin();
     TypedQuery<Document> allQ = em.createNamedQuery("Document.findAllDocuments", Document.class);
     List<Document> allResults = allQ.getResultList();
-    em.getTransaction().commit();
 
     // check whether data is correct
     assertTrue(allResults.size() > 0);
@@ -247,29 +214,15 @@ public class DocumentPersistenceTest {
 
     String id = readDocument.getId();
 
-    em.getTransaction().begin();
     TypedQuery<Document> idQ = em.createNamedQuery("Document.findDocumentById", Document.class);
     idQ.setParameter("documentId", id);
     Document idResult = idQ.getSingleResult();
-    em.getTransaction().commit();
 
     checkData(idResult);
-
-    em.getTransaction().begin();
     TypedQuery<Document> titleQ = em.createNamedQuery("Document.findDocumentByTitle", Document.class);
     titleQ.setParameter("documentTitle", TEST_DOCUMENT_TITLE_1);
     Document titleResult = titleQ.getSingleResult();
-    em.getTransaction().commit();
     
     checkData(titleResult);
   }
-
-  /**
-   * Closes the EntityManager.
-   */
-  @After
-  public void tearDown() {
-    em.close();
-  }
-
 }

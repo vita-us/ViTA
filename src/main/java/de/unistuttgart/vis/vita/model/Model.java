@@ -12,9 +12,27 @@ public class Model {
   private EntityManagerFactory entityManagerFactory;
   
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
+  private static final String UNITTEST_PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita.unittest";
 
-  public Model() {  
-	  entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+  /**
+   * Create a Model to be used in unit tests
+   * <p>
+   * The database will be automatically dropped and recreated for each call.
+   * @return the model
+   */
+  public static Model createUnitTestModel() {
+    return new Model(UNITTEST_PERSISTENCE_UNIT_NAME);
+  }
+  
+  /**
+   * Create a default Model instance
+   */
+  public Model() {
+    this(PERSISTENCE_UNIT_NAME);
+  }
+  
+  private Model(String persistenceUnitName) {  
+	  entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
   }
   
   /**
