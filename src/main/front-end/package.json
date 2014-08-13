@@ -13,7 +13,7 @@
     "grunt-contrib-less": "~0.11.4",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-karma": "~0.8.3",
-    "grunt-protractor-runner": "^1.1.0",
+    "grunt-protractor-runner": "git://github.com/teerapap/grunt-protractor-runner#462020dc1cbe22ba4aaa6b045548d5dbc244b46c",
     "karma": "~0.12.19",
     "karma-coverage": "~0.2.5",
     "karma-jasmine": "~0.1.5",
@@ -22,7 +22,7 @@
     "phantomjs": "^1.9.7-15"
   },
   "scripts": {
-    "postinstall": "bower install && webdriver-manager update",
-    "postupdate": "bower install && webdriver-manager update"
+    "postinstall": "bower install",
+    "postupdate": "bower install"
   }
 }
