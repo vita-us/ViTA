@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 /**
@@ -11,6 +13,21 @@ import javax.persistence.OneToOne;
  * the Document.
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "Chapter.findAllChapters",
+      query = "SELECT chapter "
+      + "FROM Chapter chapter"),
+      
+  @NamedQuery(name = "Chapter.findChapterById",
+      query = "SELECT chapter "
+      + "FROM Chapter chapter "
+      + "WHERE chapter.id = :chapterId"),
+  
+  @NamedQuery(name = "Chapter.findChapterByTitle",
+      query = "SELECT chapter "
+      + "FROM Chapter chapter "
+      + "WHERE chapter.title = :chapterTitle")
+})
 public class Chapter {
 
   // attributes
