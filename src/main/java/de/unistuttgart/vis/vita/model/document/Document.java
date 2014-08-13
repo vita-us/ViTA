@@ -4,18 +4,35 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
  * content of this eBook.
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "Document.findAllDocuments", 
+    query = "SELECT document "
+        + "FROM Document document"),
+        
+  @NamedQuery(name = "Document.findDocumentById", 
+    query = "SELECT document "
+      + "FROM Document document "
+      + "WHERE document.id = :documentId"),
+      
+  @NamedQuery(name = "Document.findDocumentByTitle",
+    query = "SELECT document "
+      + "FROM Document document "
+      + "WHERE document.metadata.title = :documentTitle")
+})
 public class Document {
 
   @GeneratedValue
   @Id
   private String id;
-  
+
   @Embedded
   private DocumentMetadata metadata;
   @Embedded
