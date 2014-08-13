@@ -39,7 +39,8 @@ module.exports = function(grunt) {
           livereload: true,
           open: "http://localhost:8080/index.html"
         }
-      }
+      },
+      testserver: {}
     },
     copy: {
       dependencies: {
@@ -127,6 +128,18 @@ module.exports = function(grunt) {
         }
       }
     },
+    protractor: {
+      development: {
+        options: {
+          configFile: '<%= mvnSrcDirectory %>test/front-end/protractor.conf.js',
+          args: {
+            capabilities: {
+              'phantomjs.binary.path': 'node_modules/.bin/phantomjs'
+            }
+          }
+        }
+      }
+    },
     watch: {
       options: {
         livereload: true
@@ -152,9 +165,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('test', ['karma:dev']);
+  grunt.registerTask('test', ['test:unit']);
+  grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor:development']);
+  grunt.registerTask('test:unit', ['karma:dev']);
   grunt.registerTask('webserver', ['build', 'connect:devserver', 'watch']);
 };

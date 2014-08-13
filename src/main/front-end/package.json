@@ -13,13 +13,15 @@
     "grunt-contrib-less": "~0.11.4",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-karma": "~0.8.3",
+    "grunt-protractor-runner": "^1.1.0",
     "karma": "~0.12.19",
     "karma-coverage": "~0.2.5",
     "karma-jasmine": "~0.1.5",
     "karma-junit-reporter": "~0.2.2",
-    "karma-phantomjs-launcher": "~0.1.4"
+    "karma-phantomjs-launcher": "~0.1.4",
+    "phantomjs": "^1.9.7-15"
   },
   "scripts": {
-    "postinstall": "bower install"
+    "postinstall": "bower install && webdriver-manager update"
   }
 }
