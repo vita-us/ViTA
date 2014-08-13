@@ -9,34 +9,52 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 /**
- * Represents a part of a Document including number, title and chapters of this DocumentPart.
+ * Represents a group of chapters, usually called "part" or "book" in a document.
  */
 @Entity
 public class DocumentPart {
   @Id
   @GeneratedValue
   private String id;
-  
+
   private int number;
   private String title;
-  
+
   @OneToMany
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
-   * @return the number of this part of the Document
+   * Gets an identifier that is unique in the database
+   */
+  public String getId() {
+    return id;
+  }
+
+  /**
+   * Sets an identifier that is unique in the database
+   *
+   * @param newId the id
+   */
+  public void setId(String newId) {
+    this.id = newId;
+  }
+
+  /**
+   * Gets the readable number of this part in the context of the document
+   * 
+   * @return the number, starting from 1
    */
   public int getNumber() {
     return number;
   }
 
   /**
-   * Sets the part number.
+   * Sets the readable number of this part in the context of the document
    *
-   * @param number - the number of this part of the Document
+   * @param the number, starting from 1
    */
-  public void setNumber(int number) {
-    this.number = number;
+  public void setNumber(int newNumber) {
+    this.number = newNumber;
   }
 
   /**

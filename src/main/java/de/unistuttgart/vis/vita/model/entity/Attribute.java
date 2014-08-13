@@ -33,17 +33,16 @@ public class Attribute {
   }
 
   /**
-   * Creates a new Attribute with given id, type and content.
+   * Creates a new Attribute with given type and content.
    *
    * @param pId      - the id for the new attribute
    * @param pType    - the type of the new attribute, for example 'Name'
    * @param pContent - the content of the new attribute, for example 'Bilbo Baggins'
    */
-  public Attribute(int pId, AttributeType pType, String pContent) {
-    this.id = pId;
+  public Attribute(AttributeType pType, String pContent) {
+    this();
     this.type = pType;
     this.content = pContent;
-    occurrences = new TreeSet<>();
   }
 
   /**

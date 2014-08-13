@@ -8,9 +8,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
+import de.unistuttgart.vis.vita.model.TextRepository;
+
 /**
- * Represents a chapter in a Document, including its id, number, title, text, length and range in
- * the Document.
+ * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @NamedQueries({
@@ -78,16 +79,18 @@ public class Chapter {
   }
 
   /**
-   * @return the number of this Chapter in the Document
+   * Gets the readable number of this chapter in the context of the document part it belongs to
+   * 
+   * @return the number, starting from 1
    */
   public int getNumber() {
     return number;
   }
 
   /**
-   * Sets the chapter number.
+   * Sets the readable number of this chapter in the context of the document part it belongs to
    *
-   * @param newNumber - the number of this Chapter in the Document
+   * @param the number, starting from 1
    */
   public void setNumber(int newNumber) {
     this.number = newNumber;
@@ -110,7 +113,7 @@ public class Chapter {
   }
 
   /**
-   * @return the text of the chapter
+   * @return the text of the chapter, or {@code null} if it is not yet populated
    */
   public String getText() {
     return text;
@@ -118,6 +121,8 @@ public class Chapter {
 
   /**
    * Sets the text of the Chapter.
+   * 
+   * This property will not be persisted with JPA. It should be stored with {@link TextRepository} instead.
    *
    * @param text - the text content of this Chapter
    */

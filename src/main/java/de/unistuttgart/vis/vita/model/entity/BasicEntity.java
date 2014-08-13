@@ -6,7 +6,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * The information about an entity that can be collected in the first pass
- * 
+ * <p>
  * This class can not be persisted and should be converted to Entity for that.
  */
 public class BasicEntity {

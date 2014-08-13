@@ -15,7 +15,7 @@ public class DocumentMetadata {
   private String title;
   private String author;
   private String publisher;
-  private Date publishYear;
+  private int publishYear;
   private String genre;
   private String edition;
   
@@ -87,7 +87,7 @@ public class DocumentMetadata {
   /**
    * @return year when the Document was published
    */
-  public Date getPublishYear() {
+  public int getPublishYear() {
     return publishYear;
   }
   
@@ -96,7 +96,7 @@ public class DocumentMetadata {
    * 
    * @param newPublishYear - the year when the document was published
    */
-  public void setPublishYear(Date newPublishYear) {
+  public void setPublishYear(int newPublishYear) {
     this.publishYear = newPublishYear;
   }
   

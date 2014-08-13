@@ -75,7 +75,7 @@ public abstract class Entity {
    * @return the type of the entity
    */
   public abstract EntityType getType();
-  
+
   /**
    * @return the name under which this entity will be shown
    */
@@ -145,6 +145,9 @@ public abstract class Entity {
   }
 
   /**
+   * Gets a bit vector that divides the whole document in spans of equal lengths and determines
+   * whether this entity occurs in a given span (true) or not (false).
+   * 
    * @return the fingerprint vector
    */
   public boolean[] getFingerprint() {
@@ -152,7 +155,8 @@ public abstract class Entity {
   }
 
   /**
-   * Sets the fingerprint vector for this entity
+   * Sets a bit vector that divides the whole document in spans of equal lengths and determines
+   * whether this entity occurs in a given span (true) or not (false).
    *
    * @param newFingerprint - the new fingerprint vector for this entity
    */

@@ -6,7 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
- * Represents a text block with a specific start and end.
+ * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
+ * within the bounds.
  */
 @Entity
 public class TextSpan {
@@ -20,17 +21,17 @@ public class TextSpan {
 
   @Embedded
   private final TextPosition start;
-  
+
   @Embedded
   private final TextPosition end;
-  
+
   private final int length;
 
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.
    *
    * @param pStart - the TextPosition where the new TextSpan should begin
-   * @param pEnd   - the TextPosiotion where the new TextSpan should end
+   * @param pEnd - the TextPosiotion where the new TextSpan should end
    */
   public TextSpan(TextPosition pStart, TextPosition pEnd) {
     if (pStart == null || pEnd == null) {
@@ -62,7 +63,7 @@ public class TextSpan {
   }
 
   /**
-   * @return the length of the TextSpan
+   * @return the length of the TextSpan in characters
    */
   public int getLength() {
     return length;
