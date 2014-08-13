@@ -45,15 +45,8 @@ public class Document {
    */
   public Document() {
     this.metrics = new DocumentMetrics();
-  }
-
-  /**
-   * Creates a new empty document with the given id.
-   * 
-   * @param pId - the id for the new Document
-   */
-  public Document(String pId) {
-    this.id = pId;
+    this.content = new DocumentContent();
+    this.metadata = new DocumentMetadata();
   }
 
   /**
