@@ -14,14 +14,14 @@ import java.util.List;
  */
 public class MockModule implements Module<String> {
   
-  private List<Class<String>> dependencies = new ArrayList<>();
+  private List<Class<?>> dependencies = new ArrayList<>();
 
   public MockModule() {
     dependencies.add(String.class);
   }
   
   @Override
-  public Collection<Class<String>> getDependencies() {
+  public Collection<Class<?>> getDependencies() {
     return dependencies;
   }
 

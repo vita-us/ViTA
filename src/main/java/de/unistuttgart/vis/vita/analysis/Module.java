@@ -14,7 +14,7 @@ public interface Module<TResult> {
    * 
    * @return The collection of depended modules.
    */
-  public <T> Collection<Class<T>> getDependencies();
+  public Collection<Class<?>> getDependencies();
 
   /**
    * Observes the progress of the module. TODO not sure what this method is used for.
