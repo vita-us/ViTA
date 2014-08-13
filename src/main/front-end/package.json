@@ -22,6 +22,7 @@
     "phantomjs": "^1.9.7-15"
   },
   "scripts": {
-    "postinstall": "bower install && webdriver-manager update"
+    "postinstall": "bower install && webdriver-manager update",
+    "postupdate": "bower install && webdriver-manager update"
   }
 }
