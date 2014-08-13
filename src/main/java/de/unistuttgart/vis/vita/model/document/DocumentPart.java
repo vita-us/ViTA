@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ public class DocumentPart {
   private String title;
   
   @OneToMany
-  private List<Chapter> chapters;
+  private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
    * @return the number of this part of the Document
