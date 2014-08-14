@@ -1,7 +1,5 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import java.util.Date;
-
 import javax.persistence.Embeddable;
 
 /**

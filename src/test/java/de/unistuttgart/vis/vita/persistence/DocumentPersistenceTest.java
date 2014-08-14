@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -120,9 +119,7 @@ public class DocumentPersistenceTest extends AbstractPersistenceTest {
     assertEquals(TEST_DOCUMENT_GENRE, savedMetadata.getGenre());
     assertEquals(TEST_DOCUMENT_TITLE_1, savedMetadata.getTitle());
     assertEquals(TEST_DOCUMENT_PUBLISHER, savedMetadata.getPublisher());
-    Calendar savedPublishYear = Calendar.getInstance();
-    savedPublishYear.setTime(savedMetadata.getPublishYear());
-    assertEquals(TEST_DOCUMENT_PUPLICATION_YEAR, savedPublishYear.get(Calendar.YEAR));
+    assertEquals(TEST_DOCUMENT_PUPLICATION_YEAR, savedMetadata.getPublishYear());
 
     DocumentMetrics savedMetrics = documentToCheck.getMetrics();
     assertNotNull(savedMetrics);
@@ -146,10 +143,7 @@ public class DocumentPersistenceTest extends AbstractPersistenceTest {
     metaData.setEdition(TEST_DOCUMENT_EDITION);
     metaData.setGenre(TEST_DOCUMENT_GENRE);
     metaData.setPublisher(TEST_DOCUMENT_PUBLISHER);
-    Calendar publishYear = Calendar.getInstance();
-    publishYear.clear();
-    publishYear.set(TEST_DOCUMENT_PUPLICATION_YEAR, Calendar.JANUARY, 1);
-    metaData.setPublishYear(publishYear.getTime());
+    metaData.setPublishYear(TEST_DOCUMENT_PUPLICATION_YEAR);
 
     // create and set up metrics
     DocumentMetrics metrics = new DocumentMetrics();
