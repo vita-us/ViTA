@@ -16,18 +16,18 @@ import de.unistuttgart.vis.vita.model.TextRepository;
 @Entity
 @NamedQueries({
   @NamedQuery(name = "Chapter.findAllChapters",
-      query = "SELECT chapter "
-      + "FROM Chapter chapter"),
+      query = "SELECT c "
+      + "FROM Chapter c"),
       
   @NamedQuery(name = "Chapter.findChapterById",
-      query = "SELECT chapter "
-      + "FROM Chapter chapter "
-      + "WHERE chapter.id = :chapterId"),
+      query = "SELECT c "
+      + "FROM Chapter c "
+      + "WHERE c.id = :chapterId"),
   
   @NamedQuery(name = "Chapter.findChapterByTitle",
-      query = "SELECT chapter "
-      + "FROM Chapter chapter "
-      + "WHERE chapter.title = :chapterTitle")
+      query = "SELECT c "
+      + "FROM Chapter c "
+      + "WHERE c.title = :chapterTitle")
 })
 public class Chapter {
 

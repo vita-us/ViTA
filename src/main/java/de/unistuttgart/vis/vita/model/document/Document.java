@@ -14,18 +14,18 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries({
   @NamedQuery(name = "Document.findAllDocuments", 
-    query = "SELECT document "
-        + "FROM Document document"),
+    query = "SELECT d "
+        + "FROM Document d"),
         
   @NamedQuery(name = "Document.findDocumentById", 
-    query = "SELECT document "
-      + "FROM Document document "
-      + "WHERE document.id = :documentId"),
+    query = "SELECT d "
+      + "FROM Document d "
+      + "WHERE d.id = :documentId"),
       
   @NamedQuery(name = "Document.findDocumentByTitle",
-    query = "SELECT document "
-      + "FROM Document document "
-      + "WHERE document.metadata.title = :documentTitle")
+    query = "SELECT d "
+      + "FROM Document d "
+      + "WHERE d.metadata.title = :documentTitle")
 })
 public class Document {
 
