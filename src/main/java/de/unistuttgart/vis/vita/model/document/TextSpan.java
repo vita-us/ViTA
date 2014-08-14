@@ -17,15 +17,22 @@ public class TextSpan {
 
   @Id
   @GeneratedValue
-  public int id;
+  private int id;
 
   @Embedded
-  private final TextPosition start;
+  private TextPosition start;
 
   @Embedded
-  private final TextPosition end;
+  private TextPosition end;
 
-  private final int length;
+  private int length;
+  
+  /**
+   * Creates a new TextSpan.
+   */
+  public TextSpan() {
+    // zero-parameter constructor needed for JPA
+  }
 
   /**
    * Creates a new instance of TextSpan with the given start and end position in the text.

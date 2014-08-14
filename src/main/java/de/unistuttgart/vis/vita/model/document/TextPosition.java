@@ -17,6 +17,13 @@ public class TextPosition {
 
   @Transient
   private Double progress;
+  
+  /**
+   * Creates a new TextPosition setting all fields to default values.
+   */
+  public TextPosition() {
+    this.chapter = new Chapter();
+  }
 
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
