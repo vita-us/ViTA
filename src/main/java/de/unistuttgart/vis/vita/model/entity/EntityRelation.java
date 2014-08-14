@@ -24,8 +24,8 @@ public class EntityRelation<E> {
   private int id;
   private double weight;
   
+  @Target(Entity.class) // only Entity relations will be persisted
   @ManyToOne
-  @Target(Entity.class) // only Entity relations will be peristed
   private E relatedEntity;
 
   /**
