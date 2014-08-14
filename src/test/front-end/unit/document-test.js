@@ -38,7 +38,7 @@ describe('DocumentsCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('test_data/documents.json').respond(documentsData());
+    $httpBackend.expectGET('webapi/documents').respond(documentsData());
     scope = $rootScope.$new();
     ctrl = $controller('DocumentsCtrl', {
       $scope: scope

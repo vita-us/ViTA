@@ -39,9 +39,10 @@ describe('OverviewCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('test_data/single-document.json').respond(documentData());
+    $httpBackend.expectGET('webapi/documents/123').respond(documentData());
+    $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('OverviewCtrl', {
       $scope: scope
