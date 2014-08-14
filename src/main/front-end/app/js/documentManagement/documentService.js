@@ -5,7 +5,7 @@
 
   // Service that is responsible for dealing with documents
   vitaServices.factory('Document', ['$resource', function($resource) {
-    return $resource('test_data/:documentId.json', {}, {
+    return $resource('webapi/documents/:documentId', {}, {
       // method for retrieving a single document
       query: {
         method: 'GET'
@@ -14,7 +14,7 @@
       getAll: {
         method: 'GET',
         params: {
-          documentId: 'documents'
+          documentId: ''
         }
       }
     });
