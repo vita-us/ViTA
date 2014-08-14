@@ -8,20 +8,13 @@
     return $resource('test_data/:documentId/persons/', {}, {
       // method for retrieving a single profile
       get: {
-        method: 'GET',
-        params: {
-          documentId: 'documents',
-          personId: '1'
-        }
+        method: 'GET'
       },
       
       // Custom method for retrieving all profiles
       query: {
         method: 'GET',
-        params: {
-          documentId: 'documents',
-          offset: '1'
-        }
+        isArray: true
       }
     });
   }]);
