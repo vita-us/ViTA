@@ -92,6 +92,30 @@ public class AnalysisController {
     return null;
   }
 
+  public synchronized void continueAnalysis(Class<? extends Class> aClass) {
+    /* Remove the executed class from the dependencies. */
+    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> j : map2
+        .entrySet()) {
+      Collection<?> bla = j.getValue();
+      bla.remove(aClass);
+    }
+
+    /* Execute all possible modules. */
+    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> i : map2
+        .entrySet()) {
+      if (i.getValue().isEmpty()) {
+        map2.remove(i.getKey());
+        Class<? extends Module> executeModule = i.getKey();
+
+        new ModuleExecutionThread(this, executeModule).start();
+      }
+    }
+
+    if(map2.isEmpty()) {
+      // TODO analyse is finished
+    }
+  }
+
   private void addModule(Module mainAnalysisModule) {
     map1.put(moduleResultProvider.getResultClassFor(mainAnalysisModule),
              mainAnalysisModule.getClass());
@@ -184,5 +208,9 @@ public class AnalysisController {
 
   public Boolean isWorking() {
     return analyseRunning;
+  }
+
+  public ModuleResultProvider getResultProvider() {
+    return moduleResultProvider;
   }
 }
