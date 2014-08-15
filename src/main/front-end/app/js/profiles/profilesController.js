@@ -11,10 +11,12 @@
 
     $scope.documentId = 'doc13a';
     $scope.personId = 'person10Bert';
+    $scope.personOffset = '1';
 
     $scope.profiles = Profile.query(
       {
-        documentId: $scope.documentId
+        documentId: $scope.documentId,
+        offset: $scope.personOffset
       });
 
     $scope.profile = Profile.get(
