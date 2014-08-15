@@ -30,8 +30,8 @@ public class AnalysisController {
   private ModuleResultProvider moduleResultProvider;
   private boolean analyseRunning;
   private Queue<Document> analysisQueue = new PriorityQueue<>();
-  private Map<Class<?>, Class<? extends Module>> map1;
-  private Map<Class<? extends Module>, Collection<Class<? extends Module>>> map2;
+  private Map<Class<?>, Class<? extends Module>> resultToClassMapping;
+  private Map<Class<? extends Module>, Collection<Class<? extends Module>>> dependencyMapping;
 
   /**
    * New instance of the controller with given model. It will be created a new empty module
@@ -68,63 +68,63 @@ public class AnalysisController {
   public String scheduleDocumentAnalysis(Path filePath) {
     // TODO register document in the queue
 
-    map1 = new HashMap<>();
-    map2 = new HashMap<>();
+    resultToClassMapping = new HashMap<>();
+    dependencyMapping = new HashMap<>();
 
-    map1.put(ImportResult.class, ImportModule.class);
+    resultToClassMapping.put(ImportResult.class, ImportModule.class);
     List<Class<? extends Module>> emptyList = new ArrayList<>();
-    map2.put(ImportModule.class, emptyList);
+    dependencyMapping.put(ImportModule.class, emptyList);
 
     // Loads all module recursivly.
     addModule(new MainAnalysisModule());
 
     /* Execute all possible modules. */
-    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> i : map2
+    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> currentClass : dependencyMapping
         .entrySet()) {
-      if (i.getValue().isEmpty()) {
-        map2.remove(i.getKey());
-        Class<? extends Module> executeModule = i.getKey();
+      if (currentClass.getValue().isEmpty()) {
+        dependencyMapping.remove(currentClass.getKey());
+        Class<? extends Module> executableModule = currentClass.getKey();
 
-        new ModuleExecutionThread(this, executeModule).start();
+        new ModuleExecutionThread(this, executableModule).start();
       }
     }
 
     return null;
   }
 
-  public synchronized void continueAnalysis(Class<? extends Class> aClass) {
+  public synchronized void continueAnalysis(Class<? extends Class> finishedClass) {
     /* Remove the executed class from the dependencies. */
-    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> j : map2
+    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> currentClass : dependencyMapping
         .entrySet()) {
-      Collection<?> bla = j.getValue();
-      bla.remove(aClass);
+      Collection<?> bla = currentClass.getValue();
+      bla.remove(finishedClass);
     }
 
     /* Execute all possible modules. */
-    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> i : map2
+    for (Map.Entry<Class<? extends Module>, Collection<Class<? extends Module>>> currentClass : dependencyMapping
         .entrySet()) {
-      if (i.getValue().isEmpty()) {
-        map2.remove(i.getKey());
-        Class<? extends Module> executeModule = i.getKey();
+      if (currentClass.getValue().isEmpty()) {
+        dependencyMapping.remove(currentClass.getKey());
+        Class<? extends Module> executableModule = currentClass.getKey();
 
-        new ModuleExecutionThread(this, executeModule).start();
+        new ModuleExecutionThread(this, executableModule).start();
       }
     }
 
-    if(map2.isEmpty()) {
+    if(dependencyMapping.isEmpty()) {
       // TODO analyse is finished
     }
   }
 
   private void addModule(Module mainAnalysisModule) {
-    map1.put(moduleResultProvider.getResultClassFor(mainAnalysisModule),
-             mainAnalysisModule.getClass());
+    resultToClassMapping.put(moduleResultProvider.getResultClassFor(mainAnalysisModule),
+                             mainAnalysisModule.getClass());
     Collection<Class<? extends Module>> dependencies = mainAnalysisModule.getDependencies();
 
     for (Class<?> currentClass : dependencies) {
       Class<?> resultClass = moduleResultProvider.getResultClassFor(mainAnalysisModule);
 
-      if (!map1.containsKey(resultClass)) {
+      if (!resultToClassMapping.containsKey(resultClass)) {
         try {
           Module newModule = (Module) currentClass.getConstructor().newInstance();
           addModule(newModule);
@@ -135,7 +135,7 @@ public class AnalysisController {
 
     }
 
-    map2.put(mainAnalysisModule.getClass(), dependencies);
+    dependencyMapping.put(mainAnalysisModule.getClass(), dependencies);
   }
 
   /**

@@ -9,23 +9,23 @@ import java.lang.reflect.InvocationTargetException;
 public class ModuleExecutionThread extends Thread {
 
   private final AnalysisController analysisController;
-  private final Class<? extends Module> executeModule;
+  private final Class<? extends Module> executableModule;
 
   public ModuleExecutionThread(AnalysisController analysisController,
-                               Class<? extends Module> executeModule) {
+                               Class<? extends Module> executableModule) {
 
     this.analysisController = analysisController;
-    this.executeModule = executeModule;
+    this.executableModule = executableModule;
   }
 
   @Override
   public void run() {
     try {
-      Module test = executeModule.getConstructor().newInstance();
+      Module theModule = executableModule.getConstructor().newInstance();
       // TODO execution of the module.
-      Object result = test.execute(analysisController.getResultProvider(), new MockProgressListener());
-      analysisController.getResultProvider().registerResult(executeModule.getClass(), result);
-      analysisController.continueAnalysis(executeModule.getClass());
+      Object result = theModule.execute(analysisController.getResultProvider(), new MockProgressListener());
+      analysisController.getResultProvider().registerResult(executableModule.getClass(), result);
+      analysisController.continueAnalysis(executableModule.getClass());
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       e.printStackTrace();
     }
