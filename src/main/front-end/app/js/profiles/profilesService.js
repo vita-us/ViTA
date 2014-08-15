@@ -19,8 +19,7 @@
         method: 'GET',
         isArray: true,
         params: {
-          documentId: 'doc13a',
-          personId: ''
+          documentId: 'doc13a'
         }
       }
     });
