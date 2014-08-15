@@ -3,20 +3,26 @@
 
   var vitaServices = angular.module('vitaServices');
 
-  // Service that is responsible for dealing with profiles
-  vitaServices.factory('Profiles', ['$resource', function($resource) {
-    return $resource('test_data/:documentId/persons/', {}, {
-      // method for retrieving a single profile
+  // Service that is responsible for dealing with documents
+  vitaServices.factory('Profile', ['$resource', function($resource) {
+    return $resource('/documents/:documentId/persons/:personId', {}, {
+      // method for retrieving a specific profile
       get: {
-        method: 'GET'
+        method: 'GET',
+        params: {
+          documentId: 'doc13a',
+          personId: 'person10Bert'
+        }
       },
-      
-      // Custom method for retrieving all profiles
+      // method for retrieving all profiles
       query: {
         method: 'GET',
-        isArray: true
+        isArray: true,  
+        params: {
+          documentId: 'doc13a',
+          personId: ''
+        }
       }
     });
   }]);
-
 })(angular);
