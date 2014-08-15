@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class ModuleResultProvider {
   
-  private Map<Class<?>, ?> resultsModule;
+  private Map<Class<?>, Object> resultsModule;
   
   /**
    * New instance of the result provider.
@@ -20,12 +20,30 @@ public class ModuleResultProvider {
   }
 
   /**
+   * Adds a available result to the provider.
+   * @param theClass The class of the result.
+   * @param result The result.
+   */
+  public void registerResult(Class<?> theClass, Object result) {
+    if(theClass == null || result == null) {
+      return;
+    }
+
+    resultsModule.put(theClass, result);
+  }
+
+  /**
    * Return the result of the module class.
    * 
    * @param module The desired module class.
    * @return The result.
    */
-  private <T> T getResultFor(Class<T> module) {
+  public <T> T getResultFor(Class<T> module) {
     return (T) resultsModule.get(module);
+  }
+
+  public Class<Module<?>> getResultClassFor(Module<?> importModule) {
+
+    return null;
   }
 }
