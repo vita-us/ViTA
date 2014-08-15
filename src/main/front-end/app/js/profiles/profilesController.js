@@ -9,7 +9,18 @@
     Page.showMenu = false;
     Page.tab = 1;
 
-      $scope.profiles = Profile.query();
-      $scope.profile = Profile.get();
+    $scope.documentId = 'doc13a';
+    $scope.personId = 'person10Bert';
+
+    $scope.profiles = Profile.query(
+      {
+        documentId: $scope.documentId
+      });
+
+    $scope.profile = Profile.get(
+      {
+        documentId: $scope.documentId,
+        personId: $scope.personId
+      });
   }]);
 })(angular);

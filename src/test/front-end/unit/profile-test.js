@@ -18,7 +18,7 @@ describe('ProfilesCtrl', function() {
           "$resolved": true
         }
       ]
-    }
+    };
   };
 
   beforeEach(function() {
