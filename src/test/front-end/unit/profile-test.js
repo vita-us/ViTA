@@ -43,7 +43,7 @@ describe('ProfilesCtrl', function() {
     $httpBackend.expectGET('/documents/doc13a/persons').respond(profilesData().persons);
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
     $httpBackend.flush();
-    
+
     expect(JSON.stringify(scope.profiles)).toEqual(JSON.stringify(profilesData().persons));
     expect(JSON.stringify(scope.profile)).toEqual(JSON.stringify(profilesData().persons[1]));
   }));

@@ -9,7 +9,6 @@
     Page.showMenu = false;
     Page.tab = 1;
 
-    
       $scope.profiles = Profile.query();
       $scope.profile = Profile.get();
   }]);
