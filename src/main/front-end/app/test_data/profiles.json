@@ -1,0 +1,17 @@
+{
+  "totalCount": 2,
+  "persons": [
+    {
+      "id": "person8Hugo",
+      "displayName": "Hugo",
+      "type": "person",
+      "rankingValue": 3
+    },
+    {
+      "id": "person10Bert",
+      "displayName": "Bert",
+      "type": "person",
+      "rankingValue": 7
+    }
+  ]
+}
