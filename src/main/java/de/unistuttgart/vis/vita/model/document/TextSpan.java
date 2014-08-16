@@ -4,12 +4,24 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
  */
 @Entity
+@NamedQueries({
+  @NamedQuery(name = "TextSpan.findAllTextSpans",
+      query = "SELECT ts "
+      + "FROM TextSpan ts"),
+      
+  @NamedQuery(name = "TextSpan.findTextSpanById",
+      query = "SELECT ts "
+      + "FROM TextSpan ts "
+      + "WHERE ts.id = :textSpanId"),
+})
 public class TextSpan {
 
   // constants
@@ -53,6 +65,13 @@ public class TextSpan {
     this.start = pStart;
     this.end = pEnd;
     this.length = diff;
+  }
+  
+  /**
+   * @return the id of the TextSpan
+   */
+  public int getId() {
+    return id;
   }
 
   /**
