@@ -5,6 +5,8 @@ import java.util.TreeSet;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -14,6 +16,21 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  * and a set of occurrences in the document.
  */
 @javax.persistence.Entity
+@NamedQueries({
+  @NamedQuery(name = "Attribute.findAllAttributes",
+      query = "SELECT a "
+      + "FROM Attribute a"),
+      
+  @NamedQuery(name = "Attribute.findAttributeById",
+      query = "SELECT a "
+      + "FROM Attribute a "
+      + "WHERE a.id = :attributeId"),
+  
+  @NamedQuery(name = "Attribute.findAttributeByType",
+      query = "SELECT a "
+      + "FROM Attribute a "
+      + "WHERE a.type = :attributeType")
+})
 public class Attribute {
 
   @GeneratedValue
