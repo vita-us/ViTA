@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.persistence;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -10,7 +12,6 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
-
 /**
  * Performs tests whether instances of Attribute can be persisted correctly.
  */
@@ -23,9 +24,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testPersistOneAttribute() {
     // first set up an Attribute
-    Attribute attribute = new Attribute();
-    attribute.setType(TEST_ATTRIBUTE_NAME_TYPE);
-    attribute.setContent(TEST_ATTRIBUTE_NAME_CONTENT);
+    Attribute attribute = createTestAttribute();
     
     // persist this Attribute
     em.persist(attribute);
@@ -37,10 +36,23 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     // check whether data is correct
     assertEquals(1, attributes.size());
     Attribute readAttribute = attributes.get(0);
-    assertEquals(TEST_ATTRIBUTE_NAME_TYPE, readAttribute.getType());
-    assertEquals(TEST_ATTRIBUTE_NAME_CONTENT, readAttribute.getContent());
+    checkData(readAttribute);
   }
-  
+
+  /**
+   * Creates a new Attribute, setting its fields to test values and returns it.
+   * 
+   * @return test attribute
+   */
+  private Attribute createTestAttribute() {
+    Attribute attribute = new Attribute();
+    
+    attribute.setType(TEST_ATTRIBUTE_NAME_TYPE);
+    attribute.setContent(TEST_ATTRIBUTE_NAME_CONTENT);
+    
+    return attribute;
+  }
+
   /**
    * Reads Attributes from database and returns them.
    * 
@@ -51,4 +63,57 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     List<Attribute> result = query.getResultList();
     return result;
   }
+
+  /**
+   * Checks whether the given Attribute is not <code>null</code> and includes the correct test
+   * data.
+   * 
+   * @param attributeToCheck
+   */
+  private void checkData(Attribute attributeToCheck) {
+    assertNotNull(attributeToCheck);
+    assertEquals(TEST_ATTRIBUTE_NAME_TYPE, attributeToCheck.getType());
+    assertEquals(TEST_ATTRIBUTE_NAME_CONTENT, attributeToCheck.getContent());
+  }
+  
+  /**
+   * Check whether all Named Queries of Attribute are working correctly.
+   */
+  @Test
+  public void testNamedQueries() {
+    Attribute testAttribute = createTestAttribute();
+
+    em.persist(testAttribute);
+    startNewTransaction();
+
+    // check Named Query finding all Attributes
+    TypedQuery<Attribute> allQ =
+        em.createNamedQuery("Attribute.findAllAttributes", Attribute.class);
+    List<Attribute> allAttributes = allQ.getResultList();
+
+    assertTrue(allAttributes.size() > 0);
+    Attribute readAttribute = allAttributes.get(0);
+    checkData(readAttribute);
+
+    int id = readAttribute.getId();
+
+    // check Named Query finding attributes by id
+    TypedQuery<Attribute> idQ = 
+        em.createNamedQuery("Attribute.findAttributeById", Attribute.class);
+    idQ.setParameter("attributeId", id);
+    Attribute idAttribute = idQ.getSingleResult();
+
+    checkData(idAttribute);
+
+    // check Named Query finding attributes by type
+    TypedQuery<Attribute> typeQ =
+        em.createNamedQuery("Attribute.findAttributeByType", Attribute.class);
+    typeQ.setParameter("attributeType", TEST_ATTRIBUTE_NAME_TYPE);
+    List<Attribute> typeAttributes = typeQ.getResultList();
+
+    assertTrue(typeAttributes.size() > 0);
+    Attribute typeAttribute = typeAttributes.get(0);
+    checkData(typeAttribute);
+  }
+  
 }
