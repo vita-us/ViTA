@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({AttributePersistenceTest.class, ChapterPersistenceTest.class,
-    DocumentPersistenceTest.class, DocumentPartPersistenceTest.class, EntityPersistenceTest.class})
+    DocumentPersistenceTest.class, DocumentPartPersistenceTest.class, EntityPersistenceTest.class,
+    TextSpanPersistenceTest.class})
 public class PersistenceTests {
 
 }
