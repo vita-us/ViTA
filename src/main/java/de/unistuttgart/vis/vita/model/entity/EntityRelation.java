@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.model.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.Target;
 
@@ -12,6 +14,15 @@ import org.hibernate.annotations.Target;
  * @param <E> - the type of the other entity
  */
 @javax.persistence.Entity
+@NamedQueries({
+  @NamedQuery(name = "EntityRelation.findAllEntityRelations", 
+      query = "SELECT er "
+      + "FROM EntityRelation er"),
+
+  @NamedQuery(name = "EntityRelation.findEntityRelationById", 
+      query = "SELECT er "
+      + "FROM EntityRelation er " + "WHERE er.id = :entityRelationId")
+})
 public class EntityRelation<E> {
 
   // constants
