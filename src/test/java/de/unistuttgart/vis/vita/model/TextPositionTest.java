@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -121,5 +120,27 @@ public class TextPositionTest {
     assertEquals(0, pos1.compareTo(pos1Duplicate));
   }
 
+  @Test
+  public void testEquals() {
+    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    
+    assertTrue(pos1.equals(pos1Duplicate));
+    assertFalse(pos1.equals(pos2));
+    assertFalse(pos2.equals(pos1));
+    assertFalse(pos1.equals(null));
+    assertFalse(pos1.equals("an object of a different class"));
+  }
+  
+  @Test
+  public void testHashCode() {
+    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    
+    assertEquals(pos1.hashCode(), pos1Duplicate.hashCode());
+    assertNotEquals(pos1.hashCode(), pos2.hashCode());
+  }
 
 }

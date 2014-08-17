@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
@@ -114,4 +115,23 @@ public class TextSpan implements Comparable<TextSpan> {
     return Integer.compare(getLength(), o.getLength());
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof TextSpan)) {
+      return false;
+    }
+    
+    TextSpan other = (TextSpan)obj;
+    return start.equals(other.start) && end.equals(other.end);
+  }
+  
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(start).append(end).hashCode();
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("Span %s ... %s", start, end);
+  }
 }
