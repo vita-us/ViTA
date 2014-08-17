@@ -121,7 +121,7 @@ public abstract class Entity {
   /**
    * @return Set of all occurrences of this entity in the document
    */
-  public SortedSet<TextSpan> getOccurences() {
+  public SortedSet<TextSpan> getOccurrences() {
     return occurrences;
   }
 

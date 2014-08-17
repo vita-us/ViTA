@@ -128,9 +128,9 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     
     Place p = new Place();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurences().add(span1);
-    p.getOccurences().add(span3);
-    p.getOccurences().add(span2);
+    p.getOccurrences().add(span1);
+    p.getOccurrences().add(span3);
+    p.getOccurrences().add(span2);
 
     em.persist(doc);
     em.persist(chapter);
@@ -141,7 +141,7 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
     
     Place dbPlace = em.createNamedQuery("Place.findAllPlaces", Place.class).getSingleResult();
-    assertThat(dbPlace.getOccurences(),
+    assertThat(dbPlace.getOccurrences(),
         IsIterableContainingInOrder.contains(span1, span2, span3));
   }
 

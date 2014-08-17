@@ -135,9 +135,9 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     
     Person p = new Person();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurences().add(span1);
-    p.getOccurences().add(span3);
-    p.getOccurences().add(span2);
+    p.getOccurrences().add(span1);
+    p.getOccurrences().add(span3);
+    p.getOccurrences().add(span2);
 
     em.persist(doc);
     em.persist(chapter);
@@ -148,7 +148,7 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
     
     Person dbPerson = em.createNamedQuery("Person.findAllPersons", Person.class).getSingleResult();
-    assertThat(dbPerson.getOccurences(),
+    assertThat(dbPerson.getOccurrences(),
         IsIterableContainingInOrder.contains(span1, span2, span3));
   }
 
