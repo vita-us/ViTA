@@ -7,7 +7,7 @@
   vitaServices.factory('Document', ['$resource', function($resource) {
     return $resource('/documents/:documentId', {}, {
       // method for retrieving a single document
-      query: {
+      get: {
         method: 'GET'
       }
     });
