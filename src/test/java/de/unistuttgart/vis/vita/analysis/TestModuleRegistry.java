@@ -19,11 +19,10 @@ public class TestModuleRegistry {
 
   @Test
   public void testRegisterModule() {
-    MockModule module = new MockModule();
-    registry.registerModule(String.class, module.getClass());
+    registry.registerModule(MockModule.class);
 
     assertThat(registry.getSize(), is(1));
-    assertEquals(registry.getModuleClassFor(String.class), module.getClass());
+    assertEquals(registry.getModuleClassFor(String.class), MockModule.class);
   }
 
 }

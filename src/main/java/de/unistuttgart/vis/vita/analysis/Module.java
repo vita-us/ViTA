@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import java.util.Collection;
 
 /**
  * This interface is the architecture for the modules used in the analyze.
@@ -8,14 +7,6 @@ import java.util.Collection;
  * @param <TResult> The type of the module.
  */
 public interface Module<TResult> {
-
-  /**
-   * The dependencies of the module which have to be executed before this one can start.
-   * 
-   * @return The collection of depended modules.
-   */
-  public Collection<Class<?>> getDependencies();
-
   /**
    * Observes the progress of the module. TODO not sure what this method is used for.
    * 

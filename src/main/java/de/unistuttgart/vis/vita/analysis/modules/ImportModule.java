@@ -5,17 +5,19 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.nio.file.Path;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
-
-import java.nio.file.Path;
-import java.util.Collection;
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 
 /**
  * @author Vincent Link, Eduard Marbach
  */
-public class ImportModule implements Module {
+@AnalysisModule()
+public class ImportModule implements Module<ImportResult> {
 
   private Path filePath;
 
@@ -24,12 +26,7 @@ public class ImportModule implements Module {
   }
 
   @Override
-  public Collection<Class<?>> getDependencies() {
-    return null;
-  }
-
-  @Override
-  public Object execute(ModuleResultProvider result, ProgressListener progressListener) {
+  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener) {
     return null;
   }
 

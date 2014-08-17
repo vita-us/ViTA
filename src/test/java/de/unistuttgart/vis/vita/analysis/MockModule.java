@@ -5,26 +5,10 @@
 
 package de.unistuttgart.vis.vita.analysis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
-/**
- * @author Vincent Link, Eduard Marbach
- */
+@AnalysisModule(dependencies={String.class})
 public class MockModule implements Module<String> {
-  
-  private List<Class<?>> dependencies = new ArrayList<>();
-
-  public MockModule() {
-    dependencies.add(String.class);
-  }
-  
-  @Override
-  public Collection<Class<?>> getDependencies() {
-    return dependencies;
-  }
-
   @Override
   public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
     // TODO Auto-generated method stub

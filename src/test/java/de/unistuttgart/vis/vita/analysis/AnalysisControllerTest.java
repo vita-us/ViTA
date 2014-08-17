@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,21 +31,19 @@ public class AnalysisControllerTest {
   
   @Test
   public void testScheduleDocumentAnalysis() {
-    controller.scheduleDocumentAnalysis(new File("correctFilePath"));
+    controller.scheduleDocumentAnalysis(Paths.get("correctFilePath"));
     assertThat(controller.documentsInQueue(), is(1));
   }
   
   @Test
   public void testStartAnalysis() {
-    controller.scheduleDocumentAnalysis(new File("correctFilePath"));
-    controller.startAnalysis();
+    controller.scheduleDocumentAnalysis(Paths.get("correctFilePath"));
     assertThat(controller.isWorking(), is(true));
   }
   
   @Test
   public void testCancelAnalysis() {
-    String documentId = controller.scheduleDocumentAnalysis(new File("correctFilePath"));
-    controller.startAnalysis();
+    String documentId = controller.scheduleDocumentAnalysis(Paths.get("correctFilePath"));
     assertThat(controller.isWorking(), is(true));
     controller.cancelAnalysis(documentId);
     assertThat(controller.isWorking(), is(false));
