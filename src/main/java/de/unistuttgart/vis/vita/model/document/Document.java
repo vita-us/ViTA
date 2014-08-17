@@ -57,15 +57,6 @@ public class Document {
   }
 
   /**
-   * Sets the id of this Document.
-   * 
-   * @param newId - the new id for this document
-   */
-  public void setId(String newId) {
-    this.id = newId;
-  }
-
-  /**
    * @return the meta data for this document
    */
   public DocumentMetadata getMetadata() {

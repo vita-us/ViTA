@@ -65,13 +65,6 @@ public abstract class Entity {
   }
 
   /**
-   * Sets a new Id for the entity.
-   */
-  public void setId(int newId) {
-    this.id = newId;
-  }
-
-  /**
    * @return the type of the entity
    */
   public abstract EntityType getType();

@@ -47,15 +47,6 @@ public class EntityRelation<E> {
   }
 
   /**
-   * Sets the id for this EntityRelation
-   *
-   * @param newId - the new id for the EntityRelation
-   */
-  public void setId(int newId) {
-    this.id = newId;
-  }
-
-  /**
    * Returns how strong this relation is, returning a value between 0 (very weak) and 1 (very
    * strong).
    *

@@ -70,15 +70,6 @@ public class Chapter {
   }
 
   /**
-   * Sets the id of the Chapter.
-   *
-   * @param newId - the id of this Chapter
-   */
-  public void setId(String newId) {
-    this.id = newId;
-  }
-
-  /**
    * Gets the readable number of this chapter in the context of the document part it belongs to
    * 
    * @return the number, starting from 1

@@ -70,15 +70,6 @@ public class Attribute {
   }
 
   /**
-   * Sets the id of this Attribute to the given value
-   *
-   * @param newId - the new id for this Attribute
-   */
-  public void setId(int newId) {
-    this.id = newId;
-  }
-
-  /**
    * @return the type of this Attribute
    */
   public AttributeType getType() {

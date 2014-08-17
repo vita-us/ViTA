@@ -48,15 +48,6 @@ public class DocumentPart {
   }
 
   /**
-   * Sets an identifier that is unique in the database
-   *
-   * @param newId the id
-   */
-  public void setId(String newId) {
-    this.id = newId;
-  }
-
-  /**
    * Gets the readable number of this part in the context of the document
    * 
    * @return the number, starting from 1
