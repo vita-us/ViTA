@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import net.jodah.typetools.TypeResolver;
@@ -9,7 +10,7 @@ import com.google.common.collect.ImmutableSet;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 /**
- * Describes a class for an analyisis module
+ * Describes a class for an analysis module
  */
 public final class ModuleClass {
   private final Class<?> clazz;
@@ -23,6 +24,8 @@ public final class ModuleClass {
    * @param moduleClass the class
    */
   private ModuleClass(Class<?> moduleClass) {
+    clazz = moduleClass;
+    
     AnalysisModule annotation = moduleClass.getAnnotation(AnalysisModule.class);
     if (annotation == null) {
       throw new InvalidModuleException("The class " + moduleClass.getName() + " does not have the "
@@ -33,15 +36,13 @@ public final class ModuleClass {
       throw new InvalidModuleException("The class " + moduleClass.getName() + " does not implement the "
           + "Module interface.");
     }
-
-    Class<?>[] typeArguments = TypeResolver.resolveRawArguments(Module.class, moduleClass);
-    if (typeArguments.length < 1) {
+    
+    resultClass = getResultClass(moduleClass);
+    if (resultClass == null) {
       throw new InvalidModuleException("The class " + moduleClass.getName() + " should specify the "
           + "concrete type parameter for the Module interface.");
     }
     
-    clazz = moduleClass;
-    resultClass = typeArguments[0];
     dependencies = ImmutableSet.copyOf(annotation.dependencies());
     
     try {
@@ -50,6 +51,21 @@ public final class ModuleClass {
     } catch (NoSuchMethodException e) {
       hasZeroArgumentConstructor = false;
     }
+  }
+  
+  private static Class<?> getResultClass(Class<?> moduleClass) {
+    // Somewhere in the inheritance/interface tree, there is a reference to Module<SomeClass>.
+    // This finds that type along with its type parameter.
+    Type genericModuleType = TypeResolver.resolveGenericType(Module.class, moduleClass);
+    
+    // Extract the SomeClass. Note that type arguments to SomeClass will be dropped.
+    Class<?>[] typeParameters = TypeResolver.resolveRawArguments(genericModuleType, moduleClass);
+    
+    if (typeParameters == null || typeParameters.length < 1) {
+      return null;
+    }
+    
+    return typeParameters[0];
   }
   
   public static ModuleClass get(Class<?> clazz) {
