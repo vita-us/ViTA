@@ -107,5 +107,19 @@ public class TextPositionTest {
     TextPosition pos = new TextPosition(new Chapter(new Document()), OFFSET_TEST);
     assertTrue(Double.isNaN(pos.getProgress()));
   }
+  
+  @Test
+  public void testCompareTo() {
+    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
+    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    
+    assertEquals(1, pos1.compareTo(null));
+    assertEquals(-1, pos1.compareTo(pos2));
+    assertEquals(1, pos2.compareTo(pos1));
+    assertEquals(0, pos1.compareTo(pos1));
+    assertEquals(0, pos1.compareTo(pos1Duplicate));
+  }
+
 
 }

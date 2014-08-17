@@ -22,7 +22,7 @@ import javax.persistence.NamedQuery;
       + "FROM TextSpan ts "
       + "WHERE ts.id = :textSpanId"),
 })
-public class TextSpan {
+public class TextSpan implements Comparable<TextSpan> {
 
   // constants
   private static final int MIN_LENGTH = 0;
@@ -93,6 +93,25 @@ public class TextSpan {
    */
   public int getLength() {
     return length;
+  }
+
+  /**
+   * Compares first the start positions, and if they are equal, the lengths. Shorter spans
+   * are considered smaller than longer ones. This will only produce usable results
+   * if both TextPositions are in the same document.
+   */
+  @Override
+  public int compareTo(TextSpan o) {
+    if (o == null) {
+      return 1;
+    }
+    
+    int cmp = getStart().compareTo(o.getStart());
+    if (cmp != 0) {
+      return cmp;
+    }
+    
+    return Integer.compare(getLength(), o.getLength());
   }
 
 }

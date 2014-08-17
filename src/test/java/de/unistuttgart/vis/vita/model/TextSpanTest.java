@@ -101,5 +101,25 @@ public class TextSpanTest {
     TextSpan testTextSpan = new TextSpan(pos2, pos3);
     assertEquals(DIFF, testTextSpan.getLength());
   }
+  
+  @Test
+  public void testCompareTo() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos2, pos3);
+    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    
+    assertEquals(1, span1.compareTo(null));
+    assertEquals(-1, span1.compareTo(span2));
+    assertEquals(1, span2.compareTo(span1));
+    assertEquals(0, span1.compareTo(span1Duplicate));
+  }
 
+  @Test
+  public void testCompareToWithEqualStartPositions() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos1, pos3);
+    
+    assertEquals(-1, span1.compareTo(span2));
+    assertEquals(1, span2.compareTo(span1));
+  }
 }

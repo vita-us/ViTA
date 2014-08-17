@@ -9,7 +9,7 @@ import javax.persistence.Transient;
  * chapter it occurs in as well as the relative position in the whole document.
  */
 @Embeddable
-public class TextPosition {
+public class TextPosition implements Comparable<TextPosition> {
   @ManyToOne
   private Chapter chapter;
 
@@ -83,6 +83,19 @@ public class TextPosition {
     }
 
     return progress;
+  }
+
+  /**
+   * Compares this position to the given other one. This will only produce usable results
+   * if both TextPositions are in the same document.
+   */
+  @Override
+  public int compareTo(TextPosition o) {
+    if (o == null) {
+      return 1;
+    }
+    
+    return Integer.compare(offset, o.offset);
   }
 
 }
