@@ -39,7 +39,7 @@ describe('ProfilesCtrl', function() {
     });
   }));
 
-  it('Get profiles from REST', inject(function($controller) {
+  it('ProfilesCtrl should get profiles from REST by using the Profiles service', inject(function($controller) {
     $httpBackend.expectGET('/documents/doc13a/persons?offset=1').respond(profilesData().persons);
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
     $httpBackend.flush();
