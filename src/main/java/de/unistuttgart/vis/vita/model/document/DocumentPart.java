@@ -39,6 +39,13 @@ public class DocumentPart {
 
   @OneToMany
   private List<Chapter> chapters = new ArrayList<Chapter>();
+  
+  /**
+   * Creates a new instance of DocumentPart, setting all attributes to default values.
+   */
+  public DocumentPart() {
+    this.chapters = new ArrayList<>();
+  }
 
   /**
    * Gets an identifier that is unique in the database
@@ -86,15 +93,6 @@ public class DocumentPart {
    */
   public List<Chapter> getChapters() {
     return chapters;
-  }
-
-  /**
-   * Sets the list of chapters in this part of the Document.
-   *
-   * @param chapters - the list of chapters to set
-   */
-  public void setChapters(List<Chapter> chapters) {
-    this.chapters = chapters;
   }
 
 }

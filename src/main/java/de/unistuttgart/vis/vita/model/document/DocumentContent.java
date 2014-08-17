@@ -1,19 +1,20 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.model.entity.Place;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
+
 /**
  * Represents the content of Document, including its parts, persons and places.
  */
 @Embeddable
 public class DocumentContent {
+  
   @OneToMany
   private List<DocumentPart> parts;
 
@@ -40,15 +41,6 @@ public class DocumentContent {
   }
 
   /**
-   * Sets the parts of the document.
-   * 
-   * @param newParts - list of parts of the Document
-   */
-  public void setParts(List<DocumentPart> newParts) {
-    this.parts = newParts;
-  }
-
-  /**
    * @return list of persons mentioned in the Document
    */
   public List<Person> getPersons() {
@@ -56,28 +48,10 @@ public class DocumentContent {
   }
 
   /**
-   * Sets the persons mentioned in the Document.
-   * 
-   * @param persons - list of characters mentioned in the Document
-   */
-  public void setPersons(List<Person> persons) {
-    this.persons = persons;
-  }
-
-  /**
    * @return list of places mentioned in the Document
    */
   public List<Place> getPlaces() {
     return places;
-  }
-
-  /**
-   * Sets the places mentioned in the Document.
-   * 
-   * @param places - list of places mentioned in the Document
-   */
-  public void setPlaces(List<Place> places) {
-    this.places = places;
   }
 
 }
