@@ -2,14 +2,20 @@ package de.unistuttgart.vis.vita.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 /**
@@ -116,4 +122,35 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     checkData(typeAttribute);
   }
   
+  @Test
+  public void testOcurrencesAreSorted() {
+    Document doc = new Document();
+    Chapter chapter = new Chapter(doc);
+    TextPosition pos1 = new TextPosition(chapter, 10);
+    TextPosition pos2 = new TextPosition(chapter, 20);
+    TextPosition pos3 = new TextPosition(chapter, 30);
+    TextPosition pos4 = new TextPosition(chapter, 40);
+    TextSpan span1 = new TextSpan(pos1, pos4);
+    TextSpan span2 = new TextSpan(pos2, pos4);
+    TextSpan span3 = new TextSpan(pos3, pos4);
+    
+    Attribute attribute = createTestAttribute();
+    // Add the occurrences in an order that is neither the correct one, nor the reverse
+    attribute.getOccurrences().add(span1);
+    attribute.getOccurrences().add(span3);
+    attribute.getOccurrences().add(span2);
+
+    em.persist(doc);
+    em.persist(chapter);
+    em.persist(span1);
+    em.persist(span3);
+    em.persist(span2);
+    em.persist(attribute);
+    startNewTransaction();
+
+    Attribute dbAttribute = em.createQuery("from Attribute", Attribute.class).getSingleResult();
+    assertThat(dbAttribute.getOccurrences(),
+        IsIterableContainingInOrder.contains(span1, span2, span3));
+  }
+
 }

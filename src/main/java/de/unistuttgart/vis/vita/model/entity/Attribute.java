@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.GeneratedValue;
@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -40,7 +41,8 @@ public class Attribute {
   private String content;
   
   @OneToMany
-  private Set<TextSpan> occurrences;
+  @OrderBy("START_OFFSET ASC")
+  private SortedSet<TextSpan> occurrences;
 
   /**
    * Creates a new attribute, setting all fields to default values.
@@ -102,7 +104,7 @@ public class Attribute {
   /**
    * @return a Set of all occurrences in the text which are related to this Attribute
    */
-  public Set<TextSpan> getOccurrences() {
+  public SortedSet<TextSpan> getOccurrences() {
     return occurrences;
   }
 
@@ -111,7 +113,7 @@ public class Attribute {
    *
    * @param occurrences - a set of all occurrences related to this Attribute
    */
-  public void setOccurrences(Set<TextSpan> occurrences) {
+  public void setOccurrences(SortedSet<TextSpan> occurrences) {
     this.occurrences = occurrences;
   }
 

@@ -1,6 +1,9 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -14,8 +17,14 @@ public class BasicEntity {
   private EntityType type;
   
   private Set<Attribute> nameAttributes;
-  private Set<TextSpan> occurrences;
+  private SortedSet<TextSpan> occurrences;
   private Set<EntityRelation<BasicEntity>> entityRelations;
+  
+  public BasicEntity() {
+    nameAttributes = new HashSet<>();
+    occurrences = new TreeSet<>();
+    entityRelations = new HashSet<>();
+  }
 
   /**
    * Gets the name under which this entity will be shown
@@ -58,7 +67,7 @@ public class BasicEntity {
    * 
    * @return Set of all occurrences of this entity in the document
    */
-  public Set<TextSpan> getOccurences() {
+  public SortedSet<TextSpan> getOccurences() {
     return occurrences;
   }
 
@@ -67,7 +76,7 @@ public class BasicEntity {
    * 
    * @param newOccurences - a set of new occurrences for this entity
    */
-  public void setOccurences(Set<TextSpan> newOccurences) {
+  public void setOccurences(SortedSet<TextSpan> newOccurences) {
     this.occurrences = newOccurences;
   }
 

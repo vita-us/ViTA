@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.DiscriminatorColumn;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -36,7 +39,8 @@ public abstract class Entity {
   private Set<Attribute> attributes;
 
   @OneToMany
-  private Set<TextSpan> occurrences;
+  @OrderBy("START_OFFSET ASC")
+  private SortedSet<TextSpan> occurrences;
 
   @OneToMany
   private Set<EntityRelation<Entity>> entityRelations;
@@ -45,16 +49,9 @@ public abstract class Entity {
    * Creates a new entity with default values.
    */
   public Entity() {
-    attributes = new TreeSet<>();
+    attributes = new HashSet<>();
     occurrences = new TreeSet<>();
-    entityRelations = new TreeSet<>();
-  }
-
-  /**
-   * Creates a new instance of Entity.
-   */
-  public Entity(int id) {
-    this.id = id;
+    entityRelations = new HashSet<>();
   }
 
   /**
@@ -124,7 +121,7 @@ public abstract class Entity {
   /**
    * @return Set of all occurrences of this entity in the document
    */
-  public Set<TextSpan> getOccurences() {
+  public SortedSet<TextSpan> getOccurences() {
     return occurrences;
   }
 
@@ -133,7 +130,7 @@ public abstract class Entity {
    *
    * @param newOccurences - a set of new occurrences for this entity
    */
-  public void setOccurences(Set<TextSpan> newOccurences) {
+  public void setOccurences(SortedSet<TextSpan> newOccurences) {
     this.occurrences = newOccurences;
   }
 
