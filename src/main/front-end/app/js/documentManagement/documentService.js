@@ -9,13 +9,6 @@
       // method for retrieving a single document
       query: {
         method: 'GET'
-      },
-      // Custom method for retrieving all documents
-      getAll: {
-        method: 'GET',
-        params: {
-          documentId: ''
-        }
       }
     });
   }]);

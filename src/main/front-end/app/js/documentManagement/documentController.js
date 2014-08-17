@@ -9,7 +9,7 @@
     Page.showMenu = false;
     Page.tab = 1;
     
-    $scope.documentsWrapper = Document.getAll(function() {
+    $scope.documentsWrapper = Document.get(function() {
       $scope.documents = $scope.documentsWrapper.documents;
     });
   }]);
