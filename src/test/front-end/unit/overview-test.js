@@ -41,7 +41,7 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('webapi/documents/123').respond(documentData());
+    $httpBackend.expectGET('/documents/123').respond(documentData());
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('OverviewCtrl', {

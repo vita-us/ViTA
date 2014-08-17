@@ -59,8 +59,8 @@
     };
 
     $httpBackend.whenGET(new RegExp('\.html$')).passThrough();
-    $httpBackend.whenGET(new RegExp('webapi/documents$')).respond(documents);
-    $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+$')).respond(singleDocument);
+    $httpBackend.whenGET(new RegExp('/documents$')).respond(documents);
+    $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(singleDocument);
 
   });
 })(angular);
