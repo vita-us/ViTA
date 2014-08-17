@@ -44,6 +44,7 @@ public class ModuleRegistry {
    * @param packageName the package with the modules
    */
   public ModuleRegistry(String packageName) {
+    this();
     Iterable<Class<?>> moduleClasses =
         new Reflections(packageName).getTypesAnnotatedWith(AnalysisModule.class);
     for (Class<?> clazz : moduleClasses) {
