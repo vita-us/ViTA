@@ -3,8 +3,11 @@
  *
  */
 
-package de.unistuttgart.vis.vita.analysis;
+package de.unistuttgart.vis.vita.analysis.modules;
 
+import de.unistuttgart.vis.vita.analysis.Module;
+import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 @AnalysisModule(dependencies={String.class})

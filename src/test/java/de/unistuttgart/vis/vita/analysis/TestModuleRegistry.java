@@ -1,19 +1,22 @@
 package de.unistuttgart.vis.vita.analysis;
 
 
-import org.junit.BeforeClass;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import de.unistuttgart.vis.vita.analysis.modules.MockModule;
 
 public class TestModuleRegistry {
 
-  private static ModuleRegistry registry;
+  private ModuleRegistry registry;
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     registry = new ModuleRegistry();
   }
 
@@ -25,4 +28,9 @@ public class TestModuleRegistry {
     assertEquals(registry.getModuleClassFor(String.class), MockModule.class);
   }
 
+  @Test
+  public void testRegistryForPackage() {
+    registry = new ModuleRegistry(MockModule.class.getPackage().getName());
+    assertThat(registry.getModules(), hasItem(ModuleClass.get(MockModule.class)));
+  }
 }

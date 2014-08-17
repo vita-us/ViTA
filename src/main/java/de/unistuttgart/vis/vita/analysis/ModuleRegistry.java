@@ -38,6 +38,18 @@ public class ModuleRegistry {
     modulesForResultClasses = Collections.synchronizedMap(new HashMap<Class<?>, ModuleClass>());
     moduleClasses = Collections.synchronizedSet(new HashSet<ModuleClass>());
   }
+  
+  /**
+   * Create a registry with the modules in the specified package
+   * @param packageName the package with the modules
+   */
+  public ModuleRegistry(String packageName) {
+    Iterable<Class<?>> moduleClasses =
+        new Reflections(packageName).getTypesAnnotatedWith(AnalysisModule.class);
+    for (Class<?> clazz : moduleClasses) {
+      registerModule(clazz);
+    }
+  }
 
   /**
    * Returns the registry that contains all available modules
@@ -46,19 +58,9 @@ public class ModuleRegistry {
    */
   public static ModuleRegistry getDefaultRegistry() {
     if (defaultRegistry != null) {
-      defaultRegistry = createDefaultRegistry();
+      defaultRegistry = new ModuleRegistry(MODULES_PACKAGE_NAME);
     }
     return defaultRegistry;
-  }
-
-  private static ModuleRegistry createDefaultRegistry() {
-    ModuleRegistry registry = new ModuleRegistry();
-    Iterable<Class<?>> moduleClasses =
-        new Reflections(MODULES_PACKAGE_NAME).getTypesAnnotatedWith(AnalysisModule.class);
-    for (Class<?> clazz : moduleClasses) {
-      registry.registerModule(clazz);
-    }
-    return registry;
   }
 
   /**
