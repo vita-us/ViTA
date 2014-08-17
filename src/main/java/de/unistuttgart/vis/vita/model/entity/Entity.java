@@ -90,15 +90,6 @@ public abstract class Entity {
   }
 
   /**
-   * Sets the attributes for this entity.
-   *
-   * @param newAttributes - the new attributes for this entity
-   */
-  public void setAttributes(Set<Attribute> newAttributes) {
-    this.attributes = newAttributes;
-  }
-
-  /**
    * @return the ranking value of the entity, where 1 is the highest rank
    */
   public int getRankingValue() {
@@ -126,15 +117,6 @@ public abstract class Entity {
   }
 
   /**
-   * Sets the occurrences for this entity.
-   *
-   * @param newOccurences - a set of new occurrences for this entity
-   */
-  public void setOccurences(SortedSet<TextSpan> newOccurences) {
-    this.occurrences = newOccurences;
-  }
-
-  /**
    * Gets a bit vector that divides the whole document in spans of equal lengths and determines
    * whether this entity occurs in a given span (true) or not (false).
    * 
@@ -159,15 +141,6 @@ public abstract class Entity {
    */
   public Set<EntityRelation<Entity>> getEntityRelations() {
     return entityRelations;
-  }
-
-  /**
-   * Sets the relations for this entity.
-   *
-   * @param newEntityRelations - a set of new relations for this entity
-   */
-  public void setEntityRelations(Set<EntityRelation<Entity>> newEntityRelations) {
-    this.entityRelations = newEntityRelations;
   }
 
 }

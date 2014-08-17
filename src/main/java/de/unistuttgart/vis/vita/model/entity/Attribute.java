@@ -108,13 +108,4 @@ public class Attribute {
     return occurrences;
   }
 
-  /**
-   * Sets the occurrences related to this Attribute.
-   *
-   * @param occurrences - a set of all occurrences related to this Attribute
-   */
-  public void setOccurrences(SortedSet<TextSpan> occurrences) {
-    this.occurrences = occurrences;
-  }
-
 }
