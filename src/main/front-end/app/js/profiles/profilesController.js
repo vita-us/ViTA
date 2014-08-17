@@ -6,7 +6,7 @@
   // Controller responsible for the profiles page
   vitaControllers.controller('ProfilesCtrl', ['$scope', 'Profile', 'Page', function($scope, Profile, Page) {
     Page.title = 'Profiles';
-    Page.showMenu = false;
+    Page.showMenu = true;
     Page.tab = 1;
 
     $scope.documentId = 'doc13a';
