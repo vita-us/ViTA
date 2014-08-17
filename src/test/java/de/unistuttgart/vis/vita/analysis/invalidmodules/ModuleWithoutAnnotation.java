@@ -1,12 +1,10 @@
-package de.unistuttgart.vis.vita.analysis.modules;
+package de.unistuttgart.vis.vita.analysis.invalidmodules;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
-@AnalysisModule(dependencies={String.class})
-public class MockModule implements Module<String> {
+public class ModuleWithoutAnnotation implements Module<String> {
   @Override
   public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
     // TODO Auto-generated method stub

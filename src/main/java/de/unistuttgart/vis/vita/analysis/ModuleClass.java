@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import net.jodah.typetools.TypeResolver;
+import net.jodah.typetools.TypeResolver.Unknown;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -61,7 +62,7 @@ public final class ModuleClass {
     // Extract the SomeClass. Note that type arguments to SomeClass will be dropped.
     Class<?>[] typeParameters = TypeResolver.resolveRawArguments(genericModuleType, moduleClass);
     
-    if (typeParameters == null || typeParameters.length < 1) {
+    if (typeParameters == null || typeParameters.length < 1 || typeParameters[0].equals(Unknown.class)) {
       return null;
     }
     
@@ -103,7 +104,7 @@ public final class ModuleClass {
    */
   public Module<?> newInstance() {
     if (!hasZeroArgumentConstructor) {
-      throw new IllegalStateException("This module class can not be instanciated directly");
+      throw new UnsupportedOperationException("This module class can not be instanciated directly");
     }
     
     try {
