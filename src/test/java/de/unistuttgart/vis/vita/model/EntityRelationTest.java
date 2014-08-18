@@ -2,9 +2,6 @@ package de.unistuttgart.vis.vita.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,9 +31,7 @@ public class EntityRelationTest {
   public void setUp() {
     testPerson = new Person();
     relation = new EntityRelation<Entity>();
-    Set<EntityRelation<Entity>> relations = new HashSet<EntityRelation<Entity>>();
-    relations.add(relation);
-    testPerson.setEntityRelations(relations);
+    testPerson.getEntityRelations().add(relation);
   }
 
   /**
