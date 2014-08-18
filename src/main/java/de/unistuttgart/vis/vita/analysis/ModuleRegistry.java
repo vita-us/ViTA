@@ -1,14 +1,14 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+
+import org.reflections.Reflections;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.reflections.Reflections;
-
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 /**
  * A registry for saving all modules which should be executed on a document.
@@ -61,6 +61,7 @@ public class ModuleRegistry {
     if (defaultRegistry == null) {
       defaultRegistry = new ModuleRegistry(MODULES_PACKAGE_NAME);
     }
+
     return defaultRegistry;
   }
 
