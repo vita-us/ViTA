@@ -3,7 +3,7 @@
 
   var app = angular.module('vita');
 
-  app.run(function($httpBackend) {
+  app.run(['$httpBackend', function($httpBackend) {
 
     var documents = {
       "totalCount": 2,
@@ -62,5 +62,5 @@
     $httpBackend.whenGET(new RegExp('/documents$')).respond(documents);
     $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(singleDocument);
 
-  });
+  }]);
 })(angular);
