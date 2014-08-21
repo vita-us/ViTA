@@ -151,7 +151,7 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       statics: {
-        files: ['app/**/*.html', 'app/test_data/**', 'app/img/**'],
+        files: ['app/**/*.html', 'app/img/**'],
         tasks: ['copy:statics']
       },
       scripts: {
