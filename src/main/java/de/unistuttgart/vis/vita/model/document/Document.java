@@ -2,10 +2,10 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
@@ -13,26 +13,14 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "Document.findAllDocuments", 
-    query = "SELECT d "
-        + "FROM Document d"),
-        
-  @NamedQuery(name = "Document.findDocumentById", 
-    query = "SELECT d "
-      + "FROM Document d "
-      + "WHERE d.id = :documentId"),
-      
-  @NamedQuery(name = "Document.findDocumentByTitle",
-    query = "SELECT d "
-      + "FROM Document d "
-      + "WHERE d.metadata.title = :documentTitle")
-})
-public class Document {
+    @NamedQuery(name = "Document.findAllDocuments", query = "SELECT d " + "FROM Document d"),
 
-  @GeneratedValue
-  @Id
-  private String id;
+    @NamedQuery(name = "Document.findDocumentById", query = "SELECT d " + "FROM Document d "
+        + "WHERE d.id = :documentId"),
 
+    @NamedQuery(name = "Document.findDocumentByTitle", query = "SELECT d " + "FROM Document d "
+        + "WHERE d.metadata.title = :documentTitle")})
+public class Document extends AbstractEntityBase {
   @Embedded
   private DocumentMetadata metadata;
   @Embedded
@@ -47,13 +35,6 @@ public class Document {
     this.metrics = new DocumentMetrics();
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
-  }
-
-  /**
-   * @return the id of this Document
-   */
-  public String getId() {
-    return id;
   }
 
   /**

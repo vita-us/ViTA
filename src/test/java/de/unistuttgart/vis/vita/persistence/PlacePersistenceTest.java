@@ -1,9 +1,6 @@
 package de.unistuttgart.vis.vita.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Place;
 
 public class PlacePersistenceTest extends AbstractPersistenceTest {
-  
+
   // test data
   private static final int TEST_PLACE_RANKING_VALUE = 3;
   private static final String TEST_PLACE_NAME = "Rivendell";
@@ -40,7 +37,7 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     List<Place> places = readPlacesFromDb();
     assertEquals(1, places.size());
     Place readPlace = places.get(0);
-    
+
     checkData(readPlace);
   }
 
@@ -65,7 +62,7 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     TypedQuery<Place> query = em.createQuery("from Place", Place.class);
     return query.getResultList();
   }
-  
+
   /**
    * Checks whether the given place is not <code>null</code> and includes the correct test data.
    * 
@@ -76,44 +73,44 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     assertEquals(TEST_PLACE_NAME, readPlace.getDisplayName());
     assertEquals(TEST_PLACE_RANKING_VALUE, readPlace.getRankingValue());
   }
-  
+
   /**
    * Checks whether all Named Queries of Place are working correctly.
    */
   @Test
   public void testNamedQueries() {
     Place testPlace = createTestPlace();
-    
+
     em.persist(testPlace);
     startNewTransaction();
-    
+
     // check Named Query finding all places
     TypedQuery<Place> allQ = em.createNamedQuery("Place.findAllPlaces", Place.class);
     List<Place> allPlaces = allQ.getResultList();
-    
+
     assertTrue(allPlaces.size() > 0);
     Place readPlace = allPlaces.get(0);
     checkData(readPlace);
-    
-    int id = readPlace.getId();
-    
+
+    String id = readPlace.getId();
+
     // check Named Query finding place by id
     TypedQuery<Place> idQ = em.createNamedQuery("Place.findPlaceById", Place.class);
     idQ.setParameter("placeId", id);
     Place idPlace = idQ.getSingleResult();
-    
+
     checkData(idPlace);
-    
+
     // check Named Query finding places by name
     TypedQuery<Place> nameQ = em.createNamedQuery("Place.findPlaceByName", Place.class);
     nameQ.setParameter("placeName", TEST_PLACE_NAME);
     List<Place> namePlaces = nameQ.getResultList();
-    
+
     assertTrue(namePlaces.size() > 0);
     Place namePlace = namePlaces.get(0);
     checkData(namePlace);
   }
-  
+
   @Test
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
@@ -125,7 +122,7 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     TextSpan span1 = new TextSpan(pos1, pos4);
     TextSpan span2 = new TextSpan(pos2, pos4);
     TextSpan span3 = new TextSpan(pos3, pos4);
-    
+
     Place p = new Place();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
     p.getOccurrences().add(span1);
@@ -139,10 +136,9 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     em.persist(span2);
     em.persist(p);
     startNewTransaction();
-    
+
     Place dbPlace = em.createNamedQuery("Place.findAllPlaces", Place.class).getSingleResult();
-    assertThat(dbPlace.getOccurrences(),
-        IsIterableContainingInOrder.contains(span1, span2, span3));
+    assertThat(dbPlace.getOccurrences(), IsIterableContainingInOrder.contains(span1, span2, span3));
   }
 
 }

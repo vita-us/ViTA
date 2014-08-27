@@ -7,8 +7,6 @@ import java.util.TreeSet;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -22,14 +20,10 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 @javax.persistence.Entity
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
-public abstract class Entity {
+public abstract class Entity extends AbstractEntityBase {
 
   // constants
   private static final int MIN_RANK_VALUE = 1;
-
-  @GeneratedValue
-  @Id
-  private int id;
 
   private String displayName;
   private boolean[] fingerprint;
@@ -52,13 +46,6 @@ public abstract class Entity {
     attributes = new HashSet<>();
     occurrences = new TreeSet<>();
     entityRelations = new HashSet<>();
-  }
-
-  /**
-   * @return the id of the entity
-   */
-  public int getId() {
-    return id;
   }
 
   /**

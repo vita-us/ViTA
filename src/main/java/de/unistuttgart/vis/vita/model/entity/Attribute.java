@@ -3,8 +3,6 @@ package de.unistuttgart.vis.vita.model.entity;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -18,28 +16,17 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  */
 @javax.persistence.Entity
 @NamedQueries({
-  @NamedQuery(name = "Attribute.findAllAttributes",
-      query = "SELECT a "
-      + "FROM Attribute a"),
-      
-  @NamedQuery(name = "Attribute.findAttributeById",
-      query = "SELECT a "
-      + "FROM Attribute a "
-      + "WHERE a.id = :attributeId"),
-  
-  @NamedQuery(name = "Attribute.findAttributeByType",
-      query = "SELECT a "
-      + "FROM Attribute a "
-      + "WHERE a.type = :attributeType")
-})
-public class Attribute {
+    @NamedQuery(name = "Attribute.findAllAttributes", query = "SELECT a " + "FROM Attribute a"),
 
-  @GeneratedValue
-  @Id
-  private int id;
+    @NamedQuery(name = "Attribute.findAttributeById", query = "SELECT a " + "FROM Attribute a "
+        + "WHERE a.id = :attributeId"),
+
+    @NamedQuery(name = "Attribute.findAttributeByType", query = "SELECT a " + "FROM Attribute a "
+        + "WHERE a.type = :attributeType")})
+public class Attribute extends AbstractEntityBase {
   private AttributeType type;
   private String content;
-  
+
   @OneToMany
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
@@ -54,21 +41,14 @@ public class Attribute {
   /**
    * Creates a new Attribute with given type and content.
    *
-   * @param pId      - the id for the new attribute
-   * @param pType    - the type of the new attribute, for example 'Name'
+   * @param pId - the id for the new attribute
+   * @param pType - the type of the new attribute, for example 'Name'
    * @param pContent - the content of the new attribute, for example 'Bilbo Baggins'
    */
   public Attribute(AttributeType pType, String pContent) {
     this();
     this.type = pType;
     this.content = pContent;
-  }
-
-  /**
-   * @return the id of this Attribute
-   */
-  public int getId() {
-    return id;
   }
 
   /**

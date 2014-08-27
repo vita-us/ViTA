@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -69,8 +67,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    */
   private void checkData(TextSpan textSpanToCheck) {
     assertNotNull(textSpanToCheck);
-    
-    assertTrue(textSpanToCheck.getId() > 0);
+    assertNotNull(textSpanToCheck.getId());
     
     int start = textSpanToCheck.getStart().getOffset();
     int end = textSpanToCheck.getEnd().getOffset();
@@ -100,7 +97,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     TextSpan readSpan = allSpans.get(0);
     checkData(readSpan);
     
-    int id = readSpan.getId();
+    String id = readSpan.getId();
     
     // check Named Query finding text spans by id
     TypedQuery<TextSpan> idQ = em.createNamedQuery("TextSpan.findTextSpanById", TextSpan.class);

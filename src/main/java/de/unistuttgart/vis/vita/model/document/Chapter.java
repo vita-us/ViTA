@@ -1,51 +1,38 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "Chapter.findAllChapters",
-      query = "SELECT c "
-      + "FROM Chapter c"),
-      
-  @NamedQuery(name = "Chapter.findChapterById",
-      query = "SELECT c "
-      + "FROM Chapter c "
-      + "WHERE c.id = :chapterId"),
-  
-  @NamedQuery(name = "Chapter.findChapterByTitle",
-      query = "SELECT c "
-      + "FROM Chapter c "
-      + "WHERE c.title = :chapterTitle")
-})
-public class Chapter {
+    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
 
-  // attributes
-  @GeneratedValue
-  @Id
-  private String id;
+    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.id = :chapterId"),
+
+    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.title = :chapterTitle")})
+public class Chapter extends AbstractEntityBase {
   private int number;
   private String title;
   private String text;
   private int length;
-  
+
   @OneToOne
   private TextSpan range;
-  
+
   @ManyToOne
   protected Document document;
-  
+
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
@@ -60,13 +47,6 @@ public class Chapter {
    */
   public Chapter(Document pDocument) {
     this.document = pDocument;
-  }
-
-  /**
-   * @return the id of this Chapter
-   */
-  public String getId() {
-    return id;
   }
 
   /**
@@ -113,7 +93,8 @@ public class Chapter {
   /**
    * Sets the text of the Chapter.
    * 
-   * This property will not be persisted with JPA. It should be stored with {@link TextRepository} instead.
+   * This property will not be persisted with JPA. It should be stored with {@link TextRepository}
+   * instead.
    *
    * @param text - the text content of this Chapter
    */

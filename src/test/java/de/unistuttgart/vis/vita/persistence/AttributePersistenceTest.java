@@ -1,9 +1,6 @@
 package de.unistuttgart.vis.vita.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -18,27 +15,28 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
+
 /**
  * Performs tests whether instances of Attribute can be persisted correctly.
  */
 public class AttributePersistenceTest extends AbstractPersistenceTest {
-  
+
   // test data
   private static final AttributeType TEST_ATTRIBUTE_NAME_TYPE = AttributeType.NAME;
   private static final String TEST_ATTRIBUTE_NAME_CONTENT = "Bilbo Baggins";
- 
+
   @Test
   public void testPersistOneAttribute() {
     // first set up an Attribute
     Attribute attribute = createTestAttribute();
-    
+
     // persist this Attribute
     em.persist(attribute);
     startNewTransaction();
-    
+
     // read persisted attributes from database
     List<Attribute> attributes = readAttributesFromDb();
-    
+
     // check whether data is correct
     assertEquals(1, attributes.size());
     Attribute readAttribute = attributes.get(0);
@@ -52,10 +50,10 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
    */
   private Attribute createTestAttribute() {
     Attribute attribute = new Attribute();
-    
+
     attribute.setType(TEST_ATTRIBUTE_NAME_TYPE);
     attribute.setContent(TEST_ATTRIBUTE_NAME_CONTENT);
-    
+
     return attribute;
   }
 
@@ -71,8 +69,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether the given Attribute is not <code>null</code> and includes the correct test
-   * data.
+   * Checks whether the given Attribute is not <code>null</code> and includes the correct test data.
    * 
    * @param attributeToCheck
    */
@@ -81,7 +78,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     assertEquals(TEST_ATTRIBUTE_NAME_TYPE, attributeToCheck.getType());
     assertEquals(TEST_ATTRIBUTE_NAME_CONTENT, attributeToCheck.getContent());
   }
-  
+
   /**
    * Check whether all Named Queries of Attribute are working correctly.
    */
@@ -101,11 +98,10 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     Attribute readAttribute = allAttributes.get(0);
     checkData(readAttribute);
 
-    int id = readAttribute.getId();
+    String id = readAttribute.getId();
 
     // check Named Query finding attributes by id
-    TypedQuery<Attribute> idQ = 
-        em.createNamedQuery("Attribute.findAttributeById", Attribute.class);
+    TypedQuery<Attribute> idQ = em.createNamedQuery("Attribute.findAttributeById", Attribute.class);
     idQ.setParameter("attributeId", id);
     Attribute idAttribute = idQ.getSingleResult();
 
@@ -121,7 +117,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     Attribute typeAttribute = typeAttributes.get(0);
     checkData(typeAttribute);
   }
-  
+
   @Test
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
@@ -133,7 +129,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     TextSpan span1 = new TextSpan(pos1, pos4);
     TextSpan span2 = new TextSpan(pos2, pos4);
     TextSpan span3 = new TextSpan(pos3, pos4);
-    
+
     Attribute attribute = createTestAttribute();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
     attribute.getOccurrences().add(span1);
@@ -152,5 +148,4 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     assertThat(dbAttribute.getOccurrences(),
         IsIterableContainingInOrder.contains(span1, span2, span3));
   }
-
 }

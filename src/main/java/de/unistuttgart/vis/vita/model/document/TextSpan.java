@@ -2,12 +2,12 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
@@ -23,14 +23,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
       + "FROM TextSpan ts "
       + "WHERE ts.id = :textSpanId"),
 })
-public class TextSpan implements Comparable<TextSpan> {
+public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
 
   // constants
   private static final int MIN_LENGTH = 0;
-
-  @Id
-  @GeneratedValue
-  private int id;
 
   @Embedded
   private TextPosition start;
@@ -66,13 +62,6 @@ public class TextSpan implements Comparable<TextSpan> {
     this.start = pStart;
     this.end = pEnd;
     this.length = diff;
-  }
-  
-  /**
-   * @return the id of the TextSpan
-   */
-  public int getId() {
-    return id;
   }
 
   /**
@@ -115,6 +104,9 @@ public class TextSpan implements Comparable<TextSpan> {
     return Integer.compare(getLength(), o.getLength());
   }
 
+  /**
+   * Indicates if obj is a TextSpan representing the same range as this text span
+   */
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof TextSpan)) {

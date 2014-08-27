@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -177,7 +175,7 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
     EntityRelation<Person> readRelation = allEntityRelations.get(0);
     checkData(readRelation);
     
-    int id = readRelation.getId();
+    String id = readRelation.getId();
     
     // check Named Query finding entity relation by id
     Query idQ = em.createNamedQuery("EntityRelation.findEntityRelationById");
