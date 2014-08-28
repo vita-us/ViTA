@@ -48,13 +48,25 @@
   }]);
 
   app.factory('Page', function() {
-    return {};
+    return {
+      setUpForDocument: function(document) {
+        this.title = document.metadata.title;
+        this.tab = 1;
+        this.showMenu = true;
+      },
+      setUp: function(title, tab) {
+        this.title = title;
+        this.showMenu = false;
+        this.tab = tab;
+        this.breadcrumbs = null;
+      }
+    }
   });
  
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.title = 'Default page title'; // set this in every controller
-    Page.breadcrumbs = null;           // set this in those controllers where a document is selected
-    Page.showMenu = true;              // set to false where no document is selected
+    Page.title = 'Default page title';
+    Page.breadcrumbs = null;
+    Page.showMenu = true;
     Page.tab = 1;
     $scope.Page = Page;
   }]);

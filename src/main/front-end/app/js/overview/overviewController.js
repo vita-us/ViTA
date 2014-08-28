@@ -11,8 +11,8 @@
           documentId: 'single-document'
         }, function(document) {
           $scope.document = document;
-          Page.title = document.metadata.title;
           Page.breadcrumbs = 'Overview';
+          Page.setUpForDocument(document);
         });
       }]);
 
