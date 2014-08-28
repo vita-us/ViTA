@@ -1,5 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt;
 
+/**
+ * The MetadataBuilder builds the metadata values by editing the commited metadata of the MetadataAnalyzer
+ * 
+ *
+ */
 public class MetadataBuilder {
 
   private static final String TITLE_VERSION1 = "Title:";
@@ -14,7 +19,12 @@ public class MetadataBuilder {
   private static final String GENRE_VERSION2 = "GENRE:";
   private static final String EDITION_VERSION1 = "Edition:";
   private static final String EDITION_VERSION2 = "EDITION:";
-
+  
+  /**
+   * 
+   * @param newMetadataTitle The metadata to edit
+   * @return the metadata value: metadataTitle
+   */
   public String buildMetadataTitle(String newMetadataTitle) {
     String metadataTitle = null;
     if (newMetadataTitle != null) {
@@ -34,6 +44,11 @@ public class MetadataBuilder {
 
   }
 
+  /**
+   * 
+   * @param newMetadataAuthor The metadata to edit
+   * @return the metadata value: metadataAuthor
+   */
   public String buildMetadataAuthor(String newMetadataAuthor) {
     String metadataAuthor = null;
     if (newMetadataAuthor != null) {
@@ -53,6 +68,11 @@ public class MetadataBuilder {
 
   }
 
+  /**
+   * 
+   * @param newMetadataPublishYear The metadata to edit
+   * @return the metadata value: metadataPublishYear
+   */
   public String buildMetadataPublishYear(String newMetadataPublishYear) {
     String metadataPublishYear = null;
     if (newMetadataPublishYear != null) {
@@ -72,6 +92,11 @@ public class MetadataBuilder {
 
   }
 
+  /**
+   * 
+   * @param newMetadataPublisher The metadata to edit
+   * @return the metadata value: metadataPublisher
+   */
   public String buildMetadataPublisher(String newMetadataPublisher) {
     String metadataPublisher = null;
     if (newMetadataPublisher != null) {
@@ -91,6 +116,11 @@ public class MetadataBuilder {
 
   }
 
+  /**
+   * 
+   * @param newMetadataGenre The metadata to edit
+   * @return the metadata value: metadataGenre
+   */
   public String buildMetadataGenre(String newMetadataGenre) {
     String metadataGenre = null;
     if (newMetadataGenre != null) {
@@ -110,6 +140,11 @@ public class MetadataBuilder {
 
   }
 
+  /**
+   * 
+   * @param newMetadataEdition The metadata to edit
+   * @return the metadata value: metadataEdition
+   */
   public String buildMetadataEdition(String newMetadataEdition) {
     String metadataEdition = null;
     if (newMetadataEdition != null) {
