@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The TextSplitter splits the text lines into metadata and text section
+ * 
+ *
+ */
 public class TextSplitter {
 
-  private static final String START_OF_REGEX = "...\\s*START OF.+\\s*...";
-  private static final String END_OF_REGEX = "...\\s*END OF.+\\s*...";
+  private static final String START_OF_REGEX = "\\*\\*\\*\\s*START OF.+\\s*\\*\\*\\*";
+  private static final String END_OF_REGEX = "\\*\\*\\*\\s*END OF.+\\s*\\*\\*\\*";
   private static final String TEXTDISTINCTION_REGEX = "START OF.+[^\\p{Punct}{3}]";
   private List<Line> metadataList = new ArrayList<>();
   private List<Line> textList = new ArrayList<>();
@@ -17,7 +22,11 @@ public class TextSplitter {
   public TextSplitter(List<Line> lines) {
     this.textList = lines;
   }
-
+  
+  /**
+   * Gets the metadata section from the textList
+   * @return contains the metadata lines: metadataList
+   */
   public List<Line> getMetadataSection() {
     List<Line> removeTextElements = new ArrayList<Line>();
     if (containsMetadataSection(textList)) {
@@ -45,6 +54,10 @@ public class TextSplitter {
     return metadataList;
   }
 
+  /**
+   * Gets only the text section from the textList
+   * @return contains only the text lines: textList
+   */
   public List<Line> getTextSection() {
     int position = 0;
     List<Line> removeRestElements = new ArrayList<Line>();
@@ -57,20 +70,29 @@ public class TextSplitter {
           }
         }
       }
-      removeElements(position, removeRestElements);
+      removeElementsFromPosition(position, removeRestElements);
     }
     return textList;
   }
-
-  private void removeElements(int position, List<Line> removeRestElementsList) {
+  
+  /**
+   * Removes the unnecessary Lines from "END OF .*" to the end
+   * @param position
+   * @param removeRestElementsList add the unnecessary lines
+   */
+  private void removeElementsFromPosition(int position, List<Line> removeRestElementsList) {
     for (int i = position; i < textList.size(); i++) {
       removeRestElementsList.add(textList.get(i));
     }
     textList.removeAll(removeRestElementsList);
     removeRestElementsList.clear();
   }
-
-
+  
+  /**
+   * Checks whether a metadata section is existing in the textList
+   * @param newTextList
+   * @return
+   */
   public boolean containsMetadataSection(List<Line> newTextList) {
     for (Line line : newTextList) {
       if (line.getText() != null) {
@@ -82,7 +104,12 @@ public class TextSplitter {
     return false;
 
   }
-
+  
+  /**
+   * Checks whether a text section is existing in the textList
+   * @param newTextList
+   * @return
+   */
   public boolean containsTextSection(List<Line> newTextList) {
     for (Line line : newTextList) {
       if (line.getText() != null) {
