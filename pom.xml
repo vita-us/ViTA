@@ -196,11 +196,31 @@
       <version>2.11.0</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>4.3.6.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.3.6.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.180</version>
+    </dependency>
+
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <version>0.9.9-RC1</version>
     </dependency>
+
     <dependency>
       <groupId>net.jodah</groupId>
       <artifactId>typetools</artifactId>

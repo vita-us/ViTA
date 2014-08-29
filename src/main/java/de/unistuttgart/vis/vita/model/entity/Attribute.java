@@ -1,20 +1,35 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents one attribute of an entity found in the document. This contains an id, type, content
  * and a set of occurrences in the document.
  */
-public class Attribute {
+@javax.persistence.Entity
+@NamedQueries({
+    @NamedQuery(name = "Attribute.findAllAttributes", query = "SELECT a " + "FROM Attribute a"),
 
-  private int id;
+    @NamedQuery(name = "Attribute.findAttributeById", query = "SELECT a " + "FROM Attribute a "
+        + "WHERE a.id = :attributeId"),
+
+    @NamedQuery(name = "Attribute.findAttributeByType", query = "SELECT a " + "FROM Attribute a "
+        + "WHERE a.type = :attributeType")})
+public class Attribute extends AbstractEntityBase {
   private AttributeType type;
   private String content;
-  private Set<TextSpan> occurrences;
+
+  @OneToMany
+  @OrderBy("START_OFFSET ASC")
+  private SortedSet<TextSpan> occurrences;
 
   /**
    * Creates a new attribute, setting all fields to default values.
@@ -24,33 +39,16 @@ public class Attribute {
   }
 
   /**
-   * Creates a new Attribute with given id, type and content.
+   * Creates a new Attribute with given type and content.
    *
-   * @param pId      - the id for the new attribute
-   * @param pType    - the type of the new attribute, for example 'Name'
+   * @param pId - the id for the new attribute
+   * @param pType - the type of the new attribute, for example 'Name'
    * @param pContent - the content of the new attribute, for example 'Bilbo Baggins'
    */
-  public Attribute(int pId, AttributeType pType, String pContent) {
-    this.id = pId;
+  public Attribute(AttributeType pType, String pContent) {
+    this();
     this.type = pType;
     this.content = pContent;
-    occurrences = new TreeSet<>();
-  }
-
-  /**
-   * @return the id of this Attribute
-   */
-  public int getId() {
-    return id;
-  }
-
-  /**
-   * Sets the id of this Attribute to the given value
-   *
-   * @param newId - the new id for this Attribute
-   */
-  public void setId(int newId) {
-    this.id = newId;
   }
 
   /**
@@ -86,17 +84,8 @@ public class Attribute {
   /**
    * @return a Set of all occurrences in the text which are related to this Attribute
    */
-  public Set<TextSpan> getOccurrences() {
+  public SortedSet<TextSpan> getOccurrences() {
     return occurrences;
-  }
-
-  /**
-   * Sets the occurrences related to this Attribute.
-   *
-   * @param occurrences - a set of all occurrences related to this Attribute
-   */
-  public void setOccurrences(Set<TextSpan> occurrences) {
-    this.occurrences = occurrences;
   }
 
 }

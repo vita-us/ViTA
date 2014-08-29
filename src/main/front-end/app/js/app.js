@@ -3,21 +3,42 @@
 
   var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
 
+  angular.module('vitaControllers', []);
+  angular.module('vitaServices', ['ngResource']);
+
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
       templateUrl: 'partials/documents.html',
       controller: 'DocumentsCtrl'
     }).when('/settings', {
       templateUrl: 'partials/settings.html',
-      controller: ''
+      controller: 'SettingsCtrl'
     }).when('/tutorial', {
       templateUrl: 'partials/tutorial.html',
-      controller: ''
+      controller: 'TutorialCtrl'
     }).when('/about', {
       templateUrl: 'partials/about.html',
-      controller: ''
+      controller: 'AboutCtrl'
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
+      controller: 'OverviewCtrl'
+    }).when('/documents/:documentId/profiles', {
+      templateUrl: 'partials/profiles.html',
+      controller: ''
+    }).when('/documents/:documentId/places', {
+      templateUrl: 'partials/places.html',
+      controller: ''
+    }).when('/documents/:documentId/fingerprint', {
+      templateUrl: 'partials/fingerprint.html',
+      controller: ''
+    }).when('/documents/:documentId/graphnetwork', {
+      templateUrl: 'partials/graphnetwork.html',
+      controller: ''
+    }).when('/documents/:documentId/wordcloud', {
+      templateUrl: 'partials/wordcloud.html',
+      controller: ''
+    }).when('/documents/:documentId/documentview', {
+      templateUrl: 'partials/documentview.html',
       controller: ''
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
@@ -26,16 +47,16 @@
     });
   }]);
 
-  app.controller("PanelController", function() {
-    this.tab = 1;
-    
-    this.selectTab = function(setTab) {
-      this.tab = setTab;
-    };
-
-    this.isSelected = function(checkTab) {
-      return this.tab === checkTab;
-    };
+  app.factory('Page', function() {
+    return {};
   });
+ 
+  app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
+    Page.title = 'Default page title'; // set this in every controller
+    Page.breadcrumbs = null;           // set this in those controllers where a document is selected
+    Page.showMenu = true;              // set to false where no document is selected
+    Page.tab = 1;
+    $scope.Page = Page;
+  }]);
 
 })(angular);

@@ -22,9 +22,25 @@ module.exports = function(grunt) {
         }
       },
       app: {
-        src: ['app/js/**/*.js'],
+        src: ['app/js/app.js', 'app/js/*/*.js'],
         dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
+    },
+    connect: {
+      options: {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: 8080,
+        base: '<%= appPath %>',
+        directory: '<%= appPath %>'
+      },
+      devserver: {
+        options: {
+          livereload: true,
+          open: "http://localhost:8080/index.html"
+        }
+      },
+      testserver: {}
     },
     copy: {
       dependencies: {
@@ -86,6 +102,11 @@ module.exports = function(grunt) {
           cwd: 'app/test_data',
           src: ['**'],
           dest: '<%= appPath %>test_data/'
+        }, {
+          expand: true,
+          cwd: 'app/img',
+          src: ['**'],
+          dest: '<%= appPath %>img/'
         }]
       }
     },
@@ -106,15 +127,59 @@ module.exports = function(grunt) {
           '<%= cssPath %>style.css': 'app/less/style.less'
         }
       }
+    },
+    protractor: {
+      options: {
+        configFile: '<%= mvnSrcDirectory %>test/front-end/protractor.conf.js'
+      },
+      firefox: {
+        options: {
+          args: {
+            browser: 'firefox'
+          }
+        }
+      },
+      chrome: {
+        options: {
+          args: {
+            browser: 'chrome'
+          }
+        }
+      }
+    },
+    watch: {
+      options: {
+        livereload: true
+      },
+      less: {
+        files: ['app/less/**/*.less'],
+        tasks: ['less']
+      },
+      statics: {
+        files: ['app/**/*.html', 'app/test_data/**', 'app/img/**'],
+        tasks: ['copy:statics']
+      },
+      scripts: {
+        files: ['app/js/**/*.js'],
+        tasks: ['concat']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('test', ['karma:dev']);
+  grunt.registerTask('test', ['test:unit']);
+  grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor']);
+  grunt.registerTask('test:gui:chrome', ['build', 'connect:testserver', 'protractor:chrome']);
+  grunt.registerTask('test:gui:firefox', ['build', 'connect:testserver', 'protractor:firefox']);
+  grunt.registerTask('test:unit', ['karma:dev']);
+  grunt.registerTask('webserver', ['build', 'connect:devserver', 'watch']);
 };

@@ -1,66 +1,57 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
+import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Inheritance;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,
  * ranking value, occurrences, fingerprint and relations to other entities.
  */
-public class Entity {
+@javax.persistence.Entity
+@Inheritance
+@DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
+public abstract class Entity extends AbstractEntityBase {
 
+  // constants
   private static final int MIN_RANK_VALUE = 1;
-  private int id;
-  private EntityType type;
+
   private String displayName;
-  private Set<Attribute> attributes;
-  private int rankingValue;
-  private Set<TextSpan> occurrences;
   private boolean[] fingerprint;
+  private int rankingValue;
+
+  @OneToMany
+  private Set<Attribute> attributes;
+
+  @OneToMany
+  @OrderBy("START_OFFSET ASC")
+  private SortedSet<TextSpan> occurrences;
+
+  @OneToMany
   private Set<EntityRelation<Entity>> entityRelations;
 
   /**
    * Creates a new entity with default values.
    */
   public Entity() {
-    attributes = new TreeSet<>();
+    attributes = new HashSet<>();
     occurrences = new TreeSet<>();
-    entityRelations = new TreeSet<>();
-  }
-
-  /**
-   * Creates a new instance of Entity.
-   */
-  public Entity(int id) {
-    this.id = id;
-  }
-
-  /**
-   * @return the id of the entity
-   */
-  public int getId() {
-    return id;
-  }
-
-  /**
-   * Sets a new Id for the entity.
-   */
-  public void setId(int newId) {
-    this.id = newId;
+    entityRelations = new HashSet<>();
   }
 
   /**
    * @return the type of the entity
    */
-  public EntityType getType() {
-    return type;
-  }
-
-  public void setType(EntityType newType) {
-    this.type = newType;
-  }
+  public abstract EntityType getType();
 
   /**
    * @return the name under which this entity will be shown
@@ -86,15 +77,6 @@ public class Entity {
   }
 
   /**
-   * Sets the attributes for this entity.
-   *
-   * @param newAttributes - the new attributes for this entity
-   */
-  public void setAttributes(Set<Attribute> newAttributes) {
-    this.attributes = newAttributes;
-  }
-
-  /**
    * @return the ranking value of the entity, where 1 is the highest rank
    */
   public int getRankingValue() {
@@ -109,7 +91,7 @@ public class Entity {
   public void setRankingValue(int newRankingValue) {
     if (newRankingValue < MIN_RANK_VALUE) {
       throw new IllegalArgumentException("the ranking value must be " + MIN_RANK_VALUE
-                                         + " or greater!");
+          + " or greater!");
     }
     this.rankingValue = newRankingValue;
   }
@@ -117,20 +99,14 @@ public class Entity {
   /**
    * @return Set of all occurrences of this entity in the document
    */
-  public Set<TextSpan> getOccurences() {
+  public SortedSet<TextSpan> getOccurrences() {
     return occurrences;
   }
 
   /**
-   * Sets the occurrences for this entity.
-   *
-   * @param newOccurences - a set of new occurrences for this entity
-   */
-  public void setOccurences(Set<TextSpan> newOccurences) {
-    this.occurrences = newOccurences;
-  }
-
-  /**
+   * Gets a bit vector that divides the whole document in spans of equal lengths and determines
+   * whether this entity occurs in a given span (true) or not (false).
+   * 
    * @return the fingerprint vector
    */
   public boolean[] getFingerprint() {
@@ -138,7 +114,8 @@ public class Entity {
   }
 
   /**
-   * Sets the fingerprint vector for this entity
+   * Sets a bit vector that divides the whole document in spans of equal lengths and determines
+   * whether this entity occurs in a given span (true) or not (false).
    *
    * @param newFingerprint - the new fingerprint vector for this entity
    */
@@ -151,15 +128,6 @@ public class Entity {
    */
   public Set<EntityRelation<Entity>> getEntityRelations() {
     return entityRelations;
-  }
-
-  /**
-   * Sets the relations for this entity.
-   *
-   * @param newEntityRelations - a set of new relations for this entity
-   */
-  public void setEntityRelations(Set<EntityRelation<Entity>> newEntityRelations) {
-    this.entityRelations = newEntityRelations;
   }
 
 }
