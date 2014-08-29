@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
  */
 public class TextSplitter {
 
-  private static final String START_OF_REGEX = "\\*\\*\\*\\s*START OF.+\\s*\\*\\*\\*";
-  private static final String END_OF_REGEX = "\\*\\*\\*\\s*END OF.+\\s*\\*\\*\\*";
-  private static final String TEXTDISTINCTION_REGEX = "START OF.+[^\\p{Punct}{3}]";
+  private static final String START_OF_REGEX = "\\*\\*\\*\\s*start of.+\\s*\\*\\*\\*";
+  private static final String END_OF_REGEX = "\\*\\*\\*\\s*end of.+\\s*\\*\\*\\*";
+  private static final String TEXTDISTINCTION_REGEX = "start of.+[^\\p{Punct}{3}]";
   private List<Line> metadataList = new ArrayList<>();
   private List<Line> textList = new ArrayList<>();
   private String textDistinction = "";
@@ -22,9 +22,10 @@ public class TextSplitter {
   public TextSplitter(List<Line> lines) {
     this.textList = lines;
   }
-  
+
   /**
    * Gets the metadata section from the textList
+   * 
    * @return contains the metadata lines: metadataList
    */
   public List<Line> getMetadataSection() {
@@ -32,12 +33,12 @@ public class TextSplitter {
     if (containsMetadataSection(textList)) {
       for (Line line : textList) {
         if (line.getText() != null) {
-          if (line.getText().matches(START_OF_REGEX)) {
+          if (line.getText().toLowerCase().matches(START_OF_REGEX)) {
             Pattern pattern = Pattern.compile(TEXTDISTINCTION_REGEX);
-            Matcher matcher = pattern.matcher(line.getText());
+            Matcher matcher = pattern.matcher(line.getText().toLowerCase());
             if (matcher.find()) {
               textDistinction = matcher.group(0);
-              textDistinction = textDistinction.replace("START OF", "");
+              textDistinction = textDistinction.replaceAll("(?i)start of", "");
               textDistinction = textDistinction.trim();
             }
             break;
@@ -56,6 +57,7 @@ public class TextSplitter {
 
   /**
    * Gets only the text section from the textList
+   * 
    * @return contains only the text lines: textList
    */
   public List<Line> getTextSection() {
@@ -64,7 +66,8 @@ public class TextSplitter {
     if (containsTextSection(textList) && !metadataList.isEmpty()) {
       for (Line line : textList) {
         if (line.getText() != null) {
-          if (line.getText().matches(END_OF_REGEX) && line.getText().contains(textDistinction)) {
+          if (line.getText().toLowerCase().matches(END_OF_REGEX)
+              && line.getText().toLowerCase().contains(textDistinction)) {
             position = textList.indexOf(line);
             break;
           }
@@ -72,11 +75,13 @@ public class TextSplitter {
       }
       removeElementsFromPosition(position, removeRestElements);
     }
+    textList.remove(0);
     return textList;
   }
-  
+
   /**
    * Removes the unnecessary Lines from "END OF .*" to the end
+   * 
    * @param position
    * @param removeRestElementsList add the unnecessary lines
    */
@@ -87,16 +92,17 @@ public class TextSplitter {
     textList.removeAll(removeRestElementsList);
     removeRestElementsList.clear();
   }
-  
+
   /**
    * Checks whether a metadata section is existing in the textList
+   * 
    * @param newTextList
    * @return
    */
   public boolean containsMetadataSection(List<Line> newTextList) {
     for (Line line : newTextList) {
       if (line.getText() != null) {
-        if (line.getText().matches(START_OF_REGEX)) {
+        if (line.getText().toLowerCase().matches(START_OF_REGEX)) {
           return true;
         }
       }
@@ -104,16 +110,18 @@ public class TextSplitter {
     return false;
 
   }
-  
+
   /**
    * Checks whether a text section is existing in the textList
+   * 
    * @param newTextList
    * @return
    */
   public boolean containsTextSection(List<Line> newTextList) {
     for (Line line : newTextList) {
       if (line.getText() != null) {
-        if (line.getText().matches(END_OF_REGEX) && line.getText().contains(textDistinction)) {
+        if (line.getText().toLowerCase().matches(END_OF_REGEX)
+            && line.getText().toLowerCase().contains(textDistinction)) {
           return true;
         }
       }
