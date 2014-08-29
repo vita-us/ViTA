@@ -127,4 +127,9 @@ public final class ModuleClass {
   public int hashCode() {
     return clazz.hashCode();
   }
+
+  @Override
+  public String toString() {
+    return clazz.toString();
+  }
 }

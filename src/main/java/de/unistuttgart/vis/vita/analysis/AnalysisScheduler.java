@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Prepares an AnalysisExecutor
+ * Traces dependencies of modules and prepares an execution
  */
 public class AnalysisScheduler {
   /**
@@ -18,10 +18,15 @@ public class AnalysisScheduler {
   private List<ModuleExecutionState> scheduledModules = new ArrayList<>();
   
   /**
+   * Keeps track of which modules have already been added
+   */
+  private Set<ModuleClass> scheduledModuleClasses = new HashSet<>();
+
+  /**
    * Remembers which of the initial modules provides which result.
    * <p>
-   * This is required because the ModuleRegistry may contain multiple modules for some results.
-   * All module classes in this map should be instantiable or already instantiated.
+   * This is required because the ModuleRegistry may contain multiple modules for some results. All
+   * module classes in this map should be instantiable or already instantiated.
    */
   private Map<Class<?>, ModuleClass> modulesForResultClass = new HashMap<>();
   
@@ -32,13 +37,18 @@ public class AnalysisScheduler {
    * @param targetModule the module that finishes the execution
    * @param initialModules pre-initialized modules that can be used
    */
-  public AnalysisScheduler(ModuleRegistry registry,
-      ModuleClass targetModule, Module<?>... initialModules) {
+  public AnalysisScheduler(ModuleRegistry registry, ModuleClass targetModule,
+      Module<?>... initialModules) {
     this.registry = registry;
     
     for (Module<?> module : initialModules) {
-      scheduleModule(ModuleClass.get(module.getClass()), module);
+      if (!scheduleModule(ModuleClass.get(module.getClass()), module)) {
+        throw new IllegalArgumentException("For the module class " + module.getClass()
+            + "there is more than one instance provided");
+      }
     }
+
+    scheduleModule(targetModule, null);
   }
   
   /**
@@ -53,11 +63,22 @@ public class AnalysisScheduler {
 
   /**
    * Schedules the execution of a module and its dependencies
+   * 
    * @param moduleClass the module class
    * @param optionalInstance an optional instance of the class, or null
+   * @return true, if the module has been added, or false if the module class has already been added
    */
-  private void scheduleModule(ModuleClass moduleClass, Module<?> optionalInstance) {
+  private boolean scheduleModule(ModuleClass moduleClass, Module<?> optionalInstance) {
+    if (scheduledModuleClasses.contains(moduleClass))
+      return false;
+
+    if (!moduleClass.canInstantiate() && optionalInstance == null) {
+      throw new UnresolvedModuleDependencyException("The module " + moduleClass
+          + "has no parameterless constructor and there is no instance provided for it.");
+    }
+
     modulesForResultClass.put(moduleClass.getResultClass(), moduleClass);
+    scheduledModuleClasses.add(moduleClass);
     Set<ModuleClass> dependencyModuleClasses = new HashSet<ModuleClass>();
     for (Class<?> dependencyResultClass : moduleClass.getDependencies()) {
       ModuleClass dependencyModuleClass = getModuleClassFor(dependencyResultClass, moduleClass);
@@ -65,6 +86,7 @@ public class AnalysisScheduler {
       dependencyModuleClasses.add(dependencyModuleClass);
     }
     scheduledModules.add(new ModuleExecutionState(moduleClass, optionalInstance, dependencyModuleClasses));
+    return true;
   }
 
   /**
@@ -82,12 +104,6 @@ public class AnalysisScheduler {
     if (clazz == null) {
       throw new UnresolvedModuleDependencyException("The module " + dependentClass.getClass().getName() + 
           "depends on the result " + resultClass.getName() + ", but there is no module available for that.");
-    }
-    
-    if (!clazz.canInstantiate()) {
-      throw new UnresolvedModuleDependencyException("The module " + dependentClass.getClass().getName() + 
-          "depends on the result " + resultClass.getName() + " which is provided by the module " +
-          clazz.getClass().getName() + ", but that class hat no zero-argument constructor.");
     }
     
     modulesForResultClass.put(resultClass, clazz);

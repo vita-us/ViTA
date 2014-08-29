@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class ModuleExecutionState {
     this.instance = optionalInstance;
     remainingDependencies = dependencies;
     resultProvider = new ModuleResultProviderImpl();
+    isExecutable = remainingDependencies.isEmpty();
   }
 
   /**
@@ -39,6 +41,15 @@ public class ModuleExecutionState {
       instance = clazz.newInstance();
     }
     return instance;
+  }
+
+  /**
+   * Gets the ModuleClasses that are blocking this module from being executable
+   * 
+   * @return an unmodifiable view to the set.
+   */
+  public Set<ModuleClass> getRemainingDependencies() {
+    return Collections.unmodifiableSet(remainingDependencies);
   }
 
   public ModuleClass getModuleClass() {
@@ -101,5 +112,21 @@ public class ModuleExecutionState {
             + " because you did not specify that result class as dependency");
       return (T) results.get(resultClass);
     }
+  }
+
+  @Override
+  public String toString() {
+    return clazz + " @ " + getStatusString();
+  }
+
+  private String getStatusString() {
+    if (thread != null) {
+      if (!thread.isAlive())
+        return "finished";
+      return "running";
+    }
+    if (isExecutable)
+      return "executable";
+    return "waiting for " + StringUtils.join(remainingDependencies, ", ");
   }
 }
