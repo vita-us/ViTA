@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,14 +27,14 @@ public class MetadataAnalyzer {
   private static final String GENRE = "^((Genre:)|(GENRE:)).+";
   private static final String EDITION = "^((Edition:)|(EDITION:)).+";
   private List<Line> metadataList = new ArrayList<Line>();
-  private String path;
+  private Path path;
   private Date date = null;
   private DocumentMetadata documentMetadata = new DocumentMetadata();
   
-  public MetadataAnalyzer(List<Line> newMetadataList, String newPath) {
+  public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
     this.metadataList = newMetadataList;
     this.path = newPath;
-
+    setDefaultValues();
   }
 
   /**
@@ -43,7 +44,6 @@ public class MetadataAnalyzer {
    */
   public DocumentMetadata extractMetadata() {
     MetadataBuilder metadataBuilder = new MetadataBuilder();
-    setDefaultValues();
     if (!metadataList.isEmpty()) {
       for (Line line : metadataList) {
         if (line != null) {
@@ -77,7 +77,7 @@ public class MetadataAnalyzer {
       }
     } else {
 
-      documentMetadata.setTitle(new File(path).getName());
+      documentMetadata.setTitle(new File(path.toString()).getName());
     }
     return documentMetadata;
   }
