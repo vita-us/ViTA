@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class ModuleClassTest {
     ModuleClass clazz = ModuleClass.get(MockModule.class);
     assertEquals(String.class, clazz.getResultClass());
     assertThat(clazz.getDependencies(), 
-        IsIterableContainingInOrder.<Class<?>>contains(String.class));
+        IsIterableContainingInOrder.<Class<?>>contains(Integer.class));
     assertTrue(clazz.canInstantiate());
   }
   

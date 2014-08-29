@@ -5,7 +5,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
-@AnalysisModule(dependencies={String.class})
+@AnalysisModule(dependencies = {Integer.class})
 public class MockModule implements Module<String> {
   @Override
   public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
