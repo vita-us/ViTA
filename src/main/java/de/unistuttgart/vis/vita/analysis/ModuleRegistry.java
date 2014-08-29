@@ -58,7 +58,7 @@ public class ModuleRegistry {
    * @return Empty registry.
    */
   public static ModuleRegistry getDefaultRegistry() {
-    if (defaultRegistry != null) {
+    if (defaultRegistry == null) {
       defaultRegistry = new ModuleRegistry(MODULES_PACKAGE_NAME);
     }
     return defaultRegistry;

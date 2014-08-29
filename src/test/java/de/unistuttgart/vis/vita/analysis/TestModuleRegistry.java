@@ -1,11 +1,7 @@
 package de.unistuttgart.vis.vita.analysis;
 
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import org.hamcrest.core.IsSame;
 import org.junit.Test;
@@ -31,7 +27,7 @@ public class TestModuleRegistry {
   @Test
   public void testDefaultRegistry() {
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
-    assertNotNull(registry);
+    assertThat(registry, is(not(nullValue())));
     assertThat(ModuleRegistry.getDefaultRegistry(), IsSame.sameInstance(registry));
   }
 }
