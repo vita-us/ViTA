@@ -24,5 +24,6 @@ public interface Module<TResult> {
    * @param progressListener A listener to observe the execution.
    * @return The result of the module.
    */
-  public TResult execute(ModuleResultProvider result, ProgressListener progressListener);
+  public TResult execute(ModuleResultProvider result, ProgressListener progressListener)
+      throws Exception;
 }
