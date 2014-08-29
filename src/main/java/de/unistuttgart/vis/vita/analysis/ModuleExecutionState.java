@@ -1,8 +1,12 @@
 package de.unistuttgart.vis.vita.analysis;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The state maintained by the AnalyisController for the execution of a module
@@ -13,12 +17,13 @@ public class ModuleExecutionState {
   private Set<ModuleClass> remainingDependencies;
   private ModuleResultProviderImpl resultProvider;
   private boolean isExecutable;
-  
+  private Thread thread;
+
   public ModuleExecutionState(ModuleClass clazz, Module<?> optionalInstance,
       Set<ModuleClass> dependencies) {
     this.clazz = clazz;
     this.instance = optionalInstance;
-    remainingDependencies = dependencies;
+    remainingDependencies = new HashSet<ModuleClass>(dependencies);
     resultProvider = new ModuleResultProviderImpl();
     isExecutable = remainingDependencies.isEmpty();
   }
@@ -57,6 +62,11 @@ public class ModuleExecutionState {
   }
   
   public void notifyDependencyFinished(ModuleClass dependency, Object result) {
+    if (!dependency.getResultClass().isAssignableFrom(result.getClass())) {
+      throw new IllegalArgumentException(
+          "The provided result is not assignable to the claimed module's result type");
+    }
+
     synchronized (remainingDependencies) {
       if (!remainingDependencies.contains(dependency)) {
         return;
@@ -94,7 +104,7 @@ public class ModuleExecutionState {
   }
 
   private static class ModuleResultProviderImpl implements ModuleResultProvider {
-    private Map<Class<?>, Object> results;
+    private Map<Class<?>, Object> results = new HashMap<>();
 
     public void put(Class<?> clazz, Object result) {
       if (!clazz.isInstance(result)) {
@@ -112,6 +122,27 @@ public class ModuleExecutionState {
             + " because you did not specify that result class as dependency");
       return (T) results.get(resultClass);
     }
+  }
+
+  /**
+   * Gets the thread that has been set using {@link #setThread(Thread)}
+   * 
+   * @return the thread or null if {@link #setThread} has not been called yet
+   */
+  public Thread getThread() {
+    return thread;
+  }
+
+  /**
+   * Associates a thread that can later be retrieved by {@link #getThread()}. Ensures that
+   * {@link #isExecutable()} is true. Does not to anything with the tread.
+   * 
+   * @param thread the thread to set
+   */
+  public void setThread(Thread thread) {
+    if (!isExecutable())
+      throw new IllegalStateException("Can not assign threads to modules that are not executable");
+    this.thread = thread;
   }
 
   @Override

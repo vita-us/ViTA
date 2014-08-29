@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({AnalysisControllerTest.class, TestModuleRegistry.class, ModuleClassTest.class,
-    AnalysisSchedulerTest.class})
+    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class})
 public class AnalysisTests {
 
   // conform checkstyle rule HideUtilityClassConstructor
