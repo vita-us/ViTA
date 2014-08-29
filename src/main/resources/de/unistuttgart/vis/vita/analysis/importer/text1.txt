@@ -1,6 +1,11 @@
 Title: The Lord of the Rings
 Author: J.R.R. Tolkien
 
+*** Start of The Lord of the Rings ***
 # Chapter 1
 
 The text of the first chapter.
+
+*** end OF The Lord of the Rings ***
+
+Postface
