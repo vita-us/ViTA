@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleDependentOnSelf;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutAnnotation;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutInterfaceImplementation;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutResultClass;
@@ -59,6 +60,11 @@ public class ModuleClassTest {
   @Test(expected=InvalidModuleException.class)
   public void testRejectsModuleWithoutAnnotation() {
     ModuleClass.get(ModuleWithoutAnnotation.class);
+  }
+
+  @Test(expected = InvalidModuleException.class)
+  public void testRejectsModuleDependingOnOwnResult() {
+    ModuleClass.get(ModuleDependentOnSelf.class);
   }
 
 }

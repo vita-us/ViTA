@@ -46,6 +46,11 @@ public final class ModuleClass {
     
     dependencies = ImmutableSet.copyOf(annotation.dependencies());
     
+    if (dependencies.contains(resultClass)) {
+      throw new InvalidModuleException("The class " + moduleClass.getName()
+          + " depends on its own result");
+    }
+
     try {
       moduleClass.getConstructor(new Class[0]);
       hasZeroArgumentConstructor = true;
