@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.modules.DualDependentModule;
-import de.unistuttgart.vis.vita.analysis.modules.IndependentModule;
 import de.unistuttgart.vis.vita.analysis.modules.IntProvidingModule;
 import de.unistuttgart.vis.vita.analysis.modules.ManualModule;
 import de.unistuttgart.vis.vita.analysis.modules.MockModule;
@@ -26,7 +25,7 @@ public class AnalysisSchedulerTest {
 
   @Test
   public void testSimple() {
-    ModuleClass moduleClass = ModuleClass.get(IndependentModule.class);
+    ModuleClass moduleClass = ModuleClass.get(IntProvidingModule.class);
     scheduler = new AnalysisScheduler(registry, moduleClass);
 
     Collection<ModuleExecutionState> scheduled = scheduler.getScheduledModules();
@@ -41,7 +40,7 @@ public class AnalysisSchedulerTest {
   @Test
   public void testSingleDependency() {
     ModuleClass targetModule = ModuleClass.get(MockModule.class);
-    ModuleClass dependencyModule = ModuleClass.get(IndependentModule.class);
+    ModuleClass dependencyModule = ModuleClass.get(IntProvidingModule.class);
     when(registry.getModuleClassFor(Integer.class)).thenReturn(dependencyModule);
     scheduler = new AnalysisScheduler(registry, targetModule);
 
@@ -61,7 +60,7 @@ public class AnalysisSchedulerTest {
   @Test
   public void testPassingModuleInstances() {
     ModuleClass targetModule = ModuleClass.get(MockModule.class);
-    ModuleClass dependencyModule = ModuleClass.get(IndependentModule.class);
+    ModuleClass dependencyModule = ModuleClass.get(IntProvidingModule.class);
     Module<Integer> dependencyModuleInstance = (Module<Integer>) dependencyModule.newInstance();
     when(registry.getModuleClassFor(Integer.class)).thenReturn(dependencyModule);
 
@@ -78,7 +77,7 @@ public class AnalysisSchedulerTest {
   @Test
   public void testPassingInstanceOfTargetModule() {
     ModuleClass targetModule = ModuleClass.get(MockModule.class);
-    ModuleClass dependencyModule = ModuleClass.get(IndependentModule.class);
+    ModuleClass dependencyModule = ModuleClass.get(IntProvidingModule.class);
     Module<String> targetModuleInstance = (Module<String>) targetModule.newInstance();
     when(registry.getModuleClassFor(Integer.class)).thenReturn(dependencyModule);
 
@@ -92,7 +91,7 @@ public class AnalysisSchedulerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPassingTwoInstanceOfSameModuleThrows() {
-    ModuleClass targetModule = ModuleClass.get(IndependentModule.class);
+    ModuleClass targetModule = ModuleClass.get(IntProvidingModule.class);
     Module<?> moduleInstance1 = targetModule.newInstance();
     Module<?> moduleInstance2 = targetModule.newInstance();
 
@@ -102,7 +101,7 @@ public class AnalysisSchedulerTest {
   @Test(expected = UnresolvedModuleDependencyException.class)
   public void testMissingInstanceThrows() {
     ModuleClass targetModule = ModuleClass.get(ManualModule.class);
-    ModuleClass dependencyModule = ModuleClass.get(IndependentModule.class);
+    ModuleClass dependencyModule = ModuleClass.get(IntProvidingModule.class);
     when(registry.getModuleClassFor(Integer.class)).thenReturn(dependencyModule);
 
     // should complain that the instance of ManualMode is missing because there is no parameterless
@@ -118,6 +117,13 @@ public class AnalysisSchedulerTest {
 
     // should complain that the instance of ManualMode is missing because there is no parameterless
     // constructor for that module.
+    scheduler = new AnalysisScheduler(registry, targetModule);
+  }
+
+  @Test(expected = UnresolvedModuleDependencyException.class)
+  public void testMissingDependenyThrows() {
+    ModuleClass targetModule = ModuleClass.get(MockModule.class);
+    
     scheduler = new AnalysisScheduler(registry, targetModule);
   }
 
