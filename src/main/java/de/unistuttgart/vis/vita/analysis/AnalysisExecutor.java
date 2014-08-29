@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 /**
  * Controls the execution of the analysis of a single document
  */
@@ -18,20 +20,36 @@ public class AnalysisExecutor {
    */
   private List<ModuleExecutionState> runningModules;
   
-  private boolean isStarted = false;
-  
+  private AnalysisStatus status = AnalysisStatus.NOT_STARTED;
   /**
    * Creates an executor for the scheduled modules
    * @param scheduledModules the modules to execute
    */
   AnalysisExecutor(Iterable<ModuleExecutionState> scheduledModules) {
-    this.scheduledModules = new ArrayList<>(this.scheduledModules);
+    this.scheduledModules = Lists.newArrayList(scheduledModules);
+    runningModules = new ArrayList<>();
   }
   
+  /**
+   * Gets the status of this executor
+   * 
+   * @return the status
+   */
+  public AnalysisStatus getStatus() {
+    return status;
+  }
+
   public synchronized void start() {
-    if (!isStarted) {
-      isStarted = true;
-      startExecutableModules();
+    switch (status) {
+      case CANCELLED:
+        throw new IllegalStateException("Cannot restart a cancelled executer");
+      case FAILED:
+        throw new IllegalStateException("Cannot restart a failed executer");
+      case RUNNING:
+        return;
+      case NOT_STARTED:
+        status = AnalysisStatus.RUNNING;
+        startExecutableModules();
     }
   }
   
@@ -50,7 +68,8 @@ public class AnalysisExecutor {
     
     // Check if there is a dependency deadlock, i.e. there are remaining modules, but none could execute
     if (scheduledModules.size() > 0 && runningModules.size() == 0) {
-      // TODO 
+      status = AnalysisStatus.FAILED;
+      // TODO
     }
   }
   
@@ -76,21 +95,38 @@ public class AnalysisExecutor {
       }
     });
     thread.start();
+    moduleState.setThread(thread);
     runningModules.add(moduleState);
   }
   
   private synchronized void onModuleFinished(ModuleExecutionState moduleState, Object result) {
+    runningModules.remove(moduleState);
     for (ModuleExecutionState module : scheduledModules) {
       module.notifyDependencyFinished(moduleState.getModuleClass(), result);
     }
     startExecutableModules();
+
+    if (scheduledModules.size() == 0 && runningModules.size() == 0) {
+      status = AnalysisStatus.FINISHED;
+    }
   }
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
     // TODO
   }
   
+  /**
+   * Stops the execution, interrupting all running modules and preventing scheduled modules from
+   * starting
+   */
   public void cancel() {
-    // TODO
+    if (status != AnalysisStatus.FAILED) {
+      status = AnalysisStatus.CANCELLED;
+    }
+
+    for (ModuleExecutionState state : runningModules) {
+      state.getThread().interrupt();
+    }
+    scheduledModules.clear();
   }
 }
