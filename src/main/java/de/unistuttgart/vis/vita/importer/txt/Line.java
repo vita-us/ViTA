@@ -89,7 +89,7 @@ public class Line {
     return type;
   }
 
-  protected Line(String text) {
+  public Line(String text) {
     super();
     this.text = text;
     computeType();
