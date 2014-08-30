@@ -10,6 +10,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 public abstract class DebugBaseModule<T> implements Module<T> {
   private boolean hasBeenExecuted = false;
   private boolean hasBeenCalled = false;
+  private boolean hasBeenInterrupted = false;
 
   public boolean hasBeenExecuted() {
     return hasBeenExecuted;
@@ -17,6 +18,10 @@ public abstract class DebugBaseModule<T> implements Module<T> {
 
   public boolean hasBeenCalled() {
     return hasBeenCalled;
+  }
+
+  public boolean hasBeenInterrupted() {
+    return hasBeenInterrupted;
   }
 
   @Override
@@ -34,12 +39,22 @@ public abstract class DebugBaseModule<T> implements Module<T> {
   public final T execute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception {
     hasBeenCalled = true;
-    Thread.sleep(DEFAULT_SLEEP_MS);
-    T moduleResult = realExecute(result, progressListener);
+    T moduleResult;
+    try {
+      Thread.sleep(DEFAULT_SLEEP_MS);
+      moduleResult = realExecute(result, progressListener);
+    } catch (InterruptedException e) {
+      hasBeenInterrupted = true;
+      moduleResult = interruptReceived(e);
+    }
     hasBeenExecuted = true;
     return moduleResult;
   }
 
   protected abstract T realExecute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception;
+
+  protected T interruptReceived(InterruptedException e) throws Exception {
+    throw e;
+  }
 }

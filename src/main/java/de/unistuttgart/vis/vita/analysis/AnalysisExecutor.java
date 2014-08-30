@@ -1,8 +1,11 @@
 package de.unistuttgart.vis.vita.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
@@ -20,7 +23,12 @@ public class AnalysisExecutor {
    */
   private List<ModuleExecutionState> runningModules;
   
-  private AnalysisStatus status = AnalysisStatus.NOT_STARTED;
+  /**
+   * Stores the modules that have encountered an exception and their exception
+   */
+  private Map<ModuleClass, Exception> failedModules = new HashMap<>();
+
+  private AnalysisStatus status = AnalysisStatus.READY;
   /**
    * Creates an executor for the scheduled modules
    * @param scheduledModules the modules to execute
@@ -47,7 +55,7 @@ public class AnalysisExecutor {
         throw new IllegalStateException("Cannot restart a failed executer");
       case RUNNING:
         return;
-      case NOT_STARTED:
+      case READY:
         status = AnalysisStatus.RUNNING;
         startExecutableModules();
     }
@@ -66,10 +74,15 @@ public class AnalysisExecutor {
       }
     }
     
-    // Check if there is a dependency deadlock, i.e. there are remaining modules, but none could execute
+    // Check if there is a dependency deadlock (there are remaining modules, but none could execute)
     if (scheduledModules.size() > 0 && runningModules.size() == 0) {
       status = AnalysisStatus.FAILED;
-      // TODO
+      Exception ex =
+          new UnresolvedModuleDependencyException(
+              "The module could not be executed because of a deadlock.");
+      for (ModuleExecutionState module : scheduledModules) {
+        failedModules.put(module.getModuleClass(), ex);
+      }
     }
   }
   
@@ -100,19 +113,51 @@ public class AnalysisExecutor {
   }
   
   private synchronized void onModuleFinished(ModuleExecutionState moduleState, Object result) {
+    // Ignore results produced after failure / cancel
+    if (status != AnalysisStatus.RUNNING)
+      return;
+
     runningModules.remove(moduleState);
     for (ModuleExecutionState module : scheduledModules) {
       module.notifyDependencyFinished(moduleState.getModuleClass(), result);
     }
     startExecutableModules();
-
-    if (scheduledModules.size() == 0 && runningModules.size() == 0) {
-      status = AnalysisStatus.FINISHED;
-    }
+    checkFinished();
   }
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
-    // TODO
+    // Ignore results produced after failure / cancel
+    if (status != AnalysisStatus.RUNNING)
+      return;
+
+    runningModules.remove(moduleState);
+    failedModules.put(moduleState.getModuleClass(), e);
+    removeModuleAndDependencies(moduleState);
+    checkFinished();
+  }
+
+  private void checkFinished() {
+    if (scheduledModules.size() == 0 && runningModules.size() == 0) {
+      if (failedModules.isEmpty()) {
+        status = AnalysisStatus.FINISHED;
+      } else {
+        status = AnalysisStatus.FAILED;
+      }
+    }
+  }
+
+  /**
+   * Recursively removes the module and all modules that depend on it
+   * 
+   * @param moduleToRemove the module to remove
+   */
+  private void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
+    scheduledModules.remove(moduleToRemove);
+    for (ModuleExecutionState module : scheduledModules) {
+      if (module.getRemainingDependencies().contains(moduleToRemove)) {
+        removeModuleAndDependencies(module);
+      }
+    }
   }
   
   /**
@@ -128,5 +173,14 @@ public class AnalysisExecutor {
       state.getThread().interrupt();
     }
     scheduledModules.clear();
+  }
+
+  /**
+   * Gets a map of objects that have failed and the exceptions they have thrown
+   * 
+   * @return the failed exceptions; is empty if successful
+   */
+  public Map<ModuleClass, Exception> getFailedModules() {
+    return Collections.unmodifiableMap(failedModules);
   }
 }

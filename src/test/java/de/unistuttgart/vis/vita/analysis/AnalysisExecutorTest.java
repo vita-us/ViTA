@@ -44,7 +44,7 @@ public class AnalysisExecutorTest {
 
   @Test
   public void testRunning() {
-    assertThat(executor.getStatus(), is(AnalysisStatus.NOT_STARTED));
+    assertThat(executor.getStatus(), is(AnalysisStatus.READY));
     
     executor.start();
     assertThat(executor.getStatus(), is(AnalysisStatus.RUNNING));
@@ -70,6 +70,54 @@ public class AnalysisExecutorTest {
 
     assertThat(targetModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleInstance.hasBeenExecuted(), is(true));
+    assertThat(executor.getFailedModules().values(), is(empty()));
+  }
+
+  @Test
+  public void testCancel() throws InterruptedException {
+    executor.start();
+
+    await().until(moduleCalled(dependencyModuleInstance));
+
+    executor.cancel();
+
+    assertThat(executor.getStatus(), is(AnalysisStatus.CANCELLED));
+
+    await().until(moduleInterrupted(dependencyModuleInstance));
+
+    // Make sure this does not get called
+    Thread.sleep(DebugBaseModule.DEFAULT_SLEEP_MS * 3);
+    assertThat(targetModuleInstance.hasBeenCalled(), is(false));
+    assertThat(targetModuleState.isExecutable(), is(false));
+  }
+
+  @Test
+  public void testCancelStaysCanelledEvenWhenModulesFinish() throws InterruptedException {
+    executor.start();
+
+    await().until(moduleCalled(targetModuleInstance));
+
+    executor.cancel();
+
+    assertThat(executor.getStatus(), is(AnalysisStatus.CANCELLED));
+    await().until(moduleInterrupted(targetModuleInstance));
+    assertThat(executor.getStatus(), is(AnalysisStatus.CANCELLED));
+    await().until(moduleExecuted(targetModuleInstance));
+    assertThat(executor.getStatus(), is(AnalysisStatus.CANCELLED));
+    await().until(moduleInterrupted(targetModuleInstance));
+    assertThat(executor.getStatus(), is(AnalysisStatus.CANCELLED));
+  }
+
+  @Test
+  public void testFailingModule() {
+    targetModuleInstance.shouldFail = true;
+    executor.start();
+    await().until(moduleCalled(targetModuleInstance));
+
+    await().until(statusIs(AnalysisStatus.FAILED));
+    assertThat(executor.getFailedModules(), hasKey(targetModule));
+    assertEquals(MockModule.FAIL_EXCEPTION, executor.getFailedModules().get(targetModule)
+        .getClass());
   }
 
   private Callable<Boolean> moduleExecuted(final DebugBaseModule<?> instance) {
@@ -86,6 +134,15 @@ public class AnalysisExecutorTest {
       @Override
       public Boolean call() throws Exception {
         return instance.hasBeenCalled();
+      }
+    };
+  }
+
+  private Callable<Boolean> moduleInterrupted(final DebugBaseModule<?> instance) {
+    return new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return instance.hasBeenInterrupted();
       }
     };
   }
