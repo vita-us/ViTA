@@ -3,9 +3,12 @@ package de.unistuttgart.vis.vita.analysis;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+
+import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.analysis.modules.ImportModule;
 import de.unistuttgart.vis.vita.analysis.modules.MainAnalysisModule;
@@ -83,8 +86,8 @@ public class AnalysisController {
     Path path = documentPaths.get(document.getId());
     AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE),
         new ImportModule(path), new ModelProviderModule(model));
-    AnalysisExecutor executor = new AnalysisExecutor(scheduler.getScheduledModules());
-    executor.start();
+    currentExecuter = new AnalysisExecutor(scheduler.getScheduledModules());
+    currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
     
@@ -92,8 +95,10 @@ public class AnalysisController {
   }
   
   private Document createDocument(Path filePath) {
-    // TODO
-    return null;
+    Document document = new Document();
+    document.getMetadata().setTitle(filePath.getFileName().toString());
+    model.getEntityManager().persist(document);
+    return document;
   }
 
   /**
@@ -104,6 +109,8 @@ public class AnalysisController {
   public synchronized void cancelAnalysis(String documentID) {
     if (currentDocument != null && currentDocument.getId().equals(documentID)) {
       currentExecuter.cancel();
+      currentExecuter = null;
+      startNextAnalysis();
     } else {
       Iterator<Document> it = analysisQueue.iterator();
       while (it.hasNext()) {
@@ -115,20 +122,49 @@ public class AnalysisController {
     }
   }
 
+  private synchronized void startNextAnalysis() {
+    if (analysisQueue.isEmpty()) {
+      isAnalysisRunning = false;
+      return;
+    }
+
+    startAnalysis(analysisQueue.remove());
+  }
+
   /**
+   * Restarts a previously cancelled or failed document analysis
    * 
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    Document document = null; // TODO find in database
+    TypedQuery<Document> query =
+        model.getEntityManager().createNamedQuery("Document.findDocumentById", Document.class);
+    query.setParameter("documentId", documentId);
+    List<Document> documents = query.getResultList();
+    if (documents.size() < 1) {
+      throw new IllegalArgumentException("No such document found");
+    }
+    Document document = documents.get(0);
+
     scheduleDocumentAnalyisis(document);
   }
   
+  /**
+   * Gets the number of documents that are currently waiting for being analyzed. The document
+   * currently being analyzed does not count to this value.
+   * 
+   * @return the number of documents in queue
+   */
   public synchronized int documentsInQueue() {
     return analysisQueue.size();
   }
 
+  /**
+   * Indicates whether a document is being analyzed at the moment
+   * 
+   * @return true, if an analysis is in process, false otherwise
+   */
   public synchronized boolean isWorking() {
-    return currentExecuter != null;
+    return isAnalysisRunning;
   }
 }
