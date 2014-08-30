@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
+import java.util.ArrayList;
+
 import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,8 +16,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
-import de.unistuttgart.vis.vita.services.responses.NewDocumentResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
@@ -50,7 +53,7 @@ public class DocumentsService {
   public DocumentsResponse getDocumentsAsJSON(@QueryParam("offset") int offset,
                                               @QueryParam("count") int count) {
     // TODO not implemented yet!
-    return null;
+    return new DocumentsResponse(new ArrayList<Document>());
   }
   
   /**
@@ -60,7 +63,7 @@ public class DocumentsService {
    */
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public NewDocumentResponse addDocument() {
+  public DocumentIdResponse addDocument() {
     // TODO not implemented yet!
     return null;
   }

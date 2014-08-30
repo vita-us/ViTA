@@ -11,6 +11,10 @@ public class DocumentsResponse {
   
   private List<Document> documents;
   
+  public DocumentsResponse() {
+    // must have a non-argument constructor
+  }
+  
   /**
    * Creates a new DocumentsResponse including all documents and the amount of documents.
    * 

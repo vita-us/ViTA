@@ -14,6 +14,8 @@ import javax.ws.rs.core.UriInfo;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentRenameResponse;
 
 public class DocumentService {
   
@@ -48,13 +50,13 @@ public class DocumentService {
   
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response putDocument() {
+  public DocumentRenameResponse putDocument() {
     // TODO not implemented yet!
     return null;
   }
   
   @DELETE
-  public Response deleteDocument() {
+  public DocumentIdResponse deleteDocument() {
     // TODO not implemented yet!
     return null;
   }
