@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.Model;
@@ -103,7 +104,10 @@ public class AnalysisController {
   private Document createDocument(Path filePath) {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
-    model.getEntityManager().persist(document);
+    EntityManager em = model.getEntityManager();
+    em.getTransaction().begin();
+    em.persist(document);
+    em.getTransaction().commit();
     return document;
   }
 

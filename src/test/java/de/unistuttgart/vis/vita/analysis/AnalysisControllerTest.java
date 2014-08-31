@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 public class AnalysisControllerTest {
   private Model model;
   private EntityManager entityManager;
+  private EntityTransaction entityTransaction;
   private AnalysisController controller;
   private AnalysisExecutorFactory executorFactory;
   private AnalysisExecutor executor;
@@ -28,6 +30,8 @@ public class AnalysisControllerTest {
   @Before
   public void setUp() throws Exception {
     entityManager = mock(EntityManager.class);
+    entityTransaction = mock(EntityTransaction.class);
+    when(entityManager.getTransaction()).thenReturn(entityTransaction);
     model = mock(Model.class);
     when(model.getEntityManager()).thenReturn(entityManager);
     executorFactory = mock(AnalysisExecutorFactory.class);
@@ -49,6 +53,7 @@ public class AnalysisControllerTest {
     assertThat(controller.documentsInQueue(), is(0)); // nothing queued, just one working
     assertThat(controller.isWorking(), is(true));
     verify(entityManager).persist(documentCaptor.capture());
+    verify(entityTransaction).commit();
     Document document = documentCaptor.getValue();
     assertThat(document.getId(), is(id));
     assertThat(document.getMetadata().getTitle(), is("file.name"));
@@ -139,6 +144,26 @@ public class AnalysisControllerTest {
     verify(executor).start();
     assertThat(controller.documentsInQueue(), is(0));
     assertThat(controller.isWorking(), is(true));
+  }
+
+  @Test
+  public void testRestartDocumentAnalysis() {
+    // We need a realy database backend here
+    model = Model.createUnitTestModel();
+    controller = new AnalysisController(model, executorFactory);
+
+    Path path = Paths.get("path/to/file.name");
+    prepareExecutor(path);
+    String id = controller.scheduleDocumentAnalysis(path);
+    verifyExecutorCreated(path);
+
+    controller.cancelAnalysis(id);
+
+    prepareExecutor(path);
+    controller.restartAnalysis(id);
+
+    // Make sure it has been called the second time
+    verify(executorFactory, times(2)).createExecutor(path);
   }
 
   private void prepareExecutor(Path path) {
