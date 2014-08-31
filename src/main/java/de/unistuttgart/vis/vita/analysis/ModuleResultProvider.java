@@ -2,9 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 
 /**
- * This class returns the result for a given module class.
- * TODO über die genaue Implementierung nochmal reden!!
- *
+ * Provides the result of modules declared as dependencies
  */
 public interface ModuleResultProvider {
   /**
