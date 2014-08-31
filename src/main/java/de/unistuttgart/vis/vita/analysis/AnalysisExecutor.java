@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -193,8 +194,9 @@ public class AnalysisExecutor {
    */
   private void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
     scheduledModules.remove(moduleToRemove);
-    for (ModuleExecutionState module : scheduledModules) {
-      if (module.getRemainingDependencies().contains(moduleToRemove)) {
+    List<ModuleExecutionState> scheduledModulesCopy = ImmutableList.copyOf(scheduledModules);
+    for (ModuleExecutionState module : scheduledModulesCopy) {
+      if (module.getRemainingDependencies().contains(moduleToRemove.getModuleClass())) {
         removeModuleAndDependencies(module);
       }
     }

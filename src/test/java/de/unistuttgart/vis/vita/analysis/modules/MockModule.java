@@ -12,25 +12,10 @@ public class MockModule extends DebugBaseModule<String> {
    * The result that is returned when this module is interrupted
    */
   public static final String INTERRUPT_RESULT = "Gollum";
-  
-  /**
-   * The exception that is thrown when {@see #shouldFail} is set to true
-   */
-  public static final Class<? extends Exception> FAIL_EXCEPTION =
-      UnsupportedOperationException.class;
-
-  /**
-   * Set to true if the module should throw an exception
-   */
-  public boolean shouldFail;
 
   @Override
   public String realExecute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception {
-    if (shouldFail) {
-      throw new UnsupportedOperationException("Succeeding is disabled");
-    }
-
     return RESULT;
   }
 

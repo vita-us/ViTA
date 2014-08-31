@@ -117,17 +117,35 @@ public class AnalysisExecutorTest {
 
   @Test
   public void testFailingModule() throws InterruptedException {
-    targetModuleInstance.shouldFail = true;
+    targetModuleInstance.makeFail();
     executor.start();
     await().until(moduleCalled(targetModuleInstance));
 
     await().until(statusIs(AnalysisStatus.FAILED));
     assertThat(executor.getFailedModules(), hasKey(targetModule));
-    assertEquals(MockModule.FAIL_EXCEPTION, executor.getFailedModules().get(targetModule)
+    assertEquals(DebugBaseModule.FAIL_EXCEPTION, executor.getFailedModules().get(targetModule)
         .getClass());
     Thread.sleep(100); // avoid race condition
     verify(observer).onFail(executor);
     verifyNoMoreInteractions(observer);
+  }
+
+  @Test
+  public void testFailingDependency() throws InterruptedException {
+    dependencyModuleInstance.makeFail();
+    executor.start();
+    await().until(moduleCalled(dependencyModuleInstance));
+
+    await().until(statusIs(AnalysisStatus.FAILED));
+    assertThat(executor.getFailedModules(), hasKey(dependencyModule));
+    assertEquals(DebugBaseModule.FAIL_EXCEPTION, executor.getFailedModules().get(dependencyModule)
+        .getClass());
+    Thread.sleep(100); // avoid race condition
+    verify(observer).onFail(executor);
+    verifyNoMoreInteractions(observer);
+
+    // Make sure that the dependent module has not been called (the sleep above is important)
+    assertThat(targetModuleInstance.hasBeenCalled(), is(false));
   }
 
   private Callable<Boolean> moduleExecuted(final DebugBaseModule<?> instance) {
