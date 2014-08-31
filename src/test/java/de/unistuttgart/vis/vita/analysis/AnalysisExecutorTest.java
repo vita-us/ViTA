@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.analysis;
 import static com.jayway.awaitility.Awaitility.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,13 +20,14 @@ import de.unistuttgart.vis.vita.analysis.modules.IntProvidingModule;
 import de.unistuttgart.vis.vita.analysis.modules.MockModule;
 
 public class AnalysisExecutorTest {
-  ModuleClass targetModule;
-  ModuleClass dependencyModule;
-  ModuleExecutionState targetModuleState;
-  MockModule targetModuleInstance;
-  IntProvidingModule dependencyModuleInstance;
-  ModuleExecutionState dependencyModuleState;
-  AnalysisExecutor executor;
+  private ModuleClass targetModule;
+  private ModuleClass dependencyModule;
+  private ModuleExecutionState targetModuleState;
+  private MockModule targetModuleInstance;
+  private IntProvidingModule dependencyModuleInstance;
+  private ModuleExecutionState dependencyModuleState;
+  private AnalysisExecutor executor;
+  private AnalysisObserver observer;
   
   @Before
   public void setUp() {
@@ -40,10 +42,12 @@ public class AnalysisExecutorTest {
     dependencyModuleState =
         new ModuleExecutionState(dependencyModule, dependencyModuleInstance, empty);
     executor = new AnalysisExecutor(Arrays.asList(targetModuleState, dependencyModuleState));
+    observer = mock(AnalysisObserver.class);
+    executor.addObserver(observer);
   }
 
   @Test
-  public void testRunning() {
+  public void testRunning() throws InterruptedException {
     assertThat(executor.getStatus(), is(AnalysisStatus.READY));
     
     executor.start();
@@ -67,6 +71,9 @@ public class AnalysisExecutorTest {
     assertThat(targetModuleState.getThread().isAlive(), is(true));
 
     await().until(statusIs(AnalysisStatus.FINISHED));
+    Thread.sleep(100); // avoid race condition
+    verify(observer).onFinish(executor);
+    verifyNoMoreInteractions(observer);
 
     assertThat(targetModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleInstance.hasBeenExecuted(), is(true));
@@ -109,7 +116,7 @@ public class AnalysisExecutorTest {
   }
 
   @Test
-  public void testFailingModule() {
+  public void testFailingModule() throws InterruptedException {
     targetModuleInstance.shouldFail = true;
     executor.start();
     await().until(moduleCalled(targetModuleInstance));
@@ -118,6 +125,9 @@ public class AnalysisExecutorTest {
     assertThat(executor.getFailedModules(), hasKey(targetModule));
     assertEquals(MockModule.FAIL_EXCEPTION, executor.getFailedModules().get(targetModule)
         .getClass());
+    Thread.sleep(100); // avoid race condition
+    verify(observer).onFail(executor);
+    verifyNoMoreInteractions(observer);
   }
 
   private Callable<Boolean> moduleExecuted(final DebugBaseModule<?> instance) {

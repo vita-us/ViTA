@@ -29,6 +29,9 @@ public class AnalysisExecutor {
   private Map<ModuleClass, Exception> failedModules = new HashMap<>();
 
   private AnalysisStatus status = AnalysisStatus.READY;
+
+  private List<AnalysisObserver> observers = new ArrayList<>();
+
   /**
    * Creates an executor for the scheduled modules
    * @param scheduledModules the modules to execute
@@ -38,6 +41,15 @@ public class AnalysisExecutor {
     runningModules = new ArrayList<>();
   }
   
+  /**
+   * Adds an observer that will be notified when the analysis fails or succeeds
+   * 
+   * @param observer
+   */
+  public void addObserver(AnalysisObserver observer) {
+    observers.add(observer);
+  }
+
   /**
    * Gets the status of this executor
    * 
@@ -76,18 +88,44 @@ public class AnalysisExecutor {
     
     // Check if there is a dependency deadlock (there are remaining modules, but none could execute)
     if (scheduledModules.size() > 0 && runningModules.size() == 0) {
-      status = AnalysisStatus.FAILED;
       Exception ex =
           new UnresolvedModuleDependencyException(
               "The module could not be executed because of a deadlock.");
       for (ModuleExecutionState module : scheduledModules) {
         failedModules.put(module.getModuleClass(), ex);
       }
+      setStatus(AnalysisStatus.FAILED);
     }
   }
   
   /**
+   * Sets the status and notifies the observers in certain statuses
+   * 
+   * @param status the new status
+   */
+  private void setStatus(AnalysisStatus status) {
+    if (status != this.status) {
+      this.status = status;
+      switch (status) {
+        case FAILED:
+          for (AnalysisObserver observer : observers) {
+            observer.onFail(this);
+          }
+          break;
+        case FINISHED:
+          for (AnalysisObserver observer : observers) {
+            observer.onFinish(this);
+          }
+          break;
+        default:
+          // do nothing
+      }
+    }
+  }
+
+  /**
    * Starts a thread executing the module
+   * 
    * @param moduleState the module to execute
    */
   private synchronized void startModuleExecution(final ModuleExecutionState moduleState) {
@@ -139,9 +177,9 @@ public class AnalysisExecutor {
   private void checkFinished() {
     if (scheduledModules.size() == 0 && runningModules.size() == 0) {
       if (failedModules.isEmpty()) {
-        status = AnalysisStatus.FINISHED;
+        setStatus(AnalysisStatus.FINISHED);
       } else {
-        status = AnalysisStatus.FAILED;
+        setStatus(AnalysisStatus.FAILED);
       }
     }
   }
