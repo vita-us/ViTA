@@ -61,15 +61,17 @@ public class AnalysisExecutor {
 
   public synchronized void start() {
     switch (status) {
+      case FINISHED:
       case CANCELLED:
-        throw new IllegalStateException("Cannot restart a cancelled executer");
       case FAILED:
-        throw new IllegalStateException("Cannot restart a failed executer");
-      case RUNNING:
-        return;
+        throw new IllegalStateException("Cannot restart an executer");
       case READY:
         status = AnalysisStatus.RUNNING;
         startExecutableModules();
+        break;
+      case RUNNING:
+        // do nothing
+        break;
     }
   }
   

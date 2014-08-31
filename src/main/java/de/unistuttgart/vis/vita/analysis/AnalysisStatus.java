@@ -5,11 +5,6 @@ package de.unistuttgart.vis.vita.analysis;
  */
 public enum AnalysisStatus {
   /**
-   * Indicates that the analysis has not been started and can not be started at the moment
-   */
-  WAITING,
-
-  /**
    * Indicates that the analysis can be started
    */
   READY,

@@ -10,9 +10,6 @@ import java.util.Queue;
 
 import javax.persistence.TypedQuery;
 
-import de.unistuttgart.vis.vita.analysis.modules.ImportModule;
-import de.unistuttgart.vis.vita.analysis.modules.MainAnalysisModule;
-import de.unistuttgart.vis.vita.analysis.modules.ModelProviderModule;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 
@@ -23,10 +20,8 @@ import de.unistuttgart.vis.vita.model.document.Document;
  * The controller starts and cancels the analysis.
  */
 public class AnalysisController {
-  private static final Class<?> TARGET_MODULE = MainAnalysisModule.class;
-  
   private Model model;
-  private ModuleRegistry moduleRegistry;
+  private AnalysisExecutorFactory executorFactory;
   
   private Queue<Document> analysisQueue = new PriorityQueue<>();
   private boolean isAnalysisRunning;
@@ -55,8 +50,12 @@ public class AnalysisController {
    * @param moduleRegistry The registry to use.
    */
   public AnalysisController(Model model, ModuleRegistry moduleRegistry) {
+    this(model, new DefaultAnalysisExecutorFactory(model, moduleRegistry));
+  }
+
+  public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
     this.model = model;
-    this.moduleRegistry = moduleRegistry;
+    this.executorFactory = executorFactory;
   }
 
   /**
@@ -84,14 +83,21 @@ public class AnalysisController {
   
   private synchronized void startAnalysis(Document document) {
     Path path = documentPaths.get(document.getId());
-    AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE),
-        new ImportModule(path), new ModelProviderModule(model));
-    currentExecuter = new AnalysisExecutor(scheduler.getScheduledModules());
+    currentExecuter = executorFactory.createExecutor(path);
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
-    
-    // TODO get notified when finished
+    currentExecuter.addObserver(new AnalysisObserver() {
+      @Override
+      public void onFinish(AnalysisExecutor executor) {
+        startNextAnalysis();
+      }
+
+      @Override
+      public void onFail(AnalysisExecutor executor) {
+        startNextAnalysis();
+      }
+    });
   }
   
   private Document createDocument(Path filePath) {
@@ -122,6 +128,9 @@ public class AnalysisController {
     }
   }
 
+  /**
+   * Continues processing the queue after an analysis has finished or failed
+   */
   private synchronized void startNextAnalysis() {
     if (analysisQueue.isEmpty()) {
       isAnalysisRunning = false;
