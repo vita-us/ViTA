@@ -24,7 +24,10 @@ public class Line {
 
   private static final String BIGHEADING = WHITESPACE
       + "([\\p{Upper}\\d\\p{Punct}][\\p{Upper}\\d\\p{Punct}\\s]*)";
-  private static final Pattern BIGHEADINGPATTERN = Pattern.compile(BIGHEADING);
+  private static final String BIGHEADINGQUOTES = WHITESPACE + "(\"" + BIGHEADING + "\")" + "|"
+      + "(\'" + BIGHEADING + "\')";
+  private static final Pattern BIGHEADINGPATTERN = Pattern.compile(BIGHEADING + "|"
+      + BIGHEADINGQUOTES);
 
   private static final String BIGSIGNS = "[\\p{Upper}\\d]";
   private static final Pattern BIGSIGNSPATTERN = Pattern.compile(BIGSIGNS);
