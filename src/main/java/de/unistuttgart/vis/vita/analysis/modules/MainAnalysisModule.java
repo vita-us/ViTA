@@ -12,8 +12,9 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 @AnalysisModule()
 public class MainAnalysisModule implements Module<Void> {
+
   @Override
-  public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
+  public void observeProgress(double progress) {
 
   }
 

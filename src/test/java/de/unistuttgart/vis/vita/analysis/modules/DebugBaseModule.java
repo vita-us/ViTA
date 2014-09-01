@@ -39,9 +39,9 @@ public abstract class DebugBaseModule<T> implements Module<T> {
   }
 
   @Override
-  public <U> void observeProgress(java.lang.Class<U> resultClass, double progress, boolean isReady) {
+  public void observeProgress(double progress) {
 
-  };
+  }
 
   /**
    * The time in milliseconds the mock modules should sleep to make execution deterministic Greater

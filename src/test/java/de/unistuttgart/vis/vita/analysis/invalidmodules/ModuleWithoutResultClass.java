@@ -9,7 +9,7 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 public class ModuleWithoutResultClass<V> implements Module<V> {
 
   @Override
-  public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
+  public void observeProgress(double progress) {
 
   }
 

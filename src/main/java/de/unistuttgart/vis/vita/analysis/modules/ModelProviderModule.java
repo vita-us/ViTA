@@ -15,8 +15,8 @@ public class ModelProviderModule implements Module<Model> {
   }
 
   @Override
-  public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
-    
+  public void observeProgress(double progress) {
+
   }
 
   @Override
