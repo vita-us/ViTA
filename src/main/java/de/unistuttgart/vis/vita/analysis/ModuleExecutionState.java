@@ -1,12 +1,12 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * The state maintained by the AnalyisController for the execution of a module
@@ -18,14 +18,28 @@ public class ModuleExecutionState {
   private ModuleResultProviderImpl resultProvider;
   private boolean isExecutable;
   private Thread thread;
+  private Map<ModuleClass, Double> progressMap;
+  private Set<ModuleClass> directAndIndirectDependencies;
 
   public ModuleExecutionState(ModuleClass clazz, Module<?> optionalInstance,
-      Set<ModuleClass> dependencies) {
+                              Set<ModuleClass> dependencies,
+                              Set<ModuleClass> directAndIndirectDependencies) {
     this.clazz = clazz;
     this.instance = optionalInstance;
-    remainingDependencies = new HashSet<ModuleClass>(dependencies);
+    this.directAndIndirectDependencies = directAndIndirectDependencies;
+    remainingDependencies = new HashSet<>(dependencies);
     resultProvider = new ModuleResultProviderImpl();
     isExecutable = remainingDependencies.isEmpty();
+    progressMap = new HashMap<>();
+
+    // Initialize progress
+    for (ModuleClass dependency : directAndIndirectDependencies) {
+      progressMap.put(dependency, 0.);
+    }
+  }
+
+  public Set<ModuleClass> getDirectAndIndirectDependencies() {
+    return Collections.unmodifiableSet(directAndIndirectDependencies);
   }
 
   /**
@@ -103,30 +117,9 @@ public class ModuleExecutionState {
     return resultProvider;
   }
 
-  private static class ModuleResultProviderImpl implements ModuleResultProvider {
-    private Map<Class<?>, Object> results = new HashMap<>();
-
-    public void put(Class<?> clazz, Object result) {
-      if (!clazz.isInstance(result)) {
-        throw new IllegalArgumentException("The result object (of type " + result.getClass().getName()
-            + ") is not an instance of the result class (" + clazz.getName() + ")");
-      }
-      results.put(clazz, result);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getResultFor(Class<T> resultClass) {
-      if (!results.containsKey(resultClass))
-        throw new IllegalArgumentException("Unable to provide result for " + resultClass.getName()
-            + " because you did not specify that result class as dependency");
-      return (T) results.get(resultClass);
-    }
-  }
-
   /**
    * Gets the thread that has been set using {@link #setThread(Thread)}
-   * 
+   *
    * @return the thread or null if {@link #setThread} has not been called yet
    */
   public Thread getThread() {
@@ -136,12 +129,13 @@ public class ModuleExecutionState {
   /**
    * Associates a thread that can later be retrieved by {@link #getThread()}. Ensures that
    * {@link #isExecutable()} is true. Does not to anything with the tread.
-   * 
+   *
    * @param thread the thread to set
    */
   public void setThread(Thread thread) {
-    if (!isExecutable())
+    if (!isExecutable()) {
       throw new IllegalStateException("Can not assign threads to modules that are not executable");
+    }
     this.thread = thread;
   }
 
@@ -152,12 +146,38 @@ public class ModuleExecutionState {
 
   private String getStatusString() {
     if (thread != null) {
-      if (!thread.isAlive())
+      if (!thread.isAlive()) {
         return "finished";
+      }
       return "running";
     }
-    if (isExecutable)
+    if (isExecutable) {
       return "executable";
+    }
     return "waiting for " + StringUtils.join(remainingDependencies, ", ");
+  }
+
+  private static class ModuleResultProviderImpl implements ModuleResultProvider {
+
+    private Map<Class<?>, Object> results = new HashMap<>();
+
+    public void put(Class<?> clazz, Object result) {
+      if (!clazz.isInstance(result)) {
+        throw new IllegalArgumentException(
+            "The result object (of type " + result.getClass().getName()
+            + ") is not an instance of the result class (" + clazz.getName() + ")");
+      }
+      results.put(clazz, result);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getResultFor(Class<T> resultClass) {
+      if (!results.containsKey(resultClass)) {
+        throw new IllegalArgumentException("Unable to provide result for " + resultClass.getName()
+                                           + " because you did not specify that result class as dependency");
+      }
+      return (T) results.get(resultClass);
+    }
   }
 }

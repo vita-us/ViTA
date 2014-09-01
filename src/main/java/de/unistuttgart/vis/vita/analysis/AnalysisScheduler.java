@@ -1,10 +1,8 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,8 +13,8 @@ public class AnalysisScheduler {
   /**
    * Lists all the modules that have to be executed, with the modules they depend on
    */
-  private List<ModuleExecutionState> scheduledModules = new ArrayList<>();
-  
+  private Map<ModuleClass, ModuleExecutionState> scheduledModules = new HashMap<>();
+
   /**
    * Keeps track of which modules have already been added
    */
@@ -58,7 +56,7 @@ public class AnalysisScheduler {
    * @return the scheduled modules
    */
   public Collection<ModuleExecutionState> getScheduledModules() {
-    return scheduledModules;
+    return scheduledModules.values();
   }
 
   /**
@@ -79,13 +77,20 @@ public class AnalysisScheduler {
 
     modulesForResultClass.put(moduleClass.getResultClass(), moduleClass);
     scheduledModuleClasses.add(moduleClass);
-    Set<ModuleClass> dependencyModuleClasses = new HashSet<ModuleClass>();
+    Set<ModuleClass> dependencyModuleClasses = new HashSet<>();
+    Set<ModuleClass> directAndIndirectDependencyModuleClasses = new HashSet<>();
+
     for (Class<?> dependencyResultClass : moduleClass.getDependencies()) {
       ModuleClass dependencyModuleClass = getModuleClassFor(dependencyResultClass, moduleClass);
       scheduleModule(dependencyModuleClass, null);
       dependencyModuleClasses.add(dependencyModuleClass);
+      directAndIndirectDependencyModuleClasses
+          .addAll(scheduledModules.get(dependencyModuleClass).getDirectAndIndirectDependencies());
     }
-    scheduledModules.add(new ModuleExecutionState(moduleClass, optionalInstance, dependencyModuleClasses));
+
+    scheduledModules.put(moduleClass, new ModuleExecutionState(moduleClass, optionalInstance,
+                                                               dependencyModuleClasses,
+                                                               directAndIndirectDependencyModuleClasses));
     return true;
   }
 
