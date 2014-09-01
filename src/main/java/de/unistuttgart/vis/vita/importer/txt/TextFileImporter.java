@@ -31,7 +31,7 @@ public class TextFileImporter {
 
   }
 
-  protected TextFileImporter(Path path) throws IllegalArgumentException, FileNotFoundException,
+  public TextFileImporter(Path path) throws IllegalArgumentException, FileNotFoundException,
       IllegalStateException, SecurityException {
     super();
     this.path = path;
@@ -41,7 +41,7 @@ public class TextFileImporter {
     result = importData(path);
   }
 
-  protected ArrayList<Line> getResult() {
+  public ArrayList<Line> getResult() {
     return result;
   }
 

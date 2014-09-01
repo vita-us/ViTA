@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,11 @@ import org.apache.commons.io.FilenameUtils;
 
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
+/**
+ * The MetadataAnalyzer extract the metadata of the commited metdataList
+ * 
+ *
+ */
 public class MetadataAnalyzer {
 
   private static final String TITLE = "^((Title:)|(TITLE:)).+";
@@ -21,19 +27,23 @@ public class MetadataAnalyzer {
   private static final String GENRE = "^((Genre:)|(GENRE:)).+";
   private static final String EDITION = "^((Edition:)|(EDITION:)).+";
   private List<Line> metadataList = new ArrayList<Line>();
-  private String path;
-  private static Date date;
-  private DocumentMetadata documentMetadata = null;
-
-  public MetadataAnalyzer(List<Line> lines, String newPath) {
-    this.metadataList = lines;
+  private Path path;
+  private Date date = null;
+  private DocumentMetadata documentMetadata = new DocumentMetadata();
+  
+  public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
+    this.metadataList = newMetadataList;
     this.path = newPath;
-
+    setDefaultValues();
   }
 
+  /**
+   * Extracts the metadata, which will be edited by the MetadataBuilder
+   * The result will be saved in documentMetadata
+   * @return documentMetadata 
+   */
   public DocumentMetadata extractMetadata() {
     MetadataBuilder metadataBuilder = new MetadataBuilder();
-    setDefaultValues();
     if (!metadataList.isEmpty()) {
       for (Line line : metadataList) {
         if (line != null) {
@@ -67,23 +77,29 @@ public class MetadataAnalyzer {
       }
     } else {
 
-      documentMetadata.setTitle(new File(path).getName());
+      documentMetadata.setTitle(new File(path.toString()).getName());
     }
     return documentMetadata;
   }
 
-  private void setDefaultValues() {
-    documentMetadata = new DocumentMetadata();
+  /**
+   * set the default values of documentMetadata
+   */
+  public void setDefaultValues() {
     documentMetadata.setAuthor("");
     documentMetadata.setEdition("");
     documentMetadata.setGenre("");
     documentMetadata.setPublisher("");
-    documentMetadata.setPublishYear(new Date(0));
+    documentMetadata.setPublishYear(date);
     documentMetadata.setTitle("");
   }
 
+  /**
+   * Checks if the date format of the publisherYear is valid
+   * @param publisherYear
+   * @return
+   */
   public boolean isValidPublisherYear(String publisherYear) {
-    date = null;
     try {
       date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(publisherYear);
     } catch (ParseException ex) {
