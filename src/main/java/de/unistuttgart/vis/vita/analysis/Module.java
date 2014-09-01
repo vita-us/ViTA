@@ -9,12 +9,11 @@ package de.unistuttgart.vis.vita.analysis;
 public interface Module<TResult> {
   /**
    * Observes the progress of the module. TODO not sure what this method is used for.
-   * 
-   * @param resultClass The result class.
-   * @param progress The progress.
-   * @param isReady If the module is ready.
+   * Is called when the progress of this module or its dependencies changes.
+   *
+   * @param progress The progress of the dependencies and this module combined, 0-1.
    */
-  public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady);
+  public void observeProgress(double progress);
 
   /**
    * Starts the execution of the module. A progress listener will be registered to check whether the
