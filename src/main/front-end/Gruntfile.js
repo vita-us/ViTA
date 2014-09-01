@@ -99,11 +99,6 @@ module.exports = function(grunt) {
           dest: '<%= appPath %>partials/'
         }, {
           expand: true,
-          cwd: 'app/test_data',
-          src: ['**'],
-          dest: '<%= appPath %>test_data/'
-        }, {
-          expand: true,
           cwd: 'app/img',
           src: ['**'],
           dest: '<%= appPath %>img/'
@@ -156,7 +151,7 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       statics: {
-        files: ['app/**/*.html', 'app/test_data/**', 'app/img/**'],
+        files: ['app/**/*.html', 'app/img/**'],
         tasks: ['copy:statics']
       },
       scripts: {
