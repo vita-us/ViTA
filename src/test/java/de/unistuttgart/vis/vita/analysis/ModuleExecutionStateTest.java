@@ -20,7 +20,7 @@ public class ModuleExecutionStateTest {
   public void setUp() {
     targetModule = ModuleClass.get(MockModule.class);
     dependencyModule = ModuleClass.get(IntProvidingModule.class);
-    moduleState = new ModuleExecutionState(targetModule, null, ImmutableSet.of(dependencyModule));
+    moduleState = new ModuleExecutionState(targetModule, null, ImmutableSet.of(dependencyModule), null /* TODO */);
   }
 
   @Test

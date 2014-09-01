@@ -37,10 +37,10 @@ public class AnalysisExecutorTest {
     dependencyModuleInstance = new IntProvidingModule();
     targetModuleState =
         new ModuleExecutionState(targetModule, targetModuleInstance,
-            ImmutableSet.of(dependencyModule));
+            ImmutableSet.of(dependencyModule), null /* TODO */);
     Set<ModuleClass> empty = Collections.emptySet();
     dependencyModuleState =
-        new ModuleExecutionState(dependencyModule, dependencyModuleInstance, empty);
+        new ModuleExecutionState(dependencyModule, dependencyModuleInstance, empty, null /* TODO */);
     executor = new AnalysisExecutor(Arrays.asList(targetModuleState, dependencyModuleState));
     observer = mock(AnalysisObserver.class);
     executor.addObserver(observer);
