@@ -30,11 +30,11 @@ public class TextSplitter {
    */
   public List<Line> getMetadataSection() {
     List<Line> removeTextElements = new ArrayList<Line>();
+    Pattern pattern = Pattern.compile(TEXTDISTINCTION_REGEX);
     if (containsMetadataSection(textList)) {
       for (Line line : textList) {
         if (line.getText() != null) {
           if (line.getText().toLowerCase().matches(START_OF_REGEX)) {
-            Pattern pattern = Pattern.compile(TEXTDISTINCTION_REGEX);
             Matcher matcher = pattern.matcher(line.getText().toLowerCase());
             if (matcher.find()) {
               textDistinction = matcher.group(0);
@@ -74,8 +74,8 @@ public class TextSplitter {
         }
       }
       removeElementsFromPosition(position, removeRestElements);
+      textList.remove(0);
     }
-    textList.remove(0);
     return textList;
   }
 
