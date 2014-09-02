@@ -50,7 +50,7 @@ describe('OverviewCtrl', function() {
 
   it('should create "document" model', inject(function($controller) {
 
-    expect(scope.document).toEqualData({});
+    expect(scope.document).not.toBeDefined();
     $httpBackend.flush();
     expect(scope.document).toEqualData(documentData());
 
