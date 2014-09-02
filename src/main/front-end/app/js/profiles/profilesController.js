@@ -10,19 +10,11 @@
     Page.tab = 1;
 
     $scope.documentId = 'doc13a';
-    $scope.personId = 'person10Bert';
     $scope.personOffset = '1';
 
-    $scope.profiles = Profile.query(
-      {
-        documentId: $scope.documentId,
-        offset: $scope.personOffset
-      });
-
-    $scope.profile = Profile.get(
-      {
-        documentId: $scope.documentId,
-        personId: $scope.personId
-      });
+    $scope.profiles = Profile.get({
+      documentId: $scope.documentId,
+      offset: $scope.personOffset
+    });
   }]);
 })(angular);
