@@ -50,6 +50,8 @@
   app.factory('Page', function() {
     return {
       setUpForDocument: function(document) {
+        // TODO Don't pass the id through the Page
+        this.documentId = document.id;
         this.title = document.metadata.title;
         this.tab = 1;
         this.showMenu = true;
@@ -62,7 +64,7 @@
       }
     }
   });
- 
+
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
     Page.title = 'Default page title';
     Page.breadcrumbs = null;
