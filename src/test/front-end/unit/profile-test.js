@@ -13,9 +13,7 @@ describe('ProfilesCtrl', function() {
           "id": "person10Bert",
           "displayName": "Bert",
           "type": "person",
-          "rankingValue": 7,
-          "$promise":{},
-          "$resolved": true
+          "rankingValue": 7
         }
       ]
     };
@@ -45,7 +43,7 @@ describe('ProfilesCtrl', function() {
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
     $httpBackend.flush();
 
-    expect(JSON.stringify(scope.profiles)).toEqual(JSON.stringify(profilesData().persons));
+    expect(scope.profiles).toEqual(profilesData().persons);
   }));
 
   it('ProfilesCtrl should get a profile from REST by using the Profiles service', inject(function() {
@@ -54,6 +52,6 @@ describe('ProfilesCtrl', function() {
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
     $httpBackend.flush();
 
-    expect(JSON.stringify(scope.profile)).toEqual(JSON.stringify(profilesData().persons[1]));
+    expect(scope.profile).toEqualData(profilesData().persons[1]);
   }));
 });
