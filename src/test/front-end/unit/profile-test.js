@@ -37,7 +37,7 @@ describe('ProfilesCtrl', function() {
     });
   }));
 
-  it('ProfilesCtrl should get all profiles from REST by using the Profiles service', inject(function() {
+  it('should get all profiles from REST by using the Profiles service', inject(function() {
     // angular will automatically send two http requests
     $httpBackend.expectGET('/documents/doc13a/persons?offset=1').respond(profilesData().persons);
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
@@ -46,7 +46,7 @@ describe('ProfilesCtrl', function() {
     expect(scope.profiles).toEqual(profilesData().persons);
   }));
 
-  it('ProfilesCtrl should get a profile from REST by using the Profiles service', inject(function() {
+  it('should get a profile from REST by using the Profiles service', inject(function() {
     // angular will automatically send two http requests
     $httpBackend.expectGET('/documents/doc13a/persons?offset=1').respond(profilesData().persons);
     $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
