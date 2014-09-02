@@ -47,9 +47,9 @@ describe('DocumentsCtrl', function() {
 
   it('should create "document" model with 2 documents', inject(function($controller) {
 
-    expect(scope.documentsWrapper).toEqualData({});
+    expect(scope.documents).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.documentsWrapper.totalCount).toEqual(2);
+    expect(scope.documents.length).toEqual(2);
     expect(scope.documents).toEqualData(documentsData().documents);
 
   }));
