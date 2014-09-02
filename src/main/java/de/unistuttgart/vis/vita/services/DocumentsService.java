@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services;
 import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -37,7 +38,7 @@ public class DocumentsService {
    * Creates a new DocumentService.
    */
   public DocumentsService() {
-    this.em = new Model().getEntityManager();
+    this.em = Model.createUnitTestModelWithoutDrop().getEntityManager();
   }
 
   /**
@@ -49,11 +50,17 @@ public class DocumentsService {
    * @return DocumentResponse including a list of Documents
    */
   @GET
-  @Produces({MediaType.APPLICATION_JSON})
+  @Produces(MediaType.APPLICATION_JSON)
   public DocumentsResponse getDocumentsAsJSON(@QueryParam("offset") int offset,
                                               @QueryParam("count") int count) {
-    // TODO not implemented yet!
-    return new DocumentsResponse(new ArrayList<Document>());
+    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
+    query.setFirstResult(offset);
+    query.setMaxResults(count);
+    
+    ArrayList<Document> readDocuments = new ArrayList<>();
+    readDocuments.addAll(query.getResultList());
+
+    return new DocumentsResponse(readDocuments);
   }
   
   /**

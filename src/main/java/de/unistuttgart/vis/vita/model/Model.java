@@ -12,7 +12,8 @@ public class Model {
   private EntityManagerFactory entityManagerFactory;
   
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
-  private static final String UNITTEST_PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita.unittest";
+  private static final String UNITTEST_PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita.unittest.drop";
+  private static final String UNITTEST_PERSISTENCE_UNIT_NAME_NODROP = "de.unistuttgart.vis.vita.unittest";
 
   /**
    * Create a Model to be used in unit tests
@@ -22,6 +23,10 @@ public class Model {
    */
   public static Model createUnitTestModel() {
     return new Model(UNITTEST_PERSISTENCE_UNIT_NAME);
+  }
+  
+  public static Model createUnitTestModelWithoutDrop() {
+    return new Model(UNITTEST_PERSISTENCE_UNIT_NAME_NODROP);
   }
   
   /**
