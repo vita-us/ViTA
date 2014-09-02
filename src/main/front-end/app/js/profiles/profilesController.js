@@ -10,11 +10,9 @@
     Page.tab = 1;
 
     $scope.documentId = 'doc13a';
-    $scope.personOffset = '1';
 
     $scope.profiles = Profile.get({
-      documentId: $scope.documentId,
-      offset: $scope.personOffset
+      documentId: $scope.documentId
     });
   }]);
 })(angular);
