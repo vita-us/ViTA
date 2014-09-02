@@ -1,22 +1,25 @@
-describe('ProfilesCtrl', function() {
-  var scope, $httpBackend, ctrl, profilesData = function() {
-    return {
-      "totalCount": 2,
-      "persons": [
-        {
-          "id": "person8Hugo",
-          "displayName": "Hugo",
-          "type": "person",
-          "rankingValue": 3
-        },
-        {
-          "id": "person10Bert",
-          "displayName": "Bert",
-          "type": "person",
-          "rankingValue": 7
-        }
-      ]
-    };
+describe('ProfileCtrl', function() {
+  var scope, $httpBackend, ctrl, singleProfileData = {
+    "id": "person8Hugo",
+    "displayName": "Hugo",
+    "type": "person",
+    "attributes": [{
+      "id": "attr12397",
+      "content": "15",
+      "type": "age"
+    }, {
+      "id": "at65657",
+      "content": "Hugo Martin",
+      "type": "name"
+    }],
+    "rankingValue": 3,
+    "entityRelations": [{
+      "relatedEntity": "person10Ben",
+      "weight": 0.81234
+    }, {
+      "relatedEntity": "person18Bert",
+      "weight": 0.7345
+    }]
   };
 
   beforeEach(function() {
@@ -29,29 +32,22 @@ describe('ProfilesCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
     $httpBackend = _$httpBackend_;
+    $httpBackend.expectGET('/documents/doc13a/persons/person8Hugo').respond(singleProfileData);
+
+    $routeParams.documentId = 'doc13a';
+    $routeParams.personId = 'person8Hugo';
+
     scope = $rootScope.$new();
-    ctrl = $controller('ProfilesCtrl', {
+    ctrl = $controller('ProfileCtrl', {
       $scope: scope
     });
   }));
 
-  it('should get all profiles from REST by using the Profiles service', inject(function() {
-    // angular will automatically send two http requests
-    $httpBackend.expectGET('/documents/doc13a/persons?offset=1').respond(profilesData().persons);
-    $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
-    $httpBackend.flush();
-
-    expect(scope.profiles).toEqual(profilesData().persons);
-  }));
-
   it('should get a profile from REST by using the Profiles service', inject(function() {
-    // angular will automatically send two http requests
-    $httpBackend.expectGET('/documents/doc13a/persons?offset=1').respond(profilesData().persons);
-    $httpBackend.expectGET('/documents/doc13a/persons/person10Bert').respond(profilesData().persons[1]);
+    expect(scope.profile).toEqualData({});
     $httpBackend.flush();
-
-    expect(scope.profile).toEqualData(profilesData().persons[1]);
+    expect(scope.profile).toEqualData(singleProfileData);
   }));
 });

@@ -10,8 +10,10 @@
         Page.showMenu = true;
         Page.tab = 1;
 
-        $scope.profiles = Profile.get({
+        Profile.get({
           documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.profiles = response.persons;
         });
       }]);
 })(angular);
