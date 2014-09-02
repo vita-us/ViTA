@@ -9,12 +9,6 @@
       // method for retrieving a specific profile
       get: {
         method: 'GET'
-      },
-
-      // method for retrieving all profiles
-      query: {
-        method: 'GET',
-        isArray: true
       }
     });
   }]);
