@@ -1,4 +1,4 @@
-describe('OverviewCtrl', function() {
+describe('PlaceListCtrl', function() {
   var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
@@ -13,19 +13,19 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123').respond(TestData.singleDocument);
+    $httpBackend.expectGET('/documents/123/places').respond(TestData.places);
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
-    ctrl = $controller('OverviewCtrl', {
+    ctrl = $controller('PlaceListCtrl', {
       $scope: scope
     });
   }));
 
-  it('should create "document" model', inject(function($controller, TestData) {
+  it('should create "place" model with 2 places', inject(function($controller, TestData) {
 
-    expect(scope.document).toEqualData({});
+    expect(scope.places).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.document).toEqualData(TestData.singleDocument);
+    expect(scope.places).toEqualData(TestData.places.places);
 
   }));
 

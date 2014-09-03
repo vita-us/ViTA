@@ -1,7 +1,7 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
+  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
@@ -27,7 +27,7 @@
       controller: ''
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
-      controller: ''
+      controller: 'PlaceListCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
       controller: ''
