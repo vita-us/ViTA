@@ -84,6 +84,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/angular-mocks/',
           src: ['angular-mocks.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/d3/',
+          src: ['d3.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
