@@ -84,6 +84,7 @@ public class AnalysisScheduler {
       ModuleClass dependencyModuleClass = getModuleClassFor(dependencyResultClass, moduleClass);
       scheduleModule(dependencyModuleClass, null);
       dependencyModuleClasses.add(dependencyModuleClass);
+      directAndIndirectDependencyModuleClasses.add(dependencyModuleClass);
       directAndIndirectDependencyModuleClasses
           .addAll(scheduledModules.get(dependencyModuleClass).getDirectAndIndirectDependencies());
     }

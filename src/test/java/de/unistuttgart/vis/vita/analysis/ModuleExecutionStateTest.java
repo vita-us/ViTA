@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,15 +13,17 @@ import de.unistuttgart.vis.vita.analysis.modules.IntProvidingModule;
 import de.unistuttgart.vis.vita.analysis.modules.MockModule;
 
 public class ModuleExecutionStateTest {
-  ModuleClass targetModule;
-  ModuleClass dependencyModule;
-  ModuleExecutionState moduleState;
+  private ModuleClass targetModule;
+  private ModuleClass dependencyModule;
+  private ModuleExecutionState moduleState;
+  private MockModule targetInstance;
 
   @Before
   public void setUp() {
     targetModule = ModuleClass.get(MockModule.class);
     dependencyModule = ModuleClass.get(IntProvidingModule.class);
-    moduleState = new ModuleExecutionState(targetModule, null, ImmutableSet.of(dependencyModule), null /* TODO */);
+    moduleState = new ModuleExecutionState(targetModule, null, ImmutableSet.of(dependencyModule),
+        ImmutableSet.of(dependencyModule));
   }
 
   @Test
@@ -51,12 +54,12 @@ public class ModuleExecutionStateTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNotifyDependencyFinishedFailsWithWrongType() {
-    moduleState.notifyDependencyFinished(dependencyModule, "string"); // should be Integer
+    moduleState.notifyModuleFinished(dependencyModule, "string"); // should be Integer
   }
 
   @Test
   public void testProvidingResults() {
-    moduleState.notifyDependencyFinished(dependencyModule, 123);
+    moduleState.notifyModuleFinished(dependencyModule, 123);
 
     assertThat(moduleState.isExecutable(), is(true));
     assertThat(moduleState.getRemainingDependencies(), is(empty()));
@@ -70,9 +73,60 @@ public class ModuleExecutionStateTest {
   @Test(expected = IllegalArgumentException.class)
   public void testFetchingWrongResultThrows() {
     // should be gracefully ignored as it is not a dependency, and the result should not be stored
-    moduleState.notifyDependencyFinished(targetModule, "test");
-    moduleState.notifyDependencyFinished(dependencyModule, 123);
+    moduleState.notifyModuleFinished(targetModule, "test");
+    moduleState.notifyModuleFinished(dependencyModule, 123);
 
     moduleState.getResultProvider().getResultFor(String.class);
+  }
+
+  @Test
+  public void testReportsProgressWithNotifyDependencyProgressForDirectDependency() {
+    setUpWithMockedTargetInstance();
+    
+    moduleState.notifyModuleProgress(dependencyModule, 0.5);
+    
+    // There are two modules to be executed, and one is halfway through, so it's one fourth
+    // note that there should be not rounding issues with base-2 fractions
+    verify(targetInstance).observeProgress(0.25);
+  }
+
+  @Test
+  public void testReportsProgressWithNotifyDependencyFinishedForDirectDependency() {
+    setUpWithMockedTargetInstance();
+    
+    moduleState.notifyModuleFinished(dependencyModule, 123);
+    
+    // There are two modules to be executed, and one is done
+    verify(targetInstance).observeProgress(0.5);
+  }
+
+  @Test
+  public void testReportsProgressWithNotifyDependencyProgressForModuleItself() {
+    setUpWithMockedTargetInstance();
+    moduleState.notifyModuleFinished(dependencyModule, 123);
+    reset(targetInstance);
+    
+    moduleState.notifyModuleProgress(targetModule, 0.5);
+    
+    // One module is finished completely, and the other halfway through
+    verify(targetInstance).observeProgress(0.75);
+  }
+
+  @Test
+  public void testReportsProgressWithNotifyDependencyFinishedForModuleItself() {
+    setUpWithMockedTargetInstance();
+    moduleState.notifyModuleFinished(dependencyModule, 123);
+    reset(targetInstance);
+    
+    moduleState.notifyModuleFinished(targetModule, "abc");
+    
+    // All dependencies and the target module are finished
+    verify(targetInstance).observeProgress(1.0);
+  }
+  
+  private void setUpWithMockedTargetInstance() {
+    targetInstance = mock(MockModule.class);
+    moduleState = new ModuleExecutionState(targetModule, targetInstance, ImmutableSet.of(dependencyModule),
+        ImmutableSet.of(dependencyModule));
   }
 }

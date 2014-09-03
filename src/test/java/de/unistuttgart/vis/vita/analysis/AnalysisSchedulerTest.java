@@ -34,6 +34,7 @@ public class AnalysisSchedulerTest {
     ModuleExecutionState singleState = scheduled.iterator().next();
     assertThat(singleState.getModuleClass(), is(moduleClass));
     assertThat(singleState.getRemainingDependencies(), is(empty()));
+    assertThat(singleState.getDirectAndIndirectDependencies(), is(empty()));
     assertThat(singleState.isExecutable(), is(true));
   }
 
@@ -49,10 +50,12 @@ public class AnalysisSchedulerTest {
     assertThat(scheduled, hasSize(2));
     ModuleExecutionState targetState = findModuleExecutionState(scheduled, targetModule);
     assertThat(targetState.getRemainingDependencies(), containsInAnyOrder(dependencyModule));
+    assertThat(targetState.getDirectAndIndirectDependencies(), containsInAnyOrder(dependencyModule));
     assertThat(targetState.isExecutable(), is(false));
 
     ModuleExecutionState dependencyState = findModuleExecutionState(scheduled, dependencyModule);
     assertThat(dependencyState.getRemainingDependencies(), is(empty()));
+    assertThat(dependencyState.getDirectAndIndirectDependencies(), is(empty()));
     assertThat(dependencyState.isExecutable(), is(true));
   }
 
@@ -143,18 +146,23 @@ public class AnalysisSchedulerTest {
     ModuleExecutionState targetState = findModuleExecutionState(scheduled, targetModule);
     assertThat(targetState.isExecutable(), is(false));
     assertThat(targetState.getRemainingDependencies(), containsInAnyOrder(stringModule, boolModule));
+    assertThat(targetState.getDirectAndIndirectDependencies(),
+        containsInAnyOrder(stringModule, boolModule, intModule));
     
     ModuleExecutionState intState = findModuleExecutionState(scheduled, intModule);
     assertThat(intState.isExecutable(), is(true));
     assertThat(intState.getRemainingDependencies(), is(empty()));
+    assertThat(intState.getDirectAndIndirectDependencies(), is(empty()));
     
     ModuleExecutionState stringState = findModuleExecutionState(scheduled, stringModule);
     assertThat(stringState.isExecutable(), is(false));
     assertThat(stringState.getRemainingDependencies(), containsInAnyOrder(intModule));
+    assertThat(stringState.getDirectAndIndirectDependencies(), containsInAnyOrder(intModule));
 
     ModuleExecutionState boolState = findModuleExecutionState(scheduled, boolModule);
     assertThat(boolState.isExecutable(), is(false));
     assertThat(boolState.getRemainingDependencies(), containsInAnyOrder(intModule));
+    assertThat(boolState.getDirectAndIndirectDependencies(), containsInAnyOrder(intModule));
   }
 
   private ModuleExecutionState findModuleExecutionState(Iterable<ModuleExecutionState> list,

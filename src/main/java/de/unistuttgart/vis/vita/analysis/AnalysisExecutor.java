@@ -160,7 +160,7 @@ public class AnalysisExecutor {
 
     runningModules.remove(moduleState);
     for (ModuleExecutionState module : scheduledModules) {
-      module.notifyDependencyFinished(moduleState.getModuleClass(), result);
+      module.notifyModuleFinished(moduleState.getModuleClass(), result);
     }
     startExecutableModules();
     checkFinished();
