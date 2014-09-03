@@ -1,18 +1,5 @@
 describe('ProfileListCtrl', function() {
-  var scope, $httpBackend, ctrl, profilesData = {
-    "totalCount": 2,
-    "persons": [{
-      "id": "person8Hugo",
-      "displayName": "Hugo",
-      "type": "person",
-      "rankingValue": 3
-    }, {
-      "id": "person10Bert",
-      "displayName": "Bert",
-      "type": "person",
-      "rankingValue": 7
-    }]
-  };
+  var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
     this.addMatchers({
@@ -24,9 +11,9 @@ describe('ProfileListCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/doc13a/persons').respond(profilesData);
+    $httpBackend.expectGET('/documents/doc13a/persons').respond(TestData.profiles);
 
     $routeParams.documentId = 'doc13a';
 
@@ -36,10 +23,10 @@ describe('ProfileListCtrl', function() {
     });
   }));
 
-  it('should get all profiles from REST by using the Profiles service', inject(function() {
+  it('should get all profiles from REST by using the Profiles service', inject(function(TestData) {
     expect(scope.profiles).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.profiles).toEqualData(profilesData.persons);
+    expect(scope.profiles).toEqualData(TestData.profiles.persons);
   }));
 
 });

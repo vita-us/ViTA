@@ -1,26 +1,5 @@
 describe('ProfileCtrl', function() {
-  var scope, $httpBackend, ctrl, singleProfileData = {
-    "id": "person8Hugo",
-    "displayName": "Hugo",
-    "type": "person",
-    "attributes": [{
-      "id": "attr12397",
-      "content": "15",
-      "type": "age"
-    }, {
-      "id": "at65657",
-      "content": "Hugo Martin",
-      "type": "name"
-    }],
-    "rankingValue": 3,
-    "entityRelations": [{
-      "relatedEntity": "person10Ben",
-      "weight": 0.81234
-    }, {
-      "relatedEntity": "person18Bert",
-      "weight": 0.7345
-    }]
-  };
+  var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
     this.addMatchers({
@@ -32,12 +11,12 @@ describe('ProfileCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/doc13a/persons/person8Hugo').respond(singleProfileData);
+    $httpBackend.expectGET('/documents/doc13a/persons/person8').respond(TestData.singleProfile);
 
     $routeParams.documentId = 'doc13a';
-    $routeParams.personId = 'person8Hugo';
+    $routeParams.personId = 'person8';
 
     scope = $rootScope.$new();
     ctrl = $controller('ProfileCtrl', {
@@ -45,9 +24,10 @@ describe('ProfileCtrl', function() {
     });
   }));
 
-  it('should get a profile from REST by using the Profiles service', inject(function() {
+  it('should get a profile from REST by using the Profiles service', inject(function(TestData) {
     expect(scope.profile).toEqualData({});
     $httpBackend.flush();
-    expect(scope.profile).toEqualData(singleProfileData);
+    expect(scope.profile).toEqualData(TestData.singleProfile);
   }));
+
 });
