@@ -24,9 +24,9 @@ public class DefaultAnalysisExecutorFactory implements AnalysisExecutorFactory {
   @Override
   public AnalysisExecutor createExecutor(Path documentPath) {
     ImportModule importModule = new ImportModule(documentPath);
-    AnalysisScheduler scheduler =
-        new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE), importModule,
-            new ModelProviderModule(model));
+    ModelProviderModule modelModule = new ModelProviderModule(model);
+    AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE),
+        importModule, modelModule);
     return new AnalysisExecutor(scheduler.getScheduledModules());
   }
 }
