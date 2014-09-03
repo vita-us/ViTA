@@ -67,8 +67,9 @@ public class AnalysisScheduler {
    * @return true, if the module has been added, or false if the module class has already been added
    */
   private boolean scheduleModule(ModuleClass moduleClass, Module<?> optionalInstance) {
-    if (scheduledModuleClasses.contains(moduleClass))
+    if (scheduledModuleClasses.contains(moduleClass)) {
       return false;
+    }
 
     if (!moduleClass.canInstantiate() && optionalInstance == null) {
       throw new UnresolvedModuleDependencyException("The module " + moduleClass

@@ -45,9 +45,9 @@ public class ModuleRegistry {
    */
   public ModuleRegistry(String packageName) {
     this();
-    Iterable<Class<?>> moduleClasses =
+    Iterable<Class<?>> moduleClassesInPackage =
         new Reflections(packageName).getTypesAnnotatedWith(AnalysisModule.class);
-    for (Class<?> clazz : moduleClasses) {
+    for (Class<?> clazz : moduleClassesInPackage) {
       registerModule(clazz);
     }
   }

@@ -38,7 +38,7 @@ public class AnalysisExecutor {
    * Creates an executor for the scheduled modules
    * @param scheduledModules the modules to execute
    */
-  AnalysisExecutor(Iterable<ModuleExecutionState> scheduledModules) {
+  public AnalysisExecutor(Iterable<ModuleExecutionState> scheduledModules) {
     this.scheduledModules = Lists.newArrayList(scheduledModules);
     runningModules = new ArrayList<>();
   }
@@ -48,7 +48,7 @@ public class AnalysisExecutor {
    * 
    * @param observer
    */
-  public void addObserver(AnalysisObserver observer) {
+  public synchronized void addObserver(AnalysisObserver observer) {
     observers.add(observer);
   }
 
@@ -57,7 +57,7 @@ public class AnalysisExecutor {
    * 
    * @return the status
    */
-  public AnalysisStatus getStatus() {
+  public synchronized AnalysisStatus getStatus() {
     return status;
   }
 
@@ -71,7 +71,7 @@ public class AnalysisExecutor {
         status = AnalysisStatus.RUNNING;
         startExecutableModules();
         break;
-      case RUNNING:
+      default:
         // do nothing
         break;
     }
@@ -91,7 +91,7 @@ public class AnalysisExecutor {
     }
     
     // Check if there is a dependency deadlock (there are remaining modules, but none could execute)
-    if (scheduledModules.size() > 0 && runningModules.size() == 0) {
+    if (runningModules.isEmpty() && !scheduledModules.isEmpty()) {
       Exception ex =
           new UnresolvedModuleDependencyException(
               "The module could not be executed because of a deadlock.");
@@ -107,7 +107,7 @@ public class AnalysisExecutor {
    * 
    * @param status the new status
    */
-  private void setStatus(AnalysisStatus status) {
+  private synchronized void setStatus(AnalysisStatus status) {
     if (status != this.status) {
       this.status = status;
       switch (status) {
@@ -161,8 +161,9 @@ public class AnalysisExecutor {
   
   private synchronized void onModuleFinished(ModuleExecutionState moduleState, Object result) {
     // Ignore results produced after failure / cancel
-    if (status != AnalysisStatus.RUNNING)
+    if (status != AnalysisStatus.RUNNING) {
       return;
+    }
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);
@@ -174,8 +175,9 @@ public class AnalysisExecutor {
   
   private synchronized void onModuleProgress(ModuleExecutionState moduleState, double progress) {
     // Ignore calls after failure / cancel
-    if (status != AnalysisStatus.RUNNING)
+    if (status != AnalysisStatus.RUNNING) {
       return;
+    }
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleProgress(moduleState.getModuleClass(), progress);
@@ -184,8 +186,9 @@ public class AnalysisExecutor {
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
     // Ignore results produced after failure / cancel
-    if (status != AnalysisStatus.RUNNING)
+    if (status != AnalysisStatus.RUNNING) {
       return;
+    }
 
     runningModules.remove(moduleState);
     failedModules.put(moduleState.getModuleClass(), e);
@@ -201,13 +204,9 @@ public class AnalysisExecutor {
     return Iterables.concat(scheduledModules, runningModules);
   }
 
-  private void checkFinished() {
-    if (scheduledModules.size() == 0 && runningModules.size() == 0) {
-      if (failedModules.isEmpty()) {
-        setStatus(AnalysisStatus.FINISHED);
-      } else {
-        setStatus(AnalysisStatus.FAILED);
-      }
+  private synchronized void checkFinished() {
+    if (scheduledModules.isEmpty() && runningModules.isEmpty()) {
+      setStatus(failedModules.isEmpty() ? AnalysisStatus.FINISHED : AnalysisStatus.FAILED);
     }
   }
 
@@ -216,7 +215,7 @@ public class AnalysisExecutor {
    * 
    * @param moduleToRemove the module to remove
    */
-  private void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
+  private synchronized void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
     scheduledModules.remove(moduleToRemove);
     List<ModuleExecutionState> scheduledModulesCopy = ImmutableList.copyOf(scheduledModules);
     for (ModuleExecutionState module : scheduledModulesCopy) {
@@ -230,7 +229,7 @@ public class AnalysisExecutor {
    * Stops the execution, interrupting all running modules and preventing scheduled modules from
    * starting
    */
-  public void cancel() {
+  public synchronized void cancel() {
     if (status != AnalysisStatus.FAILED) {
       status = AnalysisStatus.CANCELLED;
     }
@@ -246,7 +245,7 @@ public class AnalysisExecutor {
    * 
    * @return the failed exceptions; is empty if successful
    */
-  public Map<ModuleClass, Exception> getFailedModules() {
+  public synchronized Map<ModuleClass, Exception> getFailedModules() {
     return Collections.unmodifiableMap(failedModules);
   }
 }

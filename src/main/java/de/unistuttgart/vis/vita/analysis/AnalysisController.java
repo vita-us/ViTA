@@ -154,7 +154,7 @@ public class AnalysisController {
         model.getEntityManager().createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", documentId);
     List<Document> documents = query.getResultList();
-    if (documents.size() < 1) {
+    if (documents.isEmpty()) {
       throw new IllegalArgumentException("No such document found");
     }
     Document document = documents.get(0);
