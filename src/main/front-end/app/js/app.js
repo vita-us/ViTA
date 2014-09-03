@@ -27,7 +27,7 @@
       controller: ''
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
-      controller: ''
+      controller: 'PlaceListCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
       controller: ''

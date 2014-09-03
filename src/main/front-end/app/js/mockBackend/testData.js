@@ -57,6 +57,44 @@
           "places": ["place2Paris", "place10Mordor"]
         }
       },
+
+      places: {
+        "totalCount": 2,
+        "places": [{
+          "id": "place10Paris",
+          "displayName": "Paris",
+          "type": "place",
+          "rankingValue": 1
+        }, {
+          "id": "place6Hamburg",
+          "displayName": "Hamburg",
+          "type": "place",
+          "rankingValue": 2
+        }]
+      },
+
+      singlePlace: {
+        "id": "place3Hamburg",
+        "displayName": "Hamburg",
+        "type": "place",
+        "attributes": [{
+          "id": "attr12697",
+          "content": "1700km2",
+          "type": "unknown"
+        }, {
+          "id": "at65157",
+          "content": "North Germany",
+          "type": "unknown"
+        }],
+        "rankingValue": 3,
+        "entityRelations": [{
+          "relatedEntity": "person10Ben",
+          "weight": 0.81234
+        }, {
+          "relatedEntity": "person18Bert",
+          "weight": 0.7345
+        }]
+      },
     };
   });
 })(angular);
