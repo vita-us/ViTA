@@ -12,6 +12,7 @@ public abstract class DebugBaseModule<T> implements Module<T> {
   private boolean hasBeenCalled = false;
   private boolean hasBeenInterrupted = false;
   private boolean shouldFail = false;
+  private double currentProgress = 0;
 
   /**
    * The exception that is thrown when {@link #makeFail()} is set to true
@@ -38,9 +39,19 @@ public abstract class DebugBaseModule<T> implements Module<T> {
     return hasBeenInterrupted;
   }
 
+  /**
+   * Gets the progress of this module and its dependencies that has been reported by the latest call
+   * to {@link #observeProgress(double)}.
+   * 
+   * @return the progress, or 0 if no progress has yet been reported
+   */
+  public double getCurrentProgress() {
+    return currentProgress;
+  }
+
   @Override
   public void observeProgress(double progress) {
-
+    currentProgress = progress;
   }
 
   /**

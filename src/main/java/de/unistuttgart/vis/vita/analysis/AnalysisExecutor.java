@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Controls the execution of the analysis of a single document
@@ -140,7 +142,12 @@ public class AnalysisExecutor {
       public void run() {
         Object result;
         try {
-          result = instance.execute(resultProvider, null /* TODO  */);
+          result = instance.execute(resultProvider, new ProgressListener() {
+            @Override
+            public void observeProgress(double progress) {
+              onModuleProgress(moduleState, progress);
+            }
+          });
         } catch(Exception e) {
           onModuleFailed(moduleState, e);
           return;
@@ -158,12 +165,22 @@ public class AnalysisExecutor {
     if (status != AnalysisStatus.RUNNING)
       return;
 
-    runningModules.remove(moduleState);
-    for (ModuleExecutionState module : scheduledModules) {
+    for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);
     }
+    runningModules.remove(moduleState);
     startExecutableModules();
     checkFinished();
+  }
+  
+  private synchronized void onModuleProgress(ModuleExecutionState moduleState, double progress) {
+    // Ignore calls after failure / cancel
+    if (status != AnalysisStatus.RUNNING)
+      return;
+
+    for (ModuleExecutionState module : getActiveModules()) {
+      module.notifyModuleProgress(moduleState.getModuleClass(), progress);
+    }
   }
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
@@ -175,6 +192,14 @@ public class AnalysisExecutor {
     failedModules.put(moduleState.getModuleClass(), e);
     removeModuleAndDependencies(moduleState);
     checkFinished();
+  }
+  
+  /**
+   * Gets the scheduled and running modules
+   * @return an iterable
+   */
+  private synchronized Iterable<ModuleExecutionState> getActiveModules() {
+    return Iterables.concat(scheduledModules, runningModules);
   }
 
   private void checkFinished() {

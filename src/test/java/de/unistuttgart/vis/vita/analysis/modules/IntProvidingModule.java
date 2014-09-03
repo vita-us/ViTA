@@ -9,7 +9,10 @@ public class IntProvidingModule extends DebugBaseModule<Integer> {
   public static final int RESULT = 42;
 
   @Override
-  public Integer realExecute(ModuleResultProvider result, ProgressListener progressListener) {
+  public Integer realExecute(ModuleResultProvider result, ProgressListener progressListener)
+      throws InterruptedException {
+    progressListener.observeProgress(0.5);
+    Thread.sleep(DebugBaseModule.DEFAULT_SLEEP_MS);
     return RESULT;
   }
 }

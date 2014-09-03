@@ -49,6 +49,7 @@ public class AnalysisExecutorTest {
   @Test
   public void testRunning() throws InterruptedException {
     assertThat(executor.getStatus(), is(AnalysisStatus.READY));
+    assertThat(targetModuleState.getProgress(), is(0.0));
     
     executor.start();
     assertThat(executor.getStatus(), is(AnalysisStatus.RUNNING));
@@ -57,13 +58,17 @@ public class AnalysisExecutorTest {
 
     assertThat(dependencyModuleState.getThread(), is(not(nullValue())));
     assertThat(dependencyModuleState.getThread().isAlive(), is(true));
+    assertThat(targetModuleInstance.getCurrentProgress(), is(0.0));
     
+    await().until(moduleProgressIs(targetModuleInstance, 0.25));
     await().until(moduleExecuted(dependencyModuleInstance));
 
     assertThat(dependencyModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleState.getResultProvider().getResultFor(Integer.class),
         is(IntProvidingModule.RESULT));
     assertThat(targetModuleState.isExecutable(), is(true));
+    assertThat(targetModuleInstance.getCurrentProgress(), is(0.5));
+    assertThat(targetModuleState.getProgress(), is(0.5));
 
     await().until(moduleCalled(targetModuleInstance));
 
@@ -78,6 +83,8 @@ public class AnalysisExecutorTest {
     assertThat(targetModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleInstance.hasBeenExecuted(), is(true));
     assertThat(executor.getFailedModules().values(), is(empty()));
+    assertThat(targetModuleInstance.getCurrentProgress(), is(1.0));
+    assertThat(targetModuleState.getProgress(), is(1.0));
   }
 
   @Test
@@ -171,6 +178,15 @@ public class AnalysisExecutorTest {
       @Override
       public Boolean call() throws Exception {
         return instance.hasBeenInterrupted();
+      }
+    };
+  }
+
+  private Callable<Boolean> moduleProgressIs(final DebugBaseModule<?> instance, final double progress) {
+    return new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return Math.abs(instance.getCurrentProgress() - progress) < 0.001;
       }
     };
   }
