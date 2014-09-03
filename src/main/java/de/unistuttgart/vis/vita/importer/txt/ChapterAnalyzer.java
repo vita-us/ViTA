@@ -109,6 +109,7 @@ public class ChapterAnalyzer {
   private ChapterPosition bigHeadingChapters;
   private ChapterPosition advancedBigHeadingChapters;
   private ChapterPosition smallHeadingChapters;
+  private ChapterPosition twoWhitelinesChapters;
   private ChapterPosition noChapters;
   private ChapterPosition result;
 
@@ -123,6 +124,7 @@ public class ChapterAnalyzer {
     bigHeadingChapters = useBigHeaderRules();
     advancedBigHeadingChapters = useAdvancedBigHeaderRules(bigHeadingChapters);
     smallHeadingChapters = useSmallHeaderRules();
+    twoWhitelinesChapters = useTwoWhitelinesChapterRule();
     noChapters = useNoChapterRules();
 
     result = chooseChapterPositions();
@@ -132,6 +134,9 @@ public class ChapterAnalyzer {
   private ChapterPosition chooseChapterPositions() {
     ChapterPosition result = noChapters;
 
+    if (fulfillsTwoWhitelinesConditions(twoWhitelinesChapters)) {
+      result = twoWhitelinesChapters;
+    }
     if (fulfillsSmallHeadingConditions(smallHeadingChapters)) {
       result = smallHeadingChapters;
     }
@@ -162,6 +167,10 @@ public class ChapterAnalyzer {
 
   private boolean fulfillsSmallHeadingConditions(ChapterPosition smallHeadingPositions) {
     return smallHeadingPositions.size() >= 1 && !hasHugeChapter(smallHeadingPositions);
+  }
+
+  private boolean fulfillsTwoWhitelinesConditions(ChapterPosition twoWhitelinesPositions) {
+    return twoWhitelinesPositions.size() >= 1 && !hasHugeChapter(twoWhitelinesPositions);
   }
 
   private boolean hasHugeChapter(ChapterPosition positions) {
@@ -214,14 +223,16 @@ public class ChapterAnalyzer {
     return lastFoundPosition;
   }
 
-  private ChapterPosition detectSimpleChapters(LineType type, int startPosition) {
+  private ChapterPosition detectSimpleChapters(Boolean findThisType, LineType type,
+      int startPosition) {
     ChapterPosition positions = new ChapterPosition();
     int startOfHeading = -1;
     int endOfText = -1;
     int nextPosition = -1;
 
-    startOfHeading = getNextPosition(true, type, startPosition);
-    nextPosition = getNextPosition(true, type, startOfHeading + 1);
+
+    startOfHeading = getNextPosition(findThisType, type, startPosition);
+    nextPosition = getNextPosition(findThisType, type, startOfHeading + 1);
     while (startOfHeading < nextPosition) {
       endOfText = nextPosition - 1;
       if (endOfText >= chapterArea.size()) {
@@ -230,7 +241,7 @@ public class ChapterAnalyzer {
       positions.addChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText),
           endOfText);
       startOfHeading = nextPosition;
-      nextPosition = getNextPosition(true, type, nextPosition + 1);
+      nextPosition = getNextPosition(findThisType, type, nextPosition + 1);
     }
     addLastChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText), positions);
     return positions;
@@ -258,13 +269,13 @@ public class ChapterAnalyzer {
   }
 
   protected ChapterPosition useMarkedHeaderRules() {
-    ChapterPosition positions = detectSimpleChapters(LineType.MARKEDHEADING, 0);
+    ChapterPosition positions = detectSimpleChapters(true, LineType.MARKEDHEADING, 0);
     useEmptyChapterRule(positions, true);
     return positions;
   }
 
   protected ChapterPosition useBigHeaderRules() {
-    ChapterPosition positions = detectSimpleChapters(LineType.BIGHEADING, getStartPosition());
+    ChapterPosition positions = detectSimpleChapters(true, LineType.BIGHEADING, getStartPosition());
     useTwoWhitelinesBeforeRule(positions, true);
     useEmptyChapterRule(positions, true);
     useLittleChapterRule(positions, MINIMUMCHAPTERSIZE);
@@ -272,7 +283,8 @@ public class ChapterAnalyzer {
   }
 
   protected ChapterPosition useSmallHeaderRules() {
-    ChapterPosition positions = detectSimpleChapters(LineType.SMALLHEADING, getStartPosition());
+    ChapterPosition positions =
+        detectSimpleChapters(true, LineType.SMALLHEADING, getStartPosition());
     useTwoWhitelinesBeforeRule(positions, false);
     useWhitelineAfterRule(positions, false);
     useEmptyChapterRule(positions, false);
@@ -290,6 +302,18 @@ public class ChapterAnalyzer {
         numberOfAddedSmallHeadings - (oldNumberOfChapters - newNumberOfChapters);
     smallHeadingsPercentage = numberOfAddedSmallHeadings * (1.0f / newNumberOfChapters);
     return newPositions;
+  }
+
+  protected ChapterPosition useTwoWhitelinesChapterRule() {
+    ChapterPosition positions = detectSimpleChapters(false, LineType.WHITELINE, getStartPosition());
+    useTwoWhitelinesBeforeRule(positions, false);
+    useEmptyChapterRule(positions, false);
+    for (int chapterNumber = 1; chapterNumber <= positions.size(); chapterNumber++) {
+      int startOfHeading = positions.getStartOfHeading(chapterNumber);
+      int endOfText = positions.getEndOfText(chapterNumber);
+      positions.changeChapterData(chapterNumber, startOfHeading, startOfHeading, endOfText);
+    }
+    return positions;
   }
 
   protected ChapterPosition useNoChapterRules() {
@@ -550,12 +574,19 @@ public class ChapterAnalyzer {
           result = result + "A ";
         }
       }
+      for (int i = 1; twoWhitelinesChapters.size() >= i; i++) {
+        if (twoWhitelinesChapters.getStartOfHeading(i) <= lineNumber
+            && twoWhitelinesChapters.getStartOfText(i) >= lineNumber) {
+          result = result + "W ";
+        }
+      }
       for (int i = 1; this.result.size() >= i; i++) {
         if (this.result.getStartOfHeading(i) <= lineNumber
             && this.result.getStartOfText(i) > lineNumber) {
           result = result + "R ";
         }
       }
+
       result = result + "      ";
       result = result + line.getType() + "      " + line.getText() + "\r\n";
       lineNumber++;
