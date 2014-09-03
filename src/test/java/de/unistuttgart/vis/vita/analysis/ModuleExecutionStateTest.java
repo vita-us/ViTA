@@ -57,6 +57,22 @@ public class ModuleExecutionStateTest {
     moduleState.notifyModuleFinished(dependencyModule, "string"); // should be Integer
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testNotifyModuleProgressWithInvalidProgressThrows() {
+    moduleState.notifyModuleProgress(dependencyModule, 2); // should be between 0 and 1
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testNotifyModuleProgressWithInvalidProgressThrows2() {
+    moduleState.notifyModuleProgress(dependencyModule, -0.1); // should be between 0 and 1
+  }
+  
+  @Test
+  public void testToStringContainsDependencies() {
+    assertThat(moduleState.toString(), containsString("MockModule"));
+    assertThat(moduleState.toString(), containsString("IntProvidingModule"));
+  }
+
   @Test
   public void testProvidingResults() {
     moduleState.notifyModuleFinished(dependencyModule, 123);
@@ -68,6 +84,12 @@ public class ModuleExecutionStateTest {
     Thread thread = new Thread();
     moduleState.setThread(thread);
     assertThat(moduleState.getThread(), is(thread));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testProvidingWrongResultThrows() {
+    // depdendencyModule is of type Integer, so "abc" should not be accepted
+    moduleState.notifyModuleFinished(dependencyModule, "abc");
   }
 
   @Test(expected = IllegalArgumentException.class)

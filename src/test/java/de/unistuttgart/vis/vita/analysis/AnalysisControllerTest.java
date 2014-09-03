@@ -123,7 +123,7 @@ public class AnalysisControllerTest {
   }
 
   @Test
-  public void testStartQueuedAnalysisWhenFirstOneFinishes() {
+  public void testStartsQueuedAnalysisWhenFirstOneFinishes() {
     Path path1 = Paths.get("path/to/file.name");
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
@@ -139,6 +139,23 @@ public class AnalysisControllerTest {
     AnalysisExecutor executor1 = executor;
     prepareExecutor(path2);
     analysisObserver.onFinish(executor1);
+
+    verifyExecutorCreated(path2);
+    verify(executor).start();
+    assertThat(controller.documentsInQueue(), is(0));
+    assertThat(controller.isWorking(), is(true));
+  }
+
+  @Test
+  public void testStartsQueuedAnalysisWhenFirstOneFails() {
+    Path path1 = Paths.get("path/to/file.name");
+    Path path2 = Paths.get("path/to/file2.name");
+    prepareExecutor(path1);
+    controller.scheduleDocumentAnalysis(path1);
+    controller.scheduleDocumentAnalysis(path2);
+    AnalysisExecutor executor1 = executor;
+    prepareExecutor(path2);
+    analysisObserver.onFail(executor1);
 
     verifyExecutorCreated(path2);
     verify(executor).start();
