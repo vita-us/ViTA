@@ -7,10 +7,9 @@ package de.unistuttgart.vis.vita.analysis;
 public interface ProgressListener {
 
   /**
-   * TODO not really understand the meaning of this yet... Initiate the observation of the module
-   * with given value.
+   * Informs the listener about the progress of a module
    * 
-   * @param progress The current progress of the module.
+   * @param progress a value between 0 and 1
    */
   public void observeProgress(double progress);
 

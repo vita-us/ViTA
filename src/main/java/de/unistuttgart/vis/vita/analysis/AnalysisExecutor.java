@@ -10,7 +10,6 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Controls the execution of the analysis of a single document

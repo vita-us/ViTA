@@ -8,10 +8,10 @@ package de.unistuttgart.vis.vita.analysis;
  */
 public interface Module<TResult> {
   /**
-   * Observes the progress of the module. TODO not sure what this method is used for.
    * Is called when the progress of this module or its dependencies changes.
    *
-   * @param progress The progress of the dependencies and this module combined, 0-1.
+   * @param progress The progress of the dependencies and this module combined as a value between 0
+   *        and 1
    */
   public void observeProgress(double progress);
 
