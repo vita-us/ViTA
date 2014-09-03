@@ -56,4 +56,9 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("J.R.R. Tolkien", documentMetadata.getAuthor());
 
   }
+  @Test
+  public void testPublisherYear() {
+    assertEquals("Sun Feb 05 00:00:00 CET 2006", documentMetadata.getPublishYear().toString());
+
+  }
 }
