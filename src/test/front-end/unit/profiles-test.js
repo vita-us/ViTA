@@ -1,4 +1,4 @@
-describe('ProfilesCtrl', function() {
+describe('ProfileListCtrl', function() {
   var scope, $httpBackend, ctrl, profilesData = {
     "totalCount": 2,
     "persons": [{
@@ -31,7 +31,7 @@ describe('ProfilesCtrl', function() {
     $routeParams.documentId = 'doc13a';
 
     scope = $rootScope.$new();
-    ctrl = $controller('ProfilesCtrl', {
+    ctrl = $controller('ProfileListCtrl', {
       $scope: scope
     });
   }));

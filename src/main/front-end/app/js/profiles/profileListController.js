@@ -4,7 +4,7 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the profiles page
-  vitaControllers.controller('ProfilesCtrl', ['$scope', 'Profile', 'Page', '$routeParams',
+  vitaControllers.controller('ProfileListCtrl', ['$scope', 'Profile', 'Page', '$routeParams',
       function($scope, Profile, Page, $routeParams) {
         Page.title = 'Profiles';
         Page.showMenu = true;
