@@ -10,7 +10,7 @@
       <property name="hibernate.connection.url" value="jdbc:h2:./target/db/db" />
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
     </properties>
   </persistence-unit>
@@ -22,7 +22,7 @@
       <property name="connection.driver_class" value="org.h2.Driver" />
       <property name="hibernate.connection.url" value="jdbc:h2:~/.vita/db" />
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
     </properties>
   </persistence-unit>
