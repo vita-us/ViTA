@@ -37,8 +37,8 @@ public class TextSplitterTxtTest {
   
   @Test
   public void testMetdataList(){
-    assertEquals(3, metadataList.size());
-    assertEquals("Title: The Lord of the Rings", metadataList.get(0).getText());
+    assertEquals(9, metadataList.size());
+    assertEquals("Title: The", metadataList.get(0).getText());
     assertEquals("", metadataList.get(metadataList.size()-1).getText());
 
     
