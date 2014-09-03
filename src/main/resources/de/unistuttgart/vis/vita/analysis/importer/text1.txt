@@ -1,5 +1,11 @@
-Title: The Lord of the Rings
+Title: The
+Lord of                        
+the Rings                                    
+
 Author: J.R.R. Tolkien
+
+Release Date: February 5,                                                
+2006 
 
 *** Start of The Lord of the Rings ***
 # Chapter 1
