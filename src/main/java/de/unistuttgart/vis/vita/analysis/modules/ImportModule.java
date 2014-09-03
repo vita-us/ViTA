@@ -27,7 +27,7 @@ public class ImportModule implements Module<ImportResult> {
 
   @Override
   public void observeProgress(double progress) {
-
+    // Ignore progress reports
   }
 
   @Override

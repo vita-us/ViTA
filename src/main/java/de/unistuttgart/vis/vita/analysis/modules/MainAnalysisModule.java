@@ -15,7 +15,7 @@ public class MainAnalysisModule implements Module<Void> {
 
   @Override
   public void observeProgress(double progress) {
-
+    // Ignore progress reports
   }
 
   @Override

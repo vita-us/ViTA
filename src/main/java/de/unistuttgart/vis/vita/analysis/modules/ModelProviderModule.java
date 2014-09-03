@@ -16,7 +16,7 @@ public class ModelProviderModule implements Module<Model> {
 
   @Override
   public void observeProgress(double progress) {
-
+    // Ignore progress reports
   }
 
   @Override
