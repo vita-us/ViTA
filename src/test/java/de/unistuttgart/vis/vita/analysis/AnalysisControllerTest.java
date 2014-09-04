@@ -153,6 +153,7 @@ public class AnalysisControllerTest {
     prepareExecutor(path1);
     controller.scheduleDocumentAnalysis(path1);
     controller.scheduleDocumentAnalysis(path2);
+    verifyExecutorCreated(path1);
     AnalysisExecutor executor1 = executor;
     prepareExecutor(path2);
     analysisObserver.onFail(executor1);
