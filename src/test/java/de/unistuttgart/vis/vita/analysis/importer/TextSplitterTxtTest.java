@@ -30,8 +30,8 @@ public class TextSplitterTxtTest {
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     TextSplitter textSplitter = new TextSplitter(textFileImporter.getResult());
-    metadataList = textSplitter.getMetadataSection();
-    textList = textSplitter.getTextSection();
+    textList = textSplitter.getTextList();
+    metadataList = textSplitter.getMetadataList();
   }
   
   
