@@ -95,6 +95,45 @@
           "weight": 0.7345
         }]
       },
+
+      singleProfile: {
+        "id": "person8Hugo",
+        "displayName": "Hugo",
+        "type": "person",
+        "attributes": [{
+          "id": "attr12397",
+          "content": "15",
+          "type": "age"
+        }, {
+          "id": "at65657",
+          "content": "Hugo Martin",
+          "type": "name"
+        }],
+        "rankingValue": 3,
+        "entityRelations": [{
+          "relatedEntity": "person10Ben",
+          "weight": 0.81234
+        }, {
+          "relatedEntity": "person18Bert",
+          "weight": 0.7345
+        }]
+      },
+
+      profiles: {
+        "totalCount": 2,
+        "persons": [{
+          "id": "person8Hugo",
+          "displayName": "Hugo",
+          "type": "person",
+          "rankingValue": 3
+        }, {
+          "id": "person10Bert",
+          "displayName": "Bert",
+          "type": "person",
+          "rankingValue": 7
+        }]
+      }
+
     };
   });
 })(angular);

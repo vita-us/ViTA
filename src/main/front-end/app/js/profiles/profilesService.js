@@ -1,0 +1,14 @@
+(function(angular) {
+  'use strict';
+
+  var vitaServices = angular.module('vitaServices');
+
+  // Service that is responsible for dealing with documents
+  vitaServices.factory('Profile', ['$resource', function($resource) {
+    return $resource('/documents/:documentId/persons/:personId', {}, {
+      get: {
+        method: 'GET'
+      }
+    });
+  }]);
+})(angular);
