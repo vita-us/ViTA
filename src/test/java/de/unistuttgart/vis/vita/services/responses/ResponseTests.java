@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({DocumentIdResponseTest.class, DocumentRenameResponseTest.class})
+@SuiteClasses({DocumentIdResponseTest.class})
 public class ResponseTests {
 
 }
