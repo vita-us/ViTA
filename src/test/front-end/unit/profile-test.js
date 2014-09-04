@@ -1,4 +1,4 @@
-describe('OverviewCtrl', function() {
+describe('ProfileCtrl', function() {
   var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
@@ -13,20 +13,21 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123').respond(TestData.singleDocument);
-    $routeParams.documentId = '123';
+    $httpBackend.expectGET('/documents/doc13a/persons/person8').respond(TestData.singleProfile);
+
+    $routeParams.documentId = 'doc13a';
+    $routeParams.personId = 'person8';
+
     scope = $rootScope.$new();
-    ctrl = $controller('OverviewCtrl', {
+    ctrl = $controller('ProfileCtrl', {
       $scope: scope
     });
   }));
 
-  it('should create "document" model', inject(function($controller, TestData) {
-
-    expect(scope.document).not.toBeDefined();
+  it('should get a profile from REST by using the Profiles service', inject(function(TestData) {
+    expect(scope.profile).toEqualData({});
     $httpBackend.flush();
-    expect(scope.document).toEqualData(TestData.singleDocument);
-
+    expect(scope.profile).toEqualData(TestData.singleProfile);
   }));
 
 });

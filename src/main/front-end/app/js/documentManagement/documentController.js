@@ -7,7 +7,7 @@
   vitaControllers.controller('DocumentsCtrl', ['$scope', 'Document', 'Page', function($scope, Document, Page) {
     Page.setUp('Documents', 1);
     
-    Document.getAll(function(response) {
+    Document.get(function(response) {
       $scope.documents = response.documents;
     });
   }]);

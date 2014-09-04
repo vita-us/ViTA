@@ -1,9 +1,12 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embeddable;
+
 /**
  * Represents all metrics of a Document, including the number of characters, words, chapters,
  * persons and places.
  */
+@Embeddable
 public class DocumentMetrics {
 
   // attributes
