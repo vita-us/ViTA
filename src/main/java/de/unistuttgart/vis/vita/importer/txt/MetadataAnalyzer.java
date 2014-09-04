@@ -194,7 +194,7 @@ public class MetadataAnalyzer {
   /**
    * set the default values of documentMetadata
    */
-  public void setDefaultValues() {
+  private void setDefaultValues() {
     documentMetadata.setAuthor("");
     documentMetadata.setEdition("");
     documentMetadata.setGenre("");
