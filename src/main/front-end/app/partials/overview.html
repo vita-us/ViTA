@@ -1,5 +1,48 @@
-<h1>{{document.metadata.title}}</h1>
-<p>Author: {{document.metadata.author}}</p>
-<p>Published: {{document.metadata.publishYear}} {{document.metadata.publisher}}</p>
-<p>Num. of chapters: {{document.metrics.chapterCount}}</p>
-<p>Num. of words: {{document.metrics.wordCount}}</p>
+<div class="container-fluid highlight">
+  <p>Author: {{document.metadata.author}}</p>
+  <p>Published: {{document.metadata.publishYear}} {{document.metadata.publisher}}</p>
+  <p>Number of chapters: {{document.metrics.chapterCount}}</p>
+  <p>Number of words: {{document.metrics.wordCount}}</p>
+</div>
+
+<div class="container-fluid highlight overview-preview-images clearfix">
+  <div>
+    <div class="preview">
+      <a ng-href="#/documents/{{document.id}}/profiles">
+        <img src="img/overview-preview-image-ph.png">
+      </a>
+      <a ng-href="#/documents/{{document.id}}/profiles" class="description">Profiles</a>
+    </div>
+    <div class="preview">
+      <a ng-href="#/documents/{{document.id}}/places">
+        <img src="img/overview-preview-image-ph.png">
+      </a>
+      <a ng-href="#/documents/{{document.id}}/places" class="description">Places</a>
+    </div>
+    <div class="preview">
+      <a ng-href="#/documents/{{document.id}}/fingerprint">
+        <img src="img/overview-preview-image-ph.png">
+      </a>
+      <a ng-href="#/documents/{{document.id}}/fingerprint" class="description">Fingerprint</a>
+    </div>
+  </div>
+  <div class="preview">
+    <a ng-href="#/documents/{{document.id}}/graphnetwork">
+      <img src="img/overview-preview-image-ph.png">
+    </a>
+    <a ng-href="#/documents/{{document.id}}/graphnetwork" class="description">Graph-Network</a>
+  </div>
+  <div class="preview">
+    <a ng-href="#/documents/{{document.id}}/wordcloud">
+      <img src="img/overview-preview-image-ph.png">
+    </a>
+    <a ng-href="#/documents/{{document.id}}/wordcloud" class="description">Word Cloud</a>
+  </div>
+  <div class="preview">
+    <a ng-href="#/documents/{{document.id}}/documentview">
+      <img src="img/overview-preview-image-ph.png">
+    </a>
+    <a ng-href="#/documents/{{document.id}}/documentview" class="description">Document</a>
+  </div>
+  
+</div>
