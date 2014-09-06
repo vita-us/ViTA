@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -114,6 +115,16 @@ public class DocumentService {
       response = Response.status(404).build();
     }
     return response;
+  }
+  
+  /**
+   * Returns the ProgressService for the current document.
+   * 
+   * @return progress service
+   */
+  @Path("/progress")
+  public ProgressService getProgress() {
+    return new ProgressService(uriInfo, request, id);
   }
 
 }
