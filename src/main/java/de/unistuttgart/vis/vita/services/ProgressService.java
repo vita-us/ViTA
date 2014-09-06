@@ -5,7 +5,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-import de.unistuttgart.vis.vita.data.ProgressTestData;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
@@ -38,7 +37,7 @@ public class ProgressService {
   @GET
   public AnalysisProgress getProgress() {
     // TODO not implemented yet!
-    return new ProgressTestData().createTestProgress();
+    return null;
   }
 
 }
