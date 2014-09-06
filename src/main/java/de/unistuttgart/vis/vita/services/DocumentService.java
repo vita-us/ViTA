@@ -9,6 +9,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -120,11 +121,22 @@ public class DocumentService {
   /**
    * Returns the ProgressService for the current document.
    * 
-   * @return progress service
+   * @return progress service which answers this request
    */
   @Path("/progress")
   public ProgressService getProgress() {
     return new ProgressService(uriInfo, request, id);
+  }
+  
+  /**
+   * Returns the ChapterService for the current document and given chapter id.
+   * 
+   * @param chapterId - the chapter id given in the path
+   * @return the chapter service which answers this request
+   */
+  @Path("/chapters/{chapterId}")
+  public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
+    return new ChapterService(uriInfo, request, chapterId);
   }
 
 }
