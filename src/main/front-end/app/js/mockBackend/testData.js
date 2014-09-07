@@ -95,6 +95,250 @@
           "weight": 0.7345
         }]
       },
+
+      fingerprint: {
+        "occurrences": [{
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.0626
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.0701
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.086
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.0892
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.1534
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.173
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.1931
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.2281
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.218
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.2227
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.2992
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.3327
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.3527
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.392
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.368
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.3992
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.4477
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.4921
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.4752
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.4798
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.4829
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.5356
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.4891
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.5153
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.6351
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.6443
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.6652
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.68
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.6915
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.7176
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.6953
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.7287
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.7583
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.7688
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.8525
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.8771
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.951
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.9784
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.9583
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.9876
+          },
+          "length": 14123
+        }]
+      },
     };
   });
 })(angular);
