@@ -1,0 +1,19 @@
+@rect-opacity: 0.6;
+@rect-selected-opacity: 0.9;
+
+fingerprint {
+
+  rect {
+    fill: @fingerprint-rect-color;
+    opacity: @rect-opacity;
+  }
+  
+  rect.selected {
+    fill: @fingerprint-rect-highlight-color;
+    opacity: @rect-selected-opacity;
+  }
+  
+  rect.background {
+    fill: @fingerprint-rect-background-color;
+  }
+}
