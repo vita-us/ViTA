@@ -26,23 +26,23 @@ public class ProgressServiceTest extends ServiceTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    
-    // persist test document
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
-    
+    // create test data instances
+    testData = new ProgressTestData();
+    AnalysisProgress testProgress = testData.createTestProgress();
     DocumentTestData documenttestData = new DocumentTestData();
     
     Document testDoc1 = documenttestData.createTestDocument(1);
-    
+    testDoc1.setProgress(testProgress);
     documentId = testDoc1.getId();
     
+    // persist test document
+    EntityManager em = Model.createUnitTestModel().getEntityManager();
+     
     em.getTransaction().begin();
     em.persist(testDoc1);
+    em.persist(testProgress);
     em.getTransaction().commit();
     em.close();
-    
-    // create test data instance
-    testData = new ProgressTestData();
   }
   
   @Override

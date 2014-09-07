@@ -1,10 +1,13 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
@@ -16,19 +19,23 @@ public class ProgressService {
   UriInfo uriInfo;
   @Context
   Request request;
-  String id;
+  
+  private String documentId;
+  private EntityManager em;
 
   /**
    * Creates a new service returning the progress of the analysis of the current document.
    * 
    * @param uriInfo
    * @param request
-   * @param id
+   * @param docId
    */
-  public ProgressService(UriInfo uriInfo, Request request, String id) {
+  public ProgressService(UriInfo uriInfo, Request request, String docId) {
     this.uriInfo = uriInfo;
     this.request = request;
-    this.id = id;
+    this.documentId = docId;
+    
+    this.em = Model.createUnitTestModelWithoutDrop().getEntityManager();
   }
   
   /**
@@ -36,8 +43,19 @@ public class ProgressService {
    */
   @GET
   public AnalysisProgress getProgress() {
-    // TODO not implemented yet!
-    return null;
+    return readProgressFromDatabase();
+  }
+  
+  /**
+   * Reads the analysis progress of the current document from database and returns it.
+   * 
+   * @return analysis progress of the current document
+   */
+  private AnalysisProgress readProgressFromDatabase() {
+    TypedQuery<AnalysisProgress> query =
+        em.createNamedQuery("AnalysisProgress.findProgressByDocumentId", AnalysisProgress.class);
+    query.setParameter("documentId", documentId);
+    return query.getSingleResult();
   }
 
 }
