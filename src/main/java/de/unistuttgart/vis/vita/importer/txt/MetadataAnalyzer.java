@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
@@ -50,37 +51,34 @@ public class MetadataAnalyzer {
     MetadataBuilder metadataBuilder = new MetadataBuilder();
     if (!metadataList.isEmpty()) {
       for (Line line : metadataList) {
-        if (line != null) {
-          if (line.getText().matches(TITLE)) {
-            verifyTitleIsMultiline(metadataBuilder, line);
+        if (line.getText().matches(TITLE)) {
+          verifyTitleIsMultiline(metadataBuilder, line);
 
-          } else if (line.getText().matches(AUTHOR)) {
-            verifyAuthorIsMultiline(metadataBuilder, line);
+        } else if (line.getText().matches(AUTHOR)) {
+          verifyAuthorIsMultiline(metadataBuilder, line);
 
-          } else if (line.getText().matches(RELEASE_DATE)) {
-            verifyPublisherYearIsMultiline(metadataBuilder, line);
+        } else if (line.getText().matches(RELEASE_DATE)) {
+          verifyPublisherYearIsMultiline(metadataBuilder, line);
 
-          } else if (line.getText().matches(PUBLISHER)) {
-            verifyPublisherIsMultiline(metadataBuilder, line);
+        } else if (line.getText().matches(PUBLISHER)) {
+          verifyPublisherIsMultiline(metadataBuilder, line);
 
-          } else if (line.getText().matches(GENRE)) {
-            verifyTGenreIsMultiline(metadataBuilder, line);
+        } else if (line.getText().matches(GENRE)) {
+          verifyTGenreIsMultiline(metadataBuilder, line);
 
-          } else if (line.getText().matches(EDITION)) {
-            verifyEditionIsMultiline(metadataBuilder, line);
-          }
+        } else if (line.getText().matches(EDITION)) {
+          verifyEditionIsMultiline(metadataBuilder, line);
         }
       }
     } else {
-
       documentMetadata.setTitle(new File(path.toString()).getName());
     }
     return documentMetadata;
   }
 
   /**
-   * Check if the current metadata line is multiline
-   * Extracts the metadata Publisher Year, if multiline exits, with multilines
+   * Check if the current metadata line is multiline Extracts the metadata Publisher Year, if
+   * multiline exits, with multilines
    * 
    * @param metadataBuilder
    * @param line
@@ -103,8 +101,9 @@ public class MetadataAnalyzer {
   }
 
   /**
-   * Check if the current metadata line is multiline
-   * Extracts the metadata Edition, if multiline exits, with multilines
+   * Check if the current metadata line is multiline Extracts the metadata Edition, if multiline
+   * exits, with multilines
+   * 
    * @param metadataBuilder
    * @param line
    */
@@ -121,8 +120,9 @@ public class MetadataAnalyzer {
   }
 
   /**
-   * Check if the current metadata line is multiline
-   * Extracts the metadata Genre, if multiline exits, with multilines
+   * Check if the current metadata line is multiline Extracts the metadata Genre, if multiline
+   * exits, with multilines
+   * 
    * @param metadataBuilder
    * @param line
    */
@@ -139,8 +139,9 @@ public class MetadataAnalyzer {
   }
 
   /**
-   * Check if the current metadata line is multiline
-   * Extracts the metadata Publisher, if multiline exits, with multilines
+   * Check if the current metadata line is multiline Extracts the metadata Publisher, if multiline
+   * exits, with multilines
+   * 
    * @param metadataBuilder
    * @param line
    */
@@ -157,8 +158,9 @@ public class MetadataAnalyzer {
   }
 
   /**
-   * Check if the current metadata line is multiline
-   * Extracts the metadata Author, if multiline exits, with multilines
+   * Check if the current metadata line is multiline Extracts the metadata Author, if multiline
+   * exits, with multilines
+   * 
    * @param metadataBuilder
    * @param line
    */
@@ -173,9 +175,10 @@ public class MetadataAnalyzer {
       documentMetadata.setAuthor(author);
     }
   }
-  
+
   /**
    * Check if the current metadata line is multiline
+   * 
    * @param metadataBuilder
    * @param line
    */
@@ -212,8 +215,9 @@ public class MetadataAnalyzer {
   private boolean isValidPublisherYear(String publisherYear) {
     try {
       date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(publisherYear);
-    } catch (ParseException ex) {
-      ex.printStackTrace();
+    } catch (ParseException e) {
+      Logger log = Logger.getLogger("Exception");
+      log.log(Level.SEVERE, "Incorrect date format", e);
     }
     return date != null;
 
@@ -221,6 +225,7 @@ public class MetadataAnalyzer {
 
   /**
    * Check if the current metadata is multiline
+   * 
    * @param newMetadataLine
    * @return
    */
@@ -236,9 +241,10 @@ public class MetadataAnalyzer {
     return false;
 
   }
-  
+
   /**
    * Returns a list with the multilines regarding the metadata
+   * 
    * @param newMetadataLine
    * @return
    */

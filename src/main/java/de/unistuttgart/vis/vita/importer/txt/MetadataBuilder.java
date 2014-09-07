@@ -173,8 +173,10 @@ public class MetadataBuilder {
    */
   public String buildMetadataMultiline(List<Line> newMetadataMultilineList){
     String metadataLine = "";
+    String metadataCurrentMultiline = "";
     for(Line metadataMultiLine: newMetadataMultilineList){
-      metadataLine+= " "+metadataMultiLine.getText().trim();
+      metadataCurrentMultiline = metadataMultiLine.getText().trim();
+      metadataLine+= " "+metadataCurrentMultiline;
     }
     return metadataLine;
   }

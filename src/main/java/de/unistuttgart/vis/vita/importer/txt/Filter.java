@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public class Filter {
 
+  private static final String DEFAULT_BEGIN_BRACKET = "(\\[)"; 
+  private static final String DEFAULT_END_BRACKET = "(\\])"; 
   private static final String DEFAULT_COMMENT_FILTER =
       "(([\\w\\s][\\p{Punct}&&[^\\]]])*\\[.*\\]([\\w\\s][\\p{Punct}&&[^\\]]])*)+";
   private static final String DEFAULT_COMMENT_BEGIN = ".*(\\[).*";
@@ -26,16 +28,16 @@ public class Filter {
   private static final String DEFAULT_CHARACTERS_EX_END_BRACKET = "[\\w\\s\\p{Punct}&&[^\\]]]*";
 
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\[)" + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
   private static final String DEFAULT_CHARACTERS_WITH_END_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\])" + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\[)" + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\])"
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\])" + DEFAULT_CHARACTERS_EX_END_BRACKET + "(\\[)"
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
 
