@@ -9,16 +9,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
- * Holds a list of all documents and its count.
+ * Holds a list of documents and its count.
  */
 @XmlRootElement
-public class DocumentsResponse {
+public class DocumentsResponse extends AbstractListResponse {
   
   @XmlElementWrapper(name = "documents")
   @XmlElement(name = "document")
   private List<Document> documents;
-  private int totalCount;
-
+  
   /**
    * Creates a new instance of DocumentResponse, setting all attributes to default values.
    */
@@ -29,29 +28,13 @@ public class DocumentsResponse {
   /**
    * Creates a new DocumentsResponse including all documents and the amount of documents.
    * 
-   * @param pDocuments - the documents to be stored in the response
+   * @param documentsToBeResponded - the documents to be stored in the response
    */
-  public DocumentsResponse(List<Document> pDocuments) {
-    this.documents = pDocuments;
-    this.totalCount = pDocuments.size();
+  public DocumentsResponse(List<Document> documentsToBeResponded) {
+    super(documentsToBeResponded.size());
+    this.documents = documentsToBeResponded;
   }
 
-  /**
-   * @return the total amount of documents
-   */
-  public int getTotalCount() {
-    return totalCount;
-  }
-  
-  /**
-   * Sets the total count of Documents for this response.
-   * 
-   * @param totalCount - the number of documents
-   */
-  public void setTotalCount(int totalCount) {
-    this.totalCount = totalCount;
-  }
-  
   /**
    * @return all documents stored in this DocumentsResponse
    */
@@ -64,7 +47,7 @@ public class DocumentsResponse {
    * 
    * @param docList - the list of documents
    */
-  public void setDocument(List<Document> docList) {
+  public void setDocuments(List<Document> docList) {
     this.documents = docList;
     this.totalCount = docList.size();
   }
