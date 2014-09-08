@@ -1,11 +1,10 @@
 package de.unistuttgart.vis.vita.model;
 
-import de.unistuttgart.vis.vita.model.document.Chapter;
-
-import org.apache.lucene.store.Directory;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -13,8 +12,17 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.util.Version;
+
+import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**
  * Manages texts for the model.
@@ -22,50 +30,53 @@ import org.apache.lucene.util.Version;
 public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
+  private static final String INDEX_PATH = "~//.vita//lucene//";
+  @SuppressWarnings("deprecation")
+  private static final Version LUCENE_VERSION = Version.LUCENE_CURRENT;
 
   // list of directories
   private List<Directory> indexes = new ArrayList<Directory>();
-  private IndexReader indexReader;
+
 
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
    * 
    * @param chapterToPopulate
    * @throws IOException
+   * @throws ParseException
    */
-  public void populateChapterText(Chapter chapterToPopulate) throws IOException {
-
-    for (Directory index : indexes) {
-      indexReader = IndexReader.open(index);
-
-      // iteration till to the maximum number of documents in an index
-      for (int i = 0; i < indexReader.maxDoc(); i++) {
-
-        // if chapter id in the document of the index is equal to the chapterToPopulate id
-        // then set the text of chapterToPopulate with the chapter text of the current chapter of
-        // this document
-        if (indexReader.document(i).getField(CHAPTER_ID).stringValue()
-            .equals(chapterToPopulate.getId())) {
-          chapterToPopulate.setText(indexReader.document(i).getField(CHAPTER_TEXT).stringValue());
-          break;
-        }
-      }
-    }
+  @SuppressWarnings("deprecation")
+  public void populateChapterText(Chapter chapterToPopulate) throws IOException, ParseException {
+    Directory index =
+        FSDirectory.open(new File(INDEX_PATH + chapterToPopulate.getDocument().getId()));
+    IndexReader indexReader = IndexReader.open(index);
+    IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+    QueryParser queryParser =
+        new QueryParser(LUCENE_VERSION, CHAPTER_ID, new StandardAnalyzer(LUCENE_VERSION));
+    Query query = queryParser.parse(chapterToPopulate.getId());
+    ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
+    Document hitDoc = indexSearcher.doc(hits[0].doc);
+    chapterToPopulate.setText(hitDoc.getField(CHAPTER_TEXT).stringValue());
   }
 
   /**
-   * Stores a list of chapters of an ebook in lucene
+   * Stores a list of chapters of an ebook in a lucene directory
    * 
    * @param chaptersToStore
    * @throws IOException
    */
   public void storeChaptersTexts(List<Chapter> chaptersToStore) throws IOException {
-    IndexWriterConfig config =
-        new IndexWriterConfig(Version.LUCENE_CURRENT, new StandardAnalyzer());
-    Directory index = new RAMDirectory();
+    String documentId = chaptersToStore.get(0).getDocument().getId();
+    for (Chapter chapterToStore : chaptersToStore) {
+      if (!chapterToStore.getDocument().getId().equals(documentId)) {
+        throw new IllegalArgumentException();
+      }
+    }
+    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
+    Directory index = new MMapDirectory(new File(INDEX_PATH + documentId));
     IndexWriter indexWriter = new IndexWriter(index, config);
-    for (Chapter chapter : chaptersToStore) {
-      indexWriter.addDocument(addFieldsToDocument(chapter));
+    for (Chapter chapterToStore : chaptersToStore) {
+      indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }
     // at the created index along with its documents to the indexes list
     indexes.add(index);
