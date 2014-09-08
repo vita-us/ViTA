@@ -16,10 +16,23 @@ import de.unistuttgart.vis.vita.importer.txt.Filter;
 import de.unistuttgart.vis.vita.importer.txt.Line;
 import de.unistuttgart.vis.vita.importer.txt.TextFileImporter;
 
+/**
+ * JUnit test on Filter
+ * 
+ *
+ */
 public class FilterTxtTest {
 
   private List<Line> filteredList = new ArrayList<Line>();
 
+  /**
+   * Sets the filteredList after the imported List is filtered
+   * @throws URISyntaxException
+   * @throws IllegalArgumentException
+   * @throws FileNotFoundException
+   * @throws IllegalStateException
+   * @throws SecurityException
+   */
   @Before
   public void setUp() throws URISyntaxException, IllegalArgumentException, FileNotFoundException,
       IllegalStateException, SecurityException {
