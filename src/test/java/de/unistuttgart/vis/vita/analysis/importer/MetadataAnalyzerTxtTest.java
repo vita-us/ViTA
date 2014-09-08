@@ -57,7 +57,7 @@ public class MetadataAnalyzerTxtTest {
   }
   @Test
   public void testPublisherYear() {
-    assertEquals("Sun Feb 05 00:00:00 CET 2006", documentMetadata.getPublishYear().toString());
+    assertEquals(2008, documentMetadata.getPublishYear());
 
   }
 }

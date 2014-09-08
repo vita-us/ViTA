@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -32,7 +32,7 @@ public class MetadataAnalyzer {
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
       "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:"};
   private Path path;
-  private Date date = null;
+  private Calendar date = null;
   private DocumentMetadata documentMetadata = new DocumentMetadata();
 
   public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
@@ -89,12 +89,12 @@ public class MetadataAnalyzer {
       publisherYear = line.getText().trim();
       publisherYear += metadataBuilder.buildMetadataMultiline(getMetadataMultilines(line));
       if (isValidPublisherYear(metadataBuilder.buildMetadataPublishYear(publisherYear))) {
-        documentMetadata.setPublishYear(date);
+        documentMetadata.setPublishYear(date.get(Calendar.YEAR));
       }
     } else {
       publisherYear = metadataBuilder.buildMetadataPublishYear(line.getText());
       if (isValidPublisherYear(publisherYear)) {
-        documentMetadata.setPublishYear(date);
+        documentMetadata.setPublishYear(date.get(Calendar.YEAR));
       }
 
     }
@@ -202,7 +202,7 @@ public class MetadataAnalyzer {
     documentMetadata.setEdition("");
     documentMetadata.setGenre("");
     documentMetadata.setPublisher("");
-    documentMetadata.setPublishYear(date);
+    documentMetadata.setPublishYear(0);
     documentMetadata.setTitle("");
   }
 
@@ -214,13 +214,15 @@ public class MetadataAnalyzer {
    */
   private boolean isValidPublisherYear(String publisherYear) {
     try {
-      date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(publisherYear);
+      date = Calendar.getInstance();
+      date.setTime(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(publisherYear));
+      return true;
     } catch (ParseException e) {
+      date = null;
       Logger log = Logger.getLogger("Exception");
       log.log(Level.SEVERE, "Incorrect date format", e);
+      return false;
     }
-    return date != null;
-
   }
 
   /**
