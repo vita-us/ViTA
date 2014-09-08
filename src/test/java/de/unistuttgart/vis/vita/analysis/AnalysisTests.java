@@ -8,9 +8,10 @@ import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
 import de.unistuttgart.vis.vita.analysis.importer.TextImportModuleTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({TextImportModuleTest.class, ImportTests.class})
+@SuiteClasses({AnalysisControllerTest.class, TestModuleRegistry.class, ModuleClassTest.class,
+    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class,
+    TextImportModuleTest.class, ImportTests.class})
 public class AnalysisTests {
-
-  // hidden constructor
-  private AnalysisTests(){}
+  // conform checkstyle rule HideUtilityClassConstructor
+  private AnalysisTests() {}
 }

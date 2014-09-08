@@ -1,14 +1,31 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
  * content of this eBook.
  */
-public class Document {
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "Document.findAllDocuments", query = "SELECT d " + "FROM Document d"),
 
-  private String id;
+    @NamedQuery(name = "Document.findDocumentById", query = "SELECT d " + "FROM Document d "
+        + "WHERE d.id = :documentId"),
+
+    @NamedQuery(name = "Document.findDocumentByTitle", query = "SELECT d " + "FROM Document d "
+        + "WHERE d.metadata.title = :documentTitle")})
+public class Document extends AbstractEntityBase {
+  @Embedded
   private DocumentMetadata metadata;
+  @Embedded
   private DocumentMetrics metrics;
+  @Embedded
   private DocumentContent content;
 
   /**
@@ -16,31 +33,8 @@ public class Document {
    */
   public Document() {
     this.metrics = new DocumentMetrics();
-  }
-
-  /**
-   * Creates a new empty document with the given id.
-   * 
-   * @param pId - the id for the new Document
-   */
-  public Document(String pId) {
-    this.id = pId;
-  }
-
-  /**
-   * @return the id of this Document
-   */
-  public String getId() {
-    return id;
-  }
-
-  /**
-   * Sets the id of this Document.
-   * 
-   * @param newId - the new id for this document
-   */
-  public void setId(String newId) {
-    this.id = newId;
+    this.content = new DocumentContent();
+    this.metadata = new DocumentMetadata();
   }
 
   /**

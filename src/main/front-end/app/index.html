@@ -34,26 +34,28 @@
     <div class="menu" ng-show="Page.showMenu">
       <h2>Visualizations</h2>
       <ul>
-        <li><a ng-href="#/documents/{{document.id}}/overview">Overview</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/profiles">Profiles</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/places">Places</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/fingerprint">Fingerprint</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/graphnetwork">Graph-Network</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/wordcloud">Word Cloud</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/documentview">Document View</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/overview">Overview</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/profiles">Profiles</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/places">Places</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/fingerprint">Fingerprint</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/graphnetwork">Graph-Network</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/wordcloud">Word Cloud</a></li>
+        <li><a ng-href="#/documents/{{Page.documentId}}/documentview">Document View</a></li>
       </ul>
     </div>
     <div class="content">
-      <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs() }}</h2>
+      <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs }}</h2>
       <div ng-view></div>
     </div>
   </div>
 
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.js"></script>
+  <script src="js/d3.js"></script>
   <script src="js/angular.js"></script>
   <script src="js/angular-route.js"></script>
   <script src="js/angular-resource.js"></script>
+  <script src="js/angular-mocks.js"></script>
   <script src="js/vita.js"></script>
 </body>
 </html>

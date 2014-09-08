@@ -24,7 +24,8 @@ public class WordCloud {
    * @param pItems - the items for the new WordCloud
    */
   public WordCloud(Set<WordCloudItem> pItems) {
-    this.setItems(pItems);
+    this();
+    items.addAll(pItems);
   }
 
   /**

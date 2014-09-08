@@ -1,14 +1,14 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 
+@AnalysisModule
 public class TextImportModule implements Module<ImportResult> {
   private Path filePath;
 
@@ -17,12 +17,7 @@ public class TextImportModule implements Module<ImportResult> {
   }
 
   @Override
-  public <T> Collection<Class<T>> getDependencies() {
-    return Arrays.asList(); // no dependencies
-  }
-
-  @Override
-  public <T> void observeProgress(Class<T> resultClass, double progress, boolean isReady) {
+  public void observeProgress(double progress) {
     // do nothing
   }
 
@@ -32,5 +27,4 @@ public class TextImportModule implements Module<ImportResult> {
     // TODO implement
     return null;
   }
-
 }

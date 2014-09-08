@@ -1,31 +1,57 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a part of a Document including number, title and chapters of this DocumentPart.
- */
-public class DocumentPart {
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
-  // attributes
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+
+/**
+ * Represents a group of chapters, usually called "part" or "book" in a document.
+ */
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "DocumentPart.findAllParts", query = "SELECT dp " + "FROM DocumentPart dp"),
+
+    @NamedQuery(name = "DocumentPart.findPartById", query = "SELECT dp " + "FROM DocumentPart dp "
+        + "WHERE dp.id = :partId"),
+
+    @NamedQuery(name = "DocumentPart.findPartByTitle", query = "SELECT dp "
+        + "FROM DocumentPart dp " + "WHERE dp.title = :partTitle")})
+public class DocumentPart extends AbstractEntityBase {
   private int number;
   private String title;
-  private List<Chapter> chapters;
+
+  @OneToMany
+  private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
-   * @return the number of this part of the Document
+   * Creates a new instance of DocumentPart, setting all attributes to default values.
+   */
+  public DocumentPart() {
+    this.chapters = new ArrayList<>();
+  }
+
+  /**
+   * Gets the readable number of this part in the context of the document
+   * 
+   * @return the number, starting from 1
    */
   public int getNumber() {
     return number;
   }
 
   /**
-   * Sets the part number.
+   * Sets the readable number of this part in the context of the document
    *
-   * @param number - the number of this part of the Document
+   * @param the number, starting from 1
    */
-  public void setNumber(int number) {
-    this.number = number;
+  public void setNumber(int newNumber) {
+    this.number = newNumber;
   }
 
   /**
@@ -49,15 +75,6 @@ public class DocumentPart {
    */
   public List<Chapter> getChapters() {
     return chapters;
-  }
-
-  /**
-   * Sets the list of chapters in this part of the Document.
-   *
-   * @param chapters - the list of chapters to set
-   */
-  public void setChapters(List<Chapter> chapters) {
-    this.chapters = chapters;
   }
 
 }

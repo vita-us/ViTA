@@ -1,18 +1,19 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import java.util.Date;
+import javax.persistence.Embeddable;
 
 /**
  * Represents the meta data of a Document, including information like title, author, publisher, year
  * of publication, genre and edition of the Document.
  */
+@Embeddable
 public class DocumentMetadata {
   
   // attributes
   private String title;
   private String author;
   private String publisher;
-  private Date publishYear;
+  private int publishYear;
   private String genre;
   private String edition;
   
@@ -84,7 +85,7 @@ public class DocumentMetadata {
   /**
    * @return year when the Document was published
    */
-  public Date getPublishYear() {
+  public int getPublishYear() {
     return publishYear;
   }
   
@@ -93,7 +94,7 @@ public class DocumentMetadata {
    * 
    * @param newPublishYear - the year when the document was published
    */
-  public void setPublishYear(Date newPublishYear) {
+  public void setPublishYear(int newPublishYear) {
     this.publishYear = newPublishYear;
   }
   
