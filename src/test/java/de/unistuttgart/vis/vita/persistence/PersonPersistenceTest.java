@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -20,9 +21,14 @@ import de.unistuttgart.vis.vita.model.entity.Person;
  */
 public class PersonPersistenceTest extends AbstractPersistenceTest {
 
-  // test data
-  private static final int TEST_PERSON_RANKING_VALUE = 1;
-  private static final String TEST_PERSON_NAME = "Frodo Baggins";
+  private PersonTestData testData;
+  
+  @Override
+  public void setUp() {
+    super.setUp();
+    
+    this.testData = new PersonTestData();
+  }
 
   /**
    * Checks whether one Person can be persisted.
@@ -30,7 +36,7 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testPersistOnePerson() {
     // first set up a Person
-    Person p = createTestPerson();
+    Person p = testData.createTestPerson();
 
     // persist this person
     em.persist(p);
@@ -43,21 +49,7 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     assertEquals(1, persons.size());
     Person readPerson = persons.get(0);
 
-    checkData(readPerson);
-  }
-
-  /**
-   * Creates a new Person, setting attributes to test values and returns it.
-   * 
-   * @return test person
-   */
-  private Person createTestPerson() {
-    Person p = new Person();
-
-    p.setDisplayName(TEST_PERSON_NAME);
-    p.setRankingValue(TEST_PERSON_RANKING_VALUE);
-
-    return p;
+    testData.checkData(readPerson);
   }
 
   /**
@@ -71,24 +63,14 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether the given person is not <code>null</code> and includes the correct test data.
-   * 
-   * @param personToCheck - the person to be checked
-   */
-  private void checkData(Person personToCheck) {
-    assertNotNull(personToCheck);
-    assertEquals(TEST_PERSON_NAME, personToCheck.getDisplayName());
-    assertEquals(TEST_PERSON_RANKING_VALUE, personToCheck.getRankingValue());
-  }
-
-  /**
    * Checks whether all Named Queries of Person are working correctly.
    */
   @Test
   public void testNamedQueries() {
-    Person testPerson = createTestPerson();
+    Person testPerson = testData.createTestPerson();
 
     em.persist(testPerson);
+
     startNewTransaction();
 
     // check Named Query finding all persons
@@ -97,7 +79,7 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
 
     assertTrue(allPersons.size() > 0);
     Person readPerson = allPersons.get(0);
-    checkData(readPerson);
+    testData.checkData(readPerson);
 
     String id = readPerson.getId();
 
@@ -106,16 +88,16 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     idQ.setParameter("personId", id);
     Person idPerson = idQ.getSingleResult();
 
-    checkData(idPerson);
+    testData.checkData(idPerson);
 
     // check Named Query finding persons by name
     TypedQuery<Person> nameQ = em.createNamedQuery("Person.findPersonByName", Person.class);
-    nameQ.setParameter("personName", TEST_PERSON_NAME);
+    nameQ.setParameter("personName", PersonTestData.TEST_PERSON_NAME);
     List<Person> namePersons = nameQ.getResultList();
 
     assertTrue(namePersons.size() > 0);
     Person namePerson = namePersons.get(0);
-    checkData(namePerson);
+    testData.checkData(namePerson);
   }
 
   @Test
