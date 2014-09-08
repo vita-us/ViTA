@@ -138,5 +138,15 @@ public class DocumentService {
   public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
     return resourceContext.getResource(ChapterService.class).setId(chapterId);
   }
+  
+  /**
+   * Returns the PersonsService for the current document.
+   * 
+   * @return the person service which answers this request
+   */
+  @Path("/persons")
+  public PersonsService getPersons() {
+    return resourceContext.getResource(PersonsService.class).setDocumentId(id);
+  }
 
 }
