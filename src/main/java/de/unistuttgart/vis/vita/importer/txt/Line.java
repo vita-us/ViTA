@@ -45,36 +45,39 @@ public class Line {
   private static final Pattern NOSPECIALSIGNSPATTERN = Pattern.compile(NOSPECIALSIGNS);
 
 
+  private boolean automatedTypeComputation;
   private String text;
   private LineType type;
 
   private void computeType() {
-    LineType highestType = LineType.getLowestValidType();
-    if (matchesPattern(SMALLHEADINGPATTERN)) {
-      highestType = LineType.SMALLHEADING;
+    if (automatedTypeComputation) {
+      LineType highestType = LineType.getLowestValidType();
+      if (matchesPattern(SMALLHEADINGPATTERN)) {
+        highestType = LineType.SMALLHEADING;
+      }
+      if (matchesPattern(BIGHEADINGPATTERN) && containsPattern(BIGSIGNSPATTERN)) {
+        highestType = LineType.BIGHEADING;
+      }
+      if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
+        highestType = LineType.TABLEOFCONTENTS;
+      }
+      if (matchesPattern(PREFACEPATTERN)) {
+        highestType = LineType.PREFACE;
+      }
+      if (!containsPattern(NOSPECIALSIGNSPATTERN) && !text.contains("...")) {
+        highestType = LineType.SPECIALSIGNS;
+      }
+      if (matchesPattern(MARKEDHEADINGPATTERN)) {
+        highestType = LineType.MARKEDHEADING;
+      }
+      if (matchesPattern(DATADIVIDERPATTERN)) {
+        highestType = LineType.DATADIVIDER;
+      }
+      if (matchesPattern(WHITESPACEPATTERN)) {
+        highestType = LineType.WHITELINE;
+      }
+      this.type = highestType;
     }
-    if (matchesPattern(BIGHEADINGPATTERN) && containsPattern(BIGSIGNSPATTERN)) {
-      highestType = LineType.BIGHEADING;
-    }
-    if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
-      highestType = LineType.TABLEOFCONTENTS;
-    }
-    if (matchesPattern(PREFACEPATTERN)) {
-      highestType = LineType.PREFACE;
-    }
-    if (!containsPattern(NOSPECIALSIGNSPATTERN) && !text.contains("...")) {
-      highestType = LineType.SPECIALSIGNS;
-    }
-    if (matchesPattern(MARKEDHEADINGPATTERN)) {
-      highestType = LineType.MARKEDHEADING;
-    }
-    if (matchesPattern(DATADIVIDERPATTERN)) {
-      highestType = LineType.DATADIVIDER;
-    }
-    if (matchesPattern(WHITESPACEPATTERN)) {
-      highestType = LineType.WHITELINE;
-    }
-    this.type = highestType;
   }
 
   private boolean matchesPattern(Pattern pattern) {
@@ -100,9 +103,23 @@ public class Line {
   }
 
   public Line(String text) {
+    this(text, true);
+  }
+
+  public Line(String text, Boolean automatedTypeComputation) {
     super();
+    this.type = LineType.UNKNOWN;
     this.text = text;
+    this.automatedTypeComputation = automatedTypeComputation;
     computeType();
+  }
+
+  public boolean isAutomatedTypeComputation() {
+    return automatedTypeComputation;
+  }
+
+  public void setAutomatedTypeComputation(boolean automatedTypeComputation) {
+    this.automatedTypeComputation = automatedTypeComputation;
   }
 
 }
