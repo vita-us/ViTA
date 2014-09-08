@@ -79,7 +79,7 @@ public class StanfordNLPModule implements Module<StanfordNLPResult> {
       public Object apply(Annotation in) {
         progressInChars += in.get(TextAnnotation.class).length();
         double progress = MODEL_LOAD_PROGRESS_FRACTION +
-            (progressInChars / totalLength) * (1 - MODEL_LOAD_PROGRESS_FRACTION);
+            ((double)progressInChars / totalLength) * (1 - MODEL_LOAD_PROGRESS_FRACTION);
         progressListener.observeProgress(progress);
         return null; // ignored
       }

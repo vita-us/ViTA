@@ -2,18 +2,14 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import static com.jayway.awaitility.Awaitility.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-
-import com.jayway.awaitility.Awaitility;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -36,13 +32,12 @@ public class StanfordNLPModuleTest {
   private ProgressListener progressListener;
   private List<Chapter> chapterObjects;
   
-  private boolean done;
-  private Exception threadException;
-  private double currentProgress;
-  
   private final static String[] CHAPTERS = {
     "The text of the first chapter which consists of two sentences. The second one is short.",
-    "Dave went to New York this summer."
+    "Dave went to New York this summer.",
+    "Just some more chapters ...",
+    "... to properly test the progress feature ...",
+    "... because the granularity can not be higher than the number of chapters."
   };
   
   @Before
@@ -52,12 +47,7 @@ public class StanfordNLPModuleTest {
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
-    progressListener = new ProgressListener() {
-      @Override
-      public void observeProgress(double progress) {
-        currentProgress = progress;
-      }
-    };
+    progressListener = mock(ProgressListener.class, withSettings().verboseLogging());
     fillText();
   }
   
@@ -109,44 +99,15 @@ public class StanfordNLPModuleTest {
   }
   
   @Test
-  public void testProgress() throws Exception {
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          module.execute(resultProvider, progressListener);
-        } catch (Exception e) {
-          done = true;
-          threadException = e;
-        }
-      }
-    }).start();
+  public void testProgressIsReported() throws Exception {
+    module.execute(resultProvider, progressListener);
     
-    int steps = 10;
+    // Check that the 0%-100% range is covered approximately
+    // This does not test smoothness as the call times are not considered.
+    int steps = 5;
     for (int i = 0; i < steps; i++) {
-      await().until(progressIsAtLeast((double)i / steps));
-      assertThat(currentProgress, is(lessThan((double)(i+1) / steps)));
+      verify(progressListener, atLeastOnce()).observeProgress(
+          doubleThat(closeTo((double) i / steps, (double) 1 / steps)));
     }
-    await().until(isDone());
-    if (threadException != null)
-      throw new AssertionError("Analysis failed", threadException);
-  }
-
-  private Callable<Boolean> isDone() {
-    return new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return done;
-      }
-    };
-  }
-
-  private Callable<Boolean> progressIsAtLeast(double progress) {
-    return new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return done;
-      }
-    };
   }
 }
