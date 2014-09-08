@@ -233,7 +233,7 @@ public class TextFileImporter {
 
     // sometimes special symbols are read in at the beginning, we are only interested in real
     // words, so we can filter them out
-    deleteNonTextStartSymbols(this.lines);
+    deleteNonTextStartSymbols(lines);
 
     return lines;
   }
