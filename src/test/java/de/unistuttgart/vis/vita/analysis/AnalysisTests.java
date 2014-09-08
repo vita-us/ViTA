@@ -11,4 +11,6 @@ import de.unistuttgart.vis.vita.analysis.importer.TextImportModuleTest;
 @SuiteClasses({TextImportModuleTest.class, ImportTests.class})
 public class AnalysisTests {
 
+  // hidden constructor
+  private AnalysisTests(){}
 }
