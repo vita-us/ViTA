@@ -135,4 +135,7 @@ public class Chapter extends AbstractEntityBase {
     this.range = range;
   }
 
+  public Document getDocument() {
+    return document;
+  }
 }
