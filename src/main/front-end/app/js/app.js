@@ -22,12 +22,18 @@
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: 'OverviewCtrl'
-    }).when('/documents/:documentId/profiles', {
-      templateUrl: 'partials/profiles.html',
-      controller: ''
+    }).when('/documents/:documentId/characters', {
+      templateUrl: 'partials/characters.html',
+      controller: 'CharacterListCtrl'
+    }).when('/documents/:documentId/characters/:characterId', {
+      templateUrl: 'partials/character.html',
+      controller: 'CharacterCtrl'
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
       controller: 'PlaceListCtrl'
+    }).when('/documents/:documentId/places/:placeId', {
+      templateUrl: 'partials/place.html',
+      controller: 'PlaceCtrl'    
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
       controller: ''
