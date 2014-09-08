@@ -9,6 +9,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -30,13 +31,11 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
-  private static final String INDEX_PATH = "~//.vita//lucene//";
-  @SuppressWarnings("deprecation")
-  private static final Version LUCENE_VERSION = Version.LUCENE_CURRENT;
+  private static final String INDEX_PATH = "~/.vita/lucene/";
+  private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
 
   // list of directories
   private List<Directory> indexes = new ArrayList<Directory>();
-
 
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
@@ -45,14 +44,13 @@ public class TextRepository {
    * @throws IOException
    * @throws ParseException
    */
-  @SuppressWarnings("deprecation")
   public void populateChapterText(Chapter chapterToPopulate) throws IOException, ParseException {
     Directory index =
         FSDirectory.open(new File(INDEX_PATH + chapterToPopulate.getDocument().getId()));
-    IndexReader indexReader = IndexReader.open(index);
+    IndexReader indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser =
-        new QueryParser(LUCENE_VERSION, CHAPTER_ID, new StandardAnalyzer(LUCENE_VERSION));
+        new QueryParser(CHAPTER_ID , new StandardAnalyzer());
     Query query = queryParser.parse(chapterToPopulate.getId());
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
