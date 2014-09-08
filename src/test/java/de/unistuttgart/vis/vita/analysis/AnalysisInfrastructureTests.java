@@ -5,14 +5,14 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * A suite containing all back-end tests
+ * Tests for the analysis module infrastructure
  */
 @RunWith(Suite.class)
 @SuiteClasses({AnalysisControllerTest.class, TestModuleRegistry.class, ModuleClassTest.class,
     AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class})
-public class AnalysisTests {
+public class AnalysisInfrastructureTests {
 
   // conform checkstyle rule HideUtilityClassConstructor
-  private AnalysisTests() {
+  private AnalysisInfrastructureTests() {
   }
 }
