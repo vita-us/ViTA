@@ -5,12 +5,12 @@ the Rings
 Author: J.R.R. Tolkien
 
 Release Date: February 5,                                                
-2006 
+2006
 
 *** Start of The Lord of the Rings ***
 # Chapter 1
-
-The text of the first chapter.
+[Ebook The Lord of the Rings]
+The text of[comment one]the first[comment two]chapter.
 
 *** end OF The Lord of the Rings ***
 
