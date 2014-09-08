@@ -1,1 +1,8 @@
-<p>Places</p>
+<div class="container-fluid highlight filterable-list">
+  <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
+  <ul>
+    <li ng-repeat="place in places | filter:search | orderBy: '-rankingValue' ">
+      <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">{{place.displayName}}</a>
+    </li>
+  </ul>
+</div>
