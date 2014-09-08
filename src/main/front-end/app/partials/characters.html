@@ -1,0 +1,8 @@
+<div class="container-fluid highlight filterable-list">
+  <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
+  <ul>
+    <li ng-repeat="character in characters | filter:search | orderBy: '-rankingValue' ">
+      <a href="#/documents/{{Page.documentId}}/characters/{{character.id}}">{{character.displayName}}</a>
+    </li>
+  </ul>
+</div>
