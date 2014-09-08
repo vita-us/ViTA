@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +8,18 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,51 +31,58 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
  *
  */
 public class TextRepositoryTest {
-  
+
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
+  private static final String INDEX_PATH = "~/.vita/lucene/";
+
   private TextRepository textRepository = new TextRepository();
-  private List<String> chapterIds = new ArrayList<String>();
-  private List<String> storedChapterIds = new ArrayList<String>();
-  private List<String> chapterTexts = new ArrayList<String>();
+  private List<Chapter> chapters = new ArrayList<Chapter>();
+  private List<String> storedChaptersIds = new ArrayList<String>();
   private List<String> storedChapterTexts = new ArrayList<String>();
   private Chapter chapter1;
   private IndexReader indexReader;
   private String changedChapter1Text;
 
   @Before
-  public void setUp() throws IOException {
-     List<Chapter> chapterList1 = new ArrayList<Chapter>();
-     List<Chapter> chapterList2 = new ArrayList<Chapter>();
+  public void setUp() throws IOException, ParseException {
+    List<Chapter> chapterList1 = new ArrayList<Chapter>();
+    List<Chapter> chapterList2 = new ArrayList<Chapter>();
     // add to the chapterList1 two chapters with setted text
     chapterList1 = new ArrayList<Chapter>();
     chapter1 = new Chapter();
     chapter1.setText("This is the text of chapter one");
-    chapterTexts.add(chapter1.getText());
-    chapterIds.add(chapter1.getId());
+    chapters.add(chapter1);
     chapterList1.add(chapter1);
     Chapter chapter2 = new Chapter();
     chapter2.setText("This is the text of chapter two");
-    chapterTexts.add(chapter2.getText());
-    chapterIds.add(chapter2.getId());
+    chapters.add(chapter2);
     chapterList1.add(chapter2);
 
     // add to the chapterList2 two chapters with setted text
     chapterList2 = new ArrayList<Chapter>();
     Chapter chapter3 = new Chapter();
     chapter3.setText("This is the text of chapter three");
-    chapterTexts.add(chapter3.getText());
-    chapterIds.add(chapter3.getId());
+    chapters.add(chapter3);
     chapterList2.add(chapter3);
     Chapter chapter4 = new Chapter();
     chapter4.setText("This is the text of chapter four");
-    chapterTexts.add(chapter4.getText());
-    chapterIds.add(chapter4.getId());
+    chapters.add(chapter4);
     chapterList2.add(chapter4);
 
-    // store two lists of chapters in lucene
+    for (Chapter chapter : chapterList1) {
+      chapter.getDocument().setId("document1");
+    }
+    for (Chapter chapter : chapterList2) {
+      chapter.getDocument().setId("document2");
+    }
+
     textRepository.storeChaptersTexts(chapterList1);
     textRepository.storeChaptersTexts(chapterList2);
+    getStoredChaptersIdsAndTexts(chapters.get(0));
+    getStoredChaptersIdsAndTexts(chapters.get(1));
+    getStoredChaptersIdsAndTexts(chapters.get(2));
+    getStoredChaptersIdsAndTexts(chapters.get(3));
 
     // change the text of chapter1 to "This is a false text"
     chapter1.setText("This is a false text");
@@ -74,16 +92,20 @@ public class TextRepositoryTest {
     // "This is the text of chapter one"
     textRepository.populateChapterText(chapter1);
 
-
-    for (Directory index : textRepository.getIndexes()) {
-      indexReader = IndexReader.open(index);
-      for (int i = 0; i < indexReader.maxDoc(); i++) {
-        storedChapterIds.add(indexReader.document(i).getField(CHAPTER_ID).stringValue());
-        storedChapterTexts.add(indexReader.document(i).getField(CHAPTER_TEXT).stringValue());
-
-      }
-    }
   }
+
+  private void getStoredChaptersIdsAndTexts(Chapter chapter) throws IOException, ParseException {
+    Directory index = FSDirectory.open(new File(INDEX_PATH + chapter.getDocument().getId()));
+    indexReader = DirectoryReader.open(index);
+    IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
+    Query query = queryParser.parse(chapter.getId());
+    ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
+    Document hitDoc = indexSearcher.doc(hits[0].doc);
+    storedChaptersIds.add(hitDoc.getField(CHAPTER_ID).stringValue());
+    storedChapterTexts.add(hitDoc.getField(CHAPTER_TEXT).stringValue());
+  }
+
 
   /**
    * Tests the size of the stored indexes
@@ -92,24 +114,25 @@ public class TextRepositoryTest {
   public void testIndexesSize() {
     assertEquals(2, textRepository.getIndexes().size());
   }
-  
+
   /**
    * Tests the equality of the commited chapter ids and texts with the stored ones
    */
   @Test
   public void testStoreChapterTextsAndIds() {
     for (int i = 0; i < 4; i++) {
-      assertEquals(chapterIds.get(i), storedChapterIds.get(i));
-      assertEquals(chapterTexts.get(i), storedChapterTexts.get(i));
+      assertEquals(chapters.get(i).getId(), storedChaptersIds.get(i));
+      assertEquals(chapters.get(i).getText(), storedChapterTexts.get(i));
     }
   }
-  
+
   /**
    * Tests the non equality of the changedChapter1Text and the chapter1 text after populating
    */
   @Test
   public void testPopulateChapterText() {
     assertFalse(chapter1.getText().equals(changedChapter1Text));
+    assertEquals(chapter1.getText(), chapters.get(0).getText());
+
   }
 }
-
