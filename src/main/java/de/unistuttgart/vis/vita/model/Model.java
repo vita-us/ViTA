@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -7,6 +8,7 @@ import javax.persistence.Persistence;
 /**
  * Represents the Model of the application.
  */
+@RequestScoped
 public class Model {
   private TextRepository textRepo;
   private EntityManagerFactory entityManagerFactory;

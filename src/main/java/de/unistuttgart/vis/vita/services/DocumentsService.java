@@ -2,6 +2,8 @@ package de.unistuttgart.vis.vita.services;
 
 import java.util.ArrayList;
 
+import javax.annotation.ManagedBean;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
@@ -11,34 +13,29 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
  */
 @Path("/documents")
+@ManagedBean
 public class DocumentsService {
-  
-  @Context
-  UriInfo uriInfo;
-  @Context
-  Request request;
-  
   private EntityManager em;
-
-  /**
-   * Creates a new DocumentService.
-   */
-  public DocumentsService() {
-    this.em = Model.createUnitTestModelWithoutDrop().getEntityManager();
+  
+  @Context
+  private ResourceContext resourceContext;
+  
+  @Inject
+  public DocumentsService(Model model) {
+    em = model.getEntityManager();
   }
 
   /**
@@ -83,7 +80,9 @@ public class DocumentsService {
    */
   @Path("{documentId}")
   public DocumentService  getDocument(@PathParam("documentId") String id) {
-    return new DocumentService(uriInfo, request, id);
+    resourceContext.getResource(DocumentsService.class);
+    System.out.println(resourceContext.getResource(DocumentsService.class));
+    return resourceContext.getResource(DocumentService.class).setId(id);
   }
 
 }

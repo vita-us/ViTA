@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.annotation.ManagedBean;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.RollbackException;
@@ -11,11 +13,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -24,28 +25,27 @@ import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
  */
+@ManagedBean
 public class DocumentService {
-  
-  @Context
-  UriInfo uriInfo;
-  @Context
-  Request request;
   String id;
   
   private EntityManager em;
   
+  @Context
+  private ResourceContext resourceContext;
+  
+  @Inject
+  public DocumentService(Model model) {
+    em = model.getEntityManager();
+  }
+  
   /**
-   * Creates a new DocumentService with given uri information, request and document id.
-   * 
-   * @param uriInfo
-   * @param request
-   * @param id
+   * Sets the id of the document this resource should represent
+   * @param id the id
    */
-  public DocumentService(UriInfo uriInfo, Request request, String id) {
-    this.uriInfo = uriInfo;
-    this.request = request;
+  public DocumentService setId(String id) {
     this.id = id;
-    this.em = Model.createUnitTestModelWithoutDrop().getEntityManager();
+    return this;
   }
   
   /**
@@ -125,7 +125,7 @@ public class DocumentService {
    */
   @Path("/progress")
   public ProgressService getProgress() {
-    return new ProgressService(uriInfo, request, id);
+    return resourceContext.getResource(ProgressService.class).setDocumentId(id);
   }
   
   /**
@@ -136,7 +136,7 @@ public class DocumentService {
    */
   @Path("/chapters/{chapterId}")
   public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
-    return new ChapterService(uriInfo, request, chapterId);
+    return resourceContext.getResource(ChapterService.class).setId(chapterId);
   }
 
 }

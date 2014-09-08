@@ -16,7 +16,7 @@ import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 
 /**
- * Configures the Jersey Test to use the GrizzlyWebContainer, overriding the method 
+ * Configures the Jersey Test to use the GrizzlyWebContainer, overriding the method
  * TestContainerFactory.
  */
 public class ServiceTest extends JerseyTest {
@@ -44,9 +44,9 @@ public class ServiceTest extends JerseyTest {
           public void start() {
             try {
               this.server =
-                  GrizzlyWebContainerFactory.create(baseUri, Collections
-                      .singletonMap("jersey.config.server.provider.packages",
-                          "de.unistuttgart.vis.vita.services"));
+                  GrizzlyWebContainerFactory.create(baseUri, Collections.singletonMap(
+                      "javax.ws.rs.Application",
+                      "de.unistuttgart.vis.vita.services.TestApplication"));
             } catch (ProcessingException e) {
               throw new TestContainerException(e);
             } catch (IOException e) {

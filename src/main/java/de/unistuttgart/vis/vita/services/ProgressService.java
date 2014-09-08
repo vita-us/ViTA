@@ -1,11 +1,10 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.annotation.ManagedBean;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
@@ -13,29 +12,25 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 /**
  * A service which provides a method to GET the analysis progress for a specific document.
  */
+@ManagedBean
 public class ProgressService {
-
-  @Context
-  UriInfo uriInfo;
-  @Context
-  Request request;
-  
   private String documentId;
-  private EntityManager em;
 
+  private EntityManager em;
+  
+  @Inject
+  public ProgressService(Model model) {
+    em = model.getEntityManager();
+  }
+  
   /**
-   * Creates a new service returning the progress of the analysis of the current document.
-   * 
-   * @param uriInfo
-   * @param request
-   * @param docId
+   * Sets the id of the document this should represent the progress of
+   * @param id the id
+   * @return this
    */
-  public ProgressService(UriInfo uriInfo, Request request, String docId) {
-    this.uriInfo = uriInfo;
-    this.request = request;
-    this.documentId = docId;
-    
-    this.em = Model.createUnitTestModelWithoutDrop().getEntityManager();
+  public ProgressService setDocumentId(String id) {
+    this.documentId = id;
+    return this;
   }
   
   /**
