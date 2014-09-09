@@ -71,7 +71,7 @@
       function buildOccurrenceRects() {
 
         // group all the occurrence rects together
-        var rectGroup = svg.append('g');
+        var rectGroup = svg.append('g').classed('occurrences', true);
         var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
         rectGroupEnter.append('rect').attr('x', function(occurrence, i) {
