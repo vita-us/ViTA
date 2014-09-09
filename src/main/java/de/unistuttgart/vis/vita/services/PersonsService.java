@@ -1,11 +1,15 @@
 package de.unistuttgart.vis.vita.services;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
@@ -48,19 +52,22 @@ public class PersonsService {
    * @return PersonsResponse including a list of Persons
    */
   @GET
+  @Produces(MediaType.APPLICATION_JSON)
   public PersonsResponse getPersons(@QueryParam("offset") int offset,
                                     @QueryParam("count") int count) {
-    return readPersonsFromDatabase(offset, count);
+    List<Person> persons = readPersonsFromDatabase(offset, count);
+    
+    return new PersonsResponse(persons);
   }
 
-  private PersonsResponse readPersonsFromDatabase(int offset, int count) {
+  private List<Person> readPersonsFromDatabase(int offset, int count) {
     TypedQuery<Person> query = em.createNamedQuery("Person.findPersonsInDocument", Person.class);
     query.setParameter("documentId", documentId);
     
     query.setFirstResult(offset);
     query.setMaxResults(count);
-    
-    return new PersonsResponse(query.getResultList());
+
+    return query.getResultList();
   }
 
 }

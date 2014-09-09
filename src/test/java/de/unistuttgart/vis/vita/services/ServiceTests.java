@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({VersionServiceTest.class, DocumentsServiceTest.class, DocumentServiceTest.class,
-    ChapterServiceTest.class, ProgressServiceTest.class})
+    ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class})
 public class ServiceTests {
 
 }
