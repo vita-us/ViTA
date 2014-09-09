@@ -1,9 +1,5 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
 
@@ -15,14 +11,14 @@ import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
 /**
- * Performs test on the PersonsService
+ * Performs test on PersonService to check whether GET works correctly.
  */
-public class PersonsServiceTest extends ServiceTest {
-
+public class PersonServiceTest extends ServiceTest {
+  
   private String docId;
+  private String personId;
   private PersonTestData testData;
 
   @Override
@@ -31,13 +27,17 @@ public class PersonsServiceTest extends ServiceTest {
     
     EntityManager em = Model.createUnitTestModel().getEntityManager();
     
+    // set up test data
     testData = new PersonTestData();
-    Person testPerson = testData.createTestPerson();
-    Document testDoc= new DocumentTestData().createTestDocument(1);
+    Person testPerson = testData.createTestPerson(1);
+    Document testDoc = new DocumentTestData().createTestDocument(1);
     testDoc.getContent().getPersons().add(testPerson);
     
+    // save ids for request
     docId = testDoc.getId();
+    personId = testPerson.getId();
     
+    // persist test data
     em.getTransaction().begin();
     em.persist(testPerson);
     em.persist(testDoc);
@@ -47,22 +47,19 @@ public class PersonsServiceTest extends ServiceTest {
   
   @Override
   protected Application configure() {
-    return new ResourceConfig(DocumentsService.class);
+    return new ResourceConfig(PersonService.class);
   }
   
   /**
-   * Tests whether persons can be caught using the REST interface.
+   * Checks whether a Person can be got using REST.
    */
   @Test
-  public void testGetPersons() {
-    String path = "documents/" + docId + "/persons";
-    PersonsResponse actualResponse = target(path).queryParam("offset", 0)
-                                                  .queryParam("count", 10)
-                                                  .request().get(PersonsResponse.class);
-    assertEquals(1, actualResponse.getTotalCount());
-    List<Person> persons = actualResponse.getPersons();
-    assertEquals(1, persons.size());
-    testData.checkData(persons.get(0));
+  public void testGetPerson() {
+    String path = "documents/" + docId + "/persons/" + personId;
+    System.out.println(path);
+    Person responsePerson = target(path).request().get(Person.class);
+    
+    testData.checkData(responsePerson, 1);
   }
 
 }

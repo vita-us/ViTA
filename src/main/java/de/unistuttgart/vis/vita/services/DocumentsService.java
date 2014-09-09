@@ -80,7 +80,6 @@ public class DocumentsService {
    */
   @Path("{documentId}")
   public DocumentService  getDocument(@PathParam("documentId") String id) {
-    resourceContext.getResource(DocumentsService.class);
     return resourceContext.getResource(DocumentService.class).setId(id);
   }
 

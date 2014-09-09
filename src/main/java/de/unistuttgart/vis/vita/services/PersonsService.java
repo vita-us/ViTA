@@ -7,9 +7,14 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
@@ -21,6 +26,9 @@ import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 public class PersonsService {
 
   private String documentId;
+  
+  @Context
+  private ResourceContext resourceContext;
 
   private EntityManager em;
 
@@ -68,6 +76,11 @@ public class PersonsService {
     query.setMaxResults(count);
 
     return query.getResultList();
+  }
+  
+  @Path("{personId}")
+  public PersonService getPerson(@PathParam("personId") String id) {
+    return resourceContext.getResource(PersonService.class).setPersonId(id);
   }
 
 }

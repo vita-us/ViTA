@@ -60,7 +60,7 @@ public class DocumentServiceTest extends ServiceTest {
   }
 
   /**
-   * Tests whether a document can be get using REST.
+   * Tests whether a document can be got using REST.
    */
   @Test
   public void testGetDocument() {
