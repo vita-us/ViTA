@@ -33,7 +33,9 @@ public class TextRepository {
   private static final String CHAPTER_TEXT = "chapterText";
   private static final String INDEX_PATH = "~/.vita/lucene/";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
-
+  private Directory index;
+  private IndexReader indexReader;
+  
   // list of directories
   private List<Directory> indexes = new ArrayList<Directory>();
 
@@ -45,12 +47,10 @@ public class TextRepository {
    * @throws ParseException
    */
   public void populateChapterText(Chapter chapterToPopulate) throws IOException, ParseException {
-    Directory index =
-        FSDirectory.open(new File(INDEX_PATH + chapterToPopulate.getDocument().getId()));
-    IndexReader indexReader = DirectoryReader.open(index);
+    index = FSDirectory.open(new File(INDEX_PATH + chapterToPopulate.getDocument().getId()));
+    indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-    QueryParser queryParser =
-        new QueryParser(CHAPTER_ID , new StandardAnalyzer());
+    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
     Query query = queryParser.parse(chapterToPopulate.getId());
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
@@ -71,7 +71,7 @@ public class TextRepository {
       }
     }
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
-    Directory index = new MMapDirectory(new File(INDEX_PATH + documentId));
+    index = new MMapDirectory(new File(INDEX_PATH + documentId));
     IndexWriter indexWriter = new IndexWriter(index, config);
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
@@ -79,6 +79,19 @@ public class TextRepository {
     // at the created index along with its documents to the indexes list
     indexes.add(index);
     indexWriter.close();
+  }
+  
+  /**
+   * Returns the related IndexSearcher regarding this document 
+   * @param document
+   * @return
+   * @throws IOException
+   */
+  public IndexSearcher getIndexSearcherForDocument(de.unistuttgart.vis.vita.model.document.Document document)
+      throws IOException {
+    index = FSDirectory.open(new File(INDEX_PATH + document.getId()));
+    indexReader = DirectoryReader.open(index);
+    return new IndexSearcher(indexReader);
   }
 
   /**
