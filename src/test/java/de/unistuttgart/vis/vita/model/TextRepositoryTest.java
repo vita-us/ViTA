@@ -1,12 +1,12 @@
 package de.unistuttgart.vis.vita.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -19,7 +19,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,34 +47,31 @@ public class TextRepositoryTest {
   public void setUp() throws IOException, ParseException {
     List<Chapter> chapterList1 = new ArrayList<Chapter>();
     List<Chapter> chapterList2 = new ArrayList<Chapter>();
+    de.unistuttgart.vis.vita.model.document.Document document1 =
+        new de.unistuttgart.vis.vita.model.document.Document();
+    de.unistuttgart.vis.vita.model.document.Document document2 =
+        new de.unistuttgart.vis.vita.model.document.Document();
     // add to the chapterList1 two chapters with setted text
     chapterList1 = new ArrayList<Chapter>();
-    chapter1 = new Chapter();
+    chapter1 = new Chapter(document1);
     chapter1.setText("This is the text of chapter one");
     chapters.add(chapter1);
     chapterList1.add(chapter1);
-    Chapter chapter2 = new Chapter();
+    Chapter chapter2 = new Chapter(document1);
     chapter2.setText("This is the text of chapter two");
     chapters.add(chapter2);
     chapterList1.add(chapter2);
 
     // add to the chapterList2 two chapters with setted text
     chapterList2 = new ArrayList<Chapter>();
-    Chapter chapter3 = new Chapter();
+    Chapter chapter3 = new Chapter(document2);
     chapter3.setText("This is the text of chapter three");
     chapters.add(chapter3);
     chapterList2.add(chapter3);
-    Chapter chapter4 = new Chapter();
+    Chapter chapter4 = new Chapter(document2);
     chapter4.setText("This is the text of chapter four");
     chapters.add(chapter4);
     chapterList2.add(chapter4);
-
-    for (Chapter chapter : chapterList1) {
-      chapter.getDocument().setId("document1");
-    }
-    for (Chapter chapter : chapterList2) {
-      chapter.getDocument().setId("document2");
-    }
 
     textRepository.storeChaptersTexts(chapterList1);
     textRepository.storeChaptersTexts(chapterList2);
@@ -94,6 +90,14 @@ public class TextRepositoryTest {
 
   }
 
+  /**
+   * Sets the two lists(storedChaptersIds/storedChapterTexts) with the stored ids and chapters texts
+   * with the aid of lucene queries
+   * 
+   * @param chapter
+   * @throws IOException
+   * @throws ParseException
+   */
   private void getStoredChaptersIdsAndTexts(Chapter chapter) throws IOException, ParseException {
     Directory index = FSDirectory.open(new File(INDEX_PATH + chapter.getDocument().getId()));
     indexReader = DirectoryReader.open(index);
