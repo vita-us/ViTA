@@ -13,10 +13,6 @@ public abstract class AbstractEntityBase {
   @Id
   private String id;
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public AbstractEntityBase() {
     id = UUID.randomUUID().toString();
   }
