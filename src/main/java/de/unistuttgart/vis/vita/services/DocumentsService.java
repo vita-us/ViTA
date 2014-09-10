@@ -75,8 +75,8 @@ public class DocumentsService {
   /**
    * Returns the Service to access the Document with the given id.
    * 
-   * @param id - the id of the document to be accessed
-   * @return the DocumentService to access the given document
+   * @param id - the id of the Document to be accessed
+   * @return the DocumentService to access the given Document with the given id
    */
   @Path("{documentId}")
   public DocumentService  getDocument(@PathParam("documentId") String id) {

@@ -142,11 +142,21 @@ public class DocumentService {
   /**
    * Returns the PersonsService for the current document.
    * 
-   * @return the person service which answers this request
+   * @return the PersonsService which answers this request
    */
   @Path("/persons")
   public PersonsService getPersons() {
     return resourceContext.getResource(PersonsService.class).setDocumentId(id);
+  }
+  
+  /**
+   * Returns the PlacesService for the current document.
+   * 
+   * @return the PlacesService which answers this request
+   */
+  @Path("/places")
+  public PlacesService getPlaces() {
+    return resourceContext.getResource(PlacesService.class).setDocumentId(id);
   }
 
 }

@@ -4,6 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
+/**
+ * Holds test data for persons and methods to create test persons and check whether given data
+ * matches the test data.
+ */
 public class PersonTestData {
   
   private static final int DEFAULT_TEST_PERSON_NUMBER = 1;
@@ -15,20 +19,20 @@ public class PersonTestData {
   public static final String TEST_PERSON_2_NAME = "Gandalf";
   
   /**
-   * Creates the default test person and returns it.
+   * Creates the default test Person and returns it.
    * 
-   * @return default test person
+   * @return default test Person
    */
   public Person createTestPerson() {
     return createTestPerson(DEFAULT_TEST_PERSON_NUMBER);
   }
   
   /**
-   * Creates the test person with the given number, setting attributes to test values and returns 
+   * Creates the test Person with the given number, setting attributes to test values and returns 
    * it.
    * 
-   * @param number - the number of the test number
-   * @return test person
+   * @param number - the number of the test Person
+   * @return test Person
    */
   public Person createTestPerson(int number) {
     Person p = new Person();
@@ -47,18 +51,19 @@ public class PersonTestData {
   }
   
   /**
-   * Checks whether the given person is the default test person.
+   * Checks whether the given Person is the default test Person.
    * 
-   * @param personToCheck - the person to be checked
+   * @param PersonToCheck - the Person to be checked
    */
   public void checkData(Person personToCheck) {
     checkData(personToCheck, DEFAULT_TEST_PERSON_NUMBER);
   }
   
   /**
-   * Checks whether the given person is not <code>null</code> and includes the correct test data.
+   * Checks whether the given Person is not null and includes the correct test data.
    * 
-   * @param personToCheck - the person to be checked
+   * @param personToCheck - the Person to be checked
+   * @param number - the test Person number the given Person should be tested against
    */
   public void checkData(Person personToCheck, int number) {
     assertNotNull(personToCheck);
