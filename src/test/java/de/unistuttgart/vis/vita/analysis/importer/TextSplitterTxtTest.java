@@ -29,7 +29,7 @@ public class TextSplitterTxtTest {
   public void setUp() throws URISyntaxException, IllegalArgumentException, FileNotFoundException, IllegalStateException, SecurityException{
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
-    TextSplitter textSplitter = new TextSplitter(textFileImporter.getResult());
+    TextSplitter textSplitter = new TextSplitter(textFileImporter.getLines());
     metadataList = textSplitter.getMetadataSection();
     textList = textSplitter.getTextSection();
   }

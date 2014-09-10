@@ -40,7 +40,7 @@ public class MetadataAnalyzerTxtTest {
 
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
-    List<Line> testList = textFileImporter.getResult();
+    List<Line> testList = textFileImporter.getLines();
     MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
     documentMetadata = metadataAnalyzer.extractMetadata();
 
