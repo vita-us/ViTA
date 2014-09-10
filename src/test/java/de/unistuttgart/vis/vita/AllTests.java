@@ -16,5 +16,6 @@ import de.unistuttgart.vis.vita.services.ServiceTests;
 public class AllTests {
 
   // conform checkstyle rule HideUtilityClassConstructor
-  private AllTests() {}
+  private AllTests() {
+  }
 }

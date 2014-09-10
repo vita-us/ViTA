@@ -1,19 +1,44 @@
 package de.unistuttgart.vis.vita.model.document;
 
-/**
- * Represents a chapter in a Document, including its id, number, title, text, length and range in
- * the Document.
- */
-public class Chapter {
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
-  // attributes
-  private String id;
+import de.unistuttgart.vis.vita.model.TextRepository;
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+
+/**
+ * Represents a chapter in a Document. It can hold its text content but does not persist it.
+ */
+@Entity
+@NamedQueries({
+    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
+
+    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.id = :chapterId"),
+
+    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.title = :chapterTitle")})
+public class Chapter extends AbstractEntityBase {
   private int number;
   private String title;
   private String text;
   private int length;
+
+  @OneToOne
   private TextSpan range;
+
+  @ManyToOne
   protected Document document;
+
+  /**
+   * Creates a new Chapter, setting all fields to default values.
+   */
+  public Chapter() {
+    this.document = new Document();
+  }
 
   /**
    * Creates a new Chapter which belongs to the given Document.
@@ -25,32 +50,18 @@ public class Chapter {
   }
 
   /**
-   * @return the id of this Chapter
-   */
-  public String getId() {
-    return id;
-  }
-
-  /**
-   * Sets the id of the Chapter.
-   *
-   * @param newId - the id of this Chapter
-   */
-  public void setId(String newId) {
-    this.id = newId;
-  }
-
-  /**
-   * @return the number of this Chapter in the Document
+   * Gets the readable number of this chapter in the context of the document part it belongs to
+   * 
+   * @return the number, starting from 1
    */
   public int getNumber() {
     return number;
   }
 
   /**
-   * Sets the chapter number.
+   * Sets the readable number of this chapter in the context of the document part it belongs to
    *
-   * @param newNumber - the number of this Chapter in the Document
+   * @param the number, starting from 1
    */
   public void setNumber(int newNumber) {
     this.number = newNumber;
@@ -73,7 +84,7 @@ public class Chapter {
   }
 
   /**
-   * @return the text of the chapter
+   * @return the text of the chapter, or {@code null} if it is not yet populated
    */
   public String getText() {
     return text;
@@ -81,6 +92,9 @@ public class Chapter {
 
   /**
    * Sets the text of the Chapter.
+   * 
+   * This property will not be persisted with JPA. It should be stored with {@link TextRepository}
+   * instead.
    *
    * @param text - the text content of this Chapter
    */

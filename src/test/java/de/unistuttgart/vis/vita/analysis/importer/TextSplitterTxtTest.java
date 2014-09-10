@@ -1,12 +1,13 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,15 +31,15 @@ public class TextSplitterTxtTest {
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     TextSplitter textSplitter = new TextSplitter(textFileImporter.getLines());
-    metadataList = textSplitter.getMetadataSection();
-    textList = textSplitter.getTextSection();
+    textList = textSplitter.getTextList();
+    metadataList = textSplitter.getMetadataList();
   }
   
   
   @Test
   public void testMetdataList(){
-    assertEquals(3, metadataList.size());
-    assertEquals("Title: The Lord of the Rings", metadataList.get(0).getText());
+    assertEquals(9, metadataList.size());
+    assertEquals("Title: The", metadataList.get(0).getText());
     assertEquals("", metadataList.get(metadataList.size()-1).getText());
 
     

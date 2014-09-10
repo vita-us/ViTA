@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt;
 
+import java.util.List;
+
 /**
  * The MetadataBuilder builds the metadata values by editing the commited metadata of the MetadataAnalyzer
  * 
@@ -162,5 +164,22 @@ public class MetadataBuilder {
     }
     return metadataEdition;
 
+  }
+  
+  /**
+   * Concatenates the multilines regarding the metadata and returns the complete metadata
+   * @param newMetadataMultilineList
+   * @return
+   */
+  public String buildMetadataMultiline(List<Line> newMetadataMultilineList){
+    String metadataLine = "";
+    StringBuilder stringBuilder = new StringBuilder(metadataLine);
+    
+    for(Line metadataMultiLine: newMetadataMultilineList){
+      stringBuilder.append(" ");
+      stringBuilder.append(metadataMultiLine.getText().trim());
+    }
+    metadataLine = stringBuilder.toString();
+    return metadataLine;
   }
 }

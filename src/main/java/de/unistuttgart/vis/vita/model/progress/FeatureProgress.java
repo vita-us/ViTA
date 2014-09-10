@@ -28,7 +28,9 @@ public class FeatureProgress {
   }
 
   /**
-   * @return the progress
+   * Gets the progress of this feature
+   * 
+   * @return a value between 0 (not started) and 1 (finished)
    */
   public double getProgress() {
     return progress;
@@ -37,7 +39,7 @@ public class FeatureProgress {
   /**
    * Sets the progress.
    *
-   * @param progress - the progress to set
+   * @param progress a value between 0 (not started) and 1 (finished)
    */
   public void setProgress(double progress) {
     if (progress < 0.0 || progress > 1.0) {
@@ -48,16 +50,18 @@ public class FeatureProgress {
   }
 
   /**
-   * @return the isReady
+   * Specifies whether the feature is completely analyzed and read for visualization
+   * 
+   * @return true, if this feature is ready, false otherwise
    */
   public boolean isReady() {
     return isReady;
   }
 
   /**
-   * Sets the isReady.
+   * Specifies whether the feature is completely analyzed and read for visualization.
    *
-   * @param isReady - the isReady to set
+   * @param true, if this feature is ready, false otherwise
    */
   public void setReady(boolean isReady) {
     this.isReady = isReady;

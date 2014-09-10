@@ -1,13 +1,13 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,6 +54,11 @@ public class MetadataAnalyzerTxtTest {
   @Test
   public void testMetadataAuthor() {
     assertEquals("J.R.R. Tolkien", documentMetadata.getAuthor());
+
+  }
+  @Test
+  public void testPublisherYear() {
+    assertEquals(2006, documentMetadata.getPublishYear());
 
   }
 }

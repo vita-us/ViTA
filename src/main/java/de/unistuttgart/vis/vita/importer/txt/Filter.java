@@ -12,15 +12,34 @@ import java.util.Map;
  */
 public class Filter {
 
-  private static final String DEFAULT_COMMENT_FILTER = ".*(\\[).+(\\]).*";
+  private static final String DEFAULT_BEGIN_BRACKET = "(\\[)"; 
+  private static final String DEFAULT_END_BRACKET = "(\\])"; 
+  private static final String DEFAULT_COMMENT_FILTER =
+      "(([\\w\\s][\\p{Punct}&&[^\\]]])*\\[.*\\]([\\w\\s][\\p{Punct}&&[^\\]]])*)+";
   private static final String DEFAULT_COMMENT_BEGIN = ".*(\\[).*";
   private static final String DEFAULT_COMMENT_END_1 = ".*(\\]).*";
   private static final String DEFAULT_COMMENT_END_2 = ".*(\\])\\s*";
   private static final String DEFAULT_COMMENT_END_3 = ".*(\\])\\s*[a-zA-Z0-9]+.*";
-  private static final String REPLACE_DEFAULT_COMMENT = "(\\[).+(\\])";
-  private static final String REPLACE_DEFAULT_COMMENT_BEGIN = "(\\[).*";
-  private static final String REPLACE_DEFAULT_COMMENT_END_3 = ".*(\\])";
-  private static final String DEFAULT__VERIFY_END_BRACKET = ".*(\\]).*[^\\[]*";
+  private static final String REPLACE_DEFAULT_COMMENT = "(\\[)[\\w\\s\\p{Punct}&&[^\\]]]*(\\])";
+  private static final String REPLACE_DEFAULT_COMMENT_BEGIN =
+      "(\\[)[\\w\\s\\p{Punct}&&[^\\]]]*(\\])*";
+  private static final String REPLACE_DEFAULT_COMMENT_END_3 = "[\\w\\s\\p{Punct}&&[^\\]]]*(\\])";
+
+  private static final String DEFAULT_CHARACTERS_EX_END_BRACKET = "[\\w\\s\\p{Punct}&&[^\\]]]*";
+
+  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+
+  private static final String DEFAULT_CHARACTERS_WITH_END_BRACKET = "("
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+
+  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+  private static final String DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET = "("
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+
 
   private List<Line> entireEbookList = new ArrayList<Line>();
 
@@ -46,17 +65,11 @@ public class Filter {
     for (Line line : entireEbookList) {
       if (line.getText() != null) {
         if (line.getText().matches(DEFAULT_COMMENT_FILTER)) {
-          editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, "");
+          editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
 
         } else if (line.getText().matches(DEFAULT_COMMENT_BEGIN)) {
-          if (existsEndBracket(line)) {
-            editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, "");
-            defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
-            addElementsToRemoveListAndMap(removeList, defaultCommentMap, line);
-          } else {
-            continue;
-          }
+          verifyExistenceOfEndBracket(removeList, defaultCommentMap, line);
         }
       }
     }
@@ -73,6 +86,53 @@ public class Filter {
     removeList.clear();
     return entireEbookList;
 
+  }
+
+  /**
+   * Verify the extistence of a end bracket after the current line
+   * 
+   * @param removeList
+   * @param defaultCommentMap
+   * @param line
+   */
+  private void verifyExistenceOfEndBracket(List<Line> removeList,
+      Map<Integer, Line> defaultCommentMap, Line line) {
+    String editedLine;
+    if (existsEndBracket(line)) {
+      findAndReplaceComments(removeList, defaultCommentMap, line);
+
+      // if there is not even one line after the current with an end bracket, still the current line
+      // could have
+      // unnecessary comments, so remove them
+    } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+      editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
+      defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+    }
+  }
+
+  /**
+   * Find the lines with unnecessary lines, which come after the current line, and remove those
+   * comments
+   * 
+   * @param removeList
+   * @param defaultCommentMap
+   * @param line
+   */
+  private void findAndReplaceComments(List<Line> removeList, Map<Integer, Line> defaultCommentMap,
+      Line line) {
+    String editedLine;
+    // the map could already the edited lines, which come after the current line, so remove only the
+    // "[..." part, because the "...]" is already removed in the addElementsToRemoveListAndMap
+    // method
+    if (defaultCommentMap.containsKey(entireEbookList.indexOf(line))) {
+      editedLine =
+          defaultCommentMap.get(entireEbookList.indexOf(line)).getText()
+              .replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, " ");
+
+    }
+    editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, " ");
+    defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+    addElementsToRemoveListAndMap(removeList, defaultCommentMap, line);
   }
 
   /**
@@ -94,7 +154,8 @@ public class Filter {
         break;
 
       } else if (entireEbookList.get(i).getText().matches(DEFAULT_COMMENT_END_3)) {
-        editedLine = entireEbookList.get(i).getText().replaceAll(REPLACE_DEFAULT_COMMENT_END_3, "");
+        editedLine =
+            entireEbookList.get(i).getText().replaceAll(REPLACE_DEFAULT_COMMENT_END_3, " ");
         defaultCommentMap.put(i, new Line(editedLine));
         break;
       }
@@ -109,13 +170,23 @@ public class Filter {
    */
   private boolean existsEndBracket(Line currentLine) {
     for (int i = entireEbookList.indexOf(currentLine) + 1; i < entireEbookList.size(); i++) {
-      if (!entireEbookList.get(i).getText().matches(".*\\[.*")) {
-        if (entireEbookList.get(i).getText().matches(DEFAULT__VERIFY_END_BRACKET)) {
-          return true;
-        }
-      } else {
+
+      if (entireEbookList.get(i).getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET)) {
         return false;
+
+      } else if (entireEbookList.get(i).getText()
+          .matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+        return false;
+
+      } else if (entireEbookList.get(i).getText()
+          .matches(DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET)) {
+        return true;
+
+      } else if (entireEbookList.get(i).getText().matches(DEFAULT_CHARACTERS_WITH_END_BRACKET)) {
+        return true;
+
       }
+
     }
     return false;
   }

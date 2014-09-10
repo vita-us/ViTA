@@ -1,18 +1,34 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+import org.hibernate.annotations.Target;
+
 /**
  * Represents a Relation between two Entities.
  *
  * @param <E> - the type of the other entity
  */
-public class EntityRelation<E> {
+@javax.persistence.Entity
+@NamedQueries({
+    @NamedQuery(name = "EntityRelation.findAllEntityRelations", query = "SELECT er "
+        + "FROM EntityRelation er"),
+
+    @NamedQuery(name = "EntityRelation.findEntityRelationById", query = "SELECT er "
+        + "FROM EntityRelation er " + "WHERE er.id = :entityRelationId")})
+public class EntityRelation<E> extends AbstractEntityBase {
 
   // constants
   private static final int WEIGHT_MIN = 0;
   private static final int WEIGHT_MAX = 1;
 
-  // attributes
   private double weight;
+
+  @Target(Entity.class)
+  // only Entity relations will be persisted
+  @ManyToOne
   private E relatedEntity;
 
   /**

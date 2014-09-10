@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -101,5 +101,52 @@ public class TextSpanTest {
     TextSpan testTextSpan = new TextSpan(pos2, pos3);
     assertEquals(DIFF, testTextSpan.getLength());
   }
+  
+  @Test
+  public void testCompareTo() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos2, pos3);
+    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    
+    assertEquals(1, span1.compareTo(null));
+    assertEquals(-1, span1.compareTo(span2));
+    assertEquals(1, span2.compareTo(span1));
+    assertEquals(0, span1.compareTo(span1Duplicate));
+  }
 
+  @Test
+  public void testCompareToWithEqualStartPositions() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos1, pos3);
+    
+    assertEquals(-1, span1.compareTo(span2));
+    assertEquals(1, span2.compareTo(span1));
+  }
+
+  @Test
+  public void testEquals() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos2, pos3);
+    TextSpan span3 = new TextSpan(pos1, pos3);
+    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    
+    assertTrue(span1.equals(span1Duplicate));
+    assertFalse(span1.equals(pos2));
+    assertFalse(span2.equals(span1));
+    assertFalse(span2.equals(span3));
+    assertFalse(span1.equals(null));
+    assertFalse(span1.equals("an object of a different class"));
+  }
+  
+  @Test
+  public void testHashCode() {
+    TextSpan span1 = new TextSpan(pos1, pos2);
+    TextSpan span2 = new TextSpan(pos2, pos3);
+    TextSpan span3 = new TextSpan(pos1, pos3);
+    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    
+    assertEquals(span1.hashCode(), span1Duplicate.hashCode());
+    assertNotEquals(span1.hashCode(), pos2.hashCode());
+    assertNotEquals(span2.hashCode(), span3.hashCode());
+  }
 }

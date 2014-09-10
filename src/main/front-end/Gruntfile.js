@@ -26,6 +26,22 @@ module.exports = function(grunt) {
         dest: '<%= javascriptPath %><%= pkg.name %>.js'
       }
     },
+    connect: {
+      options: {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: 8080,
+        base: '<%= appPath %>',
+        directory: '<%= appPath %>'
+      },
+      devserver: {
+        options: {
+          livereload: true,
+          open: "http://localhost:8080/index.html"
+        }
+      },
+      testserver: {}
+    },
     copy: {
       dependencies: {
         files: [{
@@ -68,6 +84,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/angular-mocks/',
           src: ['angular-mocks.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/d3/',
+          src: ['d3.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
@@ -83,9 +104,9 @@ module.exports = function(grunt) {
           dest: '<%= appPath %>partials/'
         }, {
           expand: true,
-          cwd: 'app/test_data',
+          cwd: 'app/img',
           src: ['**'],
-          dest: '<%= appPath %>test_data/'
+          dest: '<%= appPath %>img/'
         }]
       }
     },
@@ -106,15 +127,59 @@ module.exports = function(grunt) {
           '<%= cssPath %>style.css': 'app/less/style.less'
         }
       }
+    },
+    protractor: {
+      options: {
+        configFile: '<%= mvnSrcDirectory %>test/front-end/protractor.conf.js'
+      },
+      firefox: {
+        options: {
+          args: {
+            browser: 'firefox'
+          }
+        }
+      },
+      chrome: {
+        options: {
+          args: {
+            browser: 'chrome'
+          }
+        }
+      }
+    },
+    watch: {
+      options: {
+        livereload: true
+      },
+      less: {
+        files: ['app/less/**/*.less'],
+        tasks: ['less']
+      },
+      statics: {
+        files: ['app/**/*.html', 'app/img/**'],
+        tasks: ['copy:statics']
+      },
+      scripts: {
+        files: ['app/js/**/*.js'],
+        tasks: ['concat']
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('build', ['copy', 'concat', 'less'])
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('test', ['karma:dev']);
+  grunt.registerTask('test', ['test:unit']);
+  grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor']);
+  grunt.registerTask('test:gui:chrome', ['build', 'connect:testserver', 'protractor:chrome']);
+  grunt.registerTask('test:gui:firefox', ['build', 'connect:testserver', 'protractor:firefox']);
+  grunt.registerTask('test:unit', ['karma:dev']);
+  grunt.registerTask('webserver', ['build', 'connect:devserver', 'watch']);
 };

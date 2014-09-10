@@ -1,30 +1,5 @@
 describe('DocumentsCtrl', function() {
-  var scope, $httpBackend, ctrl, documentsData = function() {
-    return {
-      totalCount: 2,
-      documents: [{
-        id: 'doc13a',
-        metadata: {
-          title: "Rotkaepchen",
-          author: "Hans Mueller",
-          publisher: "XY Verlag",
-          publishYear: 1957,
-          genre: "Fantasy",
-          edition: "Limited Edition"
-        }
-      }, {
-        id: 'doc14',
-        metadata: {
-          title: "Hans guck in die Luft",
-          author: "Peter Mayer",
-          publisher: "ABC Verlag",
-          publishYear: 1968,
-          genre: "Krimi",
-          edition: "Standard"
-        }
-      }]
-    }
-  };
+  var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
     this.addMatchers({
@@ -36,21 +11,21 @@ describe('DocumentsCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('test_data/documents.json').respond(documentsData());
+    $httpBackend.expectGET('/documents').respond(TestData.documents);
     scope = $rootScope.$new();
     ctrl = $controller('DocumentsCtrl', {
       $scope: scope
     });
   }));
 
-  it('should create "document" model with 2 documents', inject(function($controller) {
+  it('should create "document" model with 2 documents', inject(function(TestData) {
 
-    expect(scope.documentsWrapper).toEqualData({});
+    expect(scope.documents).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.documentsWrapper.totalCount).toEqual(2);
-    expect(scope.documents).toEqualData(documentsData().documents);
+    expect(scope.documents.length).toEqual(2);
+    expect(scope.documents).toEqualData(TestData.documents.documents);
 
   }));
 
