@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 /**
@@ -25,7 +24,6 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   private ArrayList<Future<Chapter>> futureChapters = new ArrayList<Future<Chapter>>();
   private ArrayList<Line> lines;
   private ChapterPosition chapterPositions;
-  private Document document;
   private int partNumber;
 
   /**
@@ -37,12 +35,9 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    *        correct order.
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
    *        and text areas of the Chapters in lines.
-   * @param document - The Document all Chapters of the DocumentPart, and so the DocumentPart
-   *        itself, belong to.
    */
-  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions,
-      Document document) {
-    this(lines, chapterPositions, document, 1);
+  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions) {
+    this(lines, chapterPositions, 1);
   }
 
   /**
@@ -54,15 +49,11 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    *        correct order.
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
    *        and text areas of the Chapters in lines.
-   * @param document Document - The Document all Chapters of the DocumentPart, and so the
-   *        DocumentPart itself, belong to.
    * @param partNumber int - Number of the DocumentPart of the Document.
    */
-  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions,
-      Document document, int partNumber) {
+  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions, int partNumber) {
     this.lines = lines;
     this.chapterPositions = chapterPositions;
-    this.document = document;
     this.partNumber = partNumber;
   }
 
@@ -74,7 +65,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
     for (int chapterNumber = 1; chapterNumber <= chapterPositions.size(); chapterNumber++) {
       ArrayList<Line> heading = buildHeadingList(chapterNumber);
       ArrayList<Line> text = buildTextList(chapterNumber);
-      Callable<Chapter> chapterBuilder = new ChapterBuilder(heading, text, chapterNumber, document);
+      Callable<Chapter> chapterBuilder = new ChapterBuilder(heading, text, chapterNumber);
       Future<Chapter> futureChapter = executor.submit(chapterBuilder);
       futureChapters.add(futureChapter);
     }
@@ -129,7 +120,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   }
 
   /**
-   * Builds the Document Part and sets all known attributes.
+   * Builds the DocumentPart and sets all known attributes.
    * 
    * @param partNumber int - The number of this part in the Document.
    * @param chapters List of Chapter - All Chapters of the DocumentPart.

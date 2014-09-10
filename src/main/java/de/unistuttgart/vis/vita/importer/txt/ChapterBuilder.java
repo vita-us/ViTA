@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * Implements Callable - returning a Chapter. <br>
@@ -26,22 +25,18 @@ public class ChapterBuilder implements Callable<Chapter> {
   private ArrayList<Line> heading;
   private ArrayList<Line> text;
   private int chapterNumber;
-  private Document document;
 
   /**
    * Instantiates a new ChapterBuilder, the Chapter will be build when calling the method 'call()'.
-   * To build a Chapter, the ChapterBuilder needs the number of the chapter in its DocumentPart and
-   * the Document itself. Please note that the Document of a Chapter can not be changed later!<br>
+   * To build a Chapter, the ChapterBuilder needs the number of the chapter in its DocumentPart.<br>
    * <br>
    * The structure of given List-parameters can be changed by this class.
    * 
    * @param heading ArrayList<Line> - The title of the Chapter. Null interpreted as empty.
    * @param text ArrayList<Line> - The text of the Chapter, Null interpreted as empty.
    * @param chapterNumber int - The Number of the Chapter in the Document
-   * @param document Document - the Document the Chapter belongs to. Can not be changed later!
    */
-  public ChapterBuilder(ArrayList<Line> heading, ArrayList<Line> text, int chapterNumber,
-      Document document) {
+  public ChapterBuilder(ArrayList<Line> heading, ArrayList<Line> text, int chapterNumber) {
     if (heading == null) {
       heading = new ArrayList<Line>();
       heading.add(new Line("", false));
@@ -55,7 +50,6 @@ public class ChapterBuilder implements Callable<Chapter> {
     this.heading = heading;
     this.text = text;
     this.chapterNumber = chapterNumber;
-    this.document = document;
   }
 
   @Override
@@ -73,7 +67,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    * @return Chapter - The Chapter with all known attributes set.
    */
   private Chapter buildChapter(String heading, String text) {
-    Chapter chapter = new Chapter(document);
+    Chapter chapter = new Chapter();
     chapter.setNumber(chapterNumber);
     chapter.setTitle(heading);
     chapter.setText(text);
