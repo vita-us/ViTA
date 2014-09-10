@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.importer.txt;
 
 import java.util.ArrayList;
 
-class ChapterPosition {
+public class ChapterPosition {
   private ArrayList<Integer> startList = new ArrayList<Integer>();
   private ArrayList<Integer> endList = new ArrayList<Integer>();
   private ArrayList<Integer> headingStartList = new ArrayList<Integer>();
