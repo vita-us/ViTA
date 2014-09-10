@@ -41,9 +41,9 @@ public class Filter {
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
 
-  private List<Line> entireEbookList = new ArrayList<Line>();
+  private ArrayList<Line> entireEbookList = new ArrayList<Line>();
 
-  public Filter(List<Line> newEntireEbookList) {
+  public Filter(ArrayList<Line> newEntireEbookList) {
     this.entireEbookList = newEntireEbookList;
   }
 
@@ -52,7 +52,7 @@ public class Filter {
    * 
    * @return the edited entireEbookList
    */
-  public List<Line> filterEbookText() {
+  public ArrayList<Line> filterEbookText() {
     // In this line the part with "[.*" or ".*]" is removed
     String editedLine;
 
