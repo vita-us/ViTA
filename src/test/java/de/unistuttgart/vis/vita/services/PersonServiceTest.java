@@ -56,7 +56,6 @@ public class PersonServiceTest extends ServiceTest {
   @Test
   public void testGetPerson() {
     String path = "documents/" + docId + "/persons/" + personId;
-    System.out.println(path);
     Person responsePerson = target(path).request().get(Person.class);
     
     testData.checkData(responsePerson, 1);

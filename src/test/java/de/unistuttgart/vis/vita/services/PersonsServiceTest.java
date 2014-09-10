@@ -33,7 +33,7 @@ public class PersonsServiceTest extends ServiceTest {
     
     testData = new PersonTestData();
     Person testPerson = testData.createTestPerson();
-    Document testDoc= new DocumentTestData().createTestDocument(1);
+    Document testDoc = new DocumentTestData().createTestDocument(1);
     testDoc.getContent().getPersons().add(testPerson);
     
     docId = testDoc.getId();
@@ -47,7 +47,7 @@ public class PersonsServiceTest extends ServiceTest {
   
   @Override
   protected Application configure() {
-    return new ResourceConfig(DocumentsService.class);
+    return new ResourceConfig(PersonsService.class);
   }
   
   /**

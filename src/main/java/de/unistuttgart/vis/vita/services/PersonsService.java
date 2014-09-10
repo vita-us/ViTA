@@ -20,7 +20,7 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
 /**
- * Provides a method to GET all persons mentioned in the document it refers to.
+ * Provides a method to GET all persons mentioned in the document this service refers to.
  */
 @ManagedBean
 public class PersonsService {
@@ -34,6 +34,8 @@ public class PersonsService {
 
   /**
    * Creates a new Instance of PersonsService.
+   * 
+   * @param model - the model to be used in this service
    */
   @Inject
   public PersonsService(Model model) {
@@ -41,10 +43,10 @@ public class PersonsService {
   }
 
   /**
-   * Sets the id of the document of which this service should provide the mentioned persons.
+   * Sets the id of the document for which this service should provide the mentioned persons.
    * 
    * @param docId - the id of the document
-   * @return
+   * @return the persons service
    */
   public PersonsService setDocumentId(String docId) {
     this.documentId = docId;
@@ -52,8 +54,8 @@ public class PersonsService {
   }
 
   /**
-   * Returns a PersonsResponse including a list of Persons with a given maximum length,
-   * starting at an also given offset.
+   * Returns a PersonsResponse including a list of Persons with a given maximum length, starting at
+   * an also given offset.
    * 
    * @param offset - the first Person to be returned
    * @param count - the maximum amount of Persons to be returned
@@ -78,6 +80,12 @@ public class PersonsService {
     return query.getResultList();
   }
   
+  /**
+   * Returns the Service to access the Person with the given id.
+   * 
+   * @param id - the id of the Person to be accessed
+   * @return the PersonService to access the Person with the given id
+   */
   @Path("{personId}")
   public PersonService getPerson(@PathParam("personId") String id) {
     return resourceContext.getResource(PersonService.class).setPersonId(id);
