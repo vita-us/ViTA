@@ -83,7 +83,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
 
     ArrayList<Line> heading;
     if (chapterPositions.hasHeading(chapterNumber)) {
-      heading = new ArrayList<Line>(lines.subList(startOfHeading, startOfText - 1));
+      heading = new ArrayList<Line>(lines.subList(startOfHeading, startOfText));
     } else {
       heading = new ArrayList<Line>();
     }
@@ -128,9 +128,8 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    */
   private DocumentPart buildDocumentPart(int partNumber, List<Chapter> chapters) {
     DocumentPart documentPart = new DocumentPart();
-    // TODO: add Chapters to documentPart - well there is now way at this moment.
-    // documentPart.setChapters(chapters);
-    documentPart.setNumber(partNumber);;
+    documentPart.getChapters().addAll(chapters);
+    documentPart.setNumber(partNumber);
     return documentPart;
   }
 

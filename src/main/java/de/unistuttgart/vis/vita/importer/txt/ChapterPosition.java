@@ -91,7 +91,7 @@ public class ChapterPosition {
   }
 
   public boolean hasHeading(int chapterNumber) {
-    return startList.get(chapterNumber - 1) == headingStartList.get(chapterNumber - 1);
+    return !(startList.get(chapterNumber - 1) == headingStartList.get(chapterNumber - 1));
   }
 
   // TODO: End / Start Heading

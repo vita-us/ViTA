@@ -36,7 +36,6 @@ public class AutomatedChapterDetection {
   }
 
   private void startBasicChapterDetection() {
-    System.out.println("LINES SIZE: " + lines.size());
     Callable<ChapterPosition> markedHeadingChapterPositions =
         new MarkedHeadingChapterAnalyzer(lines);
     markedHeadingChapters = executor.submit(markedHeadingChapterPositions);
