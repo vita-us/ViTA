@@ -3,7 +3,14 @@ package de.unistuttgart.vis.vita.importer.txt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * A Line contains a text-line of the imported file. The Line class can compute a type for the line
+ * for further analysis of the text.
+ */
 public class Line {
+  // Patterns for Types - static so only one has to be compiled for all existing Lines.
+
   private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
   private static final Pattern WHITESPACEPATTERN = Pattern.compile(WHITESPACE);
 
@@ -44,14 +51,103 @@ public class Line {
   private static final String NOSPECIALSIGNS = "\\p{Alnum}";
   private static final Pattern NOSPECIALSIGNSPATTERN = Pattern.compile(NOSPECIALSIGNS);
 
-
-  private boolean automatedTypeComputation;
   private String text;
   private LineType type;
+  private boolean automatedTypeComputation;
 
-  private void computeType() {
+  /**
+   * Creates a simple Line with activated type computation.
+   * 
+   * @param text String - The text of the line. Should not be null.
+   */
+  public Line(String text) {
+    this(text, true);
+  }
+
+  /**
+   * Creates a simple Line. If the type computation is deactivated the type is set to UNKNOWN. You
+   * can compute the type manually by calling 'computeType()'.
+   * 
+   * @param text String - The text of the line. Should not be null.
+   * @param automatedTypeComputation Boolean - True activates the automated type computation, which
+   *        means every change to the text will update the type.
+   */
+  public Line(String text, Boolean automatedTypeComputation) {
+    super();
+    this.type = LineType.UNKNOWN;
+    this.text = text;
+    this.automatedTypeComputation = automatedTypeComputation;
+    computeType();
+  }
+
+  /**
+   * Gets the text of the Line.
+   * 
+   * @return String - The text of the Line.
+   */
+  public String getText() {
+    return text;
+  }
+
+  /**
+   * Sets the text for the Line. When the automated type computation is activated, the type can be
+   * changed too.
+   * 
+   * @param text String - The text of the Line.
+   */
+  public void setText(String text) {
+    this.text = text;
+    computeType();
+  }
+
+  /**
+   * Gets the type of the set text.
+   * 
+   * @return LineType - The type of the text.
+   */
+  public LineType getType() {
+    return type;
+  }
+
+  /**
+   * Sets the type of the text. Should only be used if automated type computation is deactivated. To
+   * set the type manually should be an exception, if it is impossible for the line to compute its
+   * type itself.
+   * 
+   * @param type LineType - The type of the text.
+   */
+  public void setType(LineType type) {
+    this.type = type;
+  }
+
+  /**
+   * Checks if the automated type computation is activated.
+   * 
+   * @return Boolean - true: is activated. false: is deactivated.
+   */
+  public boolean isAutomatedTypeComputation() {
+    return automatedTypeComputation;
+  }
+
+  /**
+   * Activates/Deactivates the automated type computation. If activated, will compute the current
+   * type instantly.
+   * 
+   * @param automatedTypeComputation Boolean - true: activate. false: deactivate.
+   */
+  public void setAutomatedTypeComputation(boolean automatedTypeComputation) {
+    this.automatedTypeComputation = automatedTypeComputation;
+    computeType();
+  }
+
+
+  /**
+   * Computes the type for the text.
+   */
+  public void computeType() {
     if (automatedTypeComputation) {
-      LineType highestType = LineType.getLowestValidType();
+      // a lower type will be overwritten
+      LineType highestType = LineType.TEXT;
       if (matchesPattern(SMALLHEADINGPATTERN)) {
         highestType = LineType.SMALLHEADING;
       }
@@ -80,46 +176,24 @@ public class Line {
     }
   }
 
+  /**
+   * Checks if pattern matches the text.
+   * 
+   * @param pattern Pattern - The pattern.
+   * @return Boolean - true is a match, false is not.
+   */
   private boolean matchesPattern(Pattern pattern) {
     Matcher matcher = pattern.matcher(text);
     return matcher.matches();
   }
 
+  /**
+   * Checks if pattern can be found in the text.
+   * 
+   * @param pattern Pattern - The pattern.
+   * @return Boolean - true if there is at least one occurrence.
+   */
   private boolean containsPattern(Pattern pattern) {
     return pattern.matcher(text).find();
   }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-    computeType();
-  }
-
-  public LineType getType() {
-    return type;
-  }
-
-  public Line(String text) {
-    this(text, true);
-  }
-
-  public Line(String text, Boolean automatedTypeComputation) {
-    super();
-    this.type = LineType.UNKNOWN;
-    this.text = text;
-    this.automatedTypeComputation = automatedTypeComputation;
-    computeType();
-  }
-
-  public boolean isAutomatedTypeComputation() {
-    return automatedTypeComputation;
-  }
-
-  public void setAutomatedTypeComputation(boolean automatedTypeComputation) {
-    this.automatedTypeComputation = automatedTypeComputation;
-  }
-
 }
