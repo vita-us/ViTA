@@ -15,6 +15,11 @@ import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
+/**
+ * LuceneModule class with its result IndexSearcher
+ * 
+ *
+ */
 @AnalysisModule(dependencies = {ImportResult.class, Model.class})
 public class LuceneModule implements Module<IndexSearcher> {
 
@@ -28,7 +33,10 @@ public class LuceneModule implements Module<IndexSearcher> {
     // TODO Auto-generated method stub
 
   }
-
+  
+  /**
+   * Stores the chapters of DocumentParts from ImportResult in the lucene textRepository of model
+   */
   @Override
   public IndexSearcher execute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception {
