@@ -8,6 +8,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -40,8 +40,6 @@ public class LuceneModuleTest {
   private ProgressListener progressListener;
   private List<DocumentPart> documentParts = new ArrayList<DocumentPart>();
   private List<Chapter> chapters = new ArrayList<Chapter>();
-  private List<String> storedChaptersIds = new ArrayList<String>();
-  private List<String> storedChapterTexts = new ArrayList<String>();
   private TextRepository textRepository = new TextRepository();
   private IndexSearcher indexSearcher;
   private final static String[] CHAPTERS_TEXTS = {"This is the text of chapter one.",
@@ -61,9 +59,14 @@ public class LuceneModuleTest {
     progressListener = mock(ProgressListener.class, withSettings().verboseLogging());
     fillText();
   }
-
+  
+  /**
+   * Fills the chapter texts with CHAPTERS_TEXTS
+   * 
+   * @throws IOException
+   */
   private void fillText() {
-    Document document = new Document();
+    de.unistuttgart.vis.vita.model.document.Document document = new de.unistuttgart.vis.vita.model.document.Document();
     DocumentPart documentPart = new DocumentPart();
     documentParts.add(documentPart);
 
@@ -75,27 +78,35 @@ public class LuceneModuleTest {
     }
   }
   
-  
-  private void getStoredChaptersIdsAndTexts(Chapter chapter) throws IOException, ParseException {
+  /**
+   * Returns the appropriate lucene document to this chapter
+   * 
+   * @param chapter
+   * @throws IOException
+   * @throws ParseException
+   */
+  private Document getStoredDocument(Chapter chapter) throws IOException, ParseException {
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
     Query query = queryParser.parse(chapter.getId());
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
-    org.apache.lucene.document.Document hitDoc = indexSearcher.doc(hits[0].doc);
-    storedChaptersIds.add(hitDoc.getField(CHAPTER_ID).stringValue());
-    storedChapterTexts.add(hitDoc.getField(CHAPTER_TEXT).stringValue());
+    Document hitDoc = indexSearcher.doc(hits[0].doc);
+    return hitDoc;
+    
   }
   
+  /**
+   * Tests the equality of the commited chapter ids and texts with the stored ones
+   * 
+   * @throws ParseException
+   * @throws IOException
+   */
   @Test
   public void testStoredChapter() throws Exception{
     indexSearcher = luceneModule.execute(moduleResultProvider, progressListener);
-    getStoredChaptersIdsAndTexts(chapters.get(0));
-    getStoredChaptersIdsAndTexts(chapters.get(1));
-    getStoredChaptersIdsAndTexts(chapters.get(2));
-    getStoredChaptersIdsAndTexts(chapters.get(3));
     
-    for (int i = 0; i < 4; i++) {
-      assertEquals(chapters.get(i).getId(), storedChaptersIds.get(i));
-      assertEquals(chapters.get(i).getText(), storedChapterTexts.get(i));
-    }
+    for(int i = 0; i<4; i++){
+    assertEquals(chapters.get(i).getId(), getStoredDocument(chapters.get(i)).getField(CHAPTER_ID).stringValue());
+    assertEquals(chapters.get(i).getText(), getStoredDocument(chapters.get(i)).getField(CHAPTER_TEXT).stringValue());
+    }  
   }
 }
