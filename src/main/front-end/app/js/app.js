@@ -35,7 +35,7 @@
       controller: ''
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
-      controller: ''
+      controller: 'GraphNetworkCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: ''
