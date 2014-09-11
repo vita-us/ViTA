@@ -86,6 +86,8 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
       heading = new ArrayList<Line>(lines.subList(startOfHeading, startOfText));
     } else {
       heading = new ArrayList<Line>();
+      // set default value
+      heading.add(new Line("Chapter " + chapterNumber, false));
     }
     return heading;
   }
