@@ -1,10 +1,12 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices']);
+  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
+      'vitaDirectives']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
+  angular.module('vitaDirectives', []);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
