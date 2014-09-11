@@ -45,8 +45,8 @@ public class Filter {
       + ")+";
 
   private static final String DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "\\s+" + DEFAULT_BEGIN_BRACKET
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s"
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + "\\s*" + DEFAULT_BEGIN_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s*"
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
@@ -153,6 +153,7 @@ public class Filter {
 
     } else if (line.getText().matches(DEFAULT_COMMENT_BEGIN_WITH_WHITESPACES)) {
       editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT_BEGIN);
+
     } else {
       editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, " ");
     }
