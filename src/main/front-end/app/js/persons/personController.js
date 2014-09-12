@@ -6,7 +6,7 @@
   // Controller responsible for the person page
   vitaControllers.controller('PersonCtrl', ['$scope', 'Document', 'Page', 'Person', '$routeParams',
       function($scope, Document, Page, Person, $routeParams) {
-        var persoName = '';
+        var personName = '';
     
         Person.get({
           documentId: $routeParams.documentId,
