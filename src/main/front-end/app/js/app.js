@@ -1,10 +1,12 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices']);
+  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
+      'vitaFilters']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
+  angular.module('vitaFilters', []);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
@@ -33,7 +35,7 @@
       controller: 'PlaceListCtrl'
     }).when('/documents/:documentId/places/:placeId', {
       templateUrl: 'partials/place.html',
-      controller: 'PlaceCtrl'    
+      controller: 'PlaceCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
       controller: ''
