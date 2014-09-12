@@ -96,7 +96,7 @@
         }]
       },
 
-      singleCharacter: {
+      singlePerson: {
         "id": "person8Hugo",
         "displayName": "Hugo",
         "type": "person",
@@ -119,9 +119,9 @@
         }]
       },
 
-      characters: {
+      persons: {
         "totalCount": 2,
-        "characters": [{
+        "persons": [{
           "id": "person8Hugo",
           "displayName": "Hugo",
           "type": "person",

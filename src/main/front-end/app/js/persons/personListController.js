@@ -3,13 +3,13 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  // Controller responsible for the characters page
-  vitaControllers.controller('CharacterListCtrl', ['$scope', 'Document', 'Page', 'Character', '$routeParams',
-      function($scope, Document, Page, Character, $routeParams) {
-        Character.get({
+  // Controller responsible for the persons page
+  vitaControllers.controller('PersonListCtrl', ['$scope', 'Document', 'Page', 'Person', '$routeParams',
+      function($scope, Document, Page, Person, $routeParams) {
+        Person.get({
           documentId: $routeParams.documentId
         }, function(response) {
-          $scope.characters = response.characters;
+          $scope.persons = response.persons;
         });
         
         Document.get({

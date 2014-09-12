@@ -23,11 +23,11 @@
       templateUrl: 'partials/overview.html',
       controller: 'OverviewCtrl'
     }).when('/documents/:documentId/characters', {
-      templateUrl: 'partials/characters.html',
-      controller: 'CharacterListCtrl'
-    }).when('/documents/:documentId/characters/:characterId', {
-      templateUrl: 'partials/character.html',
-      controller: 'CharacterCtrl'
+      templateUrl: 'partials/persons.html',
+      controller: 'PersonListCtrl'
+    }).when('/documents/:documentId/characters/:personId', {
+      templateUrl: 'partials/person.html',
+      controller: 'PersonCtrl'
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
       controller: 'PlaceListCtrl'
