@@ -107,10 +107,10 @@
 
         }).on('click', function() {
           // TODO: Show the occurrence in the document view
-        }).attr('id', function(occurrence, i) {
-          // give each rect an id so we can scroll through them in order
-          // ids cannot start with numbers so prepend 'count'
-          return 'count' + i;
+        }).each(function(occurrence, i) {
+          // every rect is given an index so you can scroll through them in
+          // order
+          return occurrence.index = i;
         });
       }
 
@@ -148,8 +148,8 @@
           var oldSelected = getSelectedOccurrence(svg);
           deselectOccurrence(oldSelected);
 
-          // Read the index from the id attribute
-          var oldIndex = parseInt(oldSelected.attr('id').replace('count', ''));
+          // Read the index from the data
+          var oldIndex = oldSelected.datum().index;
           // find the index of the next occurrence to select
           var newIndex = (oldIndex + delta) % occurrenceCount;
 
@@ -159,18 +159,28 @@
           }
 
           // select the next occurrence rectangle
-          var newSelected = svg.select('#count' + newIndex);
-          selectOccurrence(newSelected);
+          selectOccurrence(getOccurrenceRect(newIndex));
 
         } else {
 
           // Nothing selected yet so lets just select the first
           // occurrence
-          var newSelected = svg.select('#count' + 0);
-          selectOccurrence(newSelected);
+          selectOccurrence(getOccurrenceRect(0));
 
         }
         return false;
+      }
+
+      // Return the occurrence rect with the given index
+      // null if no such rect exists
+      function getOccurrenceRect(index) {
+        var occurrenceRect;
+        svg.selectAll('.occurrences rect').each(function(occurrence, i) {
+          if (occurrence.index === index) {
+            occurrenceRect = d3.select(this);
+          }
+        });
+        return occurrenceRect;
       }
 
       // Enlargens an occurrence rect by the given values while also displacing
