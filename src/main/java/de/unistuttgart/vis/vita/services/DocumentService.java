@@ -158,5 +158,15 @@ public class DocumentService {
   public PlacesService getPlaces() {
     return resourceContext.getResource(PlacesService.class).setDocumentId(id);
   }
+  
+  /**
+   * Returns the PartsService for the current document.
+   * 
+   * @return the PartsService which answers this request
+   */
+  @Path("/parts")
+  public DocumentPartsService getParts() {
+    return resourceContext.getResource(DocumentPartsService.class).setDocumentId(id);
+  }
 
 }
