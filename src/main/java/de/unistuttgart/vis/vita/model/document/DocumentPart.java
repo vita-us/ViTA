@@ -15,13 +15,25 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "DocumentPart.findAllParts", query = "SELECT dp " + "FROM DocumentPart dp"),
+    @NamedQuery(name = "DocumentPart.findAllParts", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp"),
+    
+    @NamedQuery(name = "DocumentPart.findPartsInDocument", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp, Document d "
+                      + "WHERE d.id = :documentId "
+                      + "AND dp MEMBER OF d.content.parts"),
 
-    @NamedQuery(name = "DocumentPart.findPartById", query = "SELECT dp " + "FROM DocumentPart dp "
-        + "WHERE dp.id = :partId"),
+    @NamedQuery(name = "DocumentPart.findPartById", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp "
+                      + "WHERE dp.id = :partId"),
 
-    @NamedQuery(name = "DocumentPart.findPartByTitle", query = "SELECT dp "
-        + "FROM DocumentPart dp " + "WHERE dp.title = :partTitle")})
+    @NamedQuery(name = "DocumentPart.findPartByTitle", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp " 
+                      + "WHERE dp.title = :partTitle")})
 public class DocumentPart extends AbstractEntityBase {
   private int number;
   private String title;

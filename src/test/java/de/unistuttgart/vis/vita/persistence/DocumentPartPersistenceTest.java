@@ -9,6 +9,8 @@ import javax.persistence.TypedQuery;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentPartTestData;
+import de.unistuttgart.vis.vita.data.DocumentTestData;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 /**
@@ -63,6 +65,17 @@ public class DocumentPartPersistenceTest extends AbstractPersistenceTest {
 
     em.persist(testPart);
     startNewTransaction();
+    
+    // add second part
+    DocumentPart docTestPart = testData.createTestDocumentPart(2);
+    Document testDoc = new DocumentTestData().createTestDocument(1);
+    testDoc.getContent().getParts().add(docTestPart);
+    
+    String docId = testDoc.getId();
+    
+    em.persist(docTestPart);
+    em.persist(testDoc);
+    startNewTransaction();
 
     // check Named Query finding all parts
     TypedQuery<DocumentPart> allQ =
@@ -74,6 +87,14 @@ public class DocumentPartPersistenceTest extends AbstractPersistenceTest {
     testData.checkData(readPart);
 
     String id = readPart.getId();
+    
+    // check Named Query finding document parts in document
+    TypedQuery<DocumentPart> docQ = em.createNamedQuery("DocumentPart.findPartsInDocument",
+                                                        DocumentPart.class);
+    docQ.setParameter("documentId", docId);
+    List<DocumentPart> docParts = docQ.getResultList();
+    assertEquals(1, docParts.size());
+    testData.checkData(docParts.get(0), 2);
 
     // check Named Query finding document parts by id
     TypedQuery<DocumentPart> idQ =
@@ -86,7 +107,7 @@ public class DocumentPartPersistenceTest extends AbstractPersistenceTest {
     // check Named Query finding document parts by title
     TypedQuery<DocumentPart> titleQ =
         em.createNamedQuery("DocumentPart.findPartByTitle", DocumentPart.class);
-    titleQ.setParameter("partTitle", DocumentPartTestData.TEST_DOCUMENT_PART_TITLE);
+    titleQ.setParameter("partTitle", DocumentPartTestData.TEST_DOCUMENT_PART_1_TITLE);
     DocumentPart titlePart = titleQ.getSingleResult();
     
     testData.checkData(titlePart);
