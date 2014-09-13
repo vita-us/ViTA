@@ -19,6 +19,11 @@
       var occurrences = scope.data.occurrences;
       var occurrenceCount = occurrences.length;
 
+      occurrences.map(function(occurrence, index) {
+        occurrence.index = index;
+        occurrence.width = occurrence.end.progress - occurrence.start.progress;
+      });
+
       // TODO: don't hardcode the size of the svg
       var SVG_WIDTH = 800;
       var SVG_HEIGHT = 40;
@@ -83,9 +88,9 @@
           return widthScale(occurrence.start.progress);
         }).attr('y', heightScale(0)).attr('width', function(occurrence) {
 
-          var computedWidth = widthScale(occurrence.end.progress - occurrence.start.progress);
+          var computedWidth = widthScale(occurrence.width);
           // return at least the minimum bar width
-          return computedWidth > minBarWidth ? computedWidth : minBarWidth;
+          return Math.max(computedWidth, minBarWidth);
 
         }).attr('height', heightScale(1)).on('mouseover', function() {
 
@@ -107,10 +112,6 @@
 
         }).on('click', function() {
           // TODO: Show the occurrence in the document view
-        }).each(function(occurrence, i) {
-          // every rect is given an index so you can scroll through them in
-          // order
-          return occurrence.index = i;
         });
       }
 
