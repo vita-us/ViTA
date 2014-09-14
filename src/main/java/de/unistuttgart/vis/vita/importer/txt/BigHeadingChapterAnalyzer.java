@@ -2,20 +2,38 @@ package de.unistuttgart.vis.vita.importer.txt;
 
 import java.util.ArrayList;
 
-
+/**
+ * Chapters will be built every time a Bigheading is found and there are at least two Whitelines in
+ * front of it. The following BigHeadings will be added to the chapters heading and very small
+ * 'chapters' will be attached to the Chapters before. Preface and Contents will be eliminated from
+ * the analysis.
+ */
 public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
 
+  private int startOfAnalysis;
+
+  /**
+   * Instantiates a new BigHeadingChapterAnalyzer and sets the lines to analyze.
+   * 
+   * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
+   * @throws IllegalArgumentException If input is null.
+   */
   public BigHeadingChapterAnalyzer(ArrayList<Line> chapterArea) throws IllegalArgumentException {
     super(chapterArea);
-    // TODO Auto-generated constructor stub
+    this.startOfAnalysis = getStartPosition();
   }
 
+  @Override
+  public int getStartOfAnalysis() {
+    return this.startOfAnalysis;
+  }
+
+  @Override
   protected ChapterPosition useRule() {
-    ChapterPosition positions = detectSimpleChapters(true, LineType.BIGHEADING, getStartPosition());
-    useTwoWhitelinesBeforeRule(positions, true);
-    useEmptyChapterRule(positions, true);
-    useLittleChapterRule(positions, minimumChapterSize);
-    return positions;
+    this.chapterPositions = detectSimpleChapters(true, LineType.BIGHEADING, this.startOfAnalysis);
+    useTwoWhitelinesBeforeRule(true);
+    useEmptyChapterRule(true);
+    useLittleChapterRule(minimumChapterSize, false);
+    return this.chapterPositions;
   }
-
 }

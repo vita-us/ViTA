@@ -4,14 +4,30 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
+/**
+ * Implements Callable returning ChapterPosition.<br>
+ * <br>
+ * 
+ * The Chapter Analyzer takes the text Lines of an eBook and returns the Positions of the found
+ * Chapters. The Abstract Chapter Analyzer itself provides some protected auxiliary methods and
+ * attributes. To implement a concrete Chapter Analyzer Rule you have to extend this class and
+ * implement at least the useRule()-method.
+ */
 public abstract class AbstractChapterAnalyzer implements Callable<ChapterPosition> {
 
+  // the lines to analyze, should not be modified.
+  protected final ArrayList<Line> chapterArea;
 
   protected int minimumChapterSize = 200;
-  protected final ArrayList<Line> chapterArea;
   protected HashSet<LineType> skipTags = new HashSet<LineType>();
   protected ChapterPosition chapterPositions;
 
+  /**
+   * Initialize the Abstract Chapter Analyzer and set the lines to analyze.
+   * 
+   * @param chapterArea ArrayList of Line - The lines in which the Chapters are.
+   * @throws IllegalArgumentException If input is null.
+   */
   public AbstractChapterAnalyzer(ArrayList<Line> chapterArea) throws IllegalArgumentException {
     if (chapterArea == null) {
       throw new IllegalArgumentException("chapterArea must not be null");
@@ -20,19 +36,55 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     createSkipTags();
   }
 
+  @Override
+  public ChapterPosition call() {
+    return useRule();
+  }
+
+  /**
+   * Get the line index at which the analysis begins.
+   * 
+   * @return int - index at which analysis begins. The value is a valid index of the list of lines.
+   */
+  public abstract int getStartOfAnalysis();
+
+  /**
+   * The Detection Rule which builds the ChapterPosition.
+   * 
+   * @return ChapterPosition - The positions of the detected chapters.
+   */
+  protected abstract ChapterPosition useRule();
+
+  /**
+   * Sets the Tags which mark the beginning of a clause to skip.
+   */
   protected void createSkipTags() {
     skipTags.add(LineType.PREFACE);
     skipTags.add(LineType.TABLEOFCONTENTS);
   }
 
+  /**
+   * Gets the start of the analysis when the clauses behind a skip tag and everything before should
+   * be skipped. To avoid the whole text being skipped, a position in the second half of the text
+   * will be recognized as error and 0 will be returned.
+   * 
+   * @return int - The found start position for analysis.
+   */
   protected int getStartPosition() {
     int lastFoundPosition = 0;
     int lineIndex = 0;
-    boolean searchingAreaEnd = false;
+
+    boolean thisLineIsWhite;
     boolean lastLineWasWhite = false;
+
+    // true if the end of the clause to skip is searched
+    boolean searchingAreaEnd = false;
+
+    // true if last non whiteline was the skip tag
     boolean behindStartTag = false;
+
     for (Line line : chapterArea) {
-      boolean thisLineIsWhite = line.getType().equals(LineType.WHITELINE);
+      thisLineIsWhite = line.getType().equals(LineType.WHITELINE);
       behindStartTag = behindStartTag && thisLineIsWhite;
       // Recognize Skip Area Start
       if (skipTags.contains(line.getType())) {
@@ -52,9 +104,23 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       lastLineWasWhite = line.getType().equals(LineType.WHITELINE);
       lineIndex++;
     }
+    // Check if result is in first half of the text
+    if (lastFoundPosition > 0.5 * chapterArea.size()) {
+      lastFoundPosition = 0;
+    }
     return lastFoundPosition;
   }
 
+  /**
+   * Detects the beginning of a Chapter everytime the given LineType is found or everytime the given
+   * LineType is NOT found.
+   * 
+   * @param findThisType - Boolean - true: the type marks the start of the Chapter. false: all other
+   *        types mark the start of the Chapter.
+   * @param type LineType - The type of the Line.
+   * @param startPosition int - Line index at which the analysis should start.
+   * @return ChapterPosition - Contains positions of all found simple chapters.
+   */
   protected ChapterPosition detectSimpleChapters(Boolean findThisType, LineType type,
       int startPosition) {
     ChapterPosition positions = new ChapterPosition();
@@ -62,9 +128,11 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     int endOfText = -1;
     int nextPosition = -1;
 
-
+    // initialize position
     startOfHeading = getNextPosition(findThisType, type, startPosition);
     nextPosition = getNextPosition(findThisType, type, startOfHeading + 1);
+
+    // build Chapters until nextPosition has invalid value.
     while (startOfHeading < nextPosition) {
       endOfText = nextPosition - 1;
       if (endOfText >= chapterArea.size()) {
@@ -72,74 +140,73 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       }
       positions.addChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText),
           endOfText);
+
+      // set data for next chapter
       startOfHeading = nextPosition;
       nextPosition = getNextPosition(findThisType, type, nextPosition + 1);
     }
-    addLastChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText), positions);
+    // add the last chapter, if there is at least one found
+    addLastChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText));
     return positions;
   }
 
-  protected int getSimpleStartOfText(int startOfHeading, int endOfText) {
-    int startOfText;
-    if ((endOfText - startOfHeading) >= 1) {
-      startOfText = startOfHeading + 1;
-    } else {
-      startOfText = startOfHeading;
-    }
-    return startOfText;
-  }
-
-  protected void addLastChapter(int startOfHeading, int startOfText, ChapterPosition positions) {
-    if ((startOfHeading >= 0) && (startOfHeading < chapterArea.size() - 1)) {
-      if (startOfText <= startOfHeading) {
-        startOfText = startOfHeading + 1;
-      }
-      if (!(startOfText >= chapterArea.size())) {
-        positions.addChapter(startOfHeading, startOfText, chapterArea.size() - 1);
-      }
-    }
-  }
-
-  protected void useWhitelineAfterRule(ChapterPosition positions, Boolean extendHeading) {
-    for (int chapterNumber = positions.size(); chapterNumber >= 2; chapterNumber--) {
-      int beforeChapterBeginning = positions.getStartOfHeading(chapterNumber - 1);
-      int beforeChapterTextStart = positions.getStartOfText(chapterNumber - 1);
-      int beforeChapterTextEnd = positions.getEndOfText(chapterNumber - 1);
-      int thisChapterBeginning = positions.getStartOfHeading(chapterNumber);
-      int thisChapterTextStart = positions.getStartOfText(chapterNumber);
-      int thisChapterTextEnd = positions.getEndOfText(chapterNumber);
+  /**
+   * This rule assures that all headings of the given chapters have at least one Whiteline after the
+   * found heading. If not, the Chapter will be attached to the Chapter before or deleted if there
+   * is no chapter before.
+   * 
+   * @param extendHeading Boolean - If attached and chapter before has empty text.. True: the new
+   *        heading will contain the both headings. False: the new heading will only contain the
+   *        heading of the chapter before.
+   */
+  protected void useWhitelineAfterRule(Boolean extendHeading) {
+    for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
+      int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
+      int beforeChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber - 1);
+      int thisChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber);
+      int thisChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber);
+      int thisChapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
       int textBorder;
+
       boolean someWhitelinesAfter =
           (getNextPosition(false, LineType.WHITELINE, thisChapterBeginning + 1) - thisChapterBeginning) > 1;
+
       if (!someWhitelinesAfter) {
-        if (extendHeading) {
+        if (isEmptyChapter(chapterNumber - 1) && extendHeading) {
           textBorder = thisChapterTextStart;
         } else {
           textBorder = beforeChapterTextStart;
         }
-        positions.changeChapterData(chapterNumber - 1, beforeChapterBeginning, textBorder,
-            thisChapterTextEnd);
-        positions.deleteChapter(chapterNumber);
+        this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
+            textBorder, thisChapterTextEnd);
+        this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
-    if (positions.size() >= 1) {
-      int firstChapterBeginning = positions.getStartOfHeading(1);
+    // special case: if first chapter does not fit the rule, it must be deleted
+    if (this.chapterPositions.size() >= 1) {
+      int firstChapterBeginning = this.chapterPositions.getStartOfHeading(1);
       boolean someWhitelinesAfter =
           (getNextPosition(false, LineType.WHITELINE, firstChapterBeginning + 1) - firstChapterBeginning) > 1;
       if (!someWhitelinesAfter) {
-        positions.deleteChapter(1);
+        this.chapterPositions.deleteChapter(1);
       }
     }
-
   }
 
+  /**
+   * This rule assures that for the given heading at least two Whitelines are in front. Exceptions
+   * are at the beginning of the text analysis.
+   * 
+   * @param startHeading int - start of the chapter's heading.
+   * @return Boolean - true: Chapter fits the rule. false: Chapter does not fit the rule.
+   */
   protected boolean fitsTwoWhitelinesBeforeRule(int startHeading) {
     boolean chapterFits = false;
-    if (startHeading - getStartPosition() >= 2) {
+    if (startHeading - getStartOfAnalysis() >= 2) {
       chapterFits =
           chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE)
               && chapterArea.get(startHeading - 2).getType().equals(LineType.WHITELINE);
-    } else if (startHeading - getStartPosition() == 1) {
+    } else if (startHeading - getStartOfAnalysis() == 1) {
       chapterFits = chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE);
     } else {
       chapterFits = true;
@@ -147,81 +214,186 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     return chapterFits;
   }
 
-  protected void useEmptyChapterRule(ChapterPosition positions, Boolean extendHeading) {
-    for (int chapterNumber = positions.size(); chapterNumber >= 2; chapterNumber--) {
-      int beforeChapterBeginning = positions.getStartOfHeading(chapterNumber - 1);
-      int beforeChapterTextStart = positions.getStartOfText(chapterNumber - 1);
-      int beforeChapterTextEnd = positions.getEndOfText(chapterNumber - 1);
-      int thisChapterBeginning = positions.getStartOfHeading(chapterNumber);
-      int thisChapterTextStart = positions.getStartOfText(chapterNumber);
-      int thisChapterTextEnd = positions.getEndOfText(chapterNumber);
+  /**
+   * This rule assures that for all given chapters at least two Whitelines are in front of the
+   * heading. If this is not the case, it will be attached to the Chapter before or deleted if there
+   * is no chapter before.
+   * 
+   * @param extendHeading Boolean - If attached and chapter before has empty text.. True: the new
+   *        heading will contain the both headings. False: the new heading will only contain the
+   *        heading of the chapter before.
+   */
+  protected void useTwoWhitelinesBeforeRule(Boolean extendHeading) {
+    for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
+      int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
+      int beforeChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber - 1);
+      int thisChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber);
+      int thisChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber);
+      int thisChapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
       int textBorder;
-      boolean emptyChapter =
-          (onlyOneTypeBetween(beforeChapterTextStart - 1, thisChapterBeginning, LineType.WHITELINE))
-              || ((beforeChapterTextEnd - beforeChapterTextStart) == 0);
-      if (emptyChapter) {
+
+      if (!fitsTwoWhitelinesBeforeRule(thisChapterBeginning)) {
+        if (isEmptyChapter(chapterNumber - 1) && extendHeading) {
+          textBorder = thisChapterTextStart;
+        } else {
+          textBorder = beforeChapterTextStart;
+        }
+        this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
+            textBorder,
+            thisChapterTextEnd);
+        this.chapterPositions.deleteChapter(chapterNumber);
+      }
+    }
+    // special case: if first chapter does not fit the rule, it must be deleted
+    int firstChapter = 1;
+    if (this.chapterPositions.size() >= 1) {
+      if (!fitsTwoWhitelinesBeforeRule(this.chapterPositions.getStartOfHeading(firstChapter))) {
+        this.chapterPositions.deleteChapter(firstChapter);
+      }
+    }
+  }
+
+
+  /**
+   * This rule assures that there are no empty chapters. An empty chapter's text only contains
+   * Whitelines. If there is an empty chapter, the chapter behind will be attached to the Chapter.
+   * If in the end the last chapter or the first chapter is empty, they will be deleted.
+   * 
+   * @param extendHeading Boolean - If attached.. True: the new heading will contain the text of the
+   *        chapter before and the old headings. False: the new heading will only contain the
+   *        heading of the chapter before, the rest will be added to the text.
+   */
+  protected void useEmptyChapterRule(Boolean extendHeading) {
+    for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
+      int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
+      int beforeChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber - 1);
+      int thisChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber);
+      int thisChapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
+      int textBorder;
+
+      if (isEmptyChapter(chapterNumber - 1)) {
         if (extendHeading) {
           textBorder = thisChapterTextStart;
         } else {
           textBorder = beforeChapterTextStart;
         }
-        positions.changeChapterData(chapterNumber - 1, beforeChapterBeginning, textBorder,
+        this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
+            textBorder,
             thisChapterTextEnd);
-        positions.deleteChapter(chapterNumber);
+        this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
-    int lastChapter = positions.size();
-    if (positions.size() > 0
-        && !fitsTwoWhitelinesBeforeRule(positions.getStartOfHeading(lastChapter))) {
-      positions.deleteChapter(lastChapter);
+
+    // special case: if last chapter is empty, it must be deleted.
+    int lastChapter = this.chapterPositions.size();
+    if (this.chapterPositions.size() >= 1 && isEmptyChapter(lastChapter)) {
+      this.chapterPositions.deleteChapter(lastChapter);
     }
+
+    // special case: if first chapter is empty, it must be deleted.
     int firstChapter = 1;
-    if (positions.size() >= 1) {
-      int firstChapterTextStart = positions.getStartOfText(firstChapter);
-      int firstChapterTextEnd = positions.getEndOfText(firstChapter);
-      boolean emptyChapter =
-          onlyOneTypeBetween(firstChapterTextStart - 1, firstChapterTextEnd + 1, LineType.WHITELINE);
-      if (emptyChapter) {
-        positions.deleteChapter(firstChapter);
-      }
+    if (this.chapterPositions.size() >= 1 && isEmptyChapter(firstChapter)) {
+      this.chapterPositions.deleteChapter(firstChapter);
     }
   }
 
-  protected void useTwoWhitelinesBeforeRule(ChapterPosition positions, Boolean extendHeading) {
-    for (int chapterNumber = positions.size(); chapterNumber >= 2; chapterNumber--) {
-      int beforeChapterBeginning = positions.getStartOfHeading(chapterNumber - 1);
-      int beforeChapterTextStart = positions.getStartOfText(chapterNumber - 1);
-      int beforeChapterTextEnd = positions.getEndOfText(chapterNumber - 1);
-      int thisChapterBeginning = positions.getStartOfHeading(chapterNumber);
-      int thisChapterTextStart = positions.getStartOfText(chapterNumber);
-      int thisChapterTextEnd = positions.getEndOfText(chapterNumber);
+  /**
+   * Chapters with a very short text will be attached to the chapter before. If there is no chapter
+   * before, the chapter will be deleted.
+   * 
+   * @param minimumLength - The minimum length of characters a chapter should have. This includes
+   *        invisible characters in lines which are not a Whiteline.
+   * @param extendHeading Boolean - If attached.. True: the new heading will contain the text of the
+   *        chapter before and the old headings. False: the new heading will only contain the
+   *        heading of the chapter before, the rest will be added to the text.
+   */
+  protected void useLittleChapterRule(int minimumLength,
+      boolean extendHeading) {
+    for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
+      int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
+      int beforeChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber - 1);
+      int thisChapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
+      int thisChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber);
       int textBorder;
-      boolean emptyChapter =
-          (onlyOneTypeBetween(beforeChapterTextStart - 1, thisChapterBeginning, LineType.WHITELINE))
-              || ((beforeChapterTextEnd - beforeChapterTextStart) == 0);
-      if (!fitsTwoWhitelinesBeforeRule(positions.getStartOfHeading(chapterNumber))) {
-        if (emptyChapter && extendHeading) {
+
+      if (computeTextLength(chapterNumber) < minimumLength) {
+        if (isEmptyChapter(chapterNumber - 1) && extendHeading) {
           textBorder = thisChapterTextStart;
         } else {
           textBorder = beforeChapterTextStart;
         }
-        positions.changeChapterData(chapterNumber - 1, beforeChapterBeginning, textBorder,
+        this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
+            textBorder,
             thisChapterTextEnd);
-        positions.deleteChapter(chapterNumber);
+        this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
+
+    // special case: if first chapter is nearly empty, it must be deleted.
     int firstChapter = 1;
-    if (positions.size() >= 1) {
-      if (!fitsTwoWhitelinesBeforeRule(positions.getStartOfHeading(firstChapter))) {
-        positions.deleteChapter(firstChapter);
-      }
+    if (this.chapterPositions.size() >= 1 && (computeTextLength(firstChapter) < minimumLength)) {
+      this.chapterPositions.deleteChapter(firstChapter);
     }
   }
 
-  protected int countCharacters(int chapterNumber, ChapterPosition positions) {
+  /**
+   * Checks if the Chapter's text contains only Whitelines.
+   * 
+   * @param chapterNumber int - The index of the Chapter, should be between 1 and Chapter's size.
+   * @return boolean - true: the Chapter's text contains only Whitelines. false: there are other
+   *         Linetypes.
+   */
+  protected boolean isEmptyChapter(int chapterNumber) {
+    int chapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber);
+    int chapterTextStart = this.chapterPositions.getStartOfText(chapterNumber);
+    int chapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
+
+    return (onlyOneTypeBetween(chapterTextStart - 1, chapterTextEnd + 1, LineType.WHITELINE))
+        || ((chapterTextEnd - chapterBeginning) == 0);
+  }
+
+  /**
+   * From the given start position, the next position of a type will be returned.
+   * 
+   * @param thisType Boolean - true: search for type. false: search for everything else than type.
+   * @param type LineType - The type to search.
+   * @param start int - The number of the line at which the next position should be searched. This
+   *        value must be a valid index of the list of lines.
+   * @return int - The next position of the given type OR everything else than the given type,
+   *         depending on thisType. Will return -1 if nothing is found or start value is not valid.
+   */
+  protected int getNextPosition(Boolean thisType, LineType type, int start) {
+    int nextPosition = -1;
+    if (!((start < 0) || (start >= chapterArea.size()))) {
+      for (int index = start; index < chapterArea.size(); index++) {
+        Line line = chapterArea.get(index);
+        LineType lineType = line.getType();
+        if (thisType) {
+          if (type.equals(lineType)) {
+            nextPosition = index;
+            break;
+          }
+        } else {
+          if (!type.equals(lineType)) {
+            nextPosition = index;
+            break;
+          }
+        }
+      }
+    }
+    return nextPosition;
+  }
+
+  /**
+   * Counts the length of all non-Whiteline-lines in the Chapter's text.
+   * 
+   * @param chapterNumber int - The index of the Chapter, should be between 1 and Chapter's size.
+   * @return int - The sum of the lengths. Invisible Characters are added too.
+   */
+  protected int computeTextLength(int chapterNumber) {
     int characterCount = 0;
-    int firstLine = positions.getStartOfText(chapterNumber);
-    int lastLine = positions.getEndOfText(chapterNumber);
+    int firstLine = this.chapterPositions.getStartOfText(chapterNumber);
+    int lastLine = this.chapterPositions.getEndOfText(chapterNumber);
     for (int lineNumber = firstLine; lineNumber <= lastLine; lineNumber++) {
       Line line = chapterArea.get(lineNumber);
       if (line.getType() != LineType.WHITELINE) {
@@ -231,50 +403,15 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     return characterCount;
   }
 
-  protected void useLittleChapterRule(ChapterPosition positions, int minimumLength) {
-    for (int chapterNumber = positions.size(); chapterNumber >= 2; chapterNumber--) {
-      int beforeChapterBeginning = positions.getStartOfHeading(chapterNumber - 1);
-      int beforeChapterTextStart = positions.getStartOfText(chapterNumber - 1);
-      int beforeChapterTextEnd = positions.getEndOfText(chapterNumber - 1);
-      int thisChapterBeginning = positions.getStartOfHeading(chapterNumber);
-      int thisChapterTextStart = positions.getStartOfText(chapterNumber);
-      int thisChapterTextEnd = positions.getEndOfText(chapterNumber);
-      int characterCount = countCharacters(chapterNumber, positions);
-      if (characterCount < minimumLength) {
-        positions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
-            beforeChapterTextStart, thisChapterTextEnd);
-        positions.deleteChapter(chapterNumber);
-      }
-    }
-    int firstChapter = 1;
-    if (positions.size() >= 1) {
-      int characterCount = countCharacters(firstChapter, positions);
-      if (characterCount < minimumLength) {
-        positions.deleteChapter(firstChapter);
-      }
-    }
-  }
-
-  protected int getNextPosition(Boolean thisType, LineType type, int start) {
-    if (!((start < 0) || (start >= chapterArea.size()))) {
-      for (int index = start; index < chapterArea.size(); index++) {
-        Line line = chapterArea.get(index);
-        LineType lineType = line.getType();
-        if (thisType) {
-          if (type.equals(lineType)) {
-            return index;
-          }
-        } else {
-          if (!type.equals(lineType)) {
-            return index;
-          }
-        }
-      }
-    }
-    return -1;
-
-  }
-
+  /**
+   * Checks if the lines between the given borders have the same type.
+   * 
+   * @param start int - Bottom border, excluding this line.
+   * @param end int - Top border, excluding this line.
+   * @param type LineType - The type which the lines should have.
+   * @return boolean - true if all the lines between the borders have the given type. Will also
+   *         return true if no lines are analysed.
+   */
   protected boolean onlyOneTypeBetween(int start, int end, LineType type) {
     boolean sameType = true;
     for (int index = start + 1; index < end; index++) {
@@ -288,13 +425,42 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     return sameType;
   }
 
-  protected abstract ChapterPosition useRule();
-
-  @Override
-  public ChapterPosition call() {
-    return useRule();
+  /**
+   * From start and end of the Chapter, the start of the text will be computed. It is assumed that
+   * the heading is always the first line. When there is only one line, this line will formally be
+   * set as text.
+   * 
+   * @param startOfHeading int - the start of the heading is the start of the chapter
+   * @param endOfText int - the end of the text is the end of the chapter
+   * @return int - the start of the text
+   */
+  private int getSimpleStartOfText(int startOfHeading, int endOfText) {
+    int startOfText;
+    if ((endOfText - startOfHeading) >= 1) {
+      startOfText = startOfHeading + 1;
+    } else {
+      startOfText = startOfHeading;
+    }
+    return startOfText;
   }
 
-
-
+  /**
+   * A chapter from the given start to the end of the lines will be created, if the values are
+   * valid.
+   * 
+   * @param startOfHeading int - start of the chapter, is valid if the line with this index exists.
+   * @param startOfText int - start of text, is valid if the line with this index exists. A number
+   *        smaller than startOfHeading will be corrected so the first line of the chapter is the
+   *        heading.
+   */
+  private void addLastChapter(int startOfHeading, int startOfText) {
+    if ((startOfHeading >= 0) && (startOfHeading < chapterArea.size() - 1)) {
+      if (startOfText <= startOfHeading) {
+        startOfText = startOfHeading + 1;
+      }
+      if (!(startOfText >= chapterArea.size())) {
+        this.chapterPositions.addChapter(startOfHeading, startOfText, chapterArea.size() - 1);
+      }
+    }
+  }
 }
