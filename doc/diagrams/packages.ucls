@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <package id="1" language="java" name="de.unistuttgart.vis.vita.services" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/services" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="204" x="-96" y="276"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="2" language="java" name="de.unistuttgart.vis.vita.model" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/model" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="529" y="471"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="3" language="java" name="de.unistuttgart.vis.vita.analysis.modules" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/analysis/modules" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="254" x="512" y="276"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="4" language="java" name="de.unistuttgart.vis.vita.analysis.annotations" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/analysis/annotations" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="272" x="117" y="452"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="5" language="java" name="de.unistuttgart.vis.vita.analysis" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/analysis" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="202" x="289" y="364"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="6" language="java" name="de.unistuttgart.vis.vita.services.responses" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/services/responses" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="268" x="-96" y="364"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="7" language="java" name="de.unistuttgart.vis.vita.model.document" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/model/document" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="249" x="409" y="540"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="8" language="java" name="de.unistuttgart.vis.vita.model.progress" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/model/progress" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="244" x="188" y="276"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="9" language="java" name="de.unistuttgart.vis.vita.model.entity" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/model/entity" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="224" x="679" y="628"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="10" language="java" name="de.unistuttgart.vis.vita.analysis.results" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/analysis/results" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="245" x="679" y="452"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="11" language="java" name="de.unistuttgart.vis.vita.model.wordcloud" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/model/wordcloud" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="891" y="555"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="12" language="java" name="de.unistuttgart.vis.vita.importer.txt" project="vita" 
+    file="/vita/src/main/java/de/unistuttgart/vis/vita/importer/txt" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="113" y="579"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="14">    
+    <bendpoint x="521" y="364"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="15">    
+    <bendpoint x="605" y="364"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="17">    
+    <bendpoint x="419" y="452"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="18">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <dependency id="19">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="21">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="22">    
+    <bendpoint x="258" y="364"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="23">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="24">    
+    <bendpoint x="688" y="540"/>    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="25">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="26">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
