@@ -147,6 +147,12 @@
       <artifactId>jersey-test-framework-core</artifactId>
     </dependency>
 
+    <!-- jersey media multipart for file upload -->
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-multipart</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
