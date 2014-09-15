@@ -168,5 +168,15 @@ public class DocumentService {
   public DocumentPartsService getParts() {
     return resourceContext.getResource(DocumentPartsService.class).setDocumentId(id);
   }
+  
+  /**
+   * Return the AnalysisService for the current document.
+   * 
+   * @return the AnalysisService which answers this request
+   */
+  @Path("/analysis")
+  public AnalysisService stopAnalysis() {
+    return resourceContext.getResource(AnalysisService.class).setDocumentId(id);
+  }
 
 }

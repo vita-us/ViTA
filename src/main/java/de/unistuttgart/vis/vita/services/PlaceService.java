@@ -29,7 +29,7 @@ public class PlaceService {
    * 
    * @param id the id
    */
-  public PlaceService setPersonId(String id) {
+  public PlaceService setPlaceId(String id) {
     this.placeId = id;
     return this;
   }

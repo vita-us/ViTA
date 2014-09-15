@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({VersionServiceTest.class, DocumentsServiceTest.class, DocumentServiceTest.class,
     ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class, 
     PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class, 
-    DocumentPartsServiceTest.class})
+    DocumentPartsServiceTest.class, AnalysisServiceTest.class})
 public class ServiceTests {
 
 }
