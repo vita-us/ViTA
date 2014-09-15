@@ -37,6 +37,7 @@
           .nodes(graphData.nodes)
           .links(graphData.links)
           .size([width, height])
+          .linkDistance(100)
           .on('tick', setNewPositions)
           .start();
 
