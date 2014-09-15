@@ -1,8 +1,5 @@
 <div>
-  <p>Documents</p>
-  <ul>
-    <li ng-repeat="document in documents">
-      <a ng-href="#/documents/{{document.id}}">{{document.metadata.title}}</a>
-    </li>
-  </ul>
+  <div class="list-group">
+    <a ng-href="#/documents/{{document.id}}" class="list-group-item" ng-repeat="document in documents">{{document.metadata.title}}</a>
+  </div>
 </div>

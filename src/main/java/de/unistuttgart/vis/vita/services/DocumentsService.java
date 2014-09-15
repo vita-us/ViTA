@@ -97,8 +97,7 @@ public class DocumentsService {
       saveFile(fileInputStream, filePath);
       
       // schedule analysis
-      AnalysisController analysisController = new AnalysisController(
-                                                    new de.unistuttgart.vis.vita.analysis.Model());
+      AnalysisController analysisController = new AnalysisController(new Model());
       String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath());
       
       // set up Response

@@ -1,33 +1,5 @@
 describe('OverviewCtrl', function() {
-  var scope, $httpBackend, ctrl, documentData = function() {
-    return {
-      id: "doc13a",
-      metadata: {
-        title: "Rotkaeppchen",
-        author: "Hans Mueller",
-        publisher: "XY Verlag",
-        publishYear: 1957,
-        genre: "Thriller",
-        edition: "Limited Edition"
-      },
-      metrics: {
-        characterCount: 19231,
-        chapterCount: 3,
-        personCount: 8,
-        placeCount: 2,
-        wordCount: 1999
-      },
-      content: {
-        parts: {
-          chapters: ["chapter1", "chapter2", "chapter3"],
-          number: 1,
-          title: "Der erste Teil"
-        },
-        persons: ["person8Ben", "person10Bert"],
-        places: ["place2Paris", "place10Mordor"]
-      }
-    };
-  };
+  var scope, $httpBackend, ctrl;
 
   beforeEach(function() {
     this.addMatchers({
@@ -39,20 +11,21 @@ describe('OverviewCtrl', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('test_data/single-document.json').respond(documentData());
+    $httpBackend.expectGET('/documents/123').respond(TestData.singleDocument);
+    $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('OverviewCtrl', {
       $scope: scope
     });
   }));
 
-  it('should create "document" model', inject(function($controller) {
+  it('should create "document" model', inject(function($controller, TestData) {
 
-    expect(scope.document).toEqualData({});
+    expect(scope.document).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.document).toEqualData(documentData());
+    expect(scope.document).toEqualData(TestData.singleDocument);
 
   }));
 

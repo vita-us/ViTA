@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.analysis.Model;
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
 /**

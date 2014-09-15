@@ -1,10 +1,12 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices']);
+  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
+      'vitaFilters']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
+  angular.module('vitaFilters', []);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
@@ -22,12 +24,18 @@
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: 'OverviewCtrl'
-    }).when('/documents/:documentId/profiles', {
-      templateUrl: 'partials/profiles.html',
-      controller: ''
+    }).when('/documents/:documentId/characters', {
+      templateUrl: 'partials/persons.html',
+      controller: 'PersonListCtrl'
+    }).when('/documents/:documentId/characters/:personId', {
+      templateUrl: 'partials/person.html',
+      controller: 'PersonCtrl'
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
-      controller: ''
+      controller: 'PlaceListCtrl'
+    }).when('/documents/:documentId/places/:placeId', {
+      templateUrl: 'partials/place.html',
+      controller: 'PlaceCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
       controller: ''
@@ -48,13 +56,27 @@
   }]);
 
   app.factory('Page', function() {
-    return {};
+    return {
+      setUpForDocument: function(document) {
+        // TODO Don't pass the id through the Page
+        this.documentId = document.id;
+        this.title = document.metadata.title;
+        this.tab = 1;
+        this.showMenu = true;
+      },
+      setUp: function(title, tab) {
+        this.title = title;
+        this.showMenu = false;
+        this.tab = tab;
+        this.breadcrumbs = null;
+      }
+    }
   });
- 
+
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.title = 'Default page title'; // set this in every controller
-    Page.breadcrumbs = null;           // set this in those controllers where a document is selected
-    Page.showMenu = true;              // set to false where no document is selected
+    Page.title = 'Default page title';
+    Page.breadcrumbs = null;
+    Page.showMenu = true;
     Page.tab = 1;
     $scope.Page = Page;
   }]);
