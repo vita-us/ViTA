@@ -133,7 +133,7 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
     }
 
     // Path to the gate_home resource
-    URL pathToHome = StandAloneAnnie.class.getResource("/gate_home");
+    URL pathToHome = this.getClass().getResource("/gate_home");
     File fileToHome = new File("");
 
     if (pathToHome != null) {
