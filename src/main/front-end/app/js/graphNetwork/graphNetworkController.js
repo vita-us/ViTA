@@ -3,9 +3,10 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams',
-      function($scope, $routeParams) {
-        $scope.entities = ['123', '513'];
+  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'TestData',
+      function($scope, $routeParams, TestData) {
+        // TODO replace when implementing the graph network page
+        $scope.entities = TestData.graphNetworkEntities;
       }]);
 
 })(angular);

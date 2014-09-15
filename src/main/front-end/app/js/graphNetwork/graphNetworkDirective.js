@@ -9,7 +9,7 @@
       replace: false,
       restrict: 'EA',
       scope: {
-        entities: '@',
+        entities: '=',
         width: '@',
         height: '@'
       },
