@@ -30,23 +30,25 @@ public class Line {
       Pattern.CASE_INSENSITIVE);
 
   private static final String BIGHEADING = WHITESPACE + "([\\p{Upper}\\d][^\\p{Lower}]*)";
-  private static final String BIGHEADINGQUOTES = WHITESPACE + "(\"" + BIGHEADING + "\")" + "|"
-      + "(\'" + BIGHEADING + "\')";
+  private static final String BIGHEADINGQUOTES = WHITESPACE + "((\"" + BIGHEADING + "\")" + "|"
+      + "(\'" + BIGHEADING + "\'))" + WHITESPACE;
+  private static final String EXTENDEDBIGHEADING = WHITESPACE + "_" + "(" + BIGHEADING + "|"
+      + BIGHEADINGQUOTES + ")" + "_" + WHITESPACE;
   private static final Pattern BIGHEADINGPATTERN = Pattern.compile("(" + BIGHEADING + ")|("
-      + BIGHEADINGQUOTES + ")");
+      + BIGHEADINGQUOTES + ")|(" + EXTENDEDBIGHEADING + ")");
 
-  private static final String BIGSIGNS = "[\\p{Upper}\\d]";
-  private static final Pattern BIGSIGNSPATTERN = Pattern.compile(BIGSIGNS);
-
-  private static final String NORMALHEADING = "\\p{Upper}[^\\.\\?\\!]*\\.?";
-  private static final String ONEQUOTE =
-      "((\")\\p{Upper}[^\"\']*(\"))|((\')\\p{Upper}[^\"\']*(\'))";
+  private static final String NORMALHEADING = "(([\\d]+\\.)|([IVXML]+\\.))?" + WHITESPACE
+      + "\\p{Upper}[^\\.\\?\\!]*\\.?";
+  private static final String ONEQUOTE = "((\").*(\"))|((\').*(\'))";
   private static final String CHAPTER = "(?i)Chapter(?-i)" + WHITESPACE + "((\\d+)|([IVXML]+))?"
       + WHITESPACE + "\\p{Punct}?";
   private static final String SMALLHEADING = "(" + WHITESPACE + "(" + CHAPTER + ")?" + WHITESPACE
-      + "((" + "([\\d]+\\.)?" + WHITESPACE + NORMALHEADING + ")" + "|" + "(" + ONEQUOTE + "))"
-      + WHITESPACE + ")|(" + CHAPTER + ")";
-  private static final Pattern SMALLHEADINGPATTERN = Pattern.compile(SMALLHEADING);
+      + "((" + NORMALHEADING + ")" + "|" + "(" + ONEQUOTE + "))" + WHITESPACE + ")|(" + CHAPTER
+      + ")";
+  private static final String EXTENDEDSMALLHEADING = WHITESPACE + "_" + SMALLHEADING + "_"
+      + WHITESPACE;
+  private static final Pattern SMALLHEADINGPATTERN = Pattern.compile(SMALLHEADING + "|"
+      + EXTENDEDSMALLHEADING);
 
   private static final String NOSPECIALSIGNS = "\\p{Alnum}";
   private static final Pattern NOSPECIALSIGNSPATTERN = Pattern.compile(NOSPECIALSIGNS);
@@ -151,7 +153,7 @@ public class Line {
       if (matchesPattern(SMALLHEADINGPATTERN)) {
         highestType = LineType.SMALLHEADING;
       }
-      if (matchesPattern(BIGHEADINGPATTERN) && containsPattern(BIGSIGNSPATTERN)) {
+      if (matchesPattern(BIGHEADINGPATTERN)) {
         highestType = LineType.BIGHEADING;
       }
       if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
@@ -166,7 +168,7 @@ public class Line {
       if (matchesPattern(MARKEDHEADINGPATTERN)) {
         highestType = LineType.MARKEDHEADING;
       }
-      if (matchesPattern(DATADIVIDERPATTERN)) {
+      if (matchesPattern(DATADIVIDERPATTERN) || text.contains("***")) {
         highestType = LineType.DATADIVIDER;
       }
       if (matchesPattern(WHITESPACEPATTERN)) {

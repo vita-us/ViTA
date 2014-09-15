@@ -9,7 +9,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test suite which runs all tests related to importer classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({MetadataAnalyzerTxtTest.class, TextSplitterTxtTest.class, FilterTxtTest.class})
+@SuiteClasses({MetadataAnalyzerTxtTest.class, TextSplitterTxtTest.class, FilterTxtTest.class,
+    LineTxtTest.class})
 public class ImportTests {
 
   // hidden constructor
