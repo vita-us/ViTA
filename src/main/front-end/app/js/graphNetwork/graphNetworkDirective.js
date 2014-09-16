@@ -73,21 +73,50 @@
     }
 
     function parseEntitiesToGraphData(entities) {
-      // TODO replace with parsing logic
-      var nodes = [{
-        id: '1'
-      }, {
-        id: '2'
-      }];
-      var links = [{
-        source: nodes[0],
-        target: nodes[1]
-      }];
+      var entityMap = d3.map(), i, l, entity, relations = [];
+
+      for (i = 0, l = entities.length; i < l; i++) {
+        entity = entities[i];
+        entityMap.set(entity.id, entity);
+      }
+
+      // Collect all possible relations
+      for (i = 0, l = entities.length; i < l; i++) {
+        entity = entities[i];
+
+        var possibleRelations = collectPossibleRelations(entityMap, entity.entityRelations);
+        setLinkAttributes(entity, possibleRelations, entityMap);
+
+        relations = relations.concat(possibleRelations);
+      }
 
       return {
-        nodes: nodes,
-        links: links
+        nodes: entityMap.values(),
+        links: relations
       };
+    }
+
+    function collectPossibleRelations(displayedEntityMap, relations) {
+      var possibleRelations = [];
+
+      for (var i = 0, l = relations.length; i < l; i++) {
+        var relation = relations[i];
+
+        if (displayedEntityMap.has(relation.relatedEntity)) {
+          possibleRelations.push(relation);
+        }
+      }
+
+      return possibleRelations;
+    }
+
+    function setLinkAttributes(entity, relations, entityMap) {
+      var i, l, relation;
+      for (var i = 0, l = relations.length; i < l; i++) {
+        relation = relations[i];
+        relation.source = entity;
+        relation.target = entityMap.get(relation.relatedEntity);
+      }
     }
 
     return directive;
