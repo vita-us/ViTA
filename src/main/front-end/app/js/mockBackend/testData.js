@@ -96,6 +96,69 @@
         }]
       },
 
+      parts: {
+        "totalCount": "15",
+        "parts": [{
+          "number": 1,
+          "title": "DerersteTeil",
+          "chapters": [{
+            "id": "1.13",
+            "title": "Seenot",
+            "number": 13,
+            "length": 242341,
+            "range": {
+              "start": {
+                "chapter": "1.13",
+                "offset": 13,
+                "progress": 0
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29,
+                "progress": 0.237261231
+              },
+              "length": 14123
+            }
+          }, {
+            "id": "1.14",
+            "title": "Baum",
+            "number": 14,
+            "length": 581234,
+            "range": {
+              "start": {
+                "chapter": "1.14",
+                "offset": 123,
+                "progress": 0.29
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29888,
+                "progress": 0.487261231
+              },
+              "length": 82342
+            }
+          }, {
+            "id": "1.15",
+            "title": "SeenotamEnde",
+            "number": 15,
+            "length": 8215,
+            "range": {
+              "start": {
+                "chapter": "1.15",
+                "offset": 115,
+                "progress": 0.682381
+              },
+              "end": {
+                "chapter": "1.15",
+                "offset": 229,
+                "progress": 0.87261231
+              },
+              "length": 14123
+            }
+          }]
+        }]
+      },
+
       fingerprint: {
         "occurrences": [{
           "start": {
