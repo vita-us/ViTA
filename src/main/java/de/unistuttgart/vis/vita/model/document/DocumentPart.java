@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
@@ -34,11 +37,14 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
                 query = "SELECT dp "
                       + "FROM DocumentPart dp " 
                       + "WHERE dp.title = :partTitle")})
+@XmlRootElement
 public class DocumentPart extends AbstractEntityBase {
   private int number;
   private String title;
 
   @OneToMany
+  @XmlElementWrapper(name = "chapters")
+  @XmlElement(name = "chapter")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
