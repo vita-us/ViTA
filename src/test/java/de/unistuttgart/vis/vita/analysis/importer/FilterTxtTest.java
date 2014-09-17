@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,19 +30,21 @@ public class FilterTxtTest {
 
   /**
    * Sets the filteredList after the imported List is filtered
+   * 
    * @throws URISyntaxException
-   * @throws IllegalArgumentException
    * @throws FileNotFoundException
-   * @throws IllegalStateException
    * @throws SecurityException
+   * @throws UnsupportedEncodingException
+   * @throws InvalidPathException
    */
   @Before
-  public void setUp() throws URISyntaxException, IllegalArgumentException, FileNotFoundException,
-      IllegalStateException, SecurityException {
+  public void setUp() throws URISyntaxException, UnsupportedEncodingException,
+      InvalidPathException, FileNotFoundException, SecurityException {
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
-    TextFileImporter textFileImporter = new TextFileImporter(testPath);
-    Filter filter = new Filter(textFileImporter.getLines());
-    filteredList = filter.filterEbookText();
+    TextFileImporter textFileImporter;
+      textFileImporter = new TextFileImporter(testPath);
+      Filter filter = new Filter(textFileImporter.getLines());
+      filteredList = filter.filterEbookText();
   }
 
   @Test

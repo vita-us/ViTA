@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,16 +45,17 @@ public class TextFileImporter {
    * Will create a list of lines from the txt-file at the given path. Please note that the file must
    * exist, be a txt file, be readable, not empty and contain English text.
    * 
-   * @param path
-   * @throws IllegalArgumentException, if file is not txt
+   * @param path Path - The path to the file. Name should not be empty and has to end with txt.
+   * @throws InvalidPathException If file is not txt
    * @throws FileNotFoundException If file is not a file or does not exist
-   * @throws IllegalStateException If file is not readable, or if file encoding can not be detected,
-   *         this can also happen if the file is empty or the file does not contain valid English
-   *         text.
-   * @throws SecurityException
+   * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
+   *         if the file is empty or the file does not contain valid english text.
+   * @throws SecurityException If a security manager exists and its
+   *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
+   *         file or directory
    */
-  public TextFileImporter(Path path) throws IllegalArgumentException, FileNotFoundException,
-      IllegalStateException, SecurityException {
+  public TextFileImporter(Path path) throws InvalidPathException, UnsupportedEncodingException,
+      FileNotFoundException, SecurityException {
     super();
     this.path = path;
     initializeCharsets();
@@ -100,13 +103,12 @@ public class TextFileImporter {
   /**
    * Checks if the file at the given path exists, is a file and is readable.
    * 
-   * @throws FileNotFoundException If file is not a file or does not exist
-   * @throws IllegalStateException If file is not readable
+   * @throws FileNotFoundException If file is not a file, does not exist or is not readable
    * @throws SecurityException If a security manager exists and its
    *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
    *         file or directory
    */
-  private void checkFile() throws FileNotFoundException, IllegalStateException, SecurityException {
+  private void checkFile() throws FileNotFoundException, SecurityException {
     File file = path.toFile();
       checkFileExists(file);
       checkIsFile(file);
@@ -116,12 +118,12 @@ public class TextFileImporter {
   /**
    * Assures the ending of the file is ".txt"
    * 
-   * @throws IllegalArgumentException if the ending is not ".txt"
+   * @throws InvalidPathException if the ending is not ".txt"
    */
-  private void checkFileName() throws IllegalArgumentException {
+  private void checkFileName() throws InvalidPathException {
     String nameOfFile = path.getFileName().toString();
     if (!(nameOfFile.length() > 4) || !(nameOfFile.endsWith(".txt"))) {
-      throw new IllegalArgumentException("No txt-file-ending or missing name: " + path.toString());
+      throw new InvalidPathException(path.toString(), "No txt-file-ending or missing name");
     }
   }
 
@@ -159,16 +161,16 @@ public class TextFileImporter {
    * Assures the file is readable.
    * 
    * @param file
-   * @throws IllegalStateException If file is not readable
+   * @throws FileNotFoundException If file is not readable
    * @throws SecurityException If a security manager exists and its
    *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
    *         file
    */
-  private void checkFileIsReadable(File file) throws IllegalStateException, SecurityException {
+  private void checkFileIsReadable(File file) throws FileNotFoundException, SecurityException {
     if (!file.canRead()) {
       boolean succesfullyChangedToReadable = file.setReadable(true);
       if (!succesfullyChangedToReadable) {
-        throw new IllegalStateException("File not readable: " + path.toString());
+        throw new FileNotFoundException("File not readable: " + path.toString());
       }
     }
   }
@@ -177,23 +179,23 @@ public class TextFileImporter {
    * Gets the correct encoding and scans the file for lines.
    * 
    * @param path
-   * @return
-   * @throws IllegalStateException If file encoding can not be detected, this can also happen if the
-   *         file is empty or the file does not contain valid english text.
+   * @return ArrayList of Line - The found lines from the file.
+   * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
+   *         if the file is empty or the file does not contain valid english text.
    */
-  private ArrayList<Line> importData(Path path) throws IllegalStateException {
+  private ArrayList<Line> importData(Path path) throws UnsupportedEncodingException {
     ArrayList<Line> lines = new ArrayList<Line>();
     BufferedReader reader = null;
     Iterator<Charset> charsetIterator = this.charsets.iterator();
     Boolean successfullyReadIn = false;
 
     while (!successfullyReadIn && charsetIterator.hasNext()) {
-      try {
         // try next encoding
         this.usedCharset = charsetIterator.next();
-        if (usedCharset == null) {
-          break;
-        }
+      if (usedCharset == null) {
+        break;
+      }
+      try {
         reader = initializeReader(path, this.usedCharset);
 
         // throws Exception if encoding is wrong
@@ -210,7 +212,8 @@ public class TextFileImporter {
     if (successfullyReadIn) {
       return lines;
     } else {
-      throw new IllegalStateException("Unknown File Encoding or File Empty: " + path.toString());
+      throw new UnsupportedEncodingException("Unknown File Encoding or File Empty: "
+          + path.toString());
     }
   }
 

@@ -3,7 +3,9 @@ package de.unistuttgart.vis.vita.analysis.importer;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,22 +30,22 @@ public class MetadataAnalyzerTxtTest {
   /**
    * sets the values of documentMetadata after MetadataAnalyzer has analyzed the imported lines
    * 
-   * @throws IllegalArgumentException
-   * @throws FileNotFoundException
-   * @throws IllegalStateException
-   * @throws SecurityException
    * @throws URISyntaxException
+   * @throws FileNotFoundException
+   * @throws SecurityException
+   * @throws UnsupportedEncodingException
+   * @throws InvalidPathException
    */
   @Before
-  public void setUp() throws IllegalArgumentException, FileNotFoundException,
-      IllegalStateException, SecurityException, URISyntaxException {
+  public void setUp() throws URISyntaxException, UnsupportedEncodingException,
+      InvalidPathException, FileNotFoundException, SecurityException {
 
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
-    TextFileImporter textFileImporter = new TextFileImporter(testPath);
+    TextFileImporter textFileImporter;
+    textFileImporter = new TextFileImporter(testPath);
     List<Line> testList = textFileImporter.getLines();
     MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
     documentMetadata = metadataAnalyzer.extractMetadata();
-
   }
 
   @Test
@@ -56,6 +58,7 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("J.R.R. Tolkien", documentMetadata.getAuthor());
 
   }
+
   @Test
   public void testPublisherYear() {
     assertEquals(2006, documentMetadata.getPublishYear());

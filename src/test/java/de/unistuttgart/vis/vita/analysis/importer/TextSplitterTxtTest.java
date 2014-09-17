@@ -3,7 +3,9 @@ package de.unistuttgart.vis.vita.analysis.importer;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -27,7 +29,8 @@ public class TextSplitterTxtTest {
   
   // divides the imported lines into metadata list and text list
   @Before
-  public void setUp() throws URISyntaxException, IllegalArgumentException, FileNotFoundException, IllegalStateException, SecurityException{
+  public void setUp() throws URISyntaxException, UnsupportedEncodingException,
+      InvalidPathException, FileNotFoundException, SecurityException {
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     TextSplitter textSplitter = new TextSplitter(textFileImporter.getLines());

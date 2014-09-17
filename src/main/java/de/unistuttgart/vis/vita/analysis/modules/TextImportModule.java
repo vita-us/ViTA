@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,20 @@ public class TextImportModule implements Module<ImportResult> {
     // do nothing
   }
 
-  @Override
-  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener) {
+  /**
+   * {@inheritDoc}
+   * 
+   * @throws InvalidPathException If file is not txt
+   * @throws FileNotFoundException If file is not found.
+   * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
+   *         if the file is empty or the file does not contain valid English text.
+   * @throws SecurityException If a security manager exists and its
+   *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
+   *         file or directory
+   */
+  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
+      throws InvalidPathException, FileNotFoundException, UnsupportedEncodingException,
+      SecurityException {
     ImportResult importResult = null;
     try {
       TextSplitter textSpliter = new TextSplitter(importLines(filePath));
@@ -61,9 +75,16 @@ public class TextImportModule implements Module<ImportResult> {
    * 
    * @param filePath Path - The path to the txt-file.
    * @return ArrayList of Line - The imported Lines.
-   * @throws FileNotFoundException - If file is not found.
+   * @throws InvalidPathException If file is not txt
+   * @throws FileNotFoundException If file is not found.
+   * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
+   *         if the file is empty or the file does not contain valid English text.
+   * @throws SecurityException If a security manager exists and its
+   *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
+   *         file or directory
    */
-  private ArrayList<Line> importLines(Path filePath) throws FileNotFoundException {
+  private ArrayList<Line> importLines(Path filePath) throws InvalidPathException,
+      FileNotFoundException, UnsupportedEncodingException, SecurityException {
     TextFileImporter importer = new TextFileImporter(filePath);
     Filter filter = new Filter(importer.getLines());
     return filter.filterEbookText();
