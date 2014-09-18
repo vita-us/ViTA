@@ -45,7 +45,7 @@ public class EntitiesService {
    */
   @Path("/relations")
   public EntityRelationsService getRelations() {
-    return resourceContext.getResource(EntityRelationsService.class).setDocumentId(documentId);
+    return resourceContext.getResource(EntityRelationsService.class);
   }
 
 }

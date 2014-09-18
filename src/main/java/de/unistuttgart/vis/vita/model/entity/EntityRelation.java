@@ -13,11 +13,20 @@ import org.hibernate.annotations.Target;
  */
 @javax.persistence.Entity
 @NamedQueries({
-    @NamedQuery(name = "EntityRelation.findAllEntityRelations", query = "SELECT er "
-        + "FROM EntityRelation er"),
+    @NamedQuery(name = "EntityRelation.findAllEntityRelations", 
+                query = "SELECT er "
+                      + "FROM EntityRelation er"),
+        
+    @NamedQuery(name = "EntityRelation.findRelationsForEntities",
+                query = "SELECT er "
+                      + "FROM EntityRelation er, Entity e "
+                      + "WHERE e.id IN :entityIds "
+                      + "AND er MEMBER OF e.entityRelations"),
 
-    @NamedQuery(name = "EntityRelation.findEntityRelationById", query = "SELECT er "
-        + "FROM EntityRelation er " + "WHERE er.id = :entityRelationId")})
+    @NamedQuery(name = "EntityRelation.findEntityRelationById", 
+                query = "SELECT er "
+                      + "FROM EntityRelation er " 
+                      + "WHERE er.id = :entityRelationId")})
 public class EntityRelation<E> extends AbstractEntityBase {
 
   // constants

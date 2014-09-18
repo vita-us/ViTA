@@ -2,12 +2,15 @@ package de.unistuttgart.vis.vita.persistence;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.data.PersonTestData;
+import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
@@ -18,13 +21,20 @@ import de.unistuttgart.vis.vita.model.entity.Place;
  */
 public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
   
-  // test data
   private static final double TEST_ENTITY_RELATION_WEIGHT = 0.5;
-  private static final String TEST_PERSON_NAME = "Bilbo Baggins";
-  private static final String TEST_PLACE_NAME = "Bag End";
-  
-  // constants
   private static final double DELTA = 0.001;
+  
+  private PersonTestData personTestData;
+  private PlaceTestData placeTestData;
+  
+  @Override
+  public void setUp() {
+    super.setUp();
+    
+    // set up test data
+    personTestData = new PersonTestData();
+    placeTestData = new PlaceTestData();
+  }
 
   /**
    * Reads EntityRelations from database and returns them.
@@ -48,10 +58,10 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
     Entity relatedEntity = entityRelationToCheck.getRelatedEntity();
     switch (relatedEntity.getType()) {
       case PERSON:
-        assertEquals(TEST_PERSON_NAME, relatedEntity.getDisplayName());
+        personTestData.checkData((Person) relatedEntity, 2);
         break;
       case PLACE:
-        assertEquals(TEST_PLACE_NAME, relatedEntity.getDisplayName());
+        placeTestData.checkData((Place) relatedEntity, 2);
         break;
       default:
         throw new IllegalArgumentException();
@@ -67,11 +77,15 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
   @Test
   public void testPersistOnePersonRelation() {
     // first set up a entity relation
-    Person testPerson = createTestPerson();
-    EntityRelation<Person> rel = createTestPersonRelation(testPerson);
+    Person testPerson = personTestData.createTestPerson(1);
+    Person relatedPerson = personTestData.createTestPerson(2);
+    EntityRelation<Person> rel = new EntityRelation<>();
+    rel.setRelatedEntity(relatedPerson);
+    rel.setWeight(TEST_ENTITY_RELATION_WEIGHT);
     
     // persist this entity relation
     em.persist(testPerson);
+    em.persist(relatedPerson);
     em.persist(rel);
     startNewTransaction();
     
@@ -84,39 +98,19 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
     checkData(readRelation);
   }
   
-  /**
-   * Creates a new Person, setting attributes to test values and returns it.
-   * 
-   * @return test person
-   */
-  private Person createTestPerson() {
-    Person relatedPerson = new Person();
-    relatedPerson.setDisplayName(TEST_PERSON_NAME);
-    
-    return relatedPerson;
-  }
-  
-  /**
-   * Creates a new relation to a person, setting attributes to test values and returns it.
-   * 
-   * @return test entity relation
-   */
-  private EntityRelation<Person> createTestPersonRelation(Person relatedPerson) {
-    EntityRelation<Person> relation = new EntityRelation<>();
-    relation.setWeight(TEST_ENTITY_RELATION_WEIGHT);
-    relation.setRelatedEntity(relatedPerson);
-    return relation;
-  }
-  
   @SuppressWarnings("unchecked")
   @Test
   public void testPersistOnePlaceRelation() {
     // first set up a entity relation
-    Place testPlace = createTestPlace();
-    EntityRelation<Place> rel = createTestPlaceRelation(testPlace);
+    Place testPlace = placeTestData.createTestPlace(1);
+    Place relatedPlace = placeTestData.createTestPlace(2);
+    EntityRelation<Place> rel = new EntityRelation<>();
+    rel.setRelatedEntity(relatedPlace);
+    rel.setWeight(TEST_ENTITY_RELATION_WEIGHT);
     
     // persist this entity relation
     em.persist(testPlace);
+    em.persist(relatedPlace);
     em.persist(rel);
     startNewTransaction();
     
@@ -130,40 +124,20 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Creates a new Place, setting attributes to test values and returns it.
-   * 
-   * @return test place
-   */
-  private Place createTestPlace() {
-    Place relatedPlace = new Place();
-    relatedPlace.setDisplayName(TEST_PLACE_NAME);
-    
-    return relatedPlace;
-  }
-
-  /**
-   * Creates a new relation to a place, setting attributes to test values and returns it.
-   * 
-   * @return test entity relation
-   */
-  private EntityRelation<Place> createTestPlaceRelation(Place relatedPlace) {
-    EntityRelation<Place> relation = new EntityRelation<>();
-    relation.setRelatedEntity(relatedPlace);
-    relation.setWeight(TEST_ENTITY_RELATION_WEIGHT);
-    return relation;
-  }
-  
-  /**
    * Checks whether all Named Queries of EntityRelation are working correctly.
    */
   @SuppressWarnings("unchecked")
   @Test
   public void testNamedQueries() {
-    Person testPerson = createTestPerson();
+    Person testPerson = personTestData.createTestPerson(1);
+    Person relatedPerson = personTestData.createTestPerson(2);
     
-    EntityRelation<Person> testPersonRelation = createTestPersonRelation(testPerson);
+    EntityRelation<Person> testPersonRelation = new EntityRelation<>();
+    testPersonRelation.setRelatedEntity(relatedPerson);
+    testPersonRelation.setWeight(TEST_ENTITY_RELATION_WEIGHT);
     
     em.persist(testPerson);
+    em.persist(relatedPerson);
     em.persist(testPersonRelation);
     startNewTransaction();
     
@@ -176,6 +150,17 @@ public class EntityRelationPesistenceTest extends AbstractPersistenceTest {
     checkData(readRelation);
     
     String id = readRelation.getId();
+    
+    // check Named Query finding entity relation for entities
+    List<String> entityIdList = new ArrayList<>();
+    entityIdList.add(testPerson.getId());
+    entityIdList.add(relatedPerson.getId());
+    
+    Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
+    entQ.setParameter("entityIds", entityIdList);
+    List<EntityRelation<Person>> relations = entQ.getResultList();
+    assertEquals(1, relations.size());
+    checkData(relations.get(0));
     
     // check Named Query finding entity relation by id
     Query idQ = em.createNamedQuery("EntityRelation.findEntityRelationById");
