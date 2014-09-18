@@ -28,6 +28,7 @@ import static org.mockito.Mockito.doubleThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 public class ANNIEModuleTest {
 
@@ -43,7 +44,6 @@ public class ANNIEModuleTest {
   private ModuleResultProvider resultProvider;
   private ProgressListener progressListener;
   private List<Chapter> chapterObjects;
-  private double currentProgress;
 
   @Before
   public void setUp() {
@@ -52,12 +52,7 @@ public class ANNIEModuleTest {
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
-    progressListener = new ProgressListener() {
-      @Override
-      public void observeProgress(double progress) {
-        currentProgress = progress;
-      }
-    };
+    progressListener = mock(ProgressListener.class, withSettings());
     fillText();
   }
 
@@ -104,8 +99,8 @@ public class ANNIEModuleTest {
     // This does not test smoothness as the call times are not considered.
     int steps = 5;
     for (int i = 0; i < steps; i++) {
-      verify(progressListener, atLeastOnce()).observeProgress(
-          doubleThat(closeTo((double) i / steps, (double) 1 / steps)));
+      verify(progressListener, atLeastOnce()).observeProgress(doubleThat(
+          closeTo((double) i / steps, (double) 1 / steps)));
     }
   }
 }
