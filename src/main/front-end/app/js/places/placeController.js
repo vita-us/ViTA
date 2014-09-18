@@ -7,7 +7,7 @@
   vitaControllers.controller('PlaceCtrl', ['$scope', 'Document', 'Page', 'Place', '$routeParams',
       function($scope, Document, Page, Place, $routeParams) {
         var placeName = '';
-        
+
         Place.get({
           documentId: $routeParams.documentId,
           placeId: $routeParams.placeId
@@ -15,7 +15,7 @@
           $scope.place = singlePlace;
           placeName = singlePlace.displayName;
         });
-        
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {

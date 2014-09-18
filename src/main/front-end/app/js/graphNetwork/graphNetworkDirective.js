@@ -30,8 +30,8 @@
 
     function buildGraph(element, entities, width, height) {
       var container = d3.select(element[0]);
-      var width = width || 800;
-      var height = height || 400;
+      width = width || 800;
+      height = height || 400;
 
       graph = container.append("svg")
           .classed("graph-network", true)
@@ -109,7 +109,7 @@
           // copy other useful attributes
           relatedEntity: entityIdNodeMap.get(relation.relatedEntity),
           weight: relation.weight
-        }
+        };
 
         links.push(link);
       }

@@ -71,7 +71,7 @@
         this.tab = tab;
         this.breadcrumbs = null;
       }
-    }
+    };
   });
 
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
