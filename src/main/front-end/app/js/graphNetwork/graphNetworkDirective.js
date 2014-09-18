@@ -51,24 +51,77 @@
       force.start();
     }
 
-    function redrawElements(graphData) {
-      /* Remove all elements because they are redrawn. This is the only solution currently
-       * because it isn't guaranteed, that the controller is passing the same objects for the same
-       * displayed entities. For example one entity might disappear, but this directive receives 
-       * completely new objects - even for unchanged entities. */
-      graph.selectAll('*').remove();
+    function parseEntitiesToGraphData(entities) {
+      var entityIdNodeMap = mapEntitiesToNodes(entities);
+      var links = [];
 
-      links = graph.selectAll('.link')
-          .data(graphData.links)
-          .enter().append('line')
-          .classed('link', true);
+      // Create all possible links of each entity
+      for (var i = 0, l = entities.length; i < l; i++) {
+        var newLinks = createLinksForEntity(entities[i], entityIdNodeMap);
+        links = links.concat(newLinks);
+      }
 
-      nodes = graph.selectAll('.node')
-          .data(graphData.nodes)
-          .enter().append('circle')
-          .classed('node', true)
-          .attr('r', 20)
-          .call(force.drag);
+      return {
+        nodes: entityIdNodeMap.values(),
+        links: links
+      };
+    }
+
+    function mapEntitiesToNodes(entities) {
+      var nodeMap = d3.map();
+
+      for (var i = 0, l = entities.length; i < l; i++) {
+        var entity = entities[i];
+
+        // Create a shallow copy. We need this, because otherwise d3 would
+        // modify the original data
+        nodeMap.set(entity.id, {
+          id: entity.id,
+          displayName: entity.displayName,
+          type: entity.type,
+          rankingValue: entity.rankingValue
+        });
+      }
+
+      return nodeMap;
+    }
+
+    function createLinksForEntity(entity, entityIdNodeMap) {
+      var links = [];
+
+      var possibleRelations = collectPossibleRelations(entity.entityRelations, entityIdNodeMap
+              .keys());
+
+      for (var i = 0, l = possibleRelations.length; i < l; i++) {
+        var relation = possibleRelations[i];
+
+        var link = {
+          // d3 graph attributes
+          source: entityIdNodeMap.get(entity.id),
+          target: entityIdNodeMap.get(relation.relatedEntity),
+          // copy other useful attributes
+          relatedEntity: entityIdNodeMap.get(relation.relatedEntity),
+          weight: relation.weight
+        }
+
+        links.push(link);
+      }
+
+      return links;
+    }
+
+    function collectPossibleRelations(relations, displayedEntityIds) {
+      var possibleRelations = [];
+
+      for (var i = 0, l = relations.length; i < l; i++) {
+        var relation = relations[i];
+
+        if (displayedEntityIds.indexOf(relation.relatedEntity) > -1) {
+          possibleRelations.push(relation);
+        }
+      }
+
+      return possibleRelations;
     }
 
     function setNewPositions() {
@@ -89,83 +142,27 @@
       });
     }
 
-    function parseEntitiesToGraphData(entities) {
-      var entityMap = d3.map(), i, l, entity, links = [];
+    function redrawElements(graphData) {
+      /*
+       * Remove all elements because they are redrawn. This is the only solution
+       * currently because it isn't guaranteed, that the controller is passing
+       * the same objects for the same displayed entities. For example one
+       * entity might disappear, but this directive receives completely new
+       * objects - even for unchanged entities.
+       */
+      graph.selectAll('*').remove();
 
-      for (i = 0, l = entities.length; i < l; i++) {
-        entity = entities[i];
-        entityMap.set(entity.id, entity);
-      }
+      links = graph.selectAll('.link')
+          .data(graphData.links)
+          .enter().append('line')
+          .classed('link', true);
 
-      var nodeMap = createNodeMap(entities);
-
-      // Collect all possible relations and create links
-      for (i = 0, l = entities.length; i < l; i++) {
-        entity = entities[i];
-
-        var possibleRelations = collectPossibleRelations(entityMap, entity.entityRelations);
-        var createdLinks = createLinks(entity, possibleRelations, nodeMap);
-
-        links = links.concat(createdLinks);
-      }
-
-      return {
-        nodes: nodeMap.values(),
-        links: links
-      };
-    }
-
-    function createNodeMap(entities) {
-      var nodeMap = d3.map();
-
-      for (var i = 0, l = entities.length; i < l; i++) {
-        var entity = entities[i];
-
-        // Create a shallow copy. We need this, because otherwise d3 would modify the original data
-        nodeMap.set(entity.id, {
-          id: entity.id,
-          displayName: entity.displayName,
-          type: entity.type,
-          rankingValue: entity.rankingValue
-        });
-      }
-
-      return nodeMap;
-    }
-
-    function collectPossibleRelations(displayedEntityMap, relations) {
-      var possibleRelations = [];
-
-      for (var i = 0, l = relations.length; i < l; i++) {
-        var relation = relations[i];
-
-        if (displayedEntityMap.has(relation.relatedEntity)) {
-          possibleRelations.push(relation);
-        }
-      }
-
-      return possibleRelations;
-    }
-
-    function createLinks(entity, relations, nodeMap) {
-      var links = [];
-
-      for (var i = 0, l = relations.length; i < l; i++) {
-        var relation = relations[i];
-
-        var link = {
-          // d3 graph attributes
-          source: nodeMap.get(entity.id),
-          target: nodeMap.get(relation.relatedEntity),
-          // copy other useful attributes
-          relatedEntity: nodeMap.get(relation.relatedEntity),
-          weight: relation.weight
-        }
-
-        links.push(link);
-      }
-
-      return links;
+      nodes = graph.selectAll('.node')
+          .data(graphData.nodes)
+          .enter().append('circle')
+          .classed('node', true)
+          .attr('r', 20)
+          .call(force.drag);
     }
 
     function updateGraph(entities) {
