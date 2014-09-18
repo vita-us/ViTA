@@ -43,6 +43,8 @@
           .nodes(graphData.nodes)
           .links(graphData.links)
           .size([width, height])
+          .charge(-200)
+          .gravity(0.025)
           .linkDistance(100)
           .on('tick', setNewPositions);
 
