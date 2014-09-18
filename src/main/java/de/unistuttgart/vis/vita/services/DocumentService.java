@@ -158,5 +158,15 @@ public class DocumentService {
   public PlacesService getPlaces() {
     return resourceContext.getResource(PlacesService.class).setDocumentId(id);
   }
+  
+  @Path("/entities/{entityId}/")
+  public EntityService getEntity() {
+	return resourceContext.getResource(EntityService.class).setEntityId(id);
+  }
+  
+  @Path("/entities/{entityId}/attributes")
+  public AttributeService getAttributes() {
+	  return resourceContext.getResource(AttributeService.class).setAttributeId(id);
+  }
 
 }
