@@ -24,6 +24,8 @@
       }
     };
 
+    var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+
     var graph, force, nodes, links;
 
     function buildGraph(element, entities, width, height) {
@@ -45,7 +47,7 @@
           .size([width, height])
           .charge(-200)
           .gravity(0.025)
-          .linkDistance(100)
+          .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
 
       redrawElements(graphData);
@@ -127,6 +129,11 @@
       }
 
       return possibleRelations;
+    }
+
+    function calculateLinkDistance(link) {
+      var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
+      return MINIMUM_LINK_DISTANCE + variableDistance * link.weight;
     }
 
     function setNewPositions() {
