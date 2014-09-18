@@ -41,21 +41,27 @@
       var chapterLineGroup = svg.append('g').classed('chapter-separators', true);
 
       // wait for our data to load
-      scope.$watch('data', function(data) {
-        if (data !== undefined) {
+      scope.$watch('data', function(newValue, oldValue) {
+        if (!angular.isUndefined(oldValue)) {
+          removeFingerPrint();
+        }
+        if (!angular.isUndefined(newValue)) {
           buildFingerPrint(scope, element, attrs);
         }
       });
 
       // wait for our parts to load
-      scope.$watch('parts', function(parts) {
-        if (parts !== undefined) {
+      scope.$watch('parts', function(newValue, oldValue) {
+        if (!angular.isUndefined(oldValue)) {
+          removeChapterSeparators();
+        }
+        if (!angular.isUndefined(newValue)) {
           buildChapterSeparators(scope, element, attrs);
         }
       });
 
       function buildFingerPrint(scope, element, attrs) {
-        var occurrences = scope.data.occurrences;
+        var occurrences = scope.data.occurrences || [];
         var occurrenceCount = occurrences.length;
 
         occurrences.map(function(occurrence, index) {
@@ -212,6 +218,14 @@
           occurrenceRect.attr('y', rectY - extraHeight / 2);
         }
 
+      }
+
+      function removeFingerPrint() {
+        rectGroup.selectAll('rect').remove();
+      }
+
+      function removeChapterSeparators() {
+        chapterLineGroup.selectAll('line').remove();
       }
 
       function buildChapterSeparators(scope, element, attrs) {
