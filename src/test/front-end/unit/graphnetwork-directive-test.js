@@ -28,7 +28,7 @@ describe('Graph-Network Directive', function() {
     var initialNodeCount = element.find('.node').length;
     var initialLinkCount = element.find('.link').length;
 
-    TestData.graphNetworkEntities.push(TestData.singleProfile);
+    TestData.graphNetworkEntities.push(TestData.singlePerson);
     // Start digestion cycle to trigger the $watch which rebuilds the graph
     element.scope().$apply();
 
