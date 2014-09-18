@@ -52,6 +52,9 @@
     }
 
     function parseEntitiesToGraphData(entities) {
+      // Handle undefined data as empty dataset
+      entities = entities || [];
+
       var entityIdNodeMap = mapEntitiesToNodes(entities);
       var links = [];
 

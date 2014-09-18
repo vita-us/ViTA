@@ -37,4 +37,12 @@ describe('Graph-Network Directive', function() {
     expect(element.find('.link').length).toBe(initialLinkCount + 1);
   }));
 
+  it('should display nothing if the data are undefined', function() {
+    scope.entities = undefined;
+    element.scope().$apply();
+
+    expect(element.find('.node').length).toBe(0);
+    expect(element.find('.link').length).toBe(0);
+  });
+
 });
