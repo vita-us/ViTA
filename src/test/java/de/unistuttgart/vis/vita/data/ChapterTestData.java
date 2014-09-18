@@ -52,7 +52,6 @@ public class ChapterTestData {
     assertNotNull(chapterToCheck);
     assertEquals(TEST_CHAPTER_LENGTH, chapterToCheck.getLength());
     assertEquals(TEST_CHAPTER_NUMBER, chapterToCheck.getNumber());
-    assertEquals(TEST_CHAPTER_TEXT, chapterToCheck.getText());
     assertEquals(TEST_CHAPTER_TITLE, chapterToCheck.getTitle());
   }
 

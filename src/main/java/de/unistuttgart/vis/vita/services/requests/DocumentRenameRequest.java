@@ -3,11 +3,12 @@ package de.unistuttgart.vis.vita.services.requests;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Holds all data for requesting a document to be renamed.
+ */
 @XmlRootElement
-public class DocumentRenameRequest {
+public class DocumentRenameRequest extends DocumentIdRequest {
   
-  @XmlElement
-  private String id;
   @XmlElement
   private String name;
   
@@ -27,24 +28,24 @@ public class DocumentRenameRequest {
    * @param newName - the new name for the document
    */
   public DocumentRenameRequest(String documentId, String newName) {
-    this.id = documentId;
+    super(documentId);
     this.name = newName;
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
+  /**
+   * @return the name the referring document should be renamed into
+   */
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  /**
+   * Sets the name to which the referring document should be renamed into
+   * 
+   * @param documentName - the new name for the referring document
+   */
+  public void setName(String documentName) {
+    this.name = documentName;
   }
 
 }

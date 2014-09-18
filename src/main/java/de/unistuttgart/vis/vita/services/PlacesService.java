@@ -88,7 +88,7 @@ public class PlacesService {
    */
   @Path("{placeId}")
   public PlaceService getPlace(@PathParam("placeId") String id) {
-    return resourceContext.getResource(PlaceService.class).setPersonId(id);
+    return resourceContext.getResource(PlaceService.class).setPlaceId(id);
   }
   
 }

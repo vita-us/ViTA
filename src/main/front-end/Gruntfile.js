@@ -84,6 +84,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/angular-mocks/',
           src: ['angular-mocks.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/d3/',
+          src: ['d3.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
@@ -97,11 +102,6 @@ module.exports = function(grunt) {
           cwd: 'app/partials',
           src: ['**'],
           dest: '<%= appPath %>partials/'
-        }, {
-          expand: true,
-          cwd: 'app/test_data',
-          src: ['**'],
-          dest: '<%= appPath %>test_data/'
         }, {
           expand: true,
           cwd: 'app/img',
@@ -156,7 +156,7 @@ module.exports = function(grunt) {
         tasks: ['less']
       },
       statics: {
-        files: ['app/**/*.html', 'app/test_data/**', 'app/img/**'],
+        files: ['app/**/*.html', 'app/img/**'],
         tasks: ['copy:statics']
       },
       scripts: {

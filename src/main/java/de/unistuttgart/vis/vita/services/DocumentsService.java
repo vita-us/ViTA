@@ -1,5 +1,10 @@
 package de.unistuttgart.vis.vita.services;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import javax.annotation.ManagedBean;
@@ -17,6 +22,10 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
@@ -28,6 +37,10 @@ import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 @Path("/documents")
 @ManagedBean
 public class DocumentsService {
+  
+  private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator  
+                                              + ".vita" + File.separator + "docs" + File.separator;
+  
   private EntityManager em;
   
   @Context
@@ -67,9 +80,71 @@ public class DocumentsService {
    */
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public DocumentIdResponse addDocument() {
-    // TODO not implemented yet!
-    return null;
+  @Produces(MediaType.APPLICATION_JSON)
+  public DocumentIdResponse addDocument(@FormDataParam("file") InputStream fileInputStream,
+                                        @FormDataParam("file") FormDataContentDisposition fDispo) {
+    DocumentIdResponse response = null;
+    
+    // set up path
+    String fileName = fDispo.getFileName();
+    String filePath = DOCUMENT_PATH + fileName;
+    
+    // check path and save file
+    if (!checkAndCreateDir(DOCUMENT_PATH)) {
+      System.err.println("Can not write at " + filePath + "!");
+    } else {
+      // save file on server
+      saveFile(fileInputStream, filePath);
+      
+      // schedule analysis
+      AnalysisController analysisController = new AnalysisController(new Model());
+      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath());
+      
+      // set up Response
+      response = new DocumentIdResponse(id);
+    }
+
+    return response;
+  }
+  
+  /**
+   * Checks whether given path is a directory. Tries to create directory otherwise.
+   * 
+   * @param path - the path to be checked
+   * @return true if path is a directory or directory could be created there, false otherwise
+   */
+  private boolean checkAndCreateDir(String path) {
+    File fileDir = new File(path);
+    
+    if (!fileDir.isDirectory()) {
+      // try to create directory
+      return fileDir.mkdirs();
+    } else {
+      return true; 
+    }
+  }
+  
+  /**
+   * Saves file being uploaded at the given path.
+   * 
+   * @param uploadedInputStream - the input stream of the file being uploaded
+   * @param filePath - the path where to save this file on the server
+   */
+  private void saveFile(InputStream uploadedInputStream, String filePath) {
+    try {
+      OutputStream os = new FileOutputStream(new File(filePath));
+      int read = 0;
+      byte[] bytes = new byte[1024];
+
+      os = new FileOutputStream(new File(filePath));
+      while ((read = uploadedInputStream.read(bytes)) != -1) {
+        os.write(bytes, 0, read);
+      }
+      os.flush();
+      os.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   
   /**

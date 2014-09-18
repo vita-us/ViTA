@@ -29,31 +29,25 @@
     </div>
   </div>
 
-  <div id="page" class="clearfix">
-    <h1 class="page-title">{{ Page.title }}</h1>
-    <div class="menu" ng-show="Page.showMenu">
-      <h2>Visualizations</h2>
-      <ul>
-        <li><a ng-href="#/documents/{{document.id}}/overview">Overview</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/profiles">Profiles</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/places">Places</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/fingerprint">Fingerprint</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/graphnetwork">Graph-Network</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/wordcloud">Word Cloud</a></li>
-        <li><a ng-href="#/documents/{{document.id}}/documentview">Document View</a></li>
-      </ul>
+  <div id="page" class="container">
+    <div class="page-header">
+      <h1 class="page-title">{{ Page.title }}</h1>
     </div>
-    <div class="content">
-      <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs() }}</h2>
-      <div ng-view></div>
+    <div class="row">
+      <div class="col-md-6">
+        <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs }}</h2>
+        <div ng-view></div>
+      </div>
     </div>
   </div>
 
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.js"></script>
+  <script src="js/d3.js"></script>
   <script src="js/angular.js"></script>
   <script src="js/angular-route.js"></script>
   <script src="js/angular-resource.js"></script>
+  <script src="js/angular-mocks.js"></script>
   <script src="js/vita.js"></script>
 </body>
 </html>
