@@ -43,12 +43,17 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
 
   private static final double GATE_LOAD_PROGRESS_FRACTION = 0.1;
   private static final double ANNIE_LOAD_PROGRESS_FRACTION = 0.2;
+  private static final int progressResetSpan = 20;
   private ImportResult importResult;
   private ProgressListener progressListener;
   private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
   private Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   private Corpus corpus;
+  private int old_progress = 0;
+  private int documentsFinished = 0;
+  private int maxDocuments;
+  private double progressSteps;
 
   @Override
   public void observeProgress(double progress) {
@@ -70,12 +75,12 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
 
   /**
    * Starts the real execution on the corpus with the annie controller.
-   * @throws ExecutionException
    */
   private void startAnnie() throws ExecutionException {
     controller.setCorpus(corpus);
 
     controller.addProgressListener(new gate.event.ProgressListener() {
+
       @Override
       public void progressChanged(int i) {
         calcProgress(i);
@@ -101,14 +106,21 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
   }
 
   private void calcProgress(int i) {
-    // TODO think of a good way calculating the progress..
-    progressListener.observeProgress(0.9);
+    if (old_progress - progressResetSpan > i) {
+      documentsFinished++;
+    }
+
+    double finishFactor = (double) documentsFinished / (double) maxDocuments;
+    double progDocs = (1 - ANNIE_LOAD_PROGRESS_FRACTION) * finishFactor;
+    double progChapt = progressSteps * ((double) i / 100);
+    old_progress = i;
+    double currentProgress = ANNIE_LOAD_PROGRESS_FRACTION + progDocs + progChapt;
+
+    progressListener.observeProgress(currentProgress);
   }
 
   /**
    * Creates the Gate corpus out of the available chapters.
-   * @throws ResourceInstantiationException
-   * @throws ExecutionException
    */
   private void createCorpus() throws ResourceInstantiationException, ExecutionException {
     corpus = Factory.newCorpus("ViTA Corpus");
@@ -120,11 +132,12 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
         corpus.add(doc);
       }
     }
+    maxDocuments = corpus.size();
+    progressSteps = (1 - ANNIE_LOAD_PROGRESS_FRACTION) / maxDocuments;
   }
 
   /**
    * Initialize the Gate library once.
-   * @throws GateException
    */
   private void initializeGate() throws GateException {
     if (Gate.isInitialised()) {
@@ -146,15 +159,12 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
     Gate.setGateHome(fileToHome);
     Gate.setPluginsHome(pluginsHome);
     Gate.setSiteConfigFile(siteConfig);
-    // TODO nur einmal initialisieren?
     Gate.init();
     progressListener.observeProgress(GATE_LOAD_PROGRESS_FRACTION);
   }
 
   /**
    * Initialize the ANNIE plugin for execution.
-   * @throws GateException
-   * @throws IOException
    */
   private void loadAnnie() throws GateException, IOException {
     if (controller != null) {
