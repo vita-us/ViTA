@@ -1,23 +1,39 @@
 package de.unistuttgart.vis.vita.services;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import javax.annotation.ManagedBean;
+import javax.ws.rs.Path;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 
-import de.unistuttgart.vis.vita.model.Model;
-
+/**
+ * Redirects attribute requests for the current entity to the right AttributeService.
+ */
+@ManagedBean
 public class EntityService {
-	private String entityId;
+  
+  private String entityId;
+  
+  @Context
+  private ResourceContext resourceContext;
 
-	private EntityManager em;
+  /**
+   * Sets the id of the Entity this service should refer to
+   * 
+   * @param eId - the id of the Entity which this EntityService should refer to
+   */
+  public EntityService setEntityId(String eId) {
+    this.entityId = eId;
+    return this;
+  }
 
-	@Inject
-	public EntityService(Model model) {
-		em = model.getEntityManager();
-	}
-
-	public EntityService setEntityId(String id) {
-		this.entityId = id;
-		return this;
-	}
+  /**
+   * Returns the AttributeService for the current Entity.
+   * 
+   * @return the AttributeService which answers the request
+   */
+  @Path("/attributes")
+  public AttributeService getAttributes() {
+    return resourceContext.getResource(AttributeService.class).setAttributeId(entityId);
+  }
 
 }

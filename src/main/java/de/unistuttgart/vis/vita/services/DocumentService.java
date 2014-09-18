@@ -159,16 +159,16 @@ public class DocumentService {
     return resourceContext.getResource(PlacesService.class).setDocumentId(id);
   }
   
-
-  @Path("/entities/{entityId}/")
-  public EntityService getEntity() {
-	return resourceContext.getResource(EntityService.class).setEntityId(id);
+  /**
+   * Returns the EntitiesService for the current document.
+   * 
+   * @return the Entities which answers this request
+   */
+  @Path("/entities")
+  public EntitiesService getEntity() {
+	return resourceContext.getResource(EntitiesService.class).setDocumentId(id);
   }
   
-  @Path("/entities/{entityId}/attributes")
-  public AttributeService getAttributes() {
-	  return resourceContext.getResource(AttributeService.class).setAttributeId(id);
-  }	
   /**
    * Returns the PartsService for the current document.
    * 
@@ -187,7 +187,6 @@ public class DocumentService {
   @Path("/analysis")
   public AnalysisService stopAnalysis() {
     return resourceContext.getResource(AnalysisService.class).setDocumentId(id);
-
   }
 
 }
