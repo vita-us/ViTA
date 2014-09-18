@@ -135,8 +135,8 @@
       },
 
       graphNetworkEntities: [{
-        "id": "person8Hugo",
-        "displayName": "Hugo",
+        "id": "person8Andi",
+        "displayName": "Andi",
         "type": "person",
         "attributes": [{
           "id": "attr12397",
@@ -144,7 +144,7 @@
           "type": "age"
         }, {
           "id": "at65657",
-          "content": "Hugo Martin",
+          "content": "Andreas",
           "type": "name"
         }],
         "rankingValue": 3,

@@ -24,4 +24,17 @@ describe('Graph-Network Directive', function() {
     expect(element.find('.link').length).toBe(1);
   });
 
+  it('should update when the underlying data changes', inject(function(TestData) {
+    var initialNodeCount = element.find('.node').length;
+    var initialLinkCount = element.find('.link').length;
+
+    TestData.graphNetworkEntities.push(TestData.singleProfile);
+    // Start digestion cycle to trigger the $watch which rebuilds the graph
+    element.scope().$apply();
+
+    expect(element.scope().entities.length).toBe(4);
+    expect(element.find('.node').length).toBe(initialNodeCount + 1);
+    expect(element.find('.link').length).toBe(initialLinkCount + 1);
+  }));
+
 });
