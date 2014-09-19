@@ -3,7 +3,7 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('graphNetwork', [function() {
+  vitaDirectives.directive('graphNetwork', ['CssClass', function(CssClass) {
 
     var directive = {
       replace: false,
@@ -172,6 +172,9 @@
       nodes = graph.selectAll('.node')
           .data(graphData.nodes)
           .enter().append('circle')
+          .attr("class", function(d) {
+            return CssClass.forRankingValue(d.rankingValue);
+          })
           .classed('node', true)
           .attr('r', 20)
           .call(force.drag);
