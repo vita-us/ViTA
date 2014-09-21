@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.services;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
+import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
 /**
@@ -60,7 +61,11 @@ public class EntityRelationsService {
       throw new WebApplicationException("No entities specified!");
     }
     
-    List<String> entityIds = Arrays.asList(eIds.split(","));
+    // convert entity id string
+    List<String> entityIds = new ArrayList<>();
+    for (String substring : eIds.replaceAll("\\[|\\]","").split(",")) {
+      entityIds.add(substring.trim());
+    }
     
     switch (type) {
       case "person":
@@ -79,9 +84,19 @@ public class EntityRelationsService {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     query.setParameter("entityIds", entityIds);
     query.setMaxResults(steps);
-    List<EntityRelation<Entity>> relations = query.getResultList();
+    List<EntityRelation<Entity>> relations = query.getResultList(); 
     
-    return new RelationsResponse(relations);
+    return new RelationsResponse(entityIds, createConfiguration(relations));
+  }
+
+  private List<RelationConfiguration> createConfiguration(List<EntityRelation<Entity>> relations) {
+    List<RelationConfiguration> configurations = new ArrayList<>();
+    
+    for (EntityRelation<Entity> entityRelation : relations) {
+      configurations.add(new RelationConfiguration(entityRelation));
+    }
+    
+    return configurations;
   }
   
   /**

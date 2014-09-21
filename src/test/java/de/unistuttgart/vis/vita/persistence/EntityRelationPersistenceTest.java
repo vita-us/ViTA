@@ -55,7 +55,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // first set up a entity relation
     Person testPerson = personTestData.createTestPerson(1);
     Person relatedPerson = personTestData.createTestPerson(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(relatedPerson);
+    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(rel);
 
     // persist this entity relation
@@ -80,7 +80,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // first set up a entity relation
     Place testPlace = placeTestData.createTestPlace(1);
     Place relatedPlace = placeTestData.createTestPlace(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(relatedPlace);
+    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(rel);
 
     // persist entities and their relation
@@ -107,7 +107,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
   public void testNamedQueries() {
     Person testPerson = personTestData.createTestPerson(1);
     Person relatedPerson = personTestData.createTestPerson(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(relatedPerson);
+    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(rel);
     
     // persist entities and their relation
@@ -128,8 +128,8 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     
     // check Named Query finding entity relation for entities
     List<String> entityIdList = new ArrayList<>();
-    entityIdList.add(relatedPerson.getId());
-    
+    entityIdList.add(testPerson.getId());
+
     Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     entQ.setParameter("entityIds", entityIdList);
     List<EntityRelation<Person>> relations = entQ.getResultList();

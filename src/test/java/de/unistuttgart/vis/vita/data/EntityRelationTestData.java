@@ -31,10 +31,12 @@ public class EntityRelationTestData {
    * Creates a new test relation a given entity.
    * 
    * @param relatedEntity - the entity which should be related
+   * @param relatedPerson 
    * @return test relation to given entity
    */
-  public EntityRelation<Entity> createTestRelation(Entity relatedEntity) {
+  public EntityRelation<Entity> createTestRelation(Entity originEntity, Entity relatedEntity) {
     EntityRelation<Entity> rel = new EntityRelation<>();
+    rel.setOriginEntity(originEntity);
     rel.setRelatedEntity(relatedEntity);
     rel.setWeight(TEST_ENTITY_RELATION_WEIGHT);
     return rel;

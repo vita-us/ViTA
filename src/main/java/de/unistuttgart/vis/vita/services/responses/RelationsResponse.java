@@ -6,9 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-
 /**
  * Holds lists with entity ids and the relations between them.s
  */
@@ -21,7 +18,7 @@ public class RelationsResponse {
   
   @XmlElementWrapper(name = "relations")
   @XmlElement(name = "relation")
-  private List<EntityRelation<Entity>> relations;
+  private List<RelationConfiguration> relations;
 
   /**
    * Creates a new instance of RelationsResponse, setting all attributes to default values.
@@ -31,12 +28,14 @@ public class RelationsResponse {
   }
 
   /**
-   * Creates a new RelationsResponse with the given relations.
+   * Creates a new RelationsResponse with the given entity ids and relations.
    * 
-   * @param rel - the relations between entities to be sent in this RelationResponse
+   * @param eIds - the ids of the entities concerned
+   * @param relations - the relations between entities to be sent in this RelationResponse
    */
-  public RelationsResponse(List<EntityRelation<Entity>> rel) {
-    this.relations = rel;
+  public RelationsResponse(List<String> eIds, List<RelationConfiguration> relations) {
+    this.entityIds = eIds;
+    this.relations = relations;
   }
 
   /**
@@ -58,7 +57,7 @@ public class RelationsResponse {
   /**
    * @return a list of relations between entities to be sent in this response
    */
-  public List<EntityRelation<Entity>> getRelations() {
+  public List<RelationConfiguration> getRelations() {
     return relations;
   }
   
@@ -67,7 +66,7 @@ public class RelationsResponse {
    * 
    * @param rel - List of relations which should be sent in this RelationsResponse
    */
-  public void setRelations(List<EntityRelation<Entity>> rel) {
+  public void setRelations(List<RelationConfiguration> rel) {
     this.relations = rel;
   }
 

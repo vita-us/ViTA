@@ -20,6 +20,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
 public class EntityRelationsServiceTest extends ServiceTest {
@@ -32,6 +33,8 @@ public class EntityRelationsServiceTest extends ServiceTest {
   private PersonTestData personTestData;
   private EntityRelationTestData relationTestData;
   private String docId;
+  private String originId;
+  private String targetId;
   private List<String> ids;
 
   @Before
@@ -48,9 +51,12 @@ public class EntityRelationsServiceTest extends ServiceTest {
     
     Person testPerson = personTestData.createTestPerson(1);
     ids.add(testPerson.getId());
+    originId = testPerson.getId();
+    
     Person relatedPerson = personTestData.createTestPerson(2);
-    ids.add(relatedPerson.getId());
-    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(relatedPerson);
+    targetId = relatedPerson.getId();
+    
+    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(testRelation);
     
     // persist the created test data
@@ -79,7 +85,23 @@ public class EntityRelationsServiceTest extends ServiceTest {
                                                     .queryParam("entityIds", ids)
                                                     .queryParam("type", TEST_RELATION_TYPE)
                                                     .request().get(RelationsResponse.class);
-    assertNotNull(actualResponse);
+    
+    // check list of entity ids
+    List<String> actualEntityIds = actualResponse.getEntityIds();
+    assertEquals(ids.size(), actualEntityIds.size());
+    assertEquals(ids.get(0), actualEntityIds.get(0));
+    
+    // check relation configurations
+    List<RelationConfiguration> actualRelations = actualResponse.getRelations();
+    assertEquals(1, actualRelations.size());
+    
+    // check configuration of one and only relation
+    RelationConfiguration actualConfig = actualRelations.get(0);
+    assertEquals(originId, actualConfig.getEntityAId());
+    assertEquals(targetId, actualConfig.getEntityBId());
+    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, 
+                  actualConfig.getWeight(), 
+                  EntityRelationTestData.DELTA);
   }
 
 }
