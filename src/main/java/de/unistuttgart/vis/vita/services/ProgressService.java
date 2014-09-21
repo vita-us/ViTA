@@ -3,8 +3,11 @@ package de.unistuttgart.vis.vita.services;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
@@ -38,7 +41,15 @@ public class ProgressService {
    */
   @GET
   public AnalysisProgress getProgress() {
-    return readProgressFromDatabase();
+    AnalysisProgress readProgress = null;
+    
+    try {
+      readProgress = readProgressFromDatabase();
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+    
+    return readProgress;
   }
   
   /**

@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
@@ -48,15 +49,15 @@ public class EntityRelationsService {
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
     if (steps <= 0) {
-      throw new IllegalArgumentException("Illegal amount of steps!");
+      throw new WebApplicationException("Illegal amount of steps!");
     }
     
-    if (!isValidRangeValue(rangeStart) | !isValidRangeValue(rangeEnd)) {
-      throw new IllegalArgumentException("Illegal range!");
+    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
+      throw new WebApplicationException("Illegal range!");
     }
     
-    if (eIds == null | eIds.equals("")) {
-      throw new IllegalArgumentException("No entities specified!");
+    if (eIds == null || "".equals(eIds)) {
+      throw new WebApplicationException("No entities specified!");
     }
     
     List<String> entityIds = Arrays.asList(eIds.split(","));
@@ -72,7 +73,7 @@ public class EntityRelationsService {
         break;
         
       default:
-        throw new IllegalArgumentException("Unknown type, must be 'person', 'place' or 'all'!");
+        throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
     }
     
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");

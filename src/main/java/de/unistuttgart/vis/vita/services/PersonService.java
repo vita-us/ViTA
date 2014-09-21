@@ -2,10 +2,13 @@ package de.unistuttgart.vis.vita.services;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
@@ -42,7 +45,15 @@ public class PersonService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Person getPerson() {
-    return readPersonFromDatabase();
+    Person readPerson = null;
+    
+    try {
+      readPerson = readPersonFromDatabase();
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+    
+    return readPerson;
   }
 
   private Person readPersonFromDatabase() {

@@ -100,7 +100,7 @@ public class DocumentServiceTest extends ServiceTest {
     
     // can not be caught anymore
     Response response = target("documents/" + deletionId).request().get();
-    assertEquals(500, response.getStatus());
+    assertEquals(404, response.getStatus());
   }
 
 }

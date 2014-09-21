@@ -2,10 +2,13 @@ package de.unistuttgart.vis.vita.services;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -42,7 +45,15 @@ public class PlaceService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Place getPlace() {
-    return readPlaceFromDatabase();
+    Place readPlace = null;
+    
+    try {
+      readPlace = readPlaceFromDatabase();
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+    
+    return readPlace;
   }
   
   private Place readPlaceFromDatabase() {

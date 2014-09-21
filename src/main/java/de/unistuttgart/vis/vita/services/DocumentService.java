@@ -4,6 +4,7 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
@@ -13,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -49,6 +51,25 @@ public class DocumentService {
   }
   
   /**
+   * Reads the requested document from the database and returns it in JSON using the REST.
+   * 
+   * @return the document with the current id in JSON
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public Document getDocument() {
+    Document readDoc = null;
+    
+    try {
+      readDoc = readDocumentFromDatabase();
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+    
+    return readDoc;
+  }
+  
+  /**
    * Reads the document from the database and returns it.
    * 
    * @return the document with the current id
@@ -58,18 +79,7 @@ public class DocumentService {
     query.setParameter("documentId", id);
     return query.getSingleResult();
   }
-  
-  /**
-   * Reads the requested document from the database and returns it in JSON using the REST.
-   * 
-   * @return the document with the current id in JSON
-   */
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Document getDocument() {
-    return readDocumentFromDatabase();
-  }
-  
+
   /**
    * Renames the current document to the given name.
    * 

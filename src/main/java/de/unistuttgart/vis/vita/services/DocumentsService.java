@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -18,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -61,16 +61,13 @@ public class DocumentsService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public DocumentsResponse getDocumentsAsJSON(@QueryParam("offset") int offset,
-                                              @QueryParam("count") int count) {
+  public DocumentsResponse getDocuments(@QueryParam("offset") int offset,
+                                        @QueryParam("count") int count) {
     TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
     query.setFirstResult(offset);
     query.setMaxResults(count);
-    
-    ArrayList<Document> readDocuments = new ArrayList<>();
-    readDocuments.addAll(query.getResultList());
 
-    return new DocumentsResponse(readDocuments);
+    return new DocumentsResponse(query.getResultList());
   }
   
   /**
@@ -91,7 +88,7 @@ public class DocumentsService {
     
     // check path and save file
     if (!checkAndCreateDir(DOCUMENT_PATH)) {
-      System.err.println("Can not write at " + filePath + "!");
+      throw new WebApplicationException("Can not save document!");
     } else {
       // save file on server
       saveFile(fileInputStream, filePath);
@@ -131,8 +128,9 @@ public class DocumentsService {
    * @param filePath - the path where to save this file on the server
    */
   private void saveFile(InputStream uploadedInputStream, String filePath) {
+    OutputStream os = null;
     try {
-      OutputStream os = new FileOutputStream(new File(filePath));
+      os = new FileOutputStream(new File(filePath));
       int read = 0;
       byte[] bytes = new byte[1024];
 
@@ -141,9 +139,14 @@ public class DocumentsService {
         os.write(bytes, 0, read);
       }
       os.flush();
-      os.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new WebApplicationException("IO-Error occured writing file.", e);
+    } finally {
+      try {
+        os.close();
+      } catch (IOException e) {
+        throw new WebApplicationException("Failed to close OutputStream writing file.", e);
+      }
     }
   }
   
