@@ -30,26 +30,27 @@ import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 @ManagedBean
 public class DocumentService {
   String id;
-  
+
   private EntityManager em;
-  
+
   @Context
   private ResourceContext resourceContext;
-  
+
   @Inject
   public DocumentService(Model model) {
     em = model.getEntityManager();
   }
-  
+
   /**
    * Sets the id of the document this resource should represent
+   * 
    * @param id the id
    */
   public DocumentService setId(String id) {
     this.id = id;
     return this;
   }
-  
+
   /**
    * Reads the requested document from the database and returns it in JSON using the REST.
    * 
@@ -59,22 +60,22 @@ public class DocumentService {
   @Produces(MediaType.APPLICATION_JSON)
   public Document getDocument() {
     Document readDoc = null;
-    
+
     try {
       readDoc = readDocumentFromDatabase();
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
-    
+
     return readDoc;
   }
-  
+
   /**
    * Reads the document from the database and returns it.
    * 
    * @return the document with the current id
    */
-  private Document readDocumentFromDatabase()  {
+  private Document readDocumentFromDatabase() {
     TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", id);
     return query.getSingleResult();
@@ -85,7 +86,7 @@ public class DocumentService {
    * 
    * @param renameRequest - the renaming request including id and new name.
    * @return a response with no content if renaming was successful, HTTP 404 if document was not
-   * found or 500 if an error occurred.
+   *         found or 500 if an error occurred.
    */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
@@ -97,21 +98,21 @@ public class DocumentService {
       affectedDocument.getMetadata().setTitle(renameRequest.getName());
       em.persist(affectedDocument);
       em.getTransaction().commit();
-      
+
       response = Response.noContent().build();
     } catch (EntityNotFoundException enfe) {
-      response = Response.status(404).build();
+      throw new WebApplicationException(enfe, Response.status(Response.Status.NOT_FOUND).build());
     } catch (RollbackException re) {
-      response =  Response.serverError().build();
+      throw new WebApplicationException(re);
     }
     return response;
   }
-  
+
   /**
    * Deletes the document with the current id.
    * 
    * @return a response with no content if removal was successful, status 404 if document was not
-   * found
+   *         found
    */
   @DELETE
   public Response deleteDocument() {
@@ -120,14 +121,16 @@ public class DocumentService {
       em.getTransaction().begin();
       em.remove(readDocumentFromDatabase());
       em.getTransaction().commit();
-      
+
       response = Response.noContent().build();
     } catch (IllegalArgumentException iae) {
-      response = Response.status(404).build();
+      throw new WebApplicationException(iae, Response.status(Response.Status.NOT_FOUND).build());
+    } catch (RollbackException rbe) {
+      throw new WebApplicationException(rbe);
     }
     return response;
   }
-  
+
   /**
    * Returns the ProgressService for the current document.
    * 
@@ -137,7 +140,7 @@ public class DocumentService {
   public ProgressService getProgress() {
     return resourceContext.getResource(ProgressService.class).setDocumentId(id);
   }
-  
+
   /**
    * Returns the ChapterService for the current document and given chapter id.
    * 
@@ -148,7 +151,7 @@ public class DocumentService {
   public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
     return resourceContext.getResource(ChapterService.class).setId(chapterId);
   }
-  
+
   /**
    * Returns the PersonsService for the current document.
    * 
@@ -158,7 +161,7 @@ public class DocumentService {
   public PersonsService getPersons() {
     return resourceContext.getResource(PersonsService.class).setDocumentId(id);
   }
-  
+
   /**
    * Returns the PlacesService for the current document.
    * 
@@ -168,7 +171,7 @@ public class DocumentService {
   public PlacesService getPlaces() {
     return resourceContext.getResource(PlacesService.class).setDocumentId(id);
   }
-  
+
   /**
    * Returns the EntitiesService for the current document.
    * 
@@ -176,9 +179,9 @@ public class DocumentService {
    */
   @Path("/entities")
   public EntitiesService getEntity() {
-	return resourceContext.getResource(EntitiesService.class).setDocumentId(id);
+    return resourceContext.getResource(EntitiesService.class).setDocumentId(id);
   }
-  
+
   /**
    * Returns the PartsService for the current document.
    * 
@@ -188,7 +191,7 @@ public class DocumentService {
   public DocumentPartsService getParts() {
     return resourceContext.getResource(DocumentPartsService.class).setDocumentId(id);
   }
-  
+
   /**
    * Return the AnalysisService for the current document.
    * 

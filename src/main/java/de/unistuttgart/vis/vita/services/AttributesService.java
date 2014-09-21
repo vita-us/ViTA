@@ -26,49 +26,50 @@ import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 @ManagedBean
 public class AttributesService {
 
-	private String entityId;
-	
-	@Context
-	private EntityManager em;
-	private ResourceContext resourceContext;
+  private String entityId;
 
-	/**
-	 * Creates a new instance of AttributesService
-	 * @param model
-	 */
-	@Inject
-	public AttributesService(Model model) {
-		em = model.getEntityManager();
-	}
+  private EntityManager em;
 
-	public AttributesService setEntityId(String id) {
-		this.entityId = id;
-		return this;
-	}
+  @Context
+  private ResourceContext resourceContext;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public AttributesResponse getAttributes(@QueryParam("offset") int offset,
-			@QueryParam("count") int count) {
-		List<Attribute> attributes = readAttributesFromDatabase(offset, count);
-		return new AttributesResponse(attributes);
-	}
+  /**
+   * Creates a new instance of AttributesService
+   * 
+   * @param model
+   */
+  @Inject
+  public AttributesService(Model model) {
+    em = model.getEntityManager();
+  }
 
-	private List<Attribute> readAttributesFromDatabase(int offset, int count) {
-		TypedQuery<Attribute> query = em.createNamedQuery(
-				"Attribute.findAttributesFromEntities", Attribute.class);
-		query.setParameter("entityId", entityId);
+  public AttributesService setEntityId(String id) {
+    this.entityId = id;
+    return this;
+  }
 
-		query.setFirstResult(offset);
-		query.setMaxResults(count);
-		
-		return query.getResultList();
-		
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public AttributesResponse getAttributes(@QueryParam("offset") int offset,
+      @QueryParam("count") int count) {
+    List<Attribute> attributes = readAttributesFromDatabase(offset, count);
+    return new AttributesResponse(attributes);
+  }
 
-	}
-	@Path("{attributeId}") 
-	public AttributeService getAttribute(@PathParam("attributeId") String id) {
-		return resourceContext.getResource(AttributeService.class).setAttributeId(id);
-	}
+  private List<Attribute> readAttributesFromDatabase(int offset, int count) {
+    TypedQuery<Attribute> query =
+        em.createNamedQuery("Attribute.findAttributesFromEntities", Attribute.class);
+    query.setParameter("entityId", entityId);
+
+    query.setFirstResult(offset);
+    query.setMaxResults(count);
+
+    return query.getResultList();
+  }
+
+  @Path("{attributeId}")
+  public AttributeService getAttribute(@PathParam("attributeId") String id) {
+    return resourceContext.getResource(AttributeService.class).setAttributeId(id);
+  }
 
 }

@@ -128,25 +128,16 @@ public class DocumentsService {
    * @param filePath - the path where to save this file on the server
    */
   private void saveFile(InputStream uploadedInputStream, String filePath) {
-    OutputStream os = null;
-    try {
-      os = new FileOutputStream(new File(filePath));
-      int read = 0;
-      byte[] bytes = new byte[1024];
-
-      os = new FileOutputStream(new File(filePath));
+    int read = 0;
+    byte[] bytes = new byte[1024];
+    
+    try (OutputStream os = new FileOutputStream(new File(filePath))) {
       while ((read = uploadedInputStream.read(bytes)) != -1) {
         os.write(bytes, 0, read);
       }
       os.flush();
     } catch (IOException e) {
       throw new WebApplicationException("IO-Error occured writing file.", e);
-    } finally {
-      try {
-        os.close();
-      } catch (IOException e) {
-        throw new WebApplicationException("Failed to close OutputStream writing file.", e);
-      }
     }
   }
   
