@@ -153,8 +153,9 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
       fileToHome = new File(pathToHome.getFile());
     }
 
-    File pluginsHome = new File(fileToHome.getAbsolutePath() + "\\plugins\\");
-    File siteConfig = new File(fileToHome.getAbsolutePath() + "\\gate.xml");
+    File pluginsHome =
+        new File(fileToHome.getAbsolutePath() + File.separator + "plugins" + File.separator);
+    File siteConfig = new File(fileToHome.getAbsolutePath() + File.separator + "gate.xml");
 
     Gate.setGateHome(fileToHome);
     Gate.setPluginsHome(pluginsHome);
