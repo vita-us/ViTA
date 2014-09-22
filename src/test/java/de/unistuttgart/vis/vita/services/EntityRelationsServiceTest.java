@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
@@ -30,12 +31,20 @@ public class EntityRelationsServiceTest extends ServiceTest {
   private static final double TEST_RANGE_END = 1.0;
   private static final String TEST_RELATION_TYPE = "person";
   
+  private static final int ERROR_STATUS = 500;
+  
+  private static final String TEST_RELATION_TYPE_ILLEGAL = "hobbits";
+  private static final String TEST_NO_ENTITY_IDS = "";
+  private static final double TEST_RANGE_ILLEGAL = -0.1;
+  private static final int TEST_STEPS_ILLEGAL = -1;
+  
   private PersonTestData personTestData;
   private EntityRelationTestData relationTestData;
   private String docId;
   private String originId;
   private String targetId;
   private List<String> ids;
+  private String path;
 
   @Before
   public void setUp() throws Exception {
@@ -68,6 +77,8 @@ public class EntityRelationsServiceTest extends ServiceTest {
     em.persist(testRelation);
     em.getTransaction().commit();
     em.close();
+    
+    path = "/documents/" + docId + "/entities/relations";
   }
   
   @Override
@@ -76,9 +87,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
   }
 
   @Test
-  public void testGetRelations() {
-    String path = "/documents/" + docId + "/entities/relations";
-    
+  public void testGetPersonRelations() {
     RelationsResponse actualResponse = target(path).queryParam("steps", TEST_STEPS)
                                                     .queryParam("rangeStart", TEST_RANGE_START)
                                                     .queryParam("rangeEnd", TEST_RANGE_END)
@@ -102,6 +111,58 @@ public class EntityRelationsServiceTest extends ServiceTest {
     assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, 
                   actualConfig.getWeight(), 
                   EntityRelationTestData.DELTA);
+  }
+  
+  @Test
+  public void testGetRelationsWithIllegalSteps() {
+    Response actualResponse = target(path).queryParam("steps", TEST_STEPS_ILLEGAL)
+                                          .queryParam("rangeStart", TEST_RANGE_START)
+                                          .queryParam("rangeEnd", TEST_RANGE_END)
+                                          .queryParam("entityIds", ids)
+                                          .queryParam("type", TEST_RELATION_TYPE)
+                                          .request().get();
+    assertEquals(ERROR_STATUS, actualResponse.getStatus());
+  }
+  
+  @Test
+  public void testGetRelationsWithIllegalRange() {
+    Response response1 = target(path).queryParam("steps", TEST_STEPS)
+        .queryParam("rangeStart", TEST_RANGE_ILLEGAL)
+        .queryParam("rangeEnd", TEST_RANGE_END)
+        .queryParam("entityIds", ids)
+        .queryParam("type", TEST_RELATION_TYPE)
+        .request().get();
+    assertEquals(ERROR_STATUS, response1.getStatus());
+    
+    Response response2 = target(path).queryParam("steps", TEST_STEPS)
+        .queryParam("rangeStart", TEST_RANGE_START)
+        .queryParam("rangeEnd", TEST_RANGE_ILLEGAL)
+        .queryParam("entityIds", ids)
+        .queryParam("type", TEST_RELATION_TYPE)
+        .request().get();
+    assertEquals(ERROR_STATUS, response2.getStatus());
+  }
+  
+  @Test
+  public void testGetRelationsWithoutEntities() {
+    Response actualResponse = target(path).queryParam("steps", TEST_STEPS)
+        .queryParam("rangeStart", TEST_RANGE_START)
+        .queryParam("rangeEnd", TEST_RANGE_END)
+        .queryParam("entityIds", TEST_NO_ENTITY_IDS)
+        .queryParam("type", TEST_RELATION_TYPE)
+        .request().get();
+    assertEquals(ERROR_STATUS, actualResponse.getStatus());
+  }
+  
+  @Test
+  public void testGetRelationsWithIllegalType() {
+    Response actualResponse = target(path).queryParam("steps", TEST_STEPS)
+        .queryParam("rangeStart", TEST_RANGE_ILLEGAL)
+        .queryParam("rangeEnd", TEST_RANGE_END)
+        .queryParam("entityIds", ids)
+        .queryParam("type", TEST_RELATION_TYPE_ILLEGAL)
+        .request().get();
+    assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
 
 }

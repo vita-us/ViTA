@@ -41,7 +41,6 @@ public class EntityRelationsService {
    * @param type - the type of the entities
    * @return the response including the relations
    */
-  @SuppressWarnings("unchecked")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public RelationsResponse getRelations(@QueryParam("steps") int steps,
@@ -49,16 +48,24 @@ public class EntityRelationsService {
                                         @QueryParam("rangeEnd") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
+    // first check all parameters
     if (steps <= 0) {
       throw new WebApplicationException("Illegal amount of steps!");
-    }
-    
-    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
+    } else if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
       throw new WebApplicationException("Illegal range!");
-    }
-    
-    if (eIds == null || "".equals(eIds)) {
+    } else if (eIds == null || "".equals(eIds)) {
       throw new WebApplicationException("No entities specified!");
+    } else {
+      switch (type) {
+        case "person":
+          break;
+        case "place":
+          break;
+        case "all":
+          break;
+        default:
+          throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
+      }
     }
     
     // convert entity id string
@@ -67,35 +74,40 @@ public class EntityRelationsService {
       entityIds.add(substring.trim());
     }
     
-    switch (type) {
-      case "person":
-        break;
-        
-      case "place":
-        break;
-        
-      case "all":
-        break;
-        
-      default:
-        throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
-    }
+    // get relations from database
+    List<EntityRelation<Entity>> relations = readRelationsFromDatabase(steps, entityIds); 
     
-    Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
-    query.setParameter("entityIds", entityIds);
-    query.setMaxResults(steps);
-    List<EntityRelation<Entity>> relations = query.getResultList(); 
-    
+    // create the response and return it
     return new RelationsResponse(entityIds, createConfiguration(relations));
   }
 
+  /**
+   * Reads the wanted EntityRelations from the database.
+   * 
+   * @param steps - the maximum amount of EntityRelations being returned
+   * @param ids - the list of entity id to be searched for
+   * @return list of EntityRelations matching the given criteria
+   */
+  @SuppressWarnings("unchecked")
+  private List<EntityRelation<Entity>> readRelationsFromDatabase(int steps, List<String> ids) {
+    Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
+    query.setParameter("entityIds", ids);
+    query.setMaxResults(steps);
+    return query.getResultList();
+  }
+
+  /**
+   * Creates a list of RelationConfigurations by mapping the given EntityRelations to a flat 
+   * representation.
+   * 
+   * @param relations - the EntityRelations to be mapped
+   * @return the configurations as a flat representation of the given relations
+   */
   private List<RelationConfiguration> createConfiguration(List<EntityRelation<Entity>> relations) {
     List<RelationConfiguration> configurations = new ArrayList<>();
-    
     for (EntityRelation<Entity> entityRelation : relations) {
       configurations.add(new RelationConfiguration(entityRelation));
     }
-    
     return configurations;
   }
   
