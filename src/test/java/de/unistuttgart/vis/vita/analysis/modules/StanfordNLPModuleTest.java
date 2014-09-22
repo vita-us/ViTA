@@ -47,7 +47,7 @@ public class StanfordNLPModuleTest {
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
-    progressListener = mock(ProgressListener.class, withSettings().verboseLogging());
+    progressListener = mock(ProgressListener.class);
     fillText();
   }
   
