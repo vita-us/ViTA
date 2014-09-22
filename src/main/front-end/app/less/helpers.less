@@ -8,3 +8,28 @@
   padding: 10px;
   margin-bottom: 15px;
 }
+
+.filterable-list {
+  min-width: 250px;  
+  
+  .filter {
+    margin-bottom: 15px;
+    max-width: 250px;
+  }
+  
+  ul {
+    padding-left: 10px;
+    padding-right: 20px;
+    list-style-position: inside;
+    max-height: 250px;
+    overflow: auto;
+    
+    li {
+      margin-bottom: 5px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
