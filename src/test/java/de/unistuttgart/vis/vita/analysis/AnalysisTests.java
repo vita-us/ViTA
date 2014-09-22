@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import de.unistuttgart.vis.vita.analysis.modules.ANNIEModuleTest;
 import de.unistuttgart.vis.vita.analysis.modules.LuceneModuleTest;
 
 /**
@@ -11,7 +12,8 @@ import de.unistuttgart.vis.vita.analysis.modules.LuceneModuleTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({AnalysisControllerTest.class, TestModuleRegistry.class, ModuleClassTest.class,
-    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class, LuceneModuleTest.class})
+    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class,
+    LuceneModuleTest.class, ANNIEModuleTest.class})
 public class AnalysisTests {
 
   // conform checkstyle rule HideUtilityClassConstructor
