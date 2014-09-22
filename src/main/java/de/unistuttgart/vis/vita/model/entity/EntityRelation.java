@@ -17,11 +17,17 @@ import org.hibernate.annotations.Target;
     @NamedQuery(name = "EntityRelation.findAllEntityRelations", 
                 query = "SELECT er "
                       + "FROM EntityRelation er"),
-        
+                      
     @NamedQuery(name = "EntityRelation.findRelationsForEntities",
                 query = "SELECT er "
                       + "FROM Entity e JOIN e.entityRelations er "
-                      + "WHERE e.id IN :entityIds"),
+                      + "WHERE e.id IN :entityIds "),
+        
+    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType",
+                query = "SELECT er "
+                      + "FROM Entity e JOIN e.entityRelations er "
+                      + "WHERE e.id IN :entityIds "
+                      + "AND er.relatedEntity.class = :type"),
 
     @NamedQuery(name = "EntityRelation.findEntityRelationById", 
                 query = "SELECT er "

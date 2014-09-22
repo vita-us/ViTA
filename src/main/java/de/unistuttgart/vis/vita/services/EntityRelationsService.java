@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
+import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
@@ -48,7 +50,11 @@ public class EntityRelationsService {
                                         @QueryParam("rangeEnd") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
-    // first check all parameters
+    // initialize lists
+    List<String> entityIds = new ArrayList<>();
+    List<EntityRelation<Entity>> relations = null;
+    
+    // check parameters
     if (steps <= 0) {
       throw new WebApplicationException("Illegal amount of steps!");
     } else if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
@@ -56,33 +62,34 @@ public class EntityRelationsService {
     } else if (eIds == null || "".equals(eIds)) {
       throw new WebApplicationException("No entities specified!");
     } else {
-      switch (type) {
+      
+      // convert entity id string
+      for (String substring : eIds.replaceAll("\\[|\\]","").split(",")) {
+        entityIds.add(substring.trim());
+      }
+      
+      // get relations from database how they are read depends on 'type'
+      switch (type.toLowerCase()) {
         case "person":
+          relations = readRelationsFromDatabase(steps, entityIds, Person.class.getSimpleName());
           break;
         case "place":
+          relations = readRelationsFromDatabase(steps, entityIds, Place.class.getSimpleName());
           break;
         case "all":
+          relations = readRelationsFromDatabase(steps, entityIds); 
           break;
         default:
           throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
       }
     }
     
-    // convert entity id string
-    List<String> entityIds = new ArrayList<>();
-    for (String substring : eIds.replaceAll("\\[|\\]","").split(",")) {
-      entityIds.add(substring.trim());
-    }
-    
-    // get relations from database
-    List<EntityRelation<Entity>> relations = readRelationsFromDatabase(steps, entityIds); 
-    
     // create the response and return it
     return new RelationsResponse(entityIds, createConfiguration(relations));
   }
 
   /**
-   * Reads the wanted EntityRelations from the database.
+   * Reads EntityRelations with given ids from the database.
    * 
    * @param steps - the maximum amount of EntityRelations being returned
    * @param ids - the list of entity id to be searched for
@@ -95,6 +102,25 @@ public class EntityRelationsService {
     query.setMaxResults(steps);
     return query.getResultList();
   }
+  
+  /**
+   * Reads EntityRelations with given ids and type from the database.
+   * 
+   * @param steps - the maximum amount of EntityRelations being returned
+   * @param ids - the list of entity id to be searched for
+   * @param type - the type of the related entities
+   * @return list of EntityRelations matching the given criteria
+   */
+  @SuppressWarnings("unchecked")
+  private List<EntityRelation<Entity>> readRelationsFromDatabase(int steps, 
+                                                                  List<String> ids, 
+                                                                  String type) {
+    Query query = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
+    query.setParameter("entityIds", ids);
+    query.setParameter("type", type);
+    query.setMaxResults(steps);
+    return query.getResultList();
+  } 
 
   /**
    * Creates a list of RelationConfigurations by mapping the given EntityRelations to a flat 

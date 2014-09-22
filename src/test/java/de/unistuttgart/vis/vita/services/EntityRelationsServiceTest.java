@@ -86,6 +86,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
     return new ResourceConfig(EntityRelationsService.class);
   }
 
+  /**
+   * Check whether person relations can be caught via GET.
+   */
   @Test
   public void testGetPersonRelations() {
     RelationsResponse actualResponse = target(path).queryParam("steps", TEST_STEPS)
@@ -113,6 +116,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
                   EntityRelationTestData.DELTA);
   }
   
+  /**
+   * Check whether server response is 500 when requesting relations with illegal step value.
+   */
   @Test
   public void testGetRelationsWithIllegalSteps() {
     Response actualResponse = target(path).queryParam("steps", TEST_STEPS_ILLEGAL)
@@ -124,6 +130,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
     assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
   
+  /**
+   * Check whether server response is 500 when requesting relations with illegal range values.
+   */
   @Test
   public void testGetRelationsWithIllegalRange() {
     Response response1 = target(path).queryParam("steps", TEST_STEPS)
@@ -143,6 +152,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
     assertEquals(ERROR_STATUS, response2.getStatus());
   }
   
+  /**
+   * Check whether server response is 500 when requesting relations without any entities.
+   */
   @Test
   public void testGetRelationsWithoutEntities() {
     Response actualResponse = target(path).queryParam("steps", TEST_STEPS)
@@ -154,6 +166,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
     assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
   
+  /**
+   * Check whether server response is 500 when requesting relations with illegal type.
+   */
   @Test
   public void testGetRelationsWithIllegalType() {
     Response actualResponse = target(path).queryParam("steps", TEST_STEPS)
