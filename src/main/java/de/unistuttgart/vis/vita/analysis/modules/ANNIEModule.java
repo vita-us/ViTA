@@ -97,7 +97,7 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
     for (Object docObj : corpus) {
       Document doc = (Document) docObj;
       AnnotationSet defaultAnnotSet = doc.getAnnotations();
-      Set annotTypesRequired = new HashSet();
+      Set<String> annotTypesRequired = new HashSet<>();
       annotTypesRequired.add(ANNIEConstants.PERSON_ANNOTATION_TYPE);
       annotTypesRequired.add(ANNIEConstants.LOCATION_ANNOTATION_TYPE);
       Set<Annotation> peopleAndPlaces = new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
@@ -195,11 +195,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
         }
 
         return chapterToAnnotation.get(chapter);
-      }
-
-      @Override
-      public Document getDocumentForChapter(Chapter chapter) {
-        return null;
       }
     };
   }
