@@ -101,7 +101,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   private ArrayList<Line> buildTextList(int chapterNumber) {
     int startOfText = chapterPositions.getStartOfText(chapterNumber);
     int endOfText = chapterPositions.getEndOfText(chapterNumber);
-    return new ArrayList<Line>(lines.subList(startOfText, endOfText));
+    return new ArrayList<Line>(lines.subList(startOfText, endOfText + 1));
   }
 
   /**

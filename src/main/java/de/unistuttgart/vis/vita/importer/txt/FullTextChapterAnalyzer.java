@@ -26,7 +26,7 @@ public class FullTextChapterAnalyzer extends AbstractChapterAnalyzer {
   @Override
   protected ChapterPosition useRule() {
     ChapterPosition positions = new ChapterPosition();
-    positions.addChapter(0, 0, chapterArea.size());
+    positions.addChapter(0, 0, chapterArea.size() - 1);
     return positions;
   }
 }

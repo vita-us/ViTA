@@ -66,7 +66,6 @@ public class TextFileImporterTxtTest {
 
     assertTrue(testList.size() == 10579);
     assertEquals(testChars, testList.get(8).getText());
-    System.out.println(encodingName);
     assertTrue(possibleSolutions.contains(encodingName));
   }
 

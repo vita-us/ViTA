@@ -20,7 +20,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
   protected int minimumChapterSize = 200;
   protected HashSet<LineType> skipTags = new HashSet<LineType>();
-  protected ChapterPosition chapterPositions;
+  protected ChapterPosition chapterPositions = new ChapterPosition();
 
   /**
    * Initialize the Abstract Chapter Analyzer and set the lines to analyze.
@@ -123,22 +123,19 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    */
   protected ChapterPosition detectSimpleChapters(Boolean findThisType, LineType type,
       int startPosition) {
-    ChapterPosition positions = new ChapterPosition();
     int startOfHeading = -1;
     int endOfText = -1;
     int nextPosition = -1;
 
-    // initialize position
+    // initialize position; both -1 if there is none.
     startOfHeading = getNextPosition(findThisType, type, startPosition);
     nextPosition = getNextPosition(findThisType, type, startOfHeading + 1);
 
     // build Chapters until nextPosition has invalid value.
     while (startOfHeading < nextPosition) {
       endOfText = nextPosition - 1;
-      if (endOfText >= chapterArea.size()) {
-        break;
-      }
-      positions.addChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText),
+      this.chapterPositions.addChapter(startOfHeading,
+          getSimpleStartOfText(startOfHeading, endOfText),
           endOfText);
 
       // set data for next chapter
@@ -147,7 +144,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     }
     // add the last chapter, if there is at least one found
     addLastChapter(startOfHeading, getSimpleStartOfText(startOfHeading, endOfText));
-    return positions;
+    return this.chapterPositions;
   }
 
   /**
@@ -298,10 +295,11 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   }
 
   /**
-   * Chapters with a very short text will be attached to the chapter before. If there is no chapter
+   * First all little chapters at the beginning will be deleted until there is a big chapter. Then
+   * chapters with a very short text will be attached to the chapter before. If there is no chapter
    * before, the chapter will be deleted.
    * 
-   * @param minimumLength - The minimum length of characters a chapter should have. This includes
+   * @param minimumLength - The minimum amount of characters a chapter should have. This includes
    *        invisible characters in lines which are not a Whiteline.
    * @param extendHeading Boolean - If attached.. True: the new heading will contain the text of the
    *        chapter before and the old headings. False: the new heading will only contain the
@@ -309,6 +307,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    */
   protected void useLittleChapterRule(int minimumLength,
       boolean extendHeading) {
+    deleteLittleChaptersAtTheBeginning(minimumLength);
     for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
       int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
       int beforeChapterTextStart = this.chapterPositions.getStartOfText(chapterNumber - 1);
@@ -463,4 +462,18 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       }
     }
   }
+
+  /**
+   * Deletes all chapters at the beginning until there is chapter containing more characters than
+   * determined by the minimum length.
+   * 
+   * @param minimumLength - The minimum amount of characters a chapter should have. This includes
+   *        invisible characters in lines which are not a Whiteline.
+   */
+  private void deleteLittleChaptersAtTheBeginning(int minimumLength) {
+    while (this.chapterPositions.size() > 1 && computeTextLength(1) < minimumLength) {
+      this.chapterPositions.deleteChapter(1);
+    }
+  }
+
 }

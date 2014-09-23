@@ -31,10 +31,10 @@ public class SimpleWhitelinesChapterAnalyzer extends AbstractChapterAnalyzer {
   @Override
   protected ChapterPosition useRule() {
     this.chapterPositions = detectSimpleChapters(false, LineType.WHITELINE, startOfAnalysis);
+    makeAllHeadingsEmpty();
     useTwoWhitelinesBeforeRule(false);
     useEmptyChapterRule(false);
     useLittleChapterRule(minimumChapterSize, false);
-    makeAllHeadingsEmpty();
     return this.chapterPositions;
   }
 

@@ -56,9 +56,9 @@ public class ChapterPosition {
           + startList.size());
     }
 
-    headingStartList.remove(chapterNumber - 1);
-    startList.remove(chapterNumber - 1);
-    endList.remove(chapterNumber - 1);
+    this.headingStartList.remove(chapterNumber - 1);
+    this.startList.remove(chapterNumber - 1);
+    this.endList.remove(chapterNumber - 1);
   }
 
   /**
@@ -144,14 +144,16 @@ public class ChapterPosition {
   }
 
   /**
-   * Checks if this chapter has a heading or not.
+   * Checks if this chapter has a heading or not. This information is only valid if there is more
+   * than one line in the Chapter. Otherwise you have to decide whether this line is interpreted as
+   * heading or as text.
    * 
    * @param chapterNumber int - The number of the chapter. The possible number starts with 1 and
    *        ends at the size of the ChapterPosition.
    * @return Boolean - true: there is a heading. false: there is no heading
    */
   public boolean hasHeading(int chapterNumber) {
-    return !(startList.get(chapterNumber - 1) == headingStartList.get(chapterNumber - 1));
+    return !(startList.get(chapterNumber - 1).equals(headingStartList.get(chapterNumber - 1)));
   }
 
   /**

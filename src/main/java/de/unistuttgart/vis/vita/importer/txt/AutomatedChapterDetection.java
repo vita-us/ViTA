@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
  * typical English novel.
  */
 public class AutomatedChapterDetection {
-  private final float HUGECHAPTERPERCENTAGE = 0.4f;
+  private final float HUGECHAPTERPERCENTAGE = 0.5f;
   private final float MINIMUMSMALLHEADINGSPERCENTAGE = 0.4f;
 
   private float smallHeadingsPercentage = 0.0f;
@@ -132,7 +132,6 @@ public class AutomatedChapterDetection {
               if (fulfillsSimpleWhitelinesConditions(result)) {
                 stopChapterDetection();
               } else {
-
                 result = noChapters.get();
               }
             }

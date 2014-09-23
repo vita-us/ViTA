@@ -22,7 +22,7 @@ public class ChapterBuilder implements Callable<Chapter> {
   private static final String WHITESPACEATTHEBEGINNING = "^" + WHITESPACE;
   private static final String WHITESPACEATTHEEND = WHITESPACE + "$";
 
-  private String endOfLine = "\r\n";
+  private String endOfLine = "\n";
   private ArrayList<Line> heading;
   private ArrayList<Line> text;
   private int chapterNumber;
@@ -120,6 +120,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    *        contain the result after the method execution.
    */
   private void unifyHeadingStyle(ArrayList<Line> heading) {
+    deactivateLineTypeComputation(text);
     deleteSpaceCharactersAtTheBeginningOfAllLines(heading);
     deleteSpaceCharactersAtTheEndOfAllLines(heading);
     deleteMarkedHeadingSymbol(heading);
@@ -154,6 +155,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    *        execution.
    */
   private void concatenateTextLines(ArrayList<Line> lines) {
+
     boolean lineBeforeWasNotWhiteline = false;
 
     for (int index = lines.size() - 1; index >= 0; index--) {

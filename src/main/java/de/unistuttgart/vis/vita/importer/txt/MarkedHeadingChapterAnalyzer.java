@@ -15,7 +15,7 @@ public class MarkedHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
    * @throws IllegalArgumentException If input is null.
    */
-  protected MarkedHeadingChapterAnalyzer(ArrayList<Line> chapterArea)
+  public MarkedHeadingChapterAnalyzer(ArrayList<Line> chapterArea)
       throws IllegalArgumentException {
     super(chapterArea);
   }
