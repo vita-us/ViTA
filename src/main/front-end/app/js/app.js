@@ -2,10 +2,11 @@
   'use strict';
 
   var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
-      'vitaFilters']);
+      'vitaDirectives', 'vitaFilters']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
+  angular.module('vitaDirectives', []);
   angular.module('vitaFilters', []);
 
   app.config(['$routeProvider', function($routeProvider) {
@@ -41,7 +42,7 @@
       controller: ''
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
-      controller: ''
+      controller: 'GraphNetworkCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: ''
@@ -70,7 +71,7 @@
         this.tab = tab;
         this.breadcrumbs = null;
       }
-    }
+    };
   });
 
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
