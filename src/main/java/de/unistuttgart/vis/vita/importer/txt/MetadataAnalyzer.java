@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -96,7 +97,6 @@ public class MetadataAnalyzer {
       if (isValidPublisherYear(publisherYear)) {
         documentMetadata.setPublishYear(date.get(Calendar.YEAR));
       }
-
     }
   }
 
@@ -213,18 +213,28 @@ public class MetadataAnalyzer {
    * @return
    */
   private boolean isValidPublisherYear(String publisherYear) {
-    try {
-      date = Calendar.getInstance();
-      date.setTime(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(publisherYear));
-      return true;
-    } catch (ParseException e) {
-      date = null;
-      Logger log = Logger.getLogger("Exception");
-      log.log(Level.SEVERE, "Incorrect date format", e);
-      return false;
-    }
-  }
+    List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
+      {
+        add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
+        add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
+        add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
+      }
+    };
 
+    for(SimpleDateFormat dateFormat: dateFormats){
+      try{
+        date = Calendar.getInstance();
+        date.setTime(dateFormat.parse(publisherYear));
+        return true;
+      }catch(ParseException ex){
+        date = null;
+        Logger log = Logger.getLogger("Exception");
+        log.log(Level.SEVERE, "Incorrect date format", ex);    
+      }
+    }
+    return false;
+  }
+  
   /**
    * Check if the current metadata is multiline
    * 
