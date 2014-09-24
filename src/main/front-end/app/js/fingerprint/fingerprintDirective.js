@@ -6,9 +6,9 @@
   vitaDirectives.directive('fingerprint', [function() {
     function link(scope, element, attrs) {
 
-      // TODO: don't hardcode the size of the svg
-      var SVG_WIDTH = 800;
-      var SVG_HEIGHT = 40;
+      var MINIMUM_SVG_HEIGHT = 40;
+      var SVG_WIDTH = $(element).width();
+      var SVG_HEIGHT = attrs.height || MINIMUM_SVG_HEIGHT;
 
       var margin = {
         top: 5,
@@ -274,6 +274,7 @@
       scope: {
         occurrences: '=',
         parts: '=',
+        height: '@'
       },
       link: link,
     };
