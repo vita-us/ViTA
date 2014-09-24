@@ -8,7 +8,7 @@ describe('Graph-Network Directive', function() {
     scope = $rootScope.$new();
 
     scope.entities = TestData.graphNetworkEntities;
-    element = '<graph-network entities="entities"></graph-network>';
+    element = '<div data-graph-network data-entities="entities"></div>';
 
     element = $compile(element)(scope);
     scope.$digest();

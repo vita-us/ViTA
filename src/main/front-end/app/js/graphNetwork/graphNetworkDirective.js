@@ -6,8 +6,7 @@
   vitaDirectives.directive('graphNetwork', ['CssClass', function(CssClass) {
 
     var directive = {
-      replace: false,
-      restrict: 'EA',
+      restrict: 'A',
       scope: {
         entities: '=',
         width: '@',
