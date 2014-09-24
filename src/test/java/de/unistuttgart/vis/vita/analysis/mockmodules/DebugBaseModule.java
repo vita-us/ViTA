@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.analysis.modules;
+package de.unistuttgart.vis.vita.analysis.mockmodules;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
