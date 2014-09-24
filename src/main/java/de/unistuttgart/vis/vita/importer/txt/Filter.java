@@ -61,11 +61,21 @@ public class Filter {
   }
 
   /**
-   * Filters unnecessary comments in the entireEbookList and removes them
+   * Filters unnecessary comments and most lines with special signs in the entireEbookList and
+   * removes them
    * 
    * @return the edited entireEbookList
    */
   public ArrayList<Line> filterEbookText() {
+    removeComments();
+    removeSpecialSigns(entireEbookList);
+    return entireEbookList;
+  }
+
+  /**
+   * Filters unnecessary comments in the entireEbookList and removes them
+   */
+  private void removeComments() {
     // In this line the part with "[.*" or ".*]" is removed
     String editedLine;
 
@@ -100,8 +110,6 @@ public class Filter {
     entireEbookList.removeAll(removeList);
 
     removeList.clear();
-    return entireEbookList;
-
   }
 
   /**
@@ -228,6 +236,43 @@ public class Filter {
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
     String editStringLine = editLine.getText().replaceAll(regex, " ");
     return editStringLine = editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
-
   }
+
+
+  /**
+   * Removes Lines from the given List, if their type is SpecialSign.
+   * 
+   * @param removeList List of Line - The Lines from which Special Signs should be removed.
+   */
+  private void removeSpecialSigns(List<Line> removeList) {
+    for (int index = removeList.size() - 1; index >= 0; index--) {
+      if (removeList.get(index).getType().equals(LineType.SPECIALSIGNS)) {
+        if (areWhitelinesAround(index, removeList)) {
+          removeList.remove(index + 1);
+          removeList.remove(index);
+        } else {
+          removeList.remove(index);
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks if there is a Whiteline before and after the given Line.
+   * 
+   * @param index int - The index of the Line in the removeList.
+   * @param removeList List of Line - The full List containing the Line to check.
+   * @return boolean - true: There is a Whiteline before and after the Line to check. false: There
+   *         is no Whiteline before and after the Line to check.
+   */
+  private boolean areWhitelinesAround(int index, List<Line> removeList) {
+    boolean whitelinesAround = false;
+    if (index > 0 && index < removeList.size() - 1) {
+      whitelinesAround =
+          removeList.get(index + 1).getType().equals(LineType.WHITELINE)
+              && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
+    }
+    return whitelinesAround;
+  }
+
 }

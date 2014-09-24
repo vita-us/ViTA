@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -23,12 +22,14 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
  */
 public class MetadataAnalyzer {
 
-  private static final String TITLE = "^((Title:)|(TITLE:)).+";
-  private static final String AUTHOR = "^((Author:)|(AUTHOR:)).+";
-  private static final String RELEASE_DATE = "^((Release Date:)|(RELEASE DATE:)).+";
-  private static final String PUBLISHER = "^((Publisher:)|(PUBLISHER:)).+";
-  private static final String GENRE = "^((Genre:)|(GENRE:)).+";
-  private static final String EDITION = "^((Edition:)|(EDITION:)).+";
+  private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
+  private static final String TITLE = "^" + WHITESPACE + "((Title:)|(TITLE:)).+";
+  private static final String AUTHOR = "^" + WHITESPACE + "((Author:)|(AUTHOR:)).+";
+  private static final String RELEASE_DATE = "^" + WHITESPACE
+      + "((Release Date:)|(RELEASE DATE:)).+";
+  private static final String PUBLISHER = "^" + WHITESPACE + "((Publisher:)|(PUBLISHER:)).+";
+  private static final String GENRE = "^" + WHITESPACE + "((Genre:)|(GENRE:)).+";
+  private static final String EDITION = "^" + WHITESPACE + "((Edition:)|(EDITION:)).+";
   private List<Line> metadataList = new ArrayList<Line>();
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
       "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:"};
@@ -251,7 +252,6 @@ public class MetadataAnalyzer {
       }
     }
     return false;
-
   }
 
   /**

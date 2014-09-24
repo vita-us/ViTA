@@ -17,7 +17,7 @@ import de.unistuttgart.vis.vita.importer.txt.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.SmallHeadingChapterAnalyzer;
 import de.unistuttgart.vis.vita.importer.txt.TextFileImporter;
 
-public class SmallHeadingChapterAnalyerTxtTest {
+public class SmallHeadingChapterAnalyzerTxtTest {
 
   ChapterPosition chapterPosition;
   SmallHeadingChapterAnalyzer analyzer;

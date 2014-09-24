@@ -168,7 +168,7 @@ public class Line {
       if (matchesPattern(MARKEDHEADINGPATTERN)) {
         highestType = LineType.MARKEDHEADING;
       }
-      if (matchesPattern(DATADIVIDERPATTERN) || text.contains("***")) {
+      if (matchesPattern(DATADIVIDERPATTERN)) {
         highestType = LineType.DATADIVIDER;
       }
       if (matchesPattern(WHITESPACEPATTERN)) {

@@ -115,11 +115,11 @@ public class LineTxtTest {
   public void testDatadividerTypePartialForm() {
     String lineText = "*** START OF";
     Line testLine = new Line(lineText, true);
-    assertEquals(LineType.DATADIVIDER, testLine.getType());
+    assertFalse(LineType.DATADIVIDER.equals(testLine.getType()));
 
     lineText = " BOOK*** ";
     testLine = new Line(lineText, true);
-    assertEquals(LineType.DATADIVIDER, testLine.getType());
+    assertFalse(LineType.DATADIVIDER.equals(testLine.getType()));
   }
 
   @Test

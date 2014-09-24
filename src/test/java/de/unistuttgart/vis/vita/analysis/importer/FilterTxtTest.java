@@ -52,4 +52,190 @@ public class FilterTxtTest {
     assertFalse(filteredList.get(11).getText().equals("[Ebook The Lord of the Rings]"));
     assertEquals(filteredList.get(12).getText(), "The text of the first chapter.");
   }
+
+  @Test
+  public void testMultiLineComment() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla [this"));
+    lines.add(new Line("is"));
+    lines.add(new Line("a comment] blabla"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(2, filteredList.size());
+    assertEquals("blabla  ", filteredList.get(0).getText());
+    assertEquals("  blabla", filteredList.get(1).getText());
+  }
+
+  @Test
+  public void testCommentInOneLineWithoutSpacesAround() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla[this]blabla"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(1, filteredList.size());
+    assertEquals("blabla blabla", filteredList.get(0).getText());
+
+  }
+
+  @Test
+  public void testCommentInOneLineWithSpacesAround() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla [this] blabla"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(1, filteredList.size());
+    assertEquals("blabla blabla", filteredList.get(0).getText());
+  }
+
+  @Test
+  public void testCommentInAWholeLineWithSpacesAround() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla"));
+    lines.add(new Line(""));
+    lines.add(new Line("[comment]"));
+    lines.add(new Line(""));
+    lines.add(new Line("blubb"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(3, filteredList.size());
+    assertEquals("blabla", filteredList.get(0).getText());
+    assertEquals("", filteredList.get(1).getText());
+    assertEquals("blubb", filteredList.get(2).getText());
+  }
+
+  @Test
+  public void testRemoveSpecialSigns() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla usw"));
+    lines.add(new Line("...?"));
+    lines.add(new Line("???"));
+    lines.add(new Line(""));
+    lines.add(new Line("* * *"));
+    lines.add(new Line("blubb"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(4, filteredList.size());
+    assertEquals("blabla usw", filteredList.get(0).getText());
+    assertEquals("...?", filteredList.get(1).getText());
+    assertEquals("blubb", filteredList.get(3).getText());
+  }
+
+  @Test
+  public void testRemoveSpecialSignsWithWhitelineReduction() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla usw"));
+    lines.add(new Line(""));
+    lines.add(new Line("* * *"));
+    lines.add(new Line(""));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(2, filteredList.size());
+    assertEquals("blabla usw", filteredList.get(0).getText());
+    assertEquals("", filteredList.get(1).getText());
+  }
+
+  @Test
+  public void testRemoveSpecialSignBottomBorder() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blabla usw"));
+    lines.add(new Line(""));
+    lines.add(new Line("* * *"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(2, filteredList.size());
+    assertEquals("blabla usw", filteredList.get(0).getText());
+    assertEquals("", filteredList.get(1).getText());
+  }
+
+  @Test
+  public void testRemoveSpecialSignsTopBorder() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("* * *"));
+    lines.add(new Line(""));
+    lines.add(new Line("blabla usw"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(2, filteredList.size());
+    assertEquals("", filteredList.get(0).getText());
+    assertEquals("blabla usw", filteredList.get(1).getText());
+  }
+
+  @Test
+  public void testMissingEndBracket() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("bla  blabla ["));
+    lines.add(new Line("text1"));
+    lines.add(new Line("text2"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(3, filteredList.size());
+    assertEquals("bla  blabla [", filteredList.get(0).getText());
+    assertEquals("text1", filteredList.get(1).getText());
+    assertEquals("text2", filteredList.get(2).getText());
+  }
+
+  @Test
+  public void testMissingStartBracket() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blablabla"));
+    lines.add(new Line("[blubb.]text1]"));
+    lines.add(new Line("text2"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(3, filteredList.size());
+    assertEquals("blablabla", filteredList.get(0).getText());
+    assertEquals(" text1]", filteredList.get(1).getText());
+    assertEquals("text2", filteredList.get(2).getText());
+  }
+
+  @Test
+  public void testDoubledBrackets() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("blablabla [bla["));
+    lines.add(new Line("te[xt1 ]bla["));
+    lines.add(new Line("]text2]"));
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(3, filteredList.size());
+    assertEquals("blablabla  ", filteredList.get(0).getText());
+    assertEquals(" bla ", filteredList.get(1).getText());
+    assertEquals(" text2]", filteredList.get(1).getText());
+  }
+
+  @Test
+  public void testDoubledBracketsInOneLine() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("bla1[bla2[bla3] blubb]"));
+
+
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(1, filteredList.size());
+    assertEquals("bla1 blubb]", filteredList.get(0).getText());
+  }
+
+
 }

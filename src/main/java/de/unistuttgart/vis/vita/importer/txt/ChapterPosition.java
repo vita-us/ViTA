@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Holds the information of the positions of a chapter's text and title in a List of lines. The
  * ChapterPosition does not know the text to analyze itself.
  */
-public class ChapterPosition {
+public class ChapterPosition implements Cloneable {
   private ArrayList<Integer> startList = new ArrayList<Integer>();
   private ArrayList<Integer> endList = new ArrayList<Integer>();
   private ArrayList<Integer> headingStartList = new ArrayList<Integer>();

@@ -59,14 +59,10 @@ public class TextImportModule implements Module<ImportResult> {
       throws InvalidPathException, FileNotFoundException, UnsupportedEncodingException,
       SecurityException {
     ImportResult importResult = null;
-    try {
-      TextSplitter textSpliter = new TextSplitter(importLines(filePath));
-      DocumentMetadata documentMetadata = extractMetadata(textSpliter.getMetadataList(), filePath);
-      DocumentPart documentPart = extractChapters(textSpliter.getTextList());
-      importResult = buildImportResult(documentMetadata, documentPart);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
+    TextSplitter textSplitter = new TextSplitter(importLines(filePath));
+    DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
+    DocumentPart documentPart = extractChapters(textSplitter.getTextList());
+    importResult = buildImportResult(documentMetadata, documentPart);
     return importResult;
   }
 
