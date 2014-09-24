@@ -31,10 +31,10 @@
       var width = $(container.node()).width();
       height = height || MINIMUM_GRAPH_HEIGHT;
 
-      graph = container.append("svg")
-          .classed("graph-network", true)
-          .attr("width", width)
-          .attr("height", height)
+      graph = container.append('svg')
+          .classed('graph-network', true)
+          .attr('width', width)
+          .attr('height', height)
           .append('g'); // an extra group for zooming
 
       var graphData = parseEntitiesToGraphData(entities);
@@ -170,7 +170,7 @@
       nodes = graph.selectAll('.node')
           .data(graphData.nodes)
           .enter().append('circle')
-          .attr("class", function(d) {
+          .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
