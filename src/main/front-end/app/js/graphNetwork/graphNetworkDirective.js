@@ -24,7 +24,7 @@
 
     var MINIMUM_GRAPH_HEIGHT = 400, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
-    var graph, force, nodes, links;
+    var graph, force, nodes, links, drag;
 
     function buildGraph(element, entities, height) {
       var container = d3.select(element[0]);
@@ -35,6 +35,24 @@
       var zoom = d3.behavior.zoom()
           .scaleExtent([0.25, 2])
           .on('zoom', zoomed);
+
+      drag = d3.behavior.drag()
+          .origin(function(d) {
+            return d;
+          })
+          .on('dragstart', function(d) {
+            // Prevent panning when dragging a node
+            d3.event.sourceEvent.stopPropagation();
+            d.fixed = true;
+          })
+          .on('drag', function(d) {
+            d.px = d3.event.x;
+            d.py = d3.event.y;
+            force.resume();
+          })
+          .on('dragend', function(d) {
+            d.fixed = false;
+          });
 
       graph = container.append('svg')
           .classed('graph-network', true)
@@ -185,7 +203,7 @@
           })
           .classed('node', true)
           .attr('r', 20)
-          .call(force.drag);
+          .call(drag);
     }
 
     function updateGraph(entities) {
