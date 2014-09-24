@@ -4,18 +4,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import de.unistuttgart.vis.vita.analysis.modules.ANNIEModuleTest;
-
 /**
- * A suite containing all back-end tests
+ * Tests for the analysis module infrastructure
  */
 @RunWith(Suite.class)
 @SuiteClasses({AnalysisControllerTest.class, TestModuleRegistry.class, ModuleClassTest.class,
-    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class,
-    ANNIEModuleTest.class})
-public class AnalysisTests {
+    AnalysisSchedulerTest.class, ModuleExecutionStateTest.class, AnalysisExecutorTest.class})
+public class AnalysisInfrastructureTests {
 
   // conform checkstyle rule HideUtilityClassConstructor
-  private AnalysisTests() {
+  private AnalysisInfrastructureTests() {
   }
 }

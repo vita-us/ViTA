@@ -7,7 +7,7 @@
   vitaControllers.controller('PersonCtrl', ['$scope', 'Document', 'Page', 'Person', '$routeParams',
       function($scope, Document, Page, Person, $routeParams) {
         var personName = '';
-    
+
         Person.get({
           documentId: $routeParams.documentId,
           personId: $routeParams.personId
@@ -15,7 +15,7 @@
           $scope.person = singlePerson;
           personName = singlePerson.displayName;
         });
-        
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
