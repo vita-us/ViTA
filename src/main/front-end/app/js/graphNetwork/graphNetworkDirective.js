@@ -1,4 +1,4 @@
-(function(angular) {
+(function(angular, $) {
   'use strict';
 
   var vitaDirectives = angular.module('vitaDirectives');
@@ -9,11 +9,10 @@
       restrict: 'A',
       scope: {
         entities: '=',
-        width: '@',
         height: '@'
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.width, scope.height);
+        buildGraph(element, scope.entities, scope.height);
 
         scope.$watch('entities', function(newValue, oldValue) {
           if (!angular.equals(newValue, oldValue)) {
@@ -23,14 +22,14 @@
       }
     };
 
-    var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+    var MINIMUM_GRAPH_HEIGHT = 400, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
     var graph, force, nodes, links;
 
-    function buildGraph(element, entities, width, height) {
+    function buildGraph(element, entities, height) {
       var container = d3.select(element[0]);
-      width = width || 800;
-      height = height || 400;
+      var width = $(container.node()).width();
+      height = height || MINIMUM_GRAPH_HEIGHT;
 
       graph = container.append("svg")
           .classed("graph-network", true)
@@ -192,4 +191,4 @@
     return directive;
   }]);
 
-})(angular);
+})(angular, jQuery);
