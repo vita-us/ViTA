@@ -7,8 +7,8 @@ describe('Fingerprint Directive', function() {
 
     scope = $rootScope.$new();
 
-    element = '<fingerprint data="fingerprint" parts="parts"></fingerprint>';
-    scope.fingerprint = TestData.fingerprint;
+    element = '<div data-fingerprint class="fingerprint-container" data-occurrences="occurrences" data-parts="parts"></div>';
+    scope.occurrences = TestData.fingerprint.occurrences;
     scope.parts = TestData.parts.parts;
 
     element = $compile(element)(scope);

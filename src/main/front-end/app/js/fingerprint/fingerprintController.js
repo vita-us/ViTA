@@ -12,8 +12,8 @@
         Fingerprint.get({
           documentId: $routeParams.documentId,
           entityIds: '456,789'
-        }, function(fingerprint) {
-          $scope.fingerprint = fingerprint;
+        }, function(response) {
+          $scope.occurrences = response.occurrences;
         });
       }]);
 

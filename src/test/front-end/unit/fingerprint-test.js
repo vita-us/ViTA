@@ -23,9 +23,9 @@ describe('FingerprintCtrl', function() {
 
   it('should create "fingerprint" model', inject(function($controller, TestData) {
 
-    expect(scope.fingerprint).not.toBeDefined();
+    expect(scope.occurrences).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.fingerprint).toEqualData(TestData.fingerprint);
+    expect(scope.occurrences).toEqualData(TestData.fingerprint.occurrences);
 
   }));
 

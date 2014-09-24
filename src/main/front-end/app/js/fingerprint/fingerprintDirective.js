@@ -41,7 +41,7 @@
       var chapterLineGroup = svg.append('g').classed('chapter-separators', true);
 
       // wait for our data to load
-      scope.$watch('data', function(newValue, oldValue) {
+      scope.$watch('occurrences', function(newValue, oldValue) {
         if (!angular.isUndefined(oldValue)) {
           removeFingerPrint();
         }
@@ -61,7 +61,7 @@
       });
 
       function buildFingerPrint(scope, element, attrs) {
-        var occurrences = scope.data.occurrences || [];
+        var occurrences = scope.occurrences || [];
         var occurrenceCount = occurrences.length;
 
         occurrences.map(function(occurrence, index) {
@@ -270,10 +270,10 @@
     }
 
     return {
-      restrict: 'EA',
+      restrict: 'A',
       scope: {
-        data: '=data',
-        parts: '=parts',
+        occurrences: '=',
+        parts: '=',
       },
       link: link,
     };
