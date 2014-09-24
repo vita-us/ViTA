@@ -1,10 +1,12 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.output;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**

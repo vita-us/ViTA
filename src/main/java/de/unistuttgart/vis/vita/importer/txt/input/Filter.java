@@ -1,9 +1,12 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.input;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 /**
  * The Filter filters unnecessary comments in the entireEbookList and removes them

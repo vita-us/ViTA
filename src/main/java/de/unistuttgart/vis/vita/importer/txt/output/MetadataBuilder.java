@@ -1,6 +1,8 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.output;
 
 import java.util.List;
+
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * The MetadataBuilder builds the metadata values by editing the commited metadata of the MetadataAnalyzer

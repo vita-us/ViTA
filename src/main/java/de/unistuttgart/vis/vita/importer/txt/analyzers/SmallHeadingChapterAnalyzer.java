@@ -1,6 +1,10 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 /**
  * Chapters will be built every time a Smallheading is found and there are at least two Whitelines

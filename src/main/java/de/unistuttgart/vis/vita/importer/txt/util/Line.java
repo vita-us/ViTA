@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

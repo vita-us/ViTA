@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -6,6 +6,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * Uses different Chapter Analyzer and decides which result is most likely the best result for a

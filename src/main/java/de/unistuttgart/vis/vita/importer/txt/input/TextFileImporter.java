@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.input;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * Simple Class to import txt-files and output an ArrayList of Lines. The Encoding should be ASCII

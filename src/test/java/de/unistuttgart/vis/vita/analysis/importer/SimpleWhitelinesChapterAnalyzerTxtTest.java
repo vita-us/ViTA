@@ -13,10 +13,10 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.BigHeadingChapterAnalyzer;
-import de.unistuttgart.vis.vita.importer.txt.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.SimpleWhitelinesChapterAnalyzer;
-import de.unistuttgart.vis.vita.importer.txt.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.analyzers.BigHeadingChapterAnalyzer;
+import de.unistuttgart.vis.vita.importer.txt.analyzers.SimpleWhitelinesChapterAnalyzer;
+import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 
 public class SimpleWhitelinesChapterAnalyzerTxtTest {
 

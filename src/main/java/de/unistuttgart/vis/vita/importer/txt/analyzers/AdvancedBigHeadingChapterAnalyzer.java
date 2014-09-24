@@ -1,6 +1,10 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 /**
  * The advanced form of the Big Heading Chapter Analyzer tries to extend the heading with one

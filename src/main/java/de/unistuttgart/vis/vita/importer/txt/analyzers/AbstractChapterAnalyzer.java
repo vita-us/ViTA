@@ -1,8 +1,12 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 /**
  * Implements Callable returning ChapterPosition.<br>

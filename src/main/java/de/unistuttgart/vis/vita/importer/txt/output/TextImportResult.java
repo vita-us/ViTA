@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.output;
 
 import java.util.List;
 

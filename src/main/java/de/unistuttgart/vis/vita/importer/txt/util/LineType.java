@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.util;
 
 public enum LineType {
   WHITELINE, DATADIVIDER, SPECIALSIGNS, MARKEDHEADING, PREFACE, TABLEOFCONTENTS, BIGHEADING, SMALLHEADING, TEXT, UNKNOWN;

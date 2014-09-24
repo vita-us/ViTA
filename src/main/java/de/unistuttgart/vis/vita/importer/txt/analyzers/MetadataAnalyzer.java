@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**

@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.Line;
-import de.unistuttgart.vis.vita.importer.txt.LineType;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 public class LineTxtTest {
 

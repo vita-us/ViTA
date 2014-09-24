@@ -1,6 +1,9 @@
-package de.unistuttgart.vis.vita.importer.txt;
+package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * Not really a Chapter Analyzer, because it does not analyze the text. It simply puts the whole

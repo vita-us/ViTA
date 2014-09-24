@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.Line;
-import de.unistuttgart.vis.vita.importer.txt.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 public class TextFileImporterTxtTest {
 

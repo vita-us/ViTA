@@ -15,9 +15,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.Filter;
-import de.unistuttgart.vis.vita.importer.txt.Line;
-import de.unistuttgart.vis.vita.importer.txt.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.input.Filter;
+import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * JUnit test on Filter
