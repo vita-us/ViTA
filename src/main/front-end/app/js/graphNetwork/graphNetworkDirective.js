@@ -31,10 +31,16 @@
       var width = $(container.node()).width();
       height = height || MINIMUM_GRAPH_HEIGHT;
 
+      // Set the zoom with its min and max magnifications
+      var zoom = d3.behavior.zoom()
+          .scaleExtent([0.25, 2])
+          .on('zoom', zoomed);
+
       graph = container.append('svg')
           .classed('graph-network', true)
           .attr('width', width)
           .attr('height', height)
+          .call(zoom)
           .append('g'); // an extra group for zooming
 
       var graphData = parseEntitiesToGraphData(entities);
@@ -51,6 +57,10 @@
       redrawElements(graphData);
 
       force.start();
+    }
+
+    function zoomed() {
+      graph.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
     }
 
     function parseEntitiesToGraphData(entities) {
