@@ -16,7 +16,6 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.StanfordNLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
@@ -52,13 +51,12 @@ public class StanfordNLPModuleTest {
   }
   
   private void fillText() {
-    Document document = new Document();
     DocumentPart part = new DocumentPart();
     parts.add(part);
 
     chapterObjects = new ArrayList<>();
     for (String chapterText : CHAPTERS) {
-      Chapter chapter = new Chapter(document);
+      Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
       part.getChapters().add(chapter);
