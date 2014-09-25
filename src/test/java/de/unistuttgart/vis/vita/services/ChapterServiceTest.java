@@ -33,7 +33,7 @@ public class ChapterServiceTest extends ServiceTest {
     Document testDoc = new DocumentTestData().createTestDocument(1);
     documentId = testDoc.getId();
     testData = new ChapterTestData();
-    Chapter testChapter = testData.createTestChapter(testDoc);
+    Chapter testChapter = testData.createTestChapter();
     chapterId = testChapter.getId();
     
     // persist test data

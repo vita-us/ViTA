@@ -46,6 +46,7 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
     // check whether data is correct
     assertEquals(1, chapters.size());
     Chapter readChapter = chapters.get(0);
+
     testData.checkData(readChapter);
   }
 

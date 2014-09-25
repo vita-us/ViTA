@@ -124,7 +124,7 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
-    Chapter chapter = new Chapter(doc);
+    Chapter chapter = new Chapter();
     TextPosition pos1 = new TextPosition(chapter, 10);
     TextPosition pos2 = new TextPosition(chapter, 20);
     TextPosition pos3 = new TextPosition(chapter, 30);

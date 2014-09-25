@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * Holds test data for chapters and methods to create test chapters and check whether given data
@@ -16,24 +15,15 @@ public class ChapterTestData {
   public static final String TEST_CHAPTER_TEXT = "This is a very short Chapter.";
   public static final String TEST_CHAPTER_TITLE = "A Knife in the Dark";
   
-  /**
-   * Creates a new Chapter, sets attributes to test values and returns it.
-   * 
-   * @return test chapter
-   */
-  public  Chapter createTestChapter() {
-    return createTestChapter(null);
-  }
   
   /**
    * Creates a new Chapter belonging to the given Document and sets attributes to test values and 
    * returns it.
    * 
-   * @param pDocument - the document the created chapter should belong to
    * @return
    */
-  public Chapter createTestChapter(Document pDocument) {
-    Chapter chapter = new Chapter(pDocument);
+  public Chapter createTestChapter() {
+    Chapter chapter = new Chapter();
 
     chapter.setLength(TEST_CHAPTER_LENGTH);
     chapter.setNumber(TEST_CHAPTER_NUMBER);

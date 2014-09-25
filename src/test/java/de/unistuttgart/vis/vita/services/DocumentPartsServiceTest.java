@@ -38,7 +38,7 @@ public class DocumentPartsServiceTest extends ServiceTest {
     
     testData = new DocumentPartTestData();
     DocumentPart testPart1 = testData.createTestDocumentPart(1);
-    Chapter testChapter = new ChapterTestData().createTestChapter(testDoc);
+    Chapter testChapter = new ChapterTestData().createTestChapter();
     testPart1.getChapters().add(testChapter);
     
     DocumentPart testPart2 = testData.createTestDocumentPart(2);
