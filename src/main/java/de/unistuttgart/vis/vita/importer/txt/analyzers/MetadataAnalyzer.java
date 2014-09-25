@@ -34,7 +34,8 @@ public class MetadataAnalyzer {
   private static final String EDITION = "^" + WHITESPACE + "((Edition:)|(EDITION:)).+";
   private List<Line> metadataList = new ArrayList<Line>();
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
-      "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:"};
+      "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:",
+      "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:"};
   private Path path;
   private Calendar date = null;
   private DocumentMetadata documentMetadata = new DocumentMetadata();
@@ -216,28 +217,22 @@ public class MetadataAnalyzer {
    * @return
    */
   private boolean isValidPublisherYear(String publisherYear) {
-    List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
-      {
-        add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
-        add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
-        add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
-      }
-    };
+    List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>();
+    dateFormats.add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
 
-    for(SimpleDateFormat dateFormat: dateFormats){
-      try{
+    for (SimpleDateFormat dateFormat : dateFormats) {
+      try {
         date = Calendar.getInstance();
         date.setTime(dateFormat.parse(publisherYear));
         return true;
-      }catch(ParseException ex){
-        date = null;
-        Logger log = Logger.getLogger("Exception");
-        log.log(Level.SEVERE, "Incorrect date format", ex);    
+      } catch (ParseException ex) {
       }
     }
     return false;
   }
-  
+
   /**
    * Check if the current metadata is multiline
    * 
@@ -246,12 +241,9 @@ public class MetadataAnalyzer {
    */
   private boolean isMetadataMultiLine(Line newMetadataLine) {
     for (int i = metadataList.indexOf(newMetadataLine) + 1; i < metadataList.size(); i++) {
-      if (!StringUtils.startsWithAny(metadataList.get(i).getText(), metadataStartArray)
-          && !metadataList.get(i).getText().matches("^[\\s]*$")) {
-        return true;
-      } else {
-        return false;
-      }
+      return !StringUtils.startsWithAny(metadataList.get(i).getText(), metadataStartArray)
+          && !metadataList.get(i).getText().matches("^[\\s]*$");
+
     }
     return false;
   }

@@ -42,9 +42,9 @@ public class FilterTxtTest {
       InvalidPathException, FileNotFoundException, SecurityException {
     Path testPath = Paths.get(getClass().getResource("text1.txt").toURI());
     TextFileImporter textFileImporter;
-      textFileImporter = new TextFileImporter(testPath);
-      Filter filter = new Filter(textFileImporter.getLines());
-      filteredList = filter.filterEbookText();
+    textFileImporter = new TextFileImporter(testPath);
+    Filter filter = new Filter(textFileImporter.getLines());
+    filteredList = filter.filterEbookText();
   }
 
   @Test
@@ -96,19 +96,21 @@ public class FilterTxtTest {
   @Test
   public void testCommentInAWholeLineWithSpacesAround() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla"));
+    lines.add(new Line("comment1"));
     lines.add(new Line(""));
-    lines.add(new Line("[comment]"));
+    lines.add(new Line("[comment2]"));
     lines.add(new Line(""));
-    lines.add(new Line("blubb"));
+    lines.add(new Line("text"));
 
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
 
-    assertEquals(3, filteredList.size());
-    assertEquals("blabla", filteredList.get(0).getText());
+    assertEquals(5, filteredList.size());
+    assertEquals("comment1", filteredList.get(0).getText());
     assertEquals("", filteredList.get(1).getText());
-    assertEquals("blubb", filteredList.get(2).getText());
+    assertEquals(" ", filteredList.get(2).getText());
+    assertEquals("", filteredList.get(3).getText());
+    assertEquals("text", filteredList.get(4).getText());
   }
 
   @Test
@@ -204,38 +206,32 @@ public class FilterTxtTest {
 
     assertEquals(3, filteredList.size());
     assertEquals("blablabla", filteredList.get(0).getText());
-    assertEquals(" text1]", filteredList.get(1).getText());
+    assertEquals("", filteredList.get(1).getText());
     assertEquals("text2", filteredList.get(2).getText());
   }
 
   @Test
   public void testDoubledBrackets() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blablabla [bla["));
-    lines.add(new Line("te[xt1 ]bla["));
-    lines.add(new Line("]text2]"));
-
+    lines.add(new Line("text [bla[te[xt1 ]bla[]text2]"));
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
-
-    assertEquals(3, filteredList.size());
-    assertEquals("blablabla  ", filteredList.get(0).getText());
-    assertEquals(" bla ", filteredList.get(1).getText());
-    assertEquals(" text2]", filteredList.get(1).getText());
+    
+    assertEquals(1, filteredList.size());
+    assertEquals("text ", filteredList.get(0).getText());
+    
   }
 
   @Test
   public void testDoubledBracketsInOneLine() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("bla1[bla2[bla3] blubb]"));
+    lines.add(new Line("text[bla2[bla3] blubb]"));
 
 
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
 
     assertEquals(1, filteredList.size());
-    assertEquals("bla1 blubb]", filteredList.get(0).getText());
+    assertEquals("text", filteredList.get(0).getText());
   }
-
-
 }

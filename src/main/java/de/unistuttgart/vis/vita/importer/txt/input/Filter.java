@@ -17,8 +17,7 @@ public class Filter {
 
   private static final String DEFAULT_BEGIN_BRACKET = "(\\[)";
   private static final String DEFAULT_END_BRACKET = "(\\])";
-  private static final String DEFAULT_COMMENT_FILTER =
-      "(([\\w\\s][\\p{Punct}&&[^\\]]])*\\[.*\\]([\\w\\s][\\p{Punct}&&[^\\]]])*)+";
+  private static final String DEFAULT_COMMENT_FILTER = "(.*[^\\]])(\\[.*\\].*[^\\[\\]])+";
   private static final String DEFAULT_COMMENT_FILTER_WITH_WHITESPACES =
       "(([\\w\\s][\\p{Punct}&&[^\\]]])*\\s+\\[.*\\]\\s+([\\w\\s][\\p{Punct}&&[^\\]]])*)+";
   private static final String DEFAULT_COMMENT_BEGIN_WITH_WHITESPACES =
@@ -33,6 +32,8 @@ public class Filter {
   private static final String REPLACE_DEFAULT_COMMENT_END_3 = "[\\w\\s\\p{Punct}&&[^\\]]]*(\\])";
 
   private static final String DEFAULT_CHARACTERS_EX_END_BRACKET = "[\\w\\s\\p{Punct}&&[^\\]]]*";
+  private static final String ALL_CHARACTERS = ".*";
+  private static final String REPLACE_ALL_CHARACTERS = "\\[.*\\]";
 
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
@@ -42,15 +43,19 @@ public class Filter {
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + ")+";
 
-  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
+  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + ")+";
+  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + ALL_CHARACTERS
+      + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
   private static final String DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + "\\s*" + DEFAULT_BEGIN_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s*"
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
+
   private static final String DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
@@ -91,7 +96,12 @@ public class Filter {
     for (Line line : entireEbookList) {
       if (line.getText() != null) {
         if (line.getText().matches(DEFAULT_COMMENT_FILTER)) {
-          editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
+          if (line.getText().matches("(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+")) {
+            editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
+
+          } else {
+            editedLine = replaceMultipleWhitespaces(line, "\\[.*\\]");
+          }
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
 
         } else if (line.getText().matches(DEFAULT_COMMENT_FILTER_WITH_WHITESPACES)) {
@@ -103,6 +113,7 @@ public class Filter {
       }
     }
 
+
     // Set the new edited line entry.getValue() in the entireEbookList at the position
     // entry.getKey()
     for (Map.Entry<Integer, Line> entry : defaultCommentMap.entrySet()) {
@@ -111,8 +122,9 @@ public class Filter {
 
     // Remove the unnecessary comments in the entireEbookList
     entireEbookList.removeAll(removeList);
-
     removeList.clear();
+    defaultCommentMap.clear();
+
   }
 
   /**
@@ -131,7 +143,7 @@ public class Filter {
       // if there is not even one line after the current with an end bracket, still the current line
       // could have
       // unnecessary comments, so remove them
-    } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+    } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
       if (line.getText().matches(DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE)) {
         editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
 
@@ -139,6 +151,10 @@ public class Filter {
         editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
       }
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+    } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+      editedLine = line.getText().replaceAll(REPLACE_ALL_CHARACTERS, "");
+      defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+
     }
   }
 
@@ -213,7 +229,7 @@ public class Filter {
         return false;
 
       } else if (entireEbookList.get(i).getText()
-          .matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+          .matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
         return false;
 
       } else if (entireEbookList.get(i).getText()

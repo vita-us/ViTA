@@ -52,10 +52,10 @@ public class MetadataAnalyzerTxtTest {
 
     {
       Path testPath = Paths.get(getClass().getResource("text2.txt").toURI());
-    TextFileImporter textFileImporter;
-    textFileImporter = new TextFileImporter(testPath);
-    List<Line> testList = textFileImporter.getLines();
-    MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      TextFileImporter textFileImporter;
+      textFileImporter = new TextFileImporter(testPath);
+      List<Line> testList = textFileImporter.getLines();
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
       documentMetadataText2 = metadataAnalyzer.extractMetadata();
     }
   }
@@ -63,7 +63,7 @@ public class MetadataAnalyzerTxtTest {
   @Test
   public void testMetadataTitle() {
     assertEquals("The Lord of the Rings", documentMetadataText1.getTitle());
-    assertEquals("\"Captains Courageous\"", documentMetadataText2.getTitle());
+    assertEquals("\"Captains # Courageous\"", documentMetadataText2.getTitle());
 
   }
 
@@ -87,7 +87,7 @@ public class MetadataAnalyzerTxtTest {
 
   @Test
   public void testPublisher() {
-    assertEquals("Paul Paulson", documentMetadataText2.getPublisher());
+    assertEquals("Karl Klobus", documentMetadataText2.getPublisher());
   }
 
   @Test
