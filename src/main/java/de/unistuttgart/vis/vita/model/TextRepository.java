@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.util.Version;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -31,10 +28,26 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
-  private static final String INDEX_PATH = "~/.vita/lucene/";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
   private Directory index;
   private IndexReader indexReader;
+  private DirectoryFactory directoryFactory;
+
+  /**
+   * Creates a TextRepository with the default DirectoryFactory
+   */
+  public TextRepository() {
+    directoryFactory = new DefaultDirectoryFactory();
+  }
+
+  /**
+   * Creates a TextRepository with a custom DirectoryFactory
+   * 
+   * @param directoryFactory the factory that should be used to instantiate lucene directories
+   */
+  public TextRepository(DirectoryFactory directoryFactory) {
+    this.directoryFactory = directoryFactory;
+  }
 
   // list of directories
   private List<Directory> indexes = new ArrayList<Directory>();
@@ -50,7 +63,7 @@ public class TextRepository {
    */
   public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
       ParseException {
-    index = FSDirectory.open(new File(INDEX_PATH + documentId));
+    index = directoryFactory.getDirectory(documentId);
     indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
@@ -69,7 +82,7 @@ public class TextRepository {
       throws IOException {
 
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
-    index = new MMapDirectory(new File(INDEX_PATH + documentId));
+    index = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(index, config);
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
@@ -88,7 +101,7 @@ public class TextRepository {
    * @throws IOException
    */
   public IndexSearcher getIndexSearcherForDocument(String documentId) throws IOException {
-    index = FSDirectory.open(new File(INDEX_PATH + documentId));
+    index = directoryFactory.getDirectory(documentId);
     indexReader = DirectoryReader.open(index);
     return new IndexSearcher(indexReader);
   }

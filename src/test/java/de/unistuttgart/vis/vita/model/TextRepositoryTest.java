@@ -1,9 +1,8 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,10 +32,12 @@ public class TextRepositoryTest {
 
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
-  private static final String INDEX_PATH = "~/.vita/lucene/";
   private final String document1Id = "document1";
   private final String document2Id = "document2";
+  private final Directory directory1 = new RAMDirectory();
+  private final Directory directory2 = new RAMDirectory();
 
+  private DirectoryFactory directoryFactory;
   private TextRepository textRepository = new TextRepository();
   private List<Chapter> chapterList1;
   private List<Chapter> chapterList2;
@@ -46,7 +47,11 @@ public class TextRepositoryTest {
 
   @Before
   public void setUp() throws IOException, ParseException {
-
+    directoryFactory = mock(DirectoryFactory.class);
+    when(directoryFactory.getDirectory(document1Id)).thenReturn(directory1);
+    when(directoryFactory.getDirectory(document2Id)).thenReturn(directory2);
+    textRepository = new TextRepository(directoryFactory);
+    
     storeChapterTexts();
 
     chapterList1.get(0).setText("This is a false text");
@@ -68,7 +73,7 @@ public class TextRepositoryTest {
   private Document getStoredDocument(Chapter chapter, String documentId) throws IOException,
       ParseException {
 
-    Directory index = FSDirectory.open(new File(INDEX_PATH + documentId));
+    Directory index = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
