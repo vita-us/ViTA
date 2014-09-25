@@ -34,7 +34,6 @@ public class LuceneModuleTest {
 
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
-  private static final String INDEX_PATH = "~/.vita/lucene/";
 
   private LuceneModule luceneModule;
   private ModuleResultProvider moduleResultProvider;
@@ -72,8 +71,7 @@ public class LuceneModuleTest {
    * @throws IOException
    */
   private void fillText() {
-    de.unistuttgart.vis.vita.model.document.Document document =
-        new de.unistuttgart.vis.vita.model.document.Document();
+    
     DocumentPart documentPart = new DocumentPart();
     documentParts.add(documentPart);
 
