@@ -29,8 +29,7 @@ public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
-  private Directory index;
-  private IndexReader indexReader;
+
   private DirectoryFactory directoryFactory;
 
   /**
@@ -63,8 +62,8 @@ public class TextRepository {
    */
   public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
       ParseException {
-    index = directoryFactory.getDirectory(documentId);
-    indexReader = DirectoryReader.open(index);
+    Directory directory = directoryFactory.getDirectory(documentId);
+    IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
     Query query = queryParser.parse(chapterToPopulate.getId());
@@ -82,14 +81,14 @@ public class TextRepository {
       throws IOException {
 
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
-    index = directoryFactory.getDirectory(documentId);
-    IndexWriter indexWriter = new IndexWriter(index, config);
+    Directory directory = directoryFactory.getDirectory(documentId);
+    IndexWriter indexWriter = new IndexWriter(directory, config);
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }
 
     // at the created index along with its documents to the indexes list
-    indexes.add(index);
+    indexes.add(directory);
     indexWriter.close();
   }
 
@@ -101,8 +100,8 @@ public class TextRepository {
    * @throws IOException
    */
   public IndexSearcher getIndexSearcherForDocument(String documentId) throws IOException {
-    index = directoryFactory.getDirectory(documentId);
-    indexReader = DirectoryReader.open(index);
+    Directory directory = directoryFactory.getDirectory(documentId);
+    IndexReader indexReader = DirectoryReader.open(directory);
     return new IndexSearcher(indexReader);
   }
 
