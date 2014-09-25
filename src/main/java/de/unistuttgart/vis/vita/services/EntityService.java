@@ -5,6 +5,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 
+import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
+
 /**
  * Redirects attribute requests for the current entity to the right AttributeService.
  */
@@ -29,11 +31,21 @@ public class EntityService {
   /**
    * Returns the AttributeService for the current Entity.
    * 
-   * @return the AttributeService which answers the request
+   * @return the AttributeService answering the request
    */
   @Path("/attributes")
   public AttributeService getAttributes() {
     return resourceContext.getResource(AttributeService.class).setAttributeId(entityId);
+  }
+  
+  /**
+   * Returns the EntityOccurrencesService for the current Entity.
+   * 
+   * @return the EntityOccurrencesService which answering the request
+   */
+  @Path("/occurrences")
+  public EntityOccurrencesService getOccurrences() {
+    return resourceContext.getResource(EntityOccurrencesService.class).setEntityId(entityId);
   }
 
 }

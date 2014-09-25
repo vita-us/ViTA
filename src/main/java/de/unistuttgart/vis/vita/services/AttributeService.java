@@ -1,25 +1,36 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesService;
 
 /**
  * Provides methods to GET an attribute with current id
  */
+@ManagedBean
 public class AttributeService {
 
   private EntityManager em;
+  
   private String attributeId;
+  private String entityId;
+  
+  @Context
+  private ResourceContext resourceContext;
 
   @Inject
   public AttributeService(Model model) {
@@ -27,12 +38,24 @@ public class AttributeService {
   }
 
   /**
-   * Sets the id of the attribute this resource should represent
+   * Sets the id of the attribute this resource should represent and returns itself.
    * 
-   * @param id the id
+   * @param attId the id
+   * @return AttributeService
    */
-  public AttributeService setAttributeId(String id) {
-    this.attributeId = id;
+  public AttributeService setAttributeId(String attId) {
+    this.attributeId = attId;
+    return this;
+  }
+
+  /**
+   * Sets the id of the entity with this attribute and returns itself.
+   * 
+   * @param eId - the id of the entity having this attribute
+   * @return AttributeService
+   */
+  public AttributeService setEntityId(String eId) {
+    this.entityId = eId;
     return this;
   }
 
@@ -60,6 +83,18 @@ public class AttributeService {
                                                       Attribute.class);
     query.setParameter("attributeId", attributeId);
     return query.getSingleResult();
+  }
+  
+  /**
+   * Returns the AttributeOccurrencesService for the current attribute and entity.
+   * 
+   * @return the AttributeOccurrencesService answering this request
+   */
+  @Path("/occurrences")
+  public AttributeOccurrencesService getOccurrences() {
+    return resourceContext.getResource(AttributeOccurrencesService.class)
+                                        .setAttributeId(attributeId)
+                                        .setEntityId(entityId);
   }
 
 }

@@ -3,13 +3,17 @@ package de.unistuttgart.vis.vita.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
@@ -17,21 +21,33 @@ import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
 /**
- * Provides method returning EntityRelations requested using GET.
+ * Provides methods returning EntityRelations and its occurrences requested using GET.
  */
+@ManagedBean
 public class EntityRelationsService {
   
+  private String documentId;
+  
   private EntityManager em;
+  
+  @Context
+  private ResourceContext resourceContext;
   
   @Inject
   public EntityRelationsService(Model model) {
     em = model.getEntityManager();
   }
   
+  public EntityRelationsService setDocumentId(String docId) {
+    this.documentId = docId;
+    return this;
+  }
+
   /**
    * Returns the EntityRelations matching the given criteria.
    * 
@@ -64,9 +80,7 @@ public class EntityRelationsService {
     } else {
       
       // convert entity id string
-      for (String substring : eIds.replaceAll("\\[|\\]","").split(",")) {
-        entityIds.add(substring.trim());
-      }
+      entityIds = convertIdStringToList(eIds);
       
       // get relations from database how they are read depends on 'type'
       switch (type.toLowerCase()) {
@@ -86,6 +100,14 @@ public class EntityRelationsService {
     
     // create the response and return it
     return new RelationsResponse(entityIds, createConfiguration(relations));
+  }
+
+  private List<String> convertIdStringToList(String idString) {
+    List<String> idList = new ArrayList<>();
+    for (String subString : idString.replaceAll("\\[|\\]","").split(",")) {
+      idList.add(subString.trim());
+    }
+    return idList;
   }
 
   /**
@@ -145,6 +167,11 @@ public class EntityRelationsService {
    */
   private boolean isValidRangeValue(double value) {
     return value >= 0.0 && value <= 1.0;
+  }
+  
+  @Path("/occurrences")
+  public RelationOccurrencesService getOccurrences() {
+    return resourceContext.getResource(RelationOccurrencesService.class).setDocumentId(documentId);
   }
 
 }

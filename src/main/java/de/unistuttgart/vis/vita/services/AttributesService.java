@@ -69,7 +69,8 @@ public class AttributesService {
 
   @Path("{attributeId}")
   public AttributeService getAttribute(@PathParam("attributeId") String id) {
-    return resourceContext.getResource(AttributeService.class).setAttributeId(id);
+    return resourceContext.getResource(AttributeService.class).setAttributeId(id)
+                                                              .setEntityId(entityId);
   }
 
 }
