@@ -254,7 +254,8 @@ public class Filter {
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
     String editStringLine = editLine.getText().replaceAll(regex, " ");
-    return editStringLine = editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
+    String editedLine = editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
+    return editedLine;
   }
 
 
