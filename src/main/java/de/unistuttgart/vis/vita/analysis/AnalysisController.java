@@ -84,7 +84,7 @@ public class AnalysisController {
   
   private synchronized void startAnalysis(Document document) {
     Path path = documentPaths.get(document.getId());
-    currentExecuter = executorFactory.createExecutor(path);
+    currentExecuter = executorFactory.createExecutor(document.getId(), path);
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;

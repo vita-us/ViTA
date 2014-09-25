@@ -9,10 +9,10 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.analysis.modules.DualDependentModule;
-import de.unistuttgart.vis.vita.analysis.modules.IntProvidingModule;
-import de.unistuttgart.vis.vita.analysis.modules.ManualModule;
-import de.unistuttgart.vis.vita.analysis.modules.MockModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.DualDependentModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.IntProvidingModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.ManualModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.MockModule;
 
 public class AnalysisSchedulerTest {
   private AnalysisScheduler scheduler;

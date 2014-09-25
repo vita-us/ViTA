@@ -10,8 +10,8 @@ import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleDependentOnSelf;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutAnnotation;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutInterfaceImplementation;
 import de.unistuttgart.vis.vita.analysis.invalidmodules.ModuleWithoutResultClass;
-import de.unistuttgart.vis.vita.analysis.modules.ManualModule;
-import de.unistuttgart.vis.vita.analysis.modules.MockModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.ManualModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.MockModule;
 
 public class ModuleClassTest {
 

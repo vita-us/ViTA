@@ -74,7 +74,7 @@ public class DocumentPersistenceTest extends AbstractPersistenceTest {
     part1.setNumber(TEST_PART_NUMBER);
     doc.getContent().getParts().add(part1);
     
-    Chapter chapter1 = new Chapter(doc);
+    Chapter chapter1 = new Chapter();
     chapter1.setTitle(TEST_CHAPTER_TITLE);
     chapter1.setNumber(TEST_CHAPTER_NUMBER);
     part1.getChapters().add(chapter1);

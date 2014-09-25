@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import java.nio.file.Path;
 
+import de.unistuttgart.vis.vita.analysis.modules.DocumentPersistenceContextModule;
 import de.unistuttgart.vis.vita.analysis.modules.ImportModule;
 import de.unistuttgart.vis.vita.analysis.modules.MainAnalysisModule;
 import de.unistuttgart.vis.vita.analysis.modules.ModelProviderModule;
@@ -22,11 +23,13 @@ public class DefaultAnalysisExecutorFactory implements AnalysisExecutorFactory {
   }
 
   @Override
-  public AnalysisExecutor createExecutor(Path documentPath) {
+  public AnalysisExecutor createExecutor(String documentId, Path documentPath) {
     ImportModule importModule = new ImportModule(documentPath);
     ModelProviderModule modelModule = new ModelProviderModule(model);
+    DocumentPersistenceContextModule documentPersistenceContextModule =
+        new DocumentPersistenceContextModule(documentId);
     AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE),
-        importModule, modelModule);
+        importModule, modelModule, documentPersistenceContextModule);
     return new AnalysisExecutor(scheduler.getScheduledModules());
   }
 }

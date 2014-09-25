@@ -19,12 +19,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.hibernate.type.descriptor.sql.NCharTypeDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 /**
  * JUnit test on TextRepository
@@ -36,13 +34,12 @@ public class TextRepositoryTest {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
   private static final String INDEX_PATH = "~/.vita/lucene/";
+  private final String document1Id = "document1";
+  private final String document2Id = "document2";
 
   private TextRepository textRepository = new TextRepository();
-  private Chapter chapter1;
   private List<Chapter> chapterList1;
   private List<Chapter> chapterList2;
-  private IndexSearcher indexSearcherForDocument1;
-  private de.unistuttgart.vis.vita.model.document.Document document1;
   private final static String[] CHAPTERS_TEXTS = {"This is the text of chapter one.",
       "This is the text of chapter two.", "This is the text of chapter three.",
       "This is the text of chapter four.",};
@@ -52,13 +49,12 @@ public class TextRepositoryTest {
 
     storeChapterTexts();
 
-    // change the text of chapter1 to "This is a false text"
-    chapter1.setText("This is a false text");
+    chapterList1.get(0).setText("This is a false text");
 
     // after populating the chapter text, the text of chapter1 is the stored text of chapter1
     // "This is the text of chapter one"
-    textRepository.populateChapterText(chapter1);
-    indexSearcherForDocument1 = textRepository.getIndexSearcherForDocument(document1);
+    textRepository.populateChapterText(chapterList1.get(0), document1Id);
+    // indexSearcherForDocument1 = textRepository.getIndexSearcherForDocument(document1);
 
   }
 
@@ -69,8 +65,10 @@ public class TextRepositoryTest {
    * @throws IOException
    * @throws ParseException
    */
-  private Document getStoredDocument(Chapter chapter) throws IOException, ParseException {
-    Directory index = FSDirectory.open(new File(INDEX_PATH + chapter.getDocument().getId()));
+  private Document getStoredDocument(Chapter chapter, String documentId) throws IOException,
+      ParseException {
+
+    Directory index = FSDirectory.open(new File(INDEX_PATH + documentId));
     IndexReader indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
@@ -87,12 +85,12 @@ public class TextRepositoryTest {
    * @throws IOException
    * @throws ParseException
    */
-  private Document getStoredDocument1(Chapter chapter, IndexSearcher indexSearcherForDocument1)
+  private Document getStoredDocument(Chapter chapter, IndexSearcher indexSearcherForDocument)
       throws IOException, ParseException {
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
     Query query = queryParser.parse(chapter.getId());
-    ScoreDoc[] hits = indexSearcherForDocument1.search(query, 1).scoreDocs;
-    Document hitDoc = indexSearcherForDocument1.doc(hits[0].doc);
+    ScoreDoc[] hits = indexSearcherForDocument.search(query, 1).scoreDocs;
+    Document hitDoc = indexSearcherForDocument.doc(hits[0].doc);
     return hitDoc;
   }
 
@@ -100,32 +98,27 @@ public class TextRepositoryTest {
    * Creates chapters and stores their texts in lucene
    * 
    * @throws IOException
+   * @throws ParseException
    */
-  private void storeChapterTexts() throws IOException {
-    document1 = new de.unistuttgart.vis.vita.model.document.Document();
-    de.unistuttgart.vis.vita.model.document.Document document2 =
-        new de.unistuttgart.vis.vita.model.document.Document();
+  private void storeChapterTexts() throws IOException, ParseException {
 
     chapterList1 = new ArrayList<Chapter>();
     chapterList2 = new ArrayList<Chapter>();
 
     for (int i = 0; i < 2; i++) {
-      Chapter chapter = new Chapter(document1);
+      Chapter chapter = new Chapter();
       chapter.setText(CHAPTERS_TEXTS[i]);
       chapterList1.add(chapter);
     }
 
-    // chapter1 is the first chapter of chapterList1
-    chapter1 = chapterList1.get(0);
-
     for (int i = 2; i < 4; i++) {
-      Chapter chapter = new Chapter(document2);
+      Chapter chapter = new Chapter();
       chapter.setText(CHAPTERS_TEXTS[i]);
       chapterList2.add(chapter);
     }
 
-    textRepository.storeChaptersTexts(chapterList1);
-    textRepository.storeChaptersTexts(chapterList2);
+    textRepository.storeChaptersTexts(chapterList1, document1Id);
+    textRepository.storeChaptersTexts(chapterList2, document2Id);
   }
 
   /**
@@ -145,14 +138,14 @@ public class TextRepositoryTest {
   @Test
   public void testStoreChapterTextsAndIds() throws IOException, ParseException {
     for (int i = 0; i < 2; i++) {
-      assertEquals(chapterList1.get(i).getId(),
-          getStoredDocument(chapterList1.get(i)).getField(CHAPTER_ID).stringValue());
+      assertEquals(chapterList1.get(i).getId(), getStoredDocument(chapterList1.get(i), document1Id)
+          .getField(CHAPTER_ID).stringValue());
       assertEquals(chapterList1.get(i).getText(),
-          getStoredDocument(chapterList1.get(i)).getField(CHAPTER_TEXT).stringValue());
-      assertEquals(chapterList2.get(i).getId(),
-          getStoredDocument(chapterList2.get(i)).getField(CHAPTER_ID).stringValue());
+          getStoredDocument(chapterList1.get(i), document1Id).getField(CHAPTER_TEXT).stringValue());
+      assertEquals(chapterList2.get(i).getId(), getStoredDocument(chapterList2.get(i), document2Id)
+          .getField(CHAPTER_ID).stringValue());
       assertEquals(chapterList2.get(i).getText(),
-          getStoredDocument(chapterList2.get(i)).getField(CHAPTER_TEXT).stringValue());
+          getStoredDocument(chapterList2.get(i), document2Id).getField(CHAPTER_TEXT).stringValue());
     }
   }
 
@@ -161,8 +154,8 @@ public class TextRepositoryTest {
    */
   @Test
   public void testPopulateChapterText() {
-    assertFalse(chapter1.getText().equals("This is a false text"));
-    assertEquals(chapter1.getText(), chapterList1.get(0).getText());
+    assertFalse(chapterList1.get(0).getText().equals("This is a false text"));
+    assertEquals(chapterList1.get(0).getText(), "This is the text of chapter one.");
 
   }
 
@@ -173,11 +166,15 @@ public class TextRepositoryTest {
   @Test
   public void testGetIndexSearcherForDocument() throws IOException, ParseException {
     for (int i = 0; i < 2; i++) {
-      assertEquals(chapterList1.get(i).getId(),
-          getStoredDocument1(chapterList1.get(i), indexSearcherForDocument1).getField(CHAPTER_ID)
+      assertEquals(
+          chapterList1.get(i).getId(),
+          getStoredDocument(chapterList1.get(i),
+              textRepository.getIndexSearcherForDocument(document1Id)).getField(CHAPTER_ID)
               .stringValue());
-      assertEquals(chapterList1.get(i).getText(),
-          getStoredDocument1(chapterList1.get(i), indexSearcherForDocument1).getField(CHAPTER_TEXT)
+      assertEquals(
+          chapterList1.get(i).getText(),
+          getStoredDocument(chapterList1.get(i),
+              textRepository.getIndexSearcherForDocument(document1Id)).getField(CHAPTER_TEXT)
               .stringValue());
 
     }

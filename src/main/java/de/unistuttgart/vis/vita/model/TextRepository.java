@@ -35,9 +35,11 @@ public class TextRepository {
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
   private Directory index;
   private IndexReader indexReader;
-  
+
   // list of directories
   private List<Directory> indexes = new ArrayList<Directory>();
+
+  List<Document> docs = new ArrayList<Document>();
 
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
@@ -46,8 +48,9 @@ public class TextRepository {
    * @throws IOException
    * @throws ParseException
    */
-  public void populateChapterText(Chapter chapterToPopulate) throws IOException, ParseException {
-    index = FSDirectory.open(new File(INDEX_PATH + chapterToPopulate.getDocument().getId()));
+  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
+      ParseException {
+    index = FSDirectory.open(new File(INDEX_PATH + documentId));
     indexReader = DirectoryReader.open(index);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
@@ -61,35 +64,31 @@ public class TextRepository {
    * Stores a list of chapters of an ebook in a lucene directory
    * 
    * @param chaptersToStore
-   * @throws IOException
    */
-  public void storeChaptersTexts(List<Chapter> chaptersToStore) throws IOException {
-    String documentId = chaptersToStore.get(0).getDocument().getId();
-    for (Chapter chapterToStore : chaptersToStore) {
-      if (!chapterToStore.getDocument().getId().equals(documentId)) {
-        throw new IllegalArgumentException();
-      }
-    }
+  public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
+      throws IOException {
+
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
     index = new MMapDirectory(new File(INDEX_PATH + documentId));
     IndexWriter indexWriter = new IndexWriter(index, config);
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }
+
     // at the created index along with its documents to the indexes list
     indexes.add(index);
     indexWriter.close();
   }
-  
+
   /**
-   * Returns the related IndexSearcher regarding this document 
+   * Returns the related IndexSearcher regarding this document
+   * 
    * @param document
    * @return
    * @throws IOException
    */
-  public IndexSearcher getIndexSearcherForDocument(de.unistuttgart.vis.vita.model.document.Document document)
-      throws IOException {
-    index = FSDirectory.open(new File(INDEX_PATH + document.getId()));
+  public IndexSearcher getIndexSearcherForDocument(String documentId) throws IOException {
+    index = FSDirectory.open(new File(INDEX_PATH + documentId));
     indexReader = DirectoryReader.open(index);
     return new IndexSearcher(indexReader);
   }
@@ -112,6 +111,7 @@ public class TextRepository {
     Document document = new Document();
     document.add(new Field(CHAPTER_ID, chapterToStore.getId(), TextField.TYPE_STORED));
     document.add(new Field(CHAPTER_TEXT, chapterToStore.getText(), TextField.TYPE_STORED));
+    docs.add(document);
     return document;
   }
 }

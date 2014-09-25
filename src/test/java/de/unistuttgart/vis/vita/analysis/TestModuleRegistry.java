@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import org.hamcrest.core.IsSame;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.analysis.modules.MockModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.MockModule;
 
 public class TestModuleRegistry {
   @Test

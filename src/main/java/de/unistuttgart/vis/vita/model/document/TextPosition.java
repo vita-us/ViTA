@@ -43,25 +43,6 @@ public class TextPosition implements Comparable<TextPosition> {
   }
 
   /**
-   * Calculates the relative position of this TextPosition in the whole Document
-   *
-   * @return relative position in the Document, or NaN if length of Document is zero
-   */
-  private double calculateProgress() {
-    if (chapter == null) {
-      return Double.NaN;
-    }
-
-    double docLength = chapter.document.getMetrics().getCharacterCount();
-
-    if (docLength == 0) {
-      return Double.NaN;
-    }
-
-    return offset / docLength;
-  }
-
-  /**
    * @return the chapter this TextPosition lies in
    */
   public Chapter getChapter() {
@@ -73,18 +54,6 @@ public class TextPosition implements Comparable<TextPosition> {
    */
   public int getOffset() {
     return offset;
-  }
-
-  /**
-   * @return the progress the relative position in the Document as a value between zero and one, or
-   *         NaN if Chapter is null or length of Document is 0
-   */
-  public double getProgress() {
-    if (progress == null) {
-      progress = calculateProgress();
-    }
-
-    return progress;
   }
 
   /**

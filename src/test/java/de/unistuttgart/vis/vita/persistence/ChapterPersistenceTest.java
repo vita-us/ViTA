@@ -46,7 +46,7 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
    * @return test chapter
    */
   private Chapter createTestChapter() {
-    Chapter chapter = new Chapter(null);
+    Chapter chapter = new Chapter();
 
     chapter.setLength(TEST_CHAPTER_LENGTH);
     chapter.setNumber(TEST_CHAPTER_NUMBER);
