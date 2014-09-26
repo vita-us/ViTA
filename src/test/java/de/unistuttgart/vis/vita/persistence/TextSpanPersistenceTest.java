@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
+import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -23,10 +24,6 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
   private static final int TEST_TEXT_SPAN_START = 10000;
   private static final int TEST_TEXT_SPAN_END = 11000;
   private static final int TEST_TEXT_SPAN_DIFF = 1000;
-  
-  private static final int PERSON_TEXT_SPAN_START = 5200;
-  private static final int PERSON_TEXT_SPAN_END = 5250;
-  private static final int PERSON_TEXT_SPAN_LENGTH = 50;
 
   @Test
   public void testPersistOneTextSpan() {
@@ -121,15 +118,15 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testFindingSpanForEntity() {
     // first set up test data
+    TextSpanTestData testData = new TextSpanTestData();
     Chapter c = new ChapterTestData().createTestChapter();
-    TextSpan personTextSpan = new TextSpan(new TextPosition(c, PERSON_TEXT_SPAN_START), 
-                                            new TextPosition(c, PERSON_TEXT_SPAN_END));
+    TextSpan personTextSpan = testData.createTestTextSpan(c);
     Person testPerson = new PersonTestData().createTestPerson(1);
     testPerson.getOccurrences().add(personTextSpan);
     
+    // save ids for query
     String chapterId = c.getId();
     String personId = testPerson.getId();
-    String spanId = personTextSpan.getId();
     
     // now persist it
     em.persist(c);
@@ -146,17 +143,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     
     // finally check read data
     assertEquals(1, actualPersonTextSpans.size());
-    TextSpan actualTextSpan = actualPersonTextSpans.get(0);
-    assertEquals(spanId, actualTextSpan.getId());
-    assertEquals(PERSON_TEXT_SPAN_LENGTH, actualTextSpan.getLength());
-    
-    TextPosition actualStart = actualTextSpan.getStart();
-    assertEquals(PERSON_TEXT_SPAN_START, actualStart.getOffset());
-    assertEquals(chapterId, actualStart.getChapter().getId());
-    
-    TextPosition actualEnd = actualTextSpan.getEnd();
-    assertEquals(PERSON_TEXT_SPAN_END, actualEnd.getOffset());
-    assertEquals(chapterId, actualStart.getChapter().getId());
+    testData.checkData(actualPersonTextSpans.get(0), chapterId);
   }
 
 }
