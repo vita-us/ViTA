@@ -6,6 +6,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
+
 /**
  * Represents the position of a single character in the text of a Document. It is aware of the
  * chapter it occurs in as well as the relative position in the whole document.
@@ -54,6 +56,25 @@ public class TextPosition implements Comparable<TextPosition> {
    */
   public int getOffset() {
     return offset;
+  }
+  
+  /**
+   * Converts this (relative) TextPosition to an AbsoluteTextPosition in a document with the given 
+   * length.
+   * 
+   * @param docLength - the length of the complete Document in characters
+   * @return the AbsoluteTextPosition
+   */
+  public AbsoluteTextPosition toAbsoluteTextPosition(int docLength) {
+    Chapter chapter = getChapter();
+    
+    int chapterOffset = chapter.getRange().getStart().getOffset();
+    int relativeOffset = getOffset();
+    int absoluteOffset = chapterOffset + relativeOffset;
+    
+    double docProgress = absoluteOffset / docLength;
+    
+    return new AbsoluteTextPosition(chapter.getId(), absoluteOffset, docProgress);
   }
 
   /**

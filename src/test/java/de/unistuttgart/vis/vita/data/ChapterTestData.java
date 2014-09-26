@@ -9,12 +9,13 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
  * matches the test data.
  */
 public class ChapterTestData {
-  
-  public static final int TEST_CHAPTER_LENGTH = 2531244;
+  public static final int TEST_CHAPTER_RANGE_START = 100000;
+  public static final int TEST_CHAPTER_LENGTH = 200000;
+  public static final int TEST_CHAPTER_RANGE_END = 300000;
+
   public static final int TEST_CHAPTER_NUMBER = 11;
   public static final String TEST_CHAPTER_TEXT = "This is a very short Chapter.";
   public static final String TEST_CHAPTER_TITLE = "A Knife in the Dark";
-  
   
   /**
    * Creates a new Chapter belonging to the given Document and sets attributes to test values and 

@@ -35,7 +35,8 @@ public class EntitiesService {
    */
   @Path("{entityId}")
   public EntityService getEntity(@PathParam("entityId") String id) {
-    return resourceContext.getResource(EntityService.class).setEntityId(id);
+    return resourceContext.getResource(EntityService.class).setEntityId(id)
+                                                            .setDocumentId(documentId);
   }
   
   /**

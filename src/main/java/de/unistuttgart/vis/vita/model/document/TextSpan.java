@@ -8,6 +8,7 @@ import javax.persistence.NamedQuery;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
@@ -90,6 +91,25 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
    */
   public int getLength() {
     return length;
+  }
+  
+  /**
+   * Converts this TextSpan into an Occurrence.
+   * 
+   * @param docLength - the length of the whole document in characters
+   * @return an Occurrence equivalent to this TextSpan
+   */
+  public Occurrence toOccurrence(int docLength) {
+    // create empty Occurrence
+    Occurrence occ = new Occurrence();
+    
+    // convert start and end positions
+    occ.setStart(getStart().toAbsoluteTextPosition(docLength));
+    occ.setEnd(getEnd().toAbsoluteTextPosition(docLength));
+    
+    // length stays the same
+    occ.setLength(getLength());
+    return occ;
   }
 
   /**

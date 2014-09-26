@@ -13,10 +13,21 @@ import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
 @ManagedBean
 public class EntityService {
   
+  private String documentId;
   private String entityId;
   
   @Context
   private ResourceContext resourceContext;
+
+  /**
+   * Sets the id of the Document the referring entity occurs in
+   * 
+   * @param docId - the id of the Document in which the referring entity occurs
+   */
+  public EntityService setDocumentId(String docId) {
+    this.documentId = docId;
+    return this;
+  }
 
   /**
    * Sets the id of the Entity this service should refer to
@@ -45,7 +56,8 @@ public class EntityService {
    */
   @Path("/occurrences")
   public EntityOccurrencesService getOccurrences() {
-    return resourceContext.getResource(EntityOccurrencesService.class).setEntityId(entityId);
+    return resourceContext.getResource(EntityOccurrencesService.class).setEntityId(entityId)
+                                                                      .setDocumentId(documentId);
   }
 
 }

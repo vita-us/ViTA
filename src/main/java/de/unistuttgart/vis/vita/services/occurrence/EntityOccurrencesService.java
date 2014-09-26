@@ -1,13 +1,20 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -17,11 +24,23 @@ public class EntityOccurrencesService {
   
   private EntityManager em;
   
+  private String documentId;
   private String entityId;
   
   @Inject
   public EntityOccurrencesService(Model model) {
     em = model.getEntityManager();
+  }
+
+  /**
+   * Sets the id of the document in which the current entity occurs in.
+   * 
+   * @param docId - the id of the Document in which the current entity occurs in
+   * @return this AttributeOccurrencesService
+   */
+  public EntityOccurrencesService setDocumentId(String docId) {
+    this.documentId = docId;
+    return this;
   }
 
   /**
@@ -49,8 +68,38 @@ public class EntityOccurrencesService {
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") double rangeEnd) {
-    // TODO implement AttributeOccurrencesService
-    return new OccurrencesResponse();
+    // TODO make EntityOccurrencesService also consider the given range!
+    
+    // fetch the data
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
+    
+    // get length of the document
+    Document document = readDocumentFromDatabase();
+    int docLength = document.getMetrics().getCharacterCount();
+    
+    // convert TextSpans into Occurrences
+    List<Occurrence> occurrences = new ArrayList<>();
+    for (TextSpan span : readTextSpans) {
+      occurrences.add(span.toOccurrence(docLength));
+    }
+    
+    // put occurrences into a response and send it
+    return new OccurrencesResponse(occurrences);
+  }
+
+  private List<TextSpan> readTextSpansFromDatabase(int steps) {
+    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
+                                                      TextSpan.class);
+    query.setParameter("entityId", entityId);
+    query.setMaxResults(steps);
+    return query.getResultList();
+  }
+
+  private Document readDocumentFromDatabase() {
+    TypedQuery<Document> docQuery = em.createNamedQuery("Document.findDocumentById", 
+                                                        Document.class);
+    docQuery.setParameter("documentId", documentId);
+    return docQuery.getSingleResult();
   }
 
 }
