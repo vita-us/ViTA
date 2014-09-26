@@ -8,6 +8,7 @@ import javax.persistence.NamedQuery;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
@@ -15,13 +16,19 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 @Entity
 @NamedQueries({
   @NamedQuery(name = "TextSpan.findAllTextSpans",
-      query = "SELECT ts "
-      + "FROM TextSpan ts"),
+              query = "SELECT ts "
+                    + "FROM TextSpan ts"),
+      
+  @NamedQuery(name = "TextSpan.findTextSpansForEntity",
+              query = "SELECT ts "
+                    + "FROM TextSpan ts, Entity e "
+                    + "WHERE e.id = :entityId "
+                    + "AND ts MEMBER OF e.occurrences"),
       
   @NamedQuery(name = "TextSpan.findTextSpanById",
-      query = "SELECT ts "
-      + "FROM TextSpan ts "
-      + "WHERE ts.id = :textSpanId"),
+              query = "SELECT ts "
+                    + "FROM TextSpan ts "
+                    + "WHERE ts.id = :textSpanId"),
 })
 public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
 
