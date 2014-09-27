@@ -21,6 +21,11 @@ public class ProgressService {
 
   private EntityManager em;
   
+  /**
+   * Creates new ProgressService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public ProgressService(Model model) {
     em = model.getEntityManager();

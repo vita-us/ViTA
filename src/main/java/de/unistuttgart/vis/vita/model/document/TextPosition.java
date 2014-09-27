@@ -2,8 +2,6 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
@@ -14,13 +12,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPositi
  */
 @Embeddable
 public class TextPosition implements Comparable<TextPosition> {
+  
   @ManyToOne
   private Chapter chapter;
-
   private int offset;
-
-  @Transient
-  private Double progress;
   
   /**
    * Creates a new TextPosition setting all fields to default values.
@@ -66,15 +61,15 @@ public class TextPosition implements Comparable<TextPosition> {
    * @return the AbsoluteTextPosition
    */
   public AbsoluteTextPosition toAbsoluteTextPosition(int docLength) {
-    Chapter chapter = getChapter();
+    Chapter textPosChapter = getChapter();
     
-    int chapterOffset = chapter.getRange().getStart().getOffset();
+    int chapterOffset = textPosChapter.getRange().getStart().getOffset();
     int relativeOffset = getOffset();
     int absoluteOffset = chapterOffset + relativeOffset;
     
-    double docProgress = absoluteOffset / docLength;
+    double docProgress = absoluteOffset / (double) docLength;
     
-    return new AbsoluteTextPosition(chapter.getId(), absoluteOffset, docProgress);
+    return new AbsoluteTextPosition(textPosChapter.getId(), absoluteOffset, docProgress);
   }
 
   /**
@@ -109,6 +104,6 @@ public class TextPosition implements Comparable<TextPosition> {
   
   @Override
   public String toString() {
-    return String.format("Pos %d", offset, chapter);
+    return String.format("Pos %d %s", offset, chapter);
   }
 }

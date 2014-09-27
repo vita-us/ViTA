@@ -23,6 +23,11 @@ public class ChapterService {
 
   private EntityManager em;
   
+  /**
+   * Create new ChapterService and inject Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public ChapterService(Model model) {
     em = model.getEntityManager();

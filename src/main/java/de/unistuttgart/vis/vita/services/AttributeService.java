@@ -32,6 +32,11 @@ public class AttributeService {
   @Context
   private ResourceContext resourceContext;
 
+  /**
+   * Create new AttributeService and inject Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public AttributeService(Model model) {
     em = model.getEntityManager();

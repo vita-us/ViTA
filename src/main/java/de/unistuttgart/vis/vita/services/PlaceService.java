@@ -22,6 +22,11 @@ public class PlaceService {
   
   private EntityManager em;
   
+  /**
+   * Creates a new PlaceService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public PlaceService (Model model) {
     em = model.getEntityManager();

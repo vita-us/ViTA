@@ -27,6 +27,11 @@ public class EntityOccurrencesService {
   private String documentId;
   private String entityId;
   
+  /**
+   * Creates new EntityOccurrencesService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public EntityOccurrencesService(Model model) {
     em = model.getEntityManager();

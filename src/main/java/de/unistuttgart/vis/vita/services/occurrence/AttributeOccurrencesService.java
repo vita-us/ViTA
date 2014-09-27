@@ -21,6 +21,11 @@ public class AttributeOccurrencesService {
 
   private String entityId;
   
+  /**
+   * Creates new AttributeOccurrencesService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public AttributeOccurrencesService(Model model) {
     em = model.getEntityManager();

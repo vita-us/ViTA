@@ -20,8 +20,7 @@ import de.unistuttgart.vis.vita.model.entity.*;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 
 /**
- * Provides a method to GET all attributes mentioned in the document this service refers to
- *
+ * Provides a method to GET all attributes mentioned in the document this service refers to.
  */
 @ManagedBean
 public class AttributesService {
@@ -34,31 +33,42 @@ public class AttributesService {
   private ResourceContext resourceContext;
 
   /**
-   * Creates a new instance of AttributesService
+   * Creates new AttributesService and inject Model.
    * 
-   * @param model
+   * @param model - the injected model
    */
   @Inject
   public AttributesService(Model model) {
     em = model.getEntityManager();
   }
 
+  /**
+   * Sets the id of the Entity this service refers to
+   * 
+   * @param id - the id of the Entity whose attributes this AttributesService should offer
+   * @return this AttributesService
+   */
   public AttributesService setEntityId(String id) {
     this.entityId = id;
     return this;
   }
 
+  /**
+   * Reads the attributes of the current Entity from the database and returns them in JSON.
+   * 
+   * @return a AttributesResponse including all Attributes of the current Entity
+   */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public AttributesResponse getAttributes(@QueryParam("offset") int offset,
-      @QueryParam("count") int count) {
+                                          @QueryParam("count") int count) {
     List<Attribute> attributes = readAttributesFromDatabase(offset, count);
     return new AttributesResponse(attributes);
   }
 
   private List<Attribute> readAttributesFromDatabase(int offset, int count) {
-    TypedQuery<Attribute> query =
-        em.createNamedQuery("Attribute.findAttributesFromEntities", Attribute.class);
+    TypedQuery<Attribute> query = em.createNamedQuery("Attribute.findAttributesFromEntities", 
+                                                      Attribute.class);
     query.setParameter("entityId", entityId);
 
     query.setFirstResult(offset);
@@ -67,6 +77,12 @@ public class AttributesService {
     return query.getResultList();
   }
 
+  /**
+   * Returns the Service to access the Attribute with the given id.
+   * 
+   * @param id - the id of the Attribute to be accessed
+   * @return the AttributeService to access the Attribute with the given id
+   */
   @Path("{attributeId}")
   public AttributeService getAttribute(@PathParam("attributeId") String id) {
     return resourceContext.getResource(AttributeService.class).setAttributeId(id)

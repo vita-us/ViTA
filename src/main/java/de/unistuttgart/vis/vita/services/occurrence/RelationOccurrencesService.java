@@ -20,11 +20,22 @@ public class RelationOccurrencesService {
   
   private String documentId;
   
+  /**
+   * Creates new RelationOccurrencesService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public RelationOccurrencesService(Model model) {
     em = model.getEntityManager();
   }
   
+  /**
+   * Sets the id of the document this service refers to.
+   * 
+   * @param docId - the id of the Document to which this service refers to
+   * @return this RelationOccurrencesService
+   */
   public RelationOccurrencesService setDocumentId(String docId) {
     this.documentId = docId;
     return this;

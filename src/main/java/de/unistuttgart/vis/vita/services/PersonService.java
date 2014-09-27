@@ -22,6 +22,11 @@ public class PersonService {
   
   private EntityManager em;
   
+  /**
+   * Creates new PersonService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public PersonService(Model model) {
     em = model.getEntityManager();

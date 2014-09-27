@@ -23,9 +23,9 @@ public class DocumentPartsService {
   private EntityManager em;
   
   /**
-   * Creates a new instance of PartsService
+   * Creates new DocumentPartsService and injects Model.
    * 
-   * @param model - the model to be used in this service
+   * @param model - the injected Model
    */
   @Inject
   public DocumentPartsService(Model model) {

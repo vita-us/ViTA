@@ -34,13 +34,13 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
   private static final int ABSOLUTE_START_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
                                                     + TextSpanTestData.TEST_TEXT_SPAN_START;
   private static final double START_PROGRESS = ABSOLUTE_START_OFFSET
-                                                / DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+                                                / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
   
 
   private static final int ABSOLUTE_END_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
                                                   + TextSpanTestData.TEST_TEXT_SPAN_END;
   private static final double END_PROGRESS = ABSOLUTE_END_OFFSET
-                                                / DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+                                                / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
   
   private static final double DELTA = 0.001;
   

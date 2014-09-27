@@ -8,25 +8,48 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 
+/**
+ * Holds a list of Attributes and its count.
+ */
 @XmlRootElement
 public class AttributesResponse extends AbstractListResponse {
-	@XmlElementWrapper(name = "attributes")
-	@XmlElement(name = "attribute")
-	private List<Attribute> attributes;
+  
+  @XmlElementWrapper(name = "attributes")
+  @XmlElement(name = "attribute")
+  private List<Attribute> attributes;
 
-	public AttributesResponse() {
-		// must have a non-argument constructor
-	}
+  /**
+   * Creates a new instance of AttributesResponse, setting all attributes to default values.
+   */
+  public AttributesResponse() {
+    // must have a non-argument constructor
+  }
 
-	public AttributesResponse(List<Attribute> attributeList) {
-		super(attributeList.size());
-		this.setAttributes(attributeList);
-	}
+  /**
+   * Creates a new AttributeResponse holding the given list of Attributes and their count.
+   * 
+   * @param attributeList - a list of Attributes to be sent in this response
+   */
+  public AttributesResponse(List<Attribute> attributeList) {
+    super(attributeList.size());
+    this.attributes = attributeList;
+  }
 
-	private void setAttributes(List<Attribute> attributeList) {
-		// TODO Auto-generated method stub
-		this.attributes = attributeList;
-		this.totalCount = attributeList.size();
-	}
+  /**
+   * Sets the list of Attributes hold in this response.
+   * 
+   * @param attributeList - the list of Attributes to be sent with this response
+   */
+  public void setAttributes(List<Attribute> attributeList) {
+    this.totalCount = attributeList.size();
+    this.attributes = attributeList;
+  }
+  
+  /**
+   * @return list of attributes hold in this response
+   */
+  public List<Attribute> getAttributes() {
+    return attributes;
+  }
 
 }

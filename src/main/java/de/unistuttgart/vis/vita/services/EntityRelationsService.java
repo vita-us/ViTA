@@ -43,6 +43,11 @@ public class EntityRelationsService {
     em = model.getEntityManager();
   }
   
+  /**
+   * Sets the id of the Document this service should refer to
+   * 
+   * @param docId - the id of the Document which this EntityRelationsService should refer to
+   */
   public EntityRelationsService setDocumentId(String docId) {
     this.documentId = docId;
     return this;
@@ -67,7 +72,7 @@ public class EntityRelationsService {
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
     // initialize lists
-    List<String> entityIds = new ArrayList<>();
+    List<String> entityIds = null;
     List<EntityRelation<Entity>> relations = null;
     
     // check parameters
@@ -78,7 +83,6 @@ public class EntityRelationsService {
     } else if (eIds == null || "".equals(eIds)) {
       throw new WebApplicationException("No entities specified!");
     } else {
-      
       // convert entity id string
       entityIds = convertIdStringToList(eIds);
       
@@ -169,6 +173,11 @@ public class EntityRelationsService {
     return value >= 0.0 && value <= 1.0;
   }
   
+  /**
+   * Returns the RelationOccurrencesService for the current document.
+   * 
+   * @return the RelationOccurrencesService which answers the request
+   */
   @Path("/occurrences")
   public RelationOccurrencesService getOccurrences() {
     return resourceContext.getResource(RelationOccurrencesService.class).setDocumentId(documentId);

@@ -36,6 +36,11 @@ public class DocumentService {
   @Context
   private ResourceContext resourceContext;
 
+  /**
+   * Creates new DocumentService and injects Model.
+   * 
+   * @param model - the injected Model
+   */
   @Inject
   public DocumentService(Model model) {
     em = model.getEntityManager();
