@@ -11,21 +11,51 @@ import de.unistuttgart.vis.vita.model.entity.AttributeType;
  */
 public class AttributeTestData {
   
-  public static final AttributeType TEST_ATTRIBUTE_NAME_TYPE = AttributeType.NAME;
-  public static final String TEST_ATTRIBUTE_NAME_CONTENT = "Bilbo Baggins";
+  private static final int DEFAULT_ATTRIBUTE_NUMBER = 1;
+  
+  public static final AttributeType TEST_ATTRIBUTE_1_TYPE = AttributeType.NAME;
+  public static final String TEST_ATTRIBUTE_1_CONTENT = "Bilbo Baggins";
+  
+  public static final AttributeType TEST_ATTRIBUTE_2_TYPE = AttributeType.AGE;
+  public static final String TEST_ATTRIBUTE_2_CONTENT = "111";
+  
+  /**
+   * Creates the default test Attribute.
+   * 
+   * @return default test Attribute
+   */
+  public Attribute createTestAttribute() {
+    return createTestAttribute(DEFAULT_ATTRIBUTE_NUMBER);
+  }
   
   /**
    * Creates a new Attribute, setting its fields to test values and returns it.
    * 
    * @return test attribute
    */
-  public Attribute createTestAttribute() {
+  public Attribute createTestAttribute(int number) {
     Attribute attribute = new Attribute();
 
-    attribute.setType(TEST_ATTRIBUTE_NAME_TYPE);
-    attribute.setContent(TEST_ATTRIBUTE_NAME_CONTENT);
+    if (number == 1) {
+      attribute.setType(TEST_ATTRIBUTE_1_TYPE);
+      attribute.setContent(TEST_ATTRIBUTE_1_CONTENT);
+    } else if (number == 2) {
+      attribute.setType(TEST_ATTRIBUTE_2_TYPE);
+      attribute.setContent(TEST_ATTRIBUTE_2_CONTENT);
+    } else {
+      throw new IllegalArgumentException("Unknown attribute number!");
+    }
 
     return attribute;
+  }
+  
+  /**
+   * Checks whether given Attribute is the default test Attribute.
+   * 
+   * @param attributeToCheck - the Attribute to be checked
+   */
+  public void checkData(Attribute attributeToCheck) {
+    checkData(attributeToCheck, DEFAULT_ATTRIBUTE_NUMBER);
   }
   
   /**
@@ -33,10 +63,17 @@ public class AttributeTestData {
    * 
    * @param attributeToCheck
    */
-  public void checkData(Attribute attributeToCheck) {
+  public void checkData(Attribute attributeToCheck, int number) {
     assertNotNull(attributeToCheck);
-    assertEquals(TEST_ATTRIBUTE_NAME_TYPE, attributeToCheck.getType());
-    assertEquals(TEST_ATTRIBUTE_NAME_CONTENT, attributeToCheck.getContent());
+    if (number == 1) {
+      assertEquals(TEST_ATTRIBUTE_1_TYPE, attributeToCheck.getType());
+      assertEquals(TEST_ATTRIBUTE_1_CONTENT, attributeToCheck.getContent());
+    } else if (number == 2) {
+      assertEquals(TEST_ATTRIBUTE_2_TYPE, attributeToCheck.getType());
+      assertEquals(TEST_ATTRIBUTE_2_CONTENT, attributeToCheck.getContent());
+    } else {
+      throw new IllegalArgumentException("Unknown attribute number!");
+    }
   }
 
 }

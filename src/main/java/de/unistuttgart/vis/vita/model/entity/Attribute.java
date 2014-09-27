@@ -16,13 +16,25 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  */
 @javax.persistence.Entity
 @NamedQueries({
-    @NamedQuery(name = "Attribute.findAllAttributes", query = "SELECT a " + "FROM Attribute a"),
+    @NamedQuery(name = "Attribute.findAllAttributes", 
+                query = "SELECT a " 
+                      + "FROM Attribute a"),
 
-    @NamedQuery(name = "Attribute.findAttributeById", query = "SELECT a " + "FROM Attribute a "
-        + "WHERE a.id = :attributeId"),
+    @NamedQuery(name = "Attribute.findAttributeById", 
+                query = "SELECT a " 
+                      + "FROM Attribute a "
+                      + "WHERE a.id = :attributeId"),
+                      
+    @NamedQuery(name = "Attribute.findAttributesForEntity",
+                query = "SELECT a "
+                      + "FROM Attribute a, Entity e "
+                      + "WHERE e.id = :entityId "
+                      + "AND a MEMBER OF e.attributes"),
 
-    @NamedQuery(name = "Attribute.findAttributeByType", query = "SELECT a " + "FROM Attribute a "
-        + "WHERE a.type = :attributeType")})
+    @NamedQuery(name = "Attribute.findAttributeByType", 
+                query = "SELECT a " 
+                      + "FROM Attribute a "
+                      + "WHERE a.type = :attributeType")})
 public class Attribute extends AbstractEntityBase {
   private AttributeType type;
   private String content;
