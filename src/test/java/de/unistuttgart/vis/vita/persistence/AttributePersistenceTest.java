@@ -9,26 +9,32 @@ import javax.persistence.TypedQuery;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.data.AttributeTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.AttributeType;
 
 /**
  * Performs tests whether instances of Attribute can be persisted correctly.
  */
 public class AttributePersistenceTest extends AbstractPersistenceTest {
 
-  // test data
-  private static final AttributeType TEST_ATTRIBUTE_NAME_TYPE = AttributeType.NAME;
-  private static final String TEST_ATTRIBUTE_NAME_CONTENT = "Bilbo Baggins";
-
+  private AttributeTestData testData;
+  
+  @Override
+  public void setUp() {
+    super.setUp();
+    
+    testData = new AttributeTestData();
+  }
+  
   @Test
   public void testPersistOneAttribute() {
+    
     // first set up an Attribute
-    Attribute attribute = createTestAttribute();
+    Attribute attribute = testData.createTestAttribute();
 
     // persist this Attribute
     em.persist(attribute);
@@ -40,21 +46,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     // check whether data is correct
     assertEquals(1, attributes.size());
     Attribute readAttribute = attributes.get(0);
-    checkData(readAttribute);
-  }
-
-  /**
-   * Creates a new Attribute, setting its fields to test values and returns it.
-   * 
-   * @return test attribute
-   */
-  private Attribute createTestAttribute() {
-    Attribute attribute = new Attribute();
-
-    attribute.setType(TEST_ATTRIBUTE_NAME_TYPE);
-    attribute.setContent(TEST_ATTRIBUTE_NAME_CONTENT);
-
-    return attribute;
+    testData.checkData(readAttribute);
   }
 
   /**
@@ -69,22 +61,11 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether the given Attribute is not <code>null</code> and includes the correct test data.
-   * 
-   * @param attributeToCheck
-   */
-  private void checkData(Attribute attributeToCheck) {
-    assertNotNull(attributeToCheck);
-    assertEquals(TEST_ATTRIBUTE_NAME_TYPE, attributeToCheck.getType());
-    assertEquals(TEST_ATTRIBUTE_NAME_CONTENT, attributeToCheck.getContent());
-  }
-
-  /**
    * Check whether all Named Queries of Attribute are working correctly.
    */
   @Test
   public void testNamedQueries() {
-    Attribute testAttribute = createTestAttribute();
+    Attribute testAttribute = testData.createTestAttribute();
 
     em.persist(testAttribute);
     startNewTransaction();
@@ -96,7 +77,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
 
     assertTrue(allAttributes.size() > 0);
     Attribute readAttribute = allAttributes.get(0);
-    checkData(readAttribute);
+    testData.checkData(readAttribute);
 
     String id = readAttribute.getId();
 
@@ -105,17 +86,17 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     idQ.setParameter("attributeId", id);
     Attribute idAttribute = idQ.getSingleResult();
 
-    checkData(idAttribute);
+    testData.checkData(idAttribute);
 
     // check Named Query finding attributes by type
     TypedQuery<Attribute> typeQ =
         em.createNamedQuery("Attribute.findAttributeByType", Attribute.class);
-    typeQ.setParameter("attributeType", TEST_ATTRIBUTE_NAME_TYPE);
+    typeQ.setParameter("attributeType", AttributeTestData.TEST_ATTRIBUTE_NAME_TYPE);
     List<Attribute> typeAttributes = typeQ.getResultList();
 
     assertTrue(typeAttributes.size() > 0);
     Attribute typeAttribute = typeAttributes.get(0);
-    checkData(typeAttribute);
+    testData.checkData(typeAttribute);
   }
 
   @Test
@@ -130,7 +111,8 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     TextSpan span2 = new TextSpan(pos2, pos4);
     TextSpan span3 = new TextSpan(pos3, pos4);
 
-    Attribute attribute = createTestAttribute();
+    Attribute attribute = testData.createTestAttribute();
+    
     // Add the occurrences in an order that is neither the correct one, nor the reverse
     attribute.getOccurrences().add(span1);
     attribute.getOccurrences().add(span3);
