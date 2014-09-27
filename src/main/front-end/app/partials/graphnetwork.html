@@ -1,10 +1,14 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2 pull-left">
+    <div class="col-md-2">
       <div ng-include="'partials/menu.html'"></div>
     </div>
-    <div class="col-md-2 pull-right">
-      <div class="row">
+    <div class="col-md-8" style="background-color:green">
+      <div data-graph-network class="graph-network-container" data-entities="entities"></div>
+      <div style="background-color: blue">Navigation</div>
+      <div style="background-color: pink">Fingerprint</div>
+    </div>
+    <div class="col-md-2">
         <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
         <div class="list-group" id="list1">
           <a href="#" class="list-group-item active">Characters <input title="toggle all" type="checkbox" class="all pull-right"></a>
@@ -13,16 +17,8 @@
           <a href="#" class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
           <a href="#" class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
         </div>
-      </div>
     </div>
-    <div class="col-md-8">
-      <div data-graph-network class="graph-network-container" data-entities="entities"></div>
-      <div class="row" style="background-color: red">
-        Zoom zoom!
-      </div>
-      <div class="row">
-        Fingerprint
-      </div>
-    </div>
+    <!--<div class="col-md-8">
+    </div> -->
   </div>
 </div>
