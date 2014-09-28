@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -13,9 +12,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Provides a method to GET the occurrences of the current attribute and entity.
  */
-public class AttributeOccurrencesService {
-  
-  private EntityManager em;
+public class AttributeOccurrencesService extends OccurrencesService {
   
   private String attributeId;
 
@@ -31,6 +28,19 @@ public class AttributeOccurrencesService {
     em = model.getEntityManager();
   }
   
+  /**
+   * Sets the id of the document this service refers to and returns this
+   * AttributeOccurrencesService.
+   * 
+   * @param docId - the id of the document in which this service should find occurrences of
+   *        attributes
+   * @return this AttributeOccurrencesService
+   */
+  public AttributeOccurrencesService setDocumentId(String docId) {
+    this.documentId = docId;
+    return this;
+  }
+
   /**
    * Sets the id of the entity which occurrences should be got and returns this 
    * AttributeOccurrencesService.
@@ -63,6 +73,7 @@ public class AttributeOccurrencesService {
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
    */
+  @Override
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,

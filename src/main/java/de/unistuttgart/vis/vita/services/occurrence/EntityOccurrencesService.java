@@ -1,10 +1,8 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -12,7 +10,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
@@ -20,11 +17,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Provides a method to GET the occurrences of the current entity.
  */
-public class EntityOccurrencesService {
+public class EntityOccurrencesService extends OccurrencesService {
   
-  private EntityManager em;
-  
-  private String documentId;
   private String entityId;
   
   /**
@@ -68,6 +62,7 @@ public class EntityOccurrencesService {
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
    */
+  @Override
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
@@ -78,15 +73,8 @@ public class EntityOccurrencesService {
     // fetch the data
     List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
     
-    // get length of the document
-    Document document = readDocumentFromDatabase();
-    int docLength = document.getMetrics().getCharacterCount();
-    
     // convert TextSpans into Occurrences
-    List<Occurrence> occurrences = new ArrayList<>();
-    for (TextSpan span : readTextSpans) {
-      occurrences.add(span.toOccurrence(docLength));
-    }
+    List<Occurrence> occurrences = covertSpansToOccurrences(readTextSpans);
     
     // put occurrences into a response and send it
     return new OccurrencesResponse(occurrences);
@@ -98,13 +86,6 @@ public class EntityOccurrencesService {
     query.setParameter("entityId", entityId);
     query.setMaxResults(steps);
     return query.getResultList();
-  }
-
-  private Document readDocumentFromDatabase() {
-    TypedQuery<Document> docQuery = em.createNamedQuery("Document.findDocumentById", 
-                                                        Document.class);
-    docQuery.setParameter("documentId", documentId);
-    return docQuery.getSingleResult();
   }
 
 }
