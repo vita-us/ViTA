@@ -29,7 +29,8 @@ import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
  */
 @ManagedBean
 public class DocumentService {
-  String id;
+  
+  private String id;
 
   private EntityManager em;
 

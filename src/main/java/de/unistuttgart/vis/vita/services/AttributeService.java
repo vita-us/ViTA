@@ -26,8 +26,9 @@ public class AttributeService {
 
   private EntityManager em;
   
-  private String attributeId;
+  private String documentId;
   private String entityId;
+  private String attributeId;
   
   @Context
   private ResourceContext resourceContext;
@@ -41,15 +42,15 @@ public class AttributeService {
   public AttributeService(Model model) {
     em = model.getEntityManager();
   }
-
+  
   /**
-   * Sets the id of the attribute this resource should represent and returns itself.
+   * Sets the id of the document this service refers to and returns itself.
    * 
-   * @param attId the id
-   * @return AttributeService
+   * @param docId - the id of the document for which this service should offer Attributes.
+   * @return this AttributeService
    */
-  public AttributeService setAttributeId(String attId) {
-    this.attributeId = attId;
+  public AttributeService setDocumentId(String docId) {
+    this.documentId = docId;
     return this;
   }
 
@@ -57,10 +58,21 @@ public class AttributeService {
    * Sets the id of the entity with this attribute and returns itself.
    * 
    * @param eId - the id of the entity having this attribute
-   * @return AttributeService
+   * @return this AttributeService
    */
   public AttributeService setEntityId(String eId) {
     this.entityId = eId;
+    return this;
+  }
+
+  /**
+   * Sets the id of the Attribute this service should represent and returns itself.
+   * 
+   * @param attrId - the id of the Attribute this service should represent
+   * @return this AttributeService
+   */
+  public AttributeService setAttributeId(String attrId) {
+    this.attributeId = attrId;
     return this;
   }
 
@@ -98,6 +110,7 @@ public class AttributeService {
   @Path("/occurrences")
   public AttributeOccurrencesService getOccurrences() {
     return resourceContext.getResource(AttributeOccurrencesService.class)
+                                        .setDocumentId(documentId)
                                         .setAttributeId(attributeId)
                                         .setEntityId(entityId);
   }

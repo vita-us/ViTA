@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.*;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
+import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
  * Provides a method to GET all attributes mentioned in the document this service refers to.
@@ -25,6 +27,7 @@ import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 @ManagedBean
 public class AttributesService {
 
+  private String documentId;
   private String entityId;
 
   private EntityManager em;
@@ -40,6 +43,18 @@ public class AttributesService {
   @Inject
   public AttributesService(Model model) {
     em = model.getEntityManager();
+  }
+
+  /**
+   * Sets the id of the document this service refers to and returns itself.
+   * 
+   * @param docId - the id of the document for which this service offers Attributes of the current
+   *        Entity
+   * @return this AttributesService
+   */
+  public AttributesService setDocumentId(String docId) {
+    this.documentId = docId;
+    return this;
   }
 
   /**
@@ -63,11 +78,14 @@ public class AttributesService {
   public AttributesResponse getAttributes(@QueryParam("offset") int offset,
                                           @QueryParam("count") int count) {
     List<Attribute> attributes = readAttributesFromDatabase(offset, count);
-    return new AttributesResponse(attributes);
+    
+    List<BasicAttribute> basicAttributes = convertToBasicAttribute(attributes);
+    
+    return new AttributesResponse(basicAttributes);
   }
 
   private List<Attribute> readAttributesFromDatabase(int offset, int count) {
-    TypedQuery<Attribute> query = em.createNamedQuery("Attribute.findAttributesFromEntities", 
+    TypedQuery<Attribute> query = em.createNamedQuery("Attribute.findAttributesForEntity", 
                                                       Attribute.class);
     query.setParameter("entityId", entityId);
 
@@ -75,6 +93,14 @@ public class AttributesService {
     query.setMaxResults(count);
 
     return query.getResultList();
+  }
+
+  private List<BasicAttribute> convertToBasicAttribute(List<Attribute> attributes) {
+    List<BasicAttribute> basicAttributes = new ArrayList<>();
+    for (Attribute attribute: attributes) {
+      basicAttributes.add(attribute.toBasicAttribute());
+    }
+    return basicAttributes;
   }
 
   /**
@@ -85,8 +111,9 @@ public class AttributesService {
    */
   @Path("{attributeId}")
   public AttributeService getAttribute(@PathParam("attributeId") String id) {
-    return resourceContext.getResource(AttributeService.class).setAttributeId(id)
-                                                              .setEntityId(entityId);
+    return resourceContext.getResource(AttributeService.class).setDocumentId(documentId)
+                                                              .setEntityId(entityId)
+                                                              .setAttributeId(id);
   }
 
 }

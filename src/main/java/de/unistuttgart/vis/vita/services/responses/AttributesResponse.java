@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-
 /**
  * Holds a list of Attributes and its count.
  */
@@ -16,7 +14,7 @@ public class AttributesResponse extends AbstractListResponse {
   
   @XmlElementWrapper(name = "attributes")
   @XmlElement(name = "attribute")
-  private List<Attribute> attributes;
+  private List<BasicAttribute> attributes;
 
   /**
    * Creates a new instance of AttributesResponse, setting all attributes to default values.
@@ -30,7 +28,7 @@ public class AttributesResponse extends AbstractListResponse {
    * 
    * @param attributeList - a list of Attributes to be sent in this response
    */
-  public AttributesResponse(List<Attribute> attributeList) {
+  public AttributesResponse(List<BasicAttribute> attributeList) {
     super(attributeList.size());
     this.attributes = attributeList;
   }
@@ -40,7 +38,7 @@ public class AttributesResponse extends AbstractListResponse {
    * 
    * @param attributeList - the list of Attributes to be sent with this response
    */
-  public void setAttributes(List<Attribute> attributeList) {
+  public void setAttributes(List<BasicAttribute> attributeList) {
     this.totalCount = attributeList.size();
     this.attributes = attributeList;
   }
@@ -48,7 +46,7 @@ public class AttributesResponse extends AbstractListResponse {
   /**
    * @return list of attributes hold in this response
    */
-  public List<Attribute> getAttributes() {
+  public List<BasicAttribute> getAttributes() {
     return attributes;
   }
 

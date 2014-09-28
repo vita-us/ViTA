@@ -45,8 +45,9 @@ public class EntityService {
    * @return the AttributeService answering the request
    */
   @Path("/attributes")
-  public AttributeService getAttributes() {
-    return resourceContext.getResource(AttributeService.class).setAttributeId(entityId);
+  public AttributesService getAttributes() {
+    return resourceContext.getResource(AttributesService.class).setDocumentId(documentId)
+                                                                .setEntityId(entityId);
   }
   
   /**
