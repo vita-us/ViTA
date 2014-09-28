@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesService;
+import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
  * Provides methods to GET an attribute with current id
@@ -83,16 +84,16 @@ public class AttributeService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Attribute getAttribute() {
-    Attribute attr = null;
+  public BasicAttribute getAttribute() {
+    Attribute basicAttribute = null;
     
     try {
-      attr = readAttributeFromDatabase();
+      basicAttribute = readAttributeFromDatabase();
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
     
-    return attr;
+    return basicAttribute.toBasicAttribute();
   }
 
   private Attribute readAttributeFromDatabase() {

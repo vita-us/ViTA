@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import de.unistuttgart.vis.vita.services.entity.AttributeServiceTest;
+import de.unistuttgart.vis.vita.services.entity.AttributesServiceTest;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesServiceTest;
 
 /**
@@ -14,7 +16,7 @@ import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesServiceTest
     ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class, 
     PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class, 
     DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
-    EntityOccurrencesServiceTest.class})
+    EntityOccurrencesServiceTest.class, AttributesServiceTest.class, AttributeServiceTest.class})
 public class ServiceTests {
 
 }
