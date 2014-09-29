@@ -22,6 +22,8 @@ public class TextSplitter {
   private static final String END_OF_REGEX = WHITESPACE + "\\*\\*\\*\\s*end of.+\\s*\\*\\*\\*"
       + WHITESPACE;
   private static final String TEXTDISTINCTION_REGEX = "start of.+[^\\p{Punct}{3}]";
+  private static final String START_OF_DATADIVIDER = "^" + WHITESPACE + "\\*\\*\\*";
+  private static final String END_OF_DATADIVIDER = "\\*\\*\\*" + WHITESPACE + "$";
   private ArrayList<Line> metadataList = new ArrayList<>();
   private ArrayList<Line> textList = new ArrayList<>();
   private String textDistinction = "";
@@ -39,8 +41,7 @@ public class TextSplitter {
    * Concatenates Multiline-Datadividers so there are only one-line-Datadividers in the textList.
    */
   private void concatenateDatadivider() {
-    String RegexStart = "^" + WHITESPACE + "\\*\\*\\*";
-    Pattern startPattern = Pattern.compile(RegexStart);
+    Pattern startPattern = Pattern.compile(START_OF_DATADIVIDER);
 
     for (int index = 0; index < this.textList.size(); index++) {
       Line line = this.textList.get(index);
@@ -80,22 +81,20 @@ public class TextSplitter {
    * @return boolean - true: there is an ending. false: there is no ending.
    */
   private boolean containsDatadividerEnding(int startPosition) {
-    String RegexEnd = "\\*\\*\\*" + WHITESPACE + "$";
-    Pattern endPattern = Pattern.compile(RegexEnd);
+    Pattern endPattern = Pattern.compile(END_OF_DATADIVIDER);
     boolean found = false;
+    boolean datadividerFound = false;
 
     if (this.textList.size() > startPosition + 1) {
       List<Line> searchList = this.textList.subList(startPosition + 1, this.textList.size());
 
       Iterator<Line> linesIterator = searchList.iterator();
-      while (linesIterator.hasNext() && !found) {
+      while (linesIterator.hasNext() && !found && !datadividerFound) {
         Line line = linesIterator.next();
         if (endPattern.matcher(line.getText()).find()) {
-          if (line.getType().equals(LineType.DATADIVIDER)) {
-            break;
-          } else {
-            found = true;
-          }
+          // in any case the loop will break because datadivider is found
+          found = !line.getType().equals(LineType.DATADIVIDER);
+          datadividerFound = line.getType().equals(LineType.DATADIVIDER);
         }
       }
     }
@@ -151,8 +150,6 @@ public class TextSplitter {
         }
       }
       removeElementsFromPosition(position, removeRestElements);
-    } else {
-
     }
     return textList;
   }

@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,14 +16,14 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
  * typical English novel.
  */
 public class AutomatedChapterDetection {
-  private final float HUGECHAPTERPERCENTAGE = 0.5f;
-  private final float MINIMUMSMALLHEADINGSPERCENTAGE = 0.4f;
+  private static final float HUGE_CHAPTER_PERCENTAGE = 0.5f;
+  private static final float MINIMUM_SMALLHEADINGS_PERCENTAGE = 0.4f;
 
   private float smallHeadingsPercentage = 0.0f;
   private int bigHeadingAnalysisStart;
   private ExecutorService executor = Executors.newCachedThreadPool();
   private ArrayList<Line> lines = new ArrayList<Line>();
-  private ArrayList<Future<ChapterPosition>> activeChapterAnalyzers =
+  private List<Future<ChapterPosition>> activeChapterAnalyzers =
       new ArrayList<Future<ChapterPosition>>();
   private Future<ChapterPosition> markedHeadingChapters;
   private Future<ChapterPosition> bigHeadingChapters;
@@ -101,11 +102,12 @@ public class AutomatedChapterDetection {
    *         analyzer.
    */
   private ChapterPosition chooseChapterPositions() {
-    ChapterPosition result = null;
+    ChapterPosition analyzerResultToCheck = null;
     try {
 
-      result = markedHeadingChapters.get();
-      if (fulfillsMarkedHeadingConditions(result)) {
+      // check results of the analyzers and take first which fulfills conditions
+      analyzerResultToCheck = markedHeadingChapters.get();
+      if (fulfillsMarkedHeadingConditions(analyzerResultToCheck)) {
         stopChapterDetection();
       } else {
 
@@ -114,37 +116,37 @@ public class AutomatedChapterDetection {
                 this.bigHeadingAnalysisStart);
         advancedBigHeadingChapters = executor.submit(advancedBigHeadingChapterPositions);
         activeChapterAnalyzers.add(advancedBigHeadingChapters);
-        result = advancedBigHeadingChapters.get();
+        analyzerResultToCheck = advancedBigHeadingChapters.get();
         smallHeadingsPercentage = advancedBigHeadingChapterPositions.getSmallHeadingsPercentage();
 
-        if (fulfillsAdvancedBigHeadingConditions(result)) {
+        if (fulfillsAdvancedBigHeadingConditions(analyzerResultToCheck)) {
           stopChapterDetection();
         } else {
 
-          result = bigHeadingChapters.get();
-          if (fulfillsBigHeadingConditions(result)) {
+          analyzerResultToCheck = bigHeadingChapters.get();
+          if (fulfillsBigHeadingConditions(analyzerResultToCheck)) {
             stopChapterDetection();
           } else {
 
-            result = smallHeadingChapters.get();
-            if (fulfillsSmallHeadingConditions(result)) {
+            analyzerResultToCheck = smallHeadingChapters.get();
+            if (fulfillsSmallHeadingConditions(analyzerResultToCheck)) {
               stopChapterDetection();
             } else {
 
-              result = simpleWhitelinesChapters.get();
-              if (fulfillsSimpleWhitelinesConditions(result)) {
+              analyzerResultToCheck = simpleWhitelinesChapters.get();
+              if (fulfillsSimpleWhitelinesConditions(analyzerResultToCheck)) {
                 stopChapterDetection();
               } else {
-                result = noChapters.get();
+                analyzerResultToCheck = noChapters.get();
               }
             }
           }
         }
       }
     } catch (InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      // result should exist already. Should only happen if Chapter Detection is stopped manually.
     }
-    return result;
+    return analyzerResultToCheck;
   }
 
   /**
@@ -157,7 +159,7 @@ public class AutomatedChapterDetection {
    *         results of the Marked Heading Analyzer.
    */
   private boolean fulfillsMarkedHeadingConditions(ChapterPosition markedHeadingPositions) {
-    return markedHeadingPositions.size() >= 1;
+    return !markedHeadingPositions.isEmpty();
   }
 
   /**
@@ -170,7 +172,7 @@ public class AutomatedChapterDetection {
    *         results of the Big Heading Chapter Analyzer.
    */
   private boolean fulfillsBigHeadingConditions(ChapterPosition bigHeadingPositions) {
-    return bigHeadingPositions.size() >= 1 && !hasHugeChapter(bigHeadingPositions);
+    return !bigHeadingPositions.isEmpty() && !hasHugeChapter(bigHeadingPositions);
   }
 
   /**
@@ -184,7 +186,7 @@ public class AutomatedChapterDetection {
    *         results of the Advanced Big Heading Chapter Analyzer.
    */
   private boolean fulfillsAdvancedBigHeadingConditions(ChapterPosition advancedBigHeadingPositions) {
-    boolean enoughSmallHeadings = smallHeadingsPercentage >= MINIMUMSMALLHEADINGSPERCENTAGE;
+    boolean enoughSmallHeadings = smallHeadingsPercentage >= MINIMUM_SMALLHEADINGS_PERCENTAGE;
     return fulfillsBigHeadingConditions(advancedBigHeadingPositions) && enoughSmallHeadings;
   }
 
@@ -198,7 +200,7 @@ public class AutomatedChapterDetection {
    *         results of the Small Heading Chapter Analyzer.
    */
   private boolean fulfillsSmallHeadingConditions(ChapterPosition smallHeadingPositions) {
-    return smallHeadingPositions.size() >= 1 && !hasHugeChapter(smallHeadingPositions);
+    return !smallHeadingPositions.isEmpty() && !hasHugeChapter(smallHeadingPositions);
   }
 
   /**
@@ -211,7 +213,7 @@ public class AutomatedChapterDetection {
    *         Simple Whitelines Chapter Analyzer.
    */
   private boolean fulfillsSimpleWhitelinesConditions(ChapterPosition simpleWhitelinesPositions) {
-    return simpleWhitelinesPositions.size() >= 1 && !hasHugeChapter(simpleWhitelinesPositions);
+    return !simpleWhitelinesPositions.isEmpty() && !hasHugeChapter(simpleWhitelinesPositions);
   }
 
   /**
@@ -227,7 +229,7 @@ public class AutomatedChapterDetection {
       int chapterTextStart = positions.getStartOfText(chapterNumber);
       int chapterTextEnd = positions.getEndOfText(chapterNumber);
       int chapterLength = chapterTextEnd - chapterTextStart;
-      if (chapterLength >= HUGECHAPTERPERCENTAGE * lines.size()) {
+      if (chapterLength >= HUGE_CHAPTER_PERCENTAGE * lines.size()) {
         hasHugeChapter = true;
         break;
       }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 
 import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
@@ -225,6 +226,7 @@ public class MetadataAnalyzer {
         date.setTime(dateFormat.parse(publisherYear));
         return true;
       } catch (ParseException ex) {
+        // do nothin
       }
     }
     return false;
@@ -237,12 +239,14 @@ public class MetadataAnalyzer {
    * @return
    */
   private boolean isMetadataMultiLine(Line newMetadataLine) {
-    for (int i = metadataList.indexOf(newMetadataLine) + 1; i < metadataList.size(); i++) {
-      return !StringUtils.startsWithAny(metadataList.get(i).getText(), metadataStartArray)
-          && !metadataList.get(i).getText().matches("^[\\s]*$");
-
+    int nextIndex = metadataList.indexOf(newMetadataLine) + 1;
+    if (nextIndex < metadataList.size()) {
+      return !StringUtils.startsWithAny(metadataList.get(nextIndex).getText(), metadataStartArray)
+          && !metadataList.get(nextIndex).getText().matches("^[\\s]*$");
+    } else {
+      return false;
     }
-    return false;
+
   }
 
   /**

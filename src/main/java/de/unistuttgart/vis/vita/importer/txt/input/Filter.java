@@ -56,7 +56,7 @@ public class Filter {
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s*"
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
-  private static final String DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET = "("
+  private static final String DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
@@ -233,7 +233,7 @@ public class Filter {
         return false;
 
       } else if (entireEbookList.get(i).getText()
-          .matches(DEFAULT_CHARACTERS_WITH__END_BEGIN_BRACKET)) {
+          .matches(DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET)) {
         return true;
 
       } else if (entireEbookList.get(i).getText().matches(DEFAULT_CHARACTERS_WITH_END_BRACKET)) {
@@ -254,8 +254,7 @@ public class Filter {
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
     String editStringLine = editLine.getText().replaceAll(regex, " ");
-    String editedLine = editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
-    return editedLine;
+    return editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
   }
 
 

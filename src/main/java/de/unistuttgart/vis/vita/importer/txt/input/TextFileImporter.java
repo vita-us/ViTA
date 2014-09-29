@@ -12,6 +12,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,8 +40,8 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
  */
 public class TextFileImporter {
   private Path path;
-  private ArrayList<Line> lines;
-  private ArrayList<Charset> charsets;
+  private ArrayList<Line> importedLines;
+  private List<Charset> charsets;
   private Charset usedCharset = null;
 
   /**
@@ -63,14 +64,14 @@ public class TextFileImporter {
     initializeCharsets();
     checkFileName();
     checkFile();
-    lines = importData(path);
+    importedLines = importData(path);
   }
 
   /**
    * The extracted lines of the file.
    */
   public ArrayList<Line> getLines() {
-    return lines;
+    return importedLines;
   }
 
   /**
@@ -284,7 +285,7 @@ public class TextFileImporter {
     String specialSymbols = "[^\\s\\w\"#']";
     String manySpecialSymbolsAtTheBeginning = "^" + specialSymbols + "*";
 
-    if (lines.size() > 0) {
+    if (!lines.isEmpty()) {
       String firstLine = lines.get(0).getText();
       Matcher matcher = Pattern.compile(manySpecialSymbolsAtTheBeginning).matcher(firstLine);
       StringBuffer stringBuffer = new StringBuffer(firstLine.length());

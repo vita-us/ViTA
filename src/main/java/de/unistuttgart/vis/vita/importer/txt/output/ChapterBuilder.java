@@ -41,17 +41,19 @@ public class ChapterBuilder implements Callable<Chapter> {
    */
   public ChapterBuilder(ArrayList<Line> heading, ArrayList<Line> text, int chapterNumber) {
     if (heading == null) {
-      heading = new ArrayList<Line>();
-      heading.add(new Line("", false));
+      this.heading = new ArrayList<Line>();
+      this.heading.add(new Line("", false));
+    } else {
+      this.heading = heading;
     }
 
     if (text == null) {
-      text = new ArrayList<Line>();
-      text.add(new Line("", false));
+      this.text = new ArrayList<Line>();
+      this.text.add(new Line("", false));
+    } else {
+      this.text = text;
     }
 
-    this.heading = heading;
-    this.text = text;
     this.chapterNumber = chapterNumber;
   }
 
@@ -165,10 +167,10 @@ public class ChapterBuilder implements Callable<Chapter> {
         if (lineBeforeWasNotWhiteline) {
           Line lineBefore = lines.get(index + 1);
           Line line = lines.get(index);
-          String textBefore = lineBefore.getText();
-          String text = line.getText();
-          text = text.concat(" " + textBefore);
-          line.setText(text);
+          String lineTextBefore = lineBefore.getText();
+          String lineText = line.getText();
+          lineText = lineText.concat(" " + lineTextBefore);
+          line.setText(lineText);
           lines.remove(index + 1);
         } else {
           lineBeforeWasNotWhiteline = true;
@@ -223,7 +225,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    */
   private void deleteWhitelinesAtTheBeginning(ArrayList<Line> lines) {
     boolean onlyWhitelinesFound = true;
-    while (lines.size() > 0 && onlyWhitelinesFound) {
+    while (!lines.isEmpty() && onlyWhitelinesFound) {
       int firstIndex = 0;
       Line firstLine = lines.get(firstIndex);
       if (firstLine.getType().equals(LineType.WHITELINE)) {
@@ -242,7 +244,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    */
   private void deleteWhitelinesAtTheEnd(ArrayList<Line> lines) {
     boolean onlyWhitelinesFound = true;
-    while (lines.size() > 0 && onlyWhitelinesFound) {
+    while (!lines.isEmpty() && onlyWhitelinesFound) {
       int lastIndex = lines.size() - 1;
       Line lastLine = lines.get(lastIndex);
       if (lastLine.getType().equals(LineType.WHITELINE)) {

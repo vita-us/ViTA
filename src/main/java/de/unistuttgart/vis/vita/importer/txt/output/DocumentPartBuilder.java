@@ -117,7 +117,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
       try {
         chapters.add(futureChapter.get());
       } catch (InterruptedException | ExecutionException e) {
-        e.printStackTrace();
+        // try next one
       }
     }
     return chapters;

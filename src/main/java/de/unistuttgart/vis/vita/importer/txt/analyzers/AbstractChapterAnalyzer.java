@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
@@ -23,7 +24,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   protected final ArrayList<Line> chapterArea;
 
   protected int minimumChapterSize = 200;
-  protected HashSet<LineType> skipTags = new HashSet<LineType>();
+  protected Set<LineType> skipTags = new HashSet<LineType>();
   protected ChapterPosition chapterPositions = new ChapterPosition();
 
   /**
@@ -184,7 +185,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       }
     }
     // special case: if first chapter does not fit the rule, it must be deleted
-    if (this.chapterPositions.size() >= 1) {
+    if (!this.chapterPositions.isEmpty()) {
       int firstChapterBeginning = this.chapterPositions.getStartOfHeading(1);
       boolean someWhitelinesAfter =
           (getNextPosition(false, LineType.WHITELINE, firstChapterBeginning + 1) - firstChapterBeginning) > 1;
@@ -247,11 +248,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     }
     // special case: if first chapter does not fit the rule, it must be deleted
     int firstChapter = 1;
-    if (this.chapterPositions.size() >= 1) {
-      if (!fitsTwoWhitelinesBeforeRule(this.chapterPositions.getStartOfHeading(firstChapter))) {
+    if (!this.chapterPositions.isEmpty()
+        && !fitsTwoWhitelinesBeforeRule(this.chapterPositions.getStartOfHeading(firstChapter))) {
         this.chapterPositions.deleteChapter(firstChapter);
       }
-    }
   }
 
 
@@ -287,13 +287,13 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
     // special case: if last chapter is empty, it must be deleted.
     int lastChapter = this.chapterPositions.size();
-    if (this.chapterPositions.size() >= 1 && isEmptyChapter(lastChapter)) {
+    if (!this.chapterPositions.isEmpty() && isEmptyChapter(lastChapter)) {
       this.chapterPositions.deleteChapter(lastChapter);
     }
 
     // special case: if first chapter is empty, it must be deleted.
     int firstChapter = 1;
-    if (this.chapterPositions.size() >= 1 && isEmptyChapter(firstChapter)) {
+    if (!this.chapterPositions.isEmpty() && isEmptyChapter(firstChapter)) {
       this.chapterPositions.deleteChapter(firstChapter);
     }
   }
@@ -334,7 +334,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
     // special case: if first chapter is nearly empty, it must be deleted.
     int firstChapter = 1;
-    if (this.chapterPositions.size() >= 1 && (computeTextLength(firstChapter) < minimumLength)) {
+    if (!this.chapterPositions.isEmpty() && (computeTextLength(firstChapter) < minimumLength)) {
       this.chapterPositions.deleteChapter(firstChapter);
     }
   }
@@ -371,16 +371,15 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       for (int index = start; index < chapterArea.size(); index++) {
         Line line = chapterArea.get(index);
         LineType lineType = line.getType();
-        if (thisType) {
-          if (type.equals(lineType)) {
+        if (thisType && type.equals(lineType)) {
             nextPosition = index;
-            break;
-          }
-        } else {
-          if (!type.equals(lineType)) {
+        } else if (!thisType && !type.equals(lineType)) {
             nextPosition = index;
-            break;
-          }
+        }
+
+        // if- or else-if has to be executed then you can finish.
+        if (nextPosition >= start) {
+          break;
         }
       }
     }
@@ -457,12 +456,14 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    *        heading.
    */
   private void addLastChapter(int startOfHeading, int startOfText) {
+    int correctStartOfText = startOfText;
     if ((startOfHeading >= 0) && (startOfHeading < chapterArea.size() - 1)) {
-      if (startOfText <= startOfHeading) {
-        startOfText = startOfHeading + 1;
+      if (correctStartOfText <= startOfHeading) {
+        correctStartOfText = startOfHeading + 1;
       }
-      if (!(startOfText >= chapterArea.size())) {
-        this.chapterPositions.addChapter(startOfHeading, startOfText, chapterArea.size() - 1);
+      if (!(correctStartOfText >= chapterArea.size())) {
+        this.chapterPositions
+            .addChapter(startOfHeading, correctStartOfText, chapterArea.size() - 1);
       }
     }
   }

@@ -52,8 +52,7 @@ public class ChapterPosition implements Cloneable {
       throw new IllegalArgumentException("chapterNumber should not be <= 0");
     }
     if (chapterNumber > startList.size()) {
-      throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
-          + startList.size());
+      throwIndexOutOfBoundsException(chapterNumber);
     }
 
     this.headingStartList.remove(chapterNumber - 1);
@@ -78,8 +77,7 @@ public class ChapterPosition implements Cloneable {
       throw new IllegalArgumentException("chapterNumber should not be <= 0");
     }
     if (chapterNumber > startList.size()) {
-      throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
-          + startList.size());
+      throwIndexOutOfBoundsException(chapterNumber);
     }
     if (!((startOfHeading <= startOfText) && (startOfText <= endOfText))) {
       throw new IllegalStateException("Index is not: headingStart <= start <= end");
@@ -101,8 +99,7 @@ public class ChapterPosition implements Cloneable {
       throw new IllegalArgumentException("chapterNumber should not be <= 0");
     }
     if (chapterNumber > startList.size()) {
-      throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
-          + startList.size());
+      throwIndexOutOfBoundsException(chapterNumber);
     }
     return headingStartList.get(chapterNumber - 1);
   }
@@ -119,8 +116,7 @@ public class ChapterPosition implements Cloneable {
       throw new IllegalArgumentException("chapterNumber should not be <= 0");
     }
     if (chapterNumber > startList.size()) {
-      throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
-          + startList.size());
+      throwIndexOutOfBoundsException(chapterNumber);
     }
     return startList.get(chapterNumber - 1);
   }
@@ -137,8 +133,7 @@ public class ChapterPosition implements Cloneable {
       throw new IllegalArgumentException("chapterNumber should not be <= 0");
     }
     if (chapterNumber > startList.size()) {
-      throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
-          + startList.size());
+      throwIndexOutOfBoundsException(chapterNumber);
     }
     return endList.get(chapterNumber - 1);
   }
@@ -164,5 +159,24 @@ public class ChapterPosition implements Cloneable {
    */
   public int size() {
     return startList.size();
+  }
+
+  /**
+   * Checks whether the ChapterPosition contains at least one element or not.
+   * 
+   * @return true: No element. false: one or more elements.
+   */
+  public boolean isEmpty() {
+    return startList.isEmpty() && endList.isEmpty() && headingStartList.isEmpty();
+  }
+
+  /**
+   * Throws a IndexOutOfBoundsException and adds additional information.
+   * 
+   * @param chapterNumber int - the wrong index which caused the Exception.
+   */
+  private void throwIndexOutOfBoundsException(int chapterNumber) {
+    throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
+        + startList.size());
   }
 }
