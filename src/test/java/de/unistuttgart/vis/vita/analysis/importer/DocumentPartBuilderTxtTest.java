@@ -16,7 +16,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 public class DocumentPartBuilderTxtTest {
 
   @Test
-  public void test() {
+  public void testBuildDocumentPart() {
     ArrayList<Line> lines = new ArrayList<Line>();
     ChapterPosition position = new ChapterPosition();
 

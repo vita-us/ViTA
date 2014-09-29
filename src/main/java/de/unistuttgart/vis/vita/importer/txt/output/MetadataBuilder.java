@@ -1,13 +1,19 @@
 package de.unistuttgart.vis.vita.importer.txt.output;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**
- * The MetadataBuilder builds the metadata values by editing the commited metadata of the MetadataAnalyzer
- * 
- *
+ * The MetadataBuilder is the link between MetadataAnalyzer and the Metadata Objects used by all
+ * other components of ViTA. It transforms the result of the MetadataAnalyzer into a Metadata. One
+ * MetadataBuilder should be used for one Metadata.<br>
  */
 public class MetadataBuilder {
 
@@ -23,15 +29,37 @@ public class MetadataBuilder {
   private static final String GENRE_VERSION2 = "GENRE:";
   private static final String EDITION_VERSION1 = "Edition:";
   private static final String EDITION_VERSION2 = "EDITION:";
-  
+  private DocumentMetadata documentMetadata;
+  private Calendar date = null;
+
+  public MetadataBuilder() {
+    documentMetadata = new DocumentMetadata();
+    documentMetadata.setAuthor("");
+    documentMetadata.setEdition("");
+    documentMetadata.setGenre("");
+    documentMetadata.setPublisher("");
+    documentMetadata.setPublishYear(0);
+    documentMetadata.setTitle("");
+  }
+
   /**
+   * Returns the Metadata with the currently set information.
    * 
-   * @param newMetadataTitle The metadata to edit
-   * @return the metadata value: metadataTitle
+   * @return DocumentMetadata - The Metadata with all set information.
    */
-  public String buildMetadataTitle(String newMetadataTitle) {
-    String metadataTitle = null;
-    if (newMetadataTitle != null) {
+  public DocumentMetadata getMetadata() {
+    return documentMetadata;
+  }
+
+  /**
+   * Set the title of the metadata.
+   * 
+   * @param titleList List of Line - Contains all lines of the title.
+   */
+  public void setTitle(List<Line> titleList) {
+    String metadataTitle = "";
+    if (titleList != null) {
+      String newMetadataTitle = buildMetadataMultiline(titleList);
       if (newMetadataTitle.contains(TITLE_VERSION1)) {
         metadataTitle =
             newMetadataTitle.substring(newMetadataTitle.lastIndexOf(TITLE_VERSION1)
@@ -44,18 +72,18 @@ public class MetadataBuilder {
         metadataTitle = metadataTitle.trim();
       }
     }
-    return metadataTitle;
-
+    documentMetadata.setTitle(metadataTitle);
   }
 
   /**
+   * Set the author of the metadata.
    * 
-   * @param newMetadataAuthor The metadata to edit
-   * @return the metadata value: metadataAuthor
+   * @param authorList List of Line - Contains all lines of the author.
    */
-  public String buildMetadataAuthor(String newMetadataAuthor) {
-    String metadataAuthor = null;
-    if (newMetadataAuthor != null) {
+  public void setAuthor(List<Line> authorList) {
+    String metadataAuthor = "";
+    if (authorList != null) {
+      String newMetadataAuthor = buildMetadataMultiline(authorList);
       if (newMetadataAuthor.contains(AUTHOR_VERSION1)) {
         metadataAuthor =
             newMetadataAuthor.substring(newMetadataAuthor.lastIndexOf(AUTHOR_VERSION1)
@@ -68,104 +96,106 @@ public class MetadataBuilder {
         metadataAuthor = metadataAuthor.trim();
       }
     }
-    return metadataAuthor;
+    documentMetadata.setAuthor(metadataAuthor);;
 
   }
 
   /**
+   * Set the publish year of the metadata.
    * 
-   * @param newMetadataPublishYear The metadata to edit
-   * @return the metadata value: metadataPublishYear
+   * @param publishYearList List of Line - Contains all lines of the publish year.
    */
-  public String buildMetadataPublishYear(String newMetadataPublishYear) {
-    String metadataPublishYear = null;
-    if (newMetadataPublishYear != null) {
-      if (newMetadataPublishYear.contains(RELEASE_DATE_VERSION1)) {
+  public void setPublishYear(List<Line> publishYearList) {
+    String metadataPublishYear = "";
+    if (publishYearList != null) {
+      String newPublishYear = buildMetadataMultiline(publishYearList);
+      if (newPublishYear.contains(RELEASE_DATE_VERSION1)) {
         metadataPublishYear =
-            newMetadataPublishYear.substring(newMetadataPublishYear
+            newPublishYear.substring(newPublishYear
                 .lastIndexOf(RELEASE_DATE_VERSION1) + RELEASE_DATE_VERSION1.length());
         metadataPublishYear = metadataPublishYear.trim();
-      } else if (newMetadataPublishYear.contains(RELEASE_DATE_VERSION2)) {
+      } else if (newPublishYear.contains(RELEASE_DATE_VERSION2)) {
         metadataPublishYear =
-            newMetadataPublishYear.substring(newMetadataPublishYear
+            newPublishYear.substring(newPublishYear
                 .lastIndexOf(RELEASE_DATE_VERSION2) + RELEASE_DATE_VERSION2.length());
         metadataPublishYear = metadataPublishYear.trim();
       }
     }
-    return metadataPublishYear;
-
+    if (isValidPublisherYear(metadataPublishYear)) {
+      documentMetadata.setPublishYear(date.get(Calendar.YEAR));
+    }
   }
 
   /**
+   * Set the publisher of the metadata.
    * 
-   * @param newMetadataPublisher The metadata to edit
-   * @return the metadata value: metadataPublisher
+   * @param publisherList List of Line - Contains all lines of the publisher.
    */
-  public String buildMetadataPublisher(String newMetadataPublisher) {
-    String metadataPublisher = null;
-    if (newMetadataPublisher != null) {
-      if (newMetadataPublisher.contains(PUBLISHER_VERSION1)) {
+  public void setPublisher(List<Line> publisherList) {
+    String metadataPublisher = "";
+    if (publisherList != null) {
+      String newPublisher = buildMetadataMultiline(publisherList);
+      if (newPublisher.contains(PUBLISHER_VERSION1)) {
         metadataPublisher =
-            newMetadataPublisher.substring(newMetadataPublisher.lastIndexOf(PUBLISHER_VERSION1)
+            newPublisher.substring(newPublisher.lastIndexOf(PUBLISHER_VERSION1)
                 + PUBLISHER_VERSION1.length());
         metadataPublisher = metadataPublisher.trim();
-      } else if (newMetadataPublisher.contains(PUBLISHER_VERSION2)) {
+      } else if (newPublisher.contains(PUBLISHER_VERSION2)) {
         metadataPublisher =
-            newMetadataPublisher.substring(newMetadataPublisher.lastIndexOf(PUBLISHER_VERSION2)
+            newPublisher.substring(newPublisher.lastIndexOf(PUBLISHER_VERSION2)
                 + PUBLISHER_VERSION2.length());
         metadataPublisher = metadataPublisher.trim();
       }
     }
-    return metadataPublisher;
-
+    documentMetadata.setPublisher(metadataPublisher);
   }
 
   /**
+   * Set the genre of the metadata.
    * 
-   * @param newMetadataGenre The metadata to edit
-   * @return the metadata value: metadataGenre
+   * @param genreList List of Line - Contains all lines of the genre.
    */
-  public String buildMetadataGenre(String newMetadataGenre) {
-    String metadataGenre = null;
-    if (newMetadataGenre != null) {
-      if (newMetadataGenre.contains(GENRE_VERSION1)) {
+  public void setGenre(List<Line> genreList) {
+    String metadataGenre = "";
+    if (genreList != null) {
+      String newGenre = buildMetadataMultiline(genreList);
+      if (newGenre.contains(GENRE_VERSION1)) {
         metadataGenre =
-            newMetadataGenre.substring(newMetadataGenre.lastIndexOf(GENRE_VERSION1)
+            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION1)
                 + GENRE_VERSION1.length());
         metadataGenre = metadataGenre.trim();
-      } else if (newMetadataGenre.contains(GENRE_VERSION2)) {
+      } else if (newGenre.contains(GENRE_VERSION2)) {
         metadataGenre =
-            newMetadataGenre.substring(newMetadataGenre.lastIndexOf(GENRE_VERSION2)
+            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION2)
                 + GENRE_VERSION2.length());
         metadataGenre = metadataGenre.trim();
       }
     }
-    return metadataGenre;
-
+    documentMetadata.setGenre(metadataGenre);
   }
 
   /**
+   * Set the edition of the metadata.
    * 
-   * @param newMetadataEdition The metadata to edit
-   * @return the metadata value: metadataEdition
+   * @param editionList List of Line - Contains all lines of the edition.
    */
-  public String buildMetadataEdition(String newMetadataEdition) {
-    String metadataEdition = null;
-    if (newMetadataEdition != null) {
-      if (newMetadataEdition.contains(EDITION_VERSION1)) {
+  public void setEdition(List<Line> editionList) {
+    String metadataEdition = "";
+    if (editionList != null) {
+      String newEdition = buildMetadataMultiline(editionList);
+      if (newEdition.contains(EDITION_VERSION1)) {
         metadataEdition =
-            newMetadataEdition.substring(newMetadataEdition.lastIndexOf(EDITION_VERSION1)
+            newEdition.substring(newEdition.lastIndexOf(EDITION_VERSION1)
                 + EDITION_VERSION1.length());
         metadataEdition = metadataEdition.trim();
-      } else if (newMetadataEdition.contains(EDITION_VERSION2)) {
+      } else if (newEdition.contains(EDITION_VERSION2)) {
         metadataEdition =
-            newMetadataEdition.substring(newMetadataEdition.lastIndexOf(EDITION_VERSION2)
+            newEdition.substring(newEdition.lastIndexOf(EDITION_VERSION2)
                 + EDITION_VERSION2.length());
         metadataEdition = metadataEdition.trim();
       }
     }
-    return metadataEdition;
-
+    documentMetadata.setEdition(metadataEdition);
   }
   
   /**
@@ -173,7 +203,7 @@ public class MetadataBuilder {
    * @param newMetadataMultilineList
    * @return
    */
-  public String buildMetadataMultiline(List<Line> newMetadataMultilineList){
+  private String buildMetadataMultiline(List<Line> newMetadataMultilineList) {
     String metadataLine = "";
     StringBuilder stringBuilder = new StringBuilder(metadataLine);
     
@@ -182,6 +212,33 @@ public class MetadataBuilder {
       stringBuilder.append(metadataMultiLine.getText().trim());
     }
     metadataLine = stringBuilder.toString();
+    metadataLine = metadataLine.trim();
     return metadataLine;
   }
+
+
+  /**
+   * Checks if the date format of the publisherYear is valid
+   * 
+   * @param publisherYear
+   * @return
+   */
+  private boolean isValidPublisherYear(String publisherYear) {
+    List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>();
+    dateFormats.add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
+
+    for (SimpleDateFormat dateFormat : dateFormats) {
+      try {
+        date = Calendar.getInstance();
+        date.setTime(dateFormat.parse(publisherYear));
+        return true;
+      } catch (ParseException ex) {
+        // do nothing
+      }
+    }
+    return false;
+  }
+
 }
