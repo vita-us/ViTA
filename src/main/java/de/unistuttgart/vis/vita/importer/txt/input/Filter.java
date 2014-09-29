@@ -96,14 +96,8 @@ public class Filter {
     for (Line line : entireEbookList) {
       if (line.getText() != null) {
         if (line.getText().matches(DEFAULT_COMMENT_FILTER)) {
-          if (line.getText().matches("(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+")) {
-            editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
-
-          } else {
-            editedLine = replaceMultipleWhitespaces(line, "\\[.*\\]");
-          }
+          editedLine = decideReplacementInDefaultCommentCase(line);
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
-
         } else if (line.getText().matches(DEFAULT_COMMENT_FILTER_WITH_WHITESPACES)) {
           editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
@@ -112,7 +106,6 @@ public class Filter {
         }
       }
     }
-
 
     // Set the new edited line entry.getValue() in the entireEbookList at the position
     // entry.getKey()
@@ -124,7 +117,22 @@ public class Filter {
     entireEbookList.removeAll(removeList);
     removeList.clear();
     defaultCommentMap.clear();
+  }
 
+  /**
+   * Returns the edited line in case of a simple found Default Comment.
+   * 
+   * @param line Line - The line to edit.
+   * @return String - The edited line-text, the comment is removed.
+   */
+  private String decideReplacementInDefaultCommentCase(Line line) {
+    String editedLine;
+    if (line.getText().matches("(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+")) {
+      editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
+    } else {
+      editedLine = replaceMultipleWhitespaces(line, "\\[.*\\]");
+    }
+    return editedLine;
   }
 
   /**
@@ -240,17 +248,17 @@ public class Filter {
         return true;
 
       }
-
     }
     return false;
   }
 
   /**
-   * Replaces multiple whitespaces between Strings
+   * Replaces all occurences of the found regex and replaces all multiple whitespaces between
+   * Strings with a single whitespace.
    * 
-   * @param editLine
-   * @param regex
-   * @return
+   * @param editLine Line - The line to edit.
+   * @param regex String - The regex which determines what should be removed.
+   * @return String - The edited line text. The line itself is not changed.
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
     String editStringLine = editLine.getText().replaceAll(regex, " ");

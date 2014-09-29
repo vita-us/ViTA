@@ -38,6 +38,24 @@ public class TextSplitter {
   }
 
   /**
+   * Returns the metadataList
+   * 
+   * @return metadataList
+   */
+  public ArrayList<Line> getMetadataList() {
+    return metadataList;
+  }
+
+  /**
+   * Returns the textList
+   * 
+   * @return textList
+   */
+  public ArrayList<Line> getTextList() {
+    return textList;
+  }
+
+  /**
    * Concatenates Multiline-Datadividers so there are only one-line-Datadividers in the textList.
    */
   private void concatenateDatadivider() {
@@ -108,18 +126,11 @@ public class TextSplitter {
    */
   private List<Line> getMetadataSection() {
     List<Line> removeTextElements = new ArrayList<Line>();
-    Pattern pattern = Pattern.compile(TEXTDISTINCTION_REGEX);
     if (containsMetadataSection(textList)) {
       for (Line line : textList) {
         if (line.getText() != null && line.getText().toLowerCase().matches(START_OF_REGEX)) {
-          Matcher matcher = pattern.matcher(line.getText().toLowerCase());
-          if (matcher.find()) {
-            textDistinction = matcher.group(0);
-            textDistinction = textDistinction.replaceAll("(?i)start of", "");
-            textDistinction = textDistinction.trim();
-          }
+          gatherTextDistinction(line);
           break;
-
         } else {
           metadataList.add(line);
           removeTextElements.add(line);
@@ -129,9 +140,22 @@ public class TextSplitter {
       removeTextElements.clear();
     }
     return metadataList;
-
   }
 
+  /**
+   * Detects and saves the text distinction of the found datadivider.
+   * 
+   * @param line Line - The line containing the datadivider.
+   */
+  private void gatherTextDistinction(Line line) {
+    Pattern pattern = Pattern.compile(TEXTDISTINCTION_REGEX);
+    Matcher matcher = pattern.matcher(line.getText().toLowerCase());
+    if (matcher.find()) {
+      textDistinction = matcher.group(0);
+      textDistinction = textDistinction.replaceAll("(?i)start of", "");
+      textDistinction = textDistinction.trim();
+    }
+  }
 
   /**
    * Gets only the text section from the textList
@@ -186,8 +210,6 @@ public class TextSplitter {
 
   }
 
-
-
   /**
    * Checks whether a text section is existing in the textList
    * 
@@ -202,23 +224,5 @@ public class TextSplitter {
       }
     }
     return false;
-  }
-
-  /**
-   * Returns the metadataList
-   * 
-   * @return metadataList
-   */
-  public ArrayList<Line> getMetadataList() {
-    return metadataList;
-  }
-
-  /**
-   * Returns the textList
-   * 
-   * @return textList
-   */
-  public ArrayList<Line> getTextList() {
-    return textList;
   }
 }

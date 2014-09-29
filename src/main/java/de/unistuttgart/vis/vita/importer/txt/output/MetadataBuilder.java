@@ -96,8 +96,7 @@ public class MetadataBuilder {
         metadataAuthor = metadataAuthor.trim();
       }
     }
-    documentMetadata.setAuthor(metadataAuthor);;
-
+    documentMetadata.setAuthor(metadataAuthor);
   }
 
   /**

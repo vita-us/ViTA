@@ -47,22 +47,22 @@ public class MetadataAnalyzer {
     if (!metadataList.isEmpty()) {
       for (Line line : metadataList) {
         if (line.getText().matches(TITLE)) {
-          metadataBuilder.setTitle(buildMetadataList(line));
+          metadataBuilder.setTitle(buildMetadataTypeList(line));
 
         } else if (line.getText().matches(AUTHOR)) {
-          metadataBuilder.setAuthor(buildMetadataList(line));
+          metadataBuilder.setAuthor(buildMetadataTypeList(line));
 
         } else if (line.getText().matches(RELEASE_DATE)) {
-          metadataBuilder.setPublishYear(buildMetadataList(line));
+          metadataBuilder.setPublishYear(buildMetadataTypeList(line));
 
         } else if (line.getText().matches(PUBLISHER)) {
-          metadataBuilder.setPublisher(buildMetadataList(line));
+          metadataBuilder.setPublisher(buildMetadataTypeList(line));
 
         } else if (line.getText().matches(GENRE)) {
-          metadataBuilder.setGenre(buildMetadataList(line));
+          metadataBuilder.setGenre(buildMetadataTypeList(line));
 
         } else if (line.getText().matches(EDITION)) {
-          metadataBuilder.setEdition(buildMetadataList(line));
+          metadataBuilder.setEdition(buildMetadataTypeList(line));
         }
       }
     } else {
@@ -115,12 +115,12 @@ public class MetadataAnalyzer {
    *         line will be added, if there are more lines belongig to the type they will be added
    *         too.
    */
-  private List<Line> buildMetadataList(Line line) {
-    List<Line> metadataList = new ArrayList<Line>();
-    metadataList.add(line);
+  private List<Line> buildMetadataTypeList(Line line) {
+    List<Line> typeList = new ArrayList<Line>();
+    typeList.add(line);
     if (isMetadataMultiLine(line)) {
-      metadataList.addAll(getMetadataMultilines(line));
+      typeList.addAll(getMetadataMultilines(line));
     }
-    return metadataList;
+    return typeList;
   }
 }

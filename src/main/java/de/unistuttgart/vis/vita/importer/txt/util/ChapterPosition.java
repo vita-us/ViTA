@@ -49,7 +49,7 @@ public class ChapterPosition implements Cloneable {
    */
   public void deleteChapter(int chapterNumber) {
     if (chapterNumber <= 0) {
-      throw new IllegalArgumentException("chapterNumber should not be <= 0");
+      throwIllegalArgumentException(chapterNumber);
     }
     if (chapterNumber > startList.size()) {
       throwIndexOutOfBoundsException(chapterNumber);
@@ -74,7 +74,7 @@ public class ChapterPosition implements Cloneable {
   public void changeChapterData(int chapterNumber, int startOfHeading, int startOfText,
       int endOfText) {
     if (chapterNumber <= 0) {
-      throw new IllegalArgumentException("chapterNumber should not be <= 0");
+      throwIllegalArgumentException(chapterNumber);
     }
     if (chapterNumber > startList.size()) {
       throwIndexOutOfBoundsException(chapterNumber);
@@ -96,7 +96,7 @@ public class ChapterPosition implements Cloneable {
    */
   public int getStartOfHeading(int chapterNumber) {
     if (chapterNumber <= 0) {
-      throw new IllegalArgumentException("chapterNumber should not be <= 0");
+      throwIllegalArgumentException(chapterNumber);
     }
     if (chapterNumber > startList.size()) {
       throwIndexOutOfBoundsException(chapterNumber);
@@ -113,7 +113,7 @@ public class ChapterPosition implements Cloneable {
    */
   public int getStartOfText(int chapterNumber) {
     if (chapterNumber <= 0) {
-      throw new IllegalArgumentException("chapterNumber should not be <= 0");
+      throwIllegalArgumentException(chapterNumber);
     }
     if (chapterNumber > startList.size()) {
       throwIndexOutOfBoundsException(chapterNumber);
@@ -130,7 +130,7 @@ public class ChapterPosition implements Cloneable {
    */
   public int getEndOfText(int chapterNumber) {
     if (chapterNumber <= 0) {
-      throw new IllegalArgumentException("chapterNumber should not be <= 0");
+      throwIllegalArgumentException(chapterNumber);
     }
     if (chapterNumber > startList.size()) {
       throwIndexOutOfBoundsException(chapterNumber);
@@ -173,10 +173,20 @@ public class ChapterPosition implements Cloneable {
   /**
    * Throws a IndexOutOfBoundsException and adds additional information.
    * 
-   * @param chapterNumber int - the wrong index which caused the Exception.
+   * @param chapterNumber int - The wrong index which caused the Exception.
    */
   private void throwIndexOutOfBoundsException(int chapterNumber) {
     throw new IndexOutOfBoundsException("Index " + chapterNumber + "is out of range " + "1 to "
         + startList.size());
+  }
+
+  /**
+   * Throws a IllegalArgumentException and adds additional information.
+   * 
+   * @param chapterNumber int - The wrong index which caused the Exception.
+   */
+  private void throwIllegalArgumentException(int chapterNumber) {
+    throw new IllegalArgumentException("chapterNumber=" + chapterNumber + " should not be <= 0");
+
   }
 }

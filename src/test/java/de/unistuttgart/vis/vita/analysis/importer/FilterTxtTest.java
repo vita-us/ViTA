@@ -213,13 +213,27 @@ public class FilterTxtTest {
   @Test
   public void testDoubledBrackets() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text [bla[te[xt1 ]bla[]text2]"));
+    lines.add(new Line("text [blate[xt1 ]bla[]text2]"));
+
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
     
     assertEquals(1, filteredList.size());
     assertEquals("text ", filteredList.get(0).getText());
-    
+  }
+
+  @Test
+  public void testMultilineDoubledBrackets() {
+    ArrayList<Line> lines = new ArrayList<Line>();
+    lines.add(new Line("text [bla"));
+    lines.add(new Line("te[xt1 ]bla"));
+    lines.add(new Line("[]text2]"));
+    Filter filter = new Filter(lines);
+    ArrayList<Line> filteredList = filter.filterEbookText();
+
+    assertEquals(2, filteredList.size());
+    assertEquals("text ", filteredList.get(0).getText());
+    assertEquals("", filteredList.get(1).getText());
   }
 
   @Test
