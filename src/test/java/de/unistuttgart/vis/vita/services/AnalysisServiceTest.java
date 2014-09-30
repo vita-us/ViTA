@@ -68,5 +68,20 @@ public class AnalysisServiceTest extends ServiceTest {
     assertNotNull(actualResponse);
     assertEquals(204, actualResponse.getStatus());
   }
+  
+  @Test
+  public void testAmbiguousStopRequest() {
+    // set up request
+    String path = "/documents/" + documentId + "/analysis";
+    DocumentIdRequest request = new DocumentIdRequest("I'm another id!");
+    Entity<DocumentIdRequest> requestEntity = Entity.entity(request, MediaType.APPLICATION_JSON);
+    
+    // send request and get response
+    Response actualResponse = target(path).request().put(requestEntity);
+    
+    // check response is empty (Status 204)
+    assertNotNull(actualResponse);
+    assertEquals(500, actualResponse.getStatus());
+  }
 
 }

@@ -16,16 +16,19 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
+import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
 public class EntityRelationsServiceTest extends ServiceTest {
 
+  private static final String TEST_RELATION_TYPE_ALL = "all";
   private static final int TEST_STEPS = 100;
   private static final double TEST_RANGE_START = 0.0;
   private static final double TEST_RANGE_END = 1.0;
@@ -39,45 +42,71 @@ public class EntityRelationsServiceTest extends ServiceTest {
   private static final int TEST_STEPS_ILLEGAL = -1;
   
   private PersonTestData personTestData;
+  private PlaceTestData placeTestData;
   private EntityRelationTestData relationTestData;
+  
   private String docId;
-  private String originId;
-  private String targetId;
+  private String originPersonId;
+  private String targetPersonId;
+  private String originPlaceId;
+  private String targetPlaceId;
+  
   private List<String> ids;
+  
   private String path;
-
+  
   @Before
   public void setUp() throws Exception {
     super.setUp();
     
+    // set up test data instances
     this.personTestData = new PersonTestData();
+    this.placeTestData = new PlaceTestData();
     this.relationTestData = new EntityRelationTestData();
     this.ids = new ArrayList<>();
     
-    // set up test data
+    // set up test document (only needed for the path)
     Document testDoc = new DocumentTestData().createTestDocument(1);
     this.docId = testDoc.getId();
     
+    // set up test persons and relation
     Person testPerson = personTestData.createTestPerson(1);
     ids.add(testPerson.getId());
-    originId = testPerson.getId();
-    
+    originPersonId = testPerson.getId();
     Person relatedPerson = personTestData.createTestPerson(2);
-    targetId = relatedPerson.getId();
+    targetPersonId = relatedPerson.getId();
+    EntityRelation<Entity> testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
+    testPerson.getEntityRelations().add(testPersonRelation);
     
-    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
-    testPerson.getEntityRelations().add(testRelation);
+    // set up test place and relation
+    Place testPlace = placeTestData.createTestPlace(1);
+    ids.add(testPlace.getId());
+    originPlaceId = testPlace.getId();
+    Place relatedPlace = placeTestData.createTestPlace(2);
+    targetPlaceId = relatedPlace.getId();
+    EntityRelation<Entity> testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
+    testPlace.getEntityRelations().add(testPlaceRelation);
     
-    // persist the created test data
     EntityManager em = Model.createUnitTestModel().getEntityManager();
+    
+    // persist persons and their relation
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(testPerson);
     em.persist(relatedPerson);
-    em.persist(testRelation);
+    em.persist(testPersonRelation);
     em.getTransaction().commit();
+    
+    // persist places and their relation
+    em.getTransaction().begin();
+    em.persist(testPlace);
+    em.persist(relatedPlace);
+    em.persist(testPlaceRelation);
+    em.getTransaction().commit();
+    
     em.close();
     
+    // set up path for all tests
     path = "/documents/" + docId + "/entities/relations";
   }
   
@@ -102,6 +131,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     List<String> actualEntityIds = actualResponse.getEntityIds();
     assertEquals(ids.size(), actualEntityIds.size());
     assertEquals(ids.get(0), actualEntityIds.get(0));
+    assertEquals(ids.get(1), actualEntityIds.get(1));
     
     // check relation configurations
     List<RelationConfiguration> actualRelations = actualResponse.getRelations();
@@ -109,11 +139,57 @@ public class EntityRelationsServiceTest extends ServiceTest {
     
     // check configuration of one and only relation
     RelationConfiguration actualConfig = actualRelations.get(0);
-    assertEquals(originId, actualConfig.getEntityAId());
-    assertEquals(targetId, actualConfig.getEntityBId());
+    assertEquals(originPersonId, actualConfig.getEntityAId());
+    assertEquals(targetPersonId, actualConfig.getEntityBId());
     assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, 
                   actualConfig.getWeight(), 
                   EntityRelationTestData.DELTA);
+  }
+  
+  /**
+   * Check whether place relations can be caught via GET but contain no data.
+   */
+  @Test
+  public void testGetPlaceRelations() {
+    RelationsResponse actualResponse = target(path).queryParam("steps", TEST_STEPS)
+                                                    .queryParam("rangeStart", TEST_RANGE_START)
+                                                    .queryParam("rangeEnd", TEST_RANGE_END)
+                                                    .queryParam("entityIds", ids)
+                                                    .queryParam("type", "place")
+                                                    .request().get(RelationsResponse.class);
+    
+    // check list of entity ids
+    List<String> actualEntityIds = actualResponse.getEntityIds();
+    assertEquals(ids.size(), actualEntityIds.size());
+    assertEquals(ids.get(0), actualEntityIds.get(0));
+    assertEquals(ids.get(1), actualEntityIds.get(1));
+    
+    // check relation configurations
+    List<RelationConfiguration> actualRelations = actualResponse.getRelations();
+    assertEquals(1, actualRelations.size());
+    
+    // check configuration of one and only relation
+    RelationConfiguration actualConfig = actualRelations.get(0);
+    assertEquals(originPlaceId, actualConfig.getEntityAId());
+    assertEquals(targetPlaceId, actualConfig.getEntityBId());
+    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, 
+                  actualConfig.getWeight(), 
+                  EntityRelationTestData.DELTA);
+  }
+  
+  /**
+   * Check whether all relations can be caught via GET.
+   */
+  @Test
+  public void testGetAllRelations() {
+    RelationsResponse actualResponse = target(path).queryParam("steps", TEST_STEPS)
+                                                    .queryParam("rangeStart", TEST_RANGE_START)
+                                                    .queryParam("rangeEnd", TEST_RANGE_END)
+                                                    .queryParam("entityIds", ids)
+                                                    .queryParam("type", TEST_RELATION_TYPE_ALL)
+                                                    .request().get(RelationsResponse.class);
+    assertNotNull(actualResponse);
+    assertEquals(2, actualResponse.getRelations().size());
   }
   
   /**
@@ -172,11 +248,11 @@ public class EntityRelationsServiceTest extends ServiceTest {
   @Test
   public void testGetRelationsWithIllegalType() {
     Response actualResponse = target(path).queryParam("steps", TEST_STEPS)
-        .queryParam("rangeStart", TEST_RANGE_ILLEGAL)
-        .queryParam("rangeEnd", TEST_RANGE_END)
-        .queryParam("entityIds", ids)
-        .queryParam("type", TEST_RELATION_TYPE_ILLEGAL)
-        .request().get();
+                                          .queryParam("rangeStart", TEST_RANGE_START)
+                                          .queryParam("rangeEnd", TEST_RANGE_END)
+                                          .queryParam("entityIds", ids)
+                                          .queryParam("type", TEST_RELATION_TYPE_ILLEGAL)
+                                          .request().get();
     assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
 
