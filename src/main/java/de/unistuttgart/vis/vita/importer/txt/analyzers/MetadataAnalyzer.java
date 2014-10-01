@@ -28,7 +28,8 @@ public class MetadataAnalyzer {
   private List<Line> metadataList = new ArrayList<Line>();
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
       "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:",
-      "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:"};
+      "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:",
+      "Posting Date:", "POSTING DATE:"};
   private Path path;
 
   public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {

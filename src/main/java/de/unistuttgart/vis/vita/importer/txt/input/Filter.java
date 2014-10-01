@@ -61,7 +61,9 @@ public class Filter {
       + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
 
   private static final String MULTIPLE_WHITESPACES = "\\s+";
-
+  private static final String COMPLETE_BEGIN_TO_END_BRACKET = "\\[.*\\]";
+  private static final String IN_DEFAULT_COMMENT = "(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+";
+ 
   private ArrayList<Line> entireEbookList = new ArrayList<Line>();
   private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<Integer, Line>();
 
@@ -137,11 +139,11 @@ public class Filter {
    */
   private String decideReplacementInDefaultCommentCase(Line line) {
     String editedLine;
-    if (line.getText().matches("(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+")) {
+    if (line.getText().matches(IN_DEFAULT_COMMENT)) {
       editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
 
     } else {
-      editedLine = replaceMultipleWhitespaces(line, "\\[.*\\]");
+      editedLine = replaceMultipleWhitespaces(line, COMPLETE_BEGIN_TO_END_BRACKET);
     }
     return editedLine;
   }
@@ -163,7 +165,7 @@ public class Filter {
       // could have
       // unnecessary comments, so remove them
     } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
-     
+
       if (line.getText().matches(DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE)) {
 
         editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
@@ -178,46 +180,7 @@ public class Filter {
       editedLine = line.getText().replaceAll(REPLACE_ALL_CHARACTERS, "");
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
 
-    } else {
-      if (verifyMultilineExistence(line) != null) {
-
-        for (int i = entireEbookList.indexOf(line) + 1; i <= entireEbookList
-            .indexOf(verifyMultilineExistence(line)) - 1; i++) {
-          editedLine = entireEbookList.get(i).getText().replaceAll(".*", "");
-          defaultCommentMapMultiline.put(i, new Line(editedLine));
-
-        }
-
-        editedLine = line.getText().replaceAll("\\[.*", "");
-        defaultCommentMapMultiline.put(entireEbookList.indexOf(line), new Line(editedLine));
-
-        editedLine = verifyMultilineExistence(line).getText().replaceAll(".*\\]", "");
-        defaultCommentMapMultiline.put(entireEbookList.indexOf(verifyMultilineExistence(line)),
-            new Line(editedLine));
-
-
-      }
     }
-  }
-
-
-  private Line verifyMultilineExistence(Line currentLine) {
-    for (int i = entireEbookList.indexOf(currentLine); i < entireEbookList.size(); i++) {
-
-      if (entireEbookList.get(i).getText().contains("]")) {
-        if (!entireEbookList.get(i).equals(entireEbookList.get(entireEbookList.size() - 1))) {
-          if (entireEbookList.get(i).getText().contains("]")
-              && entireEbookList.get(i + 1).getText().contains("]")) {
-          } else {
-            return entireEbookList.get(i);
-          }
-        } else {
-          return entireEbookList.get(i);
-        }
-      }
-    }
-    return null;
-
   }
 
   /**

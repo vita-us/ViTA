@@ -211,9 +211,9 @@ public class FilterTxtTest {
   }
 
   @Test
-  public void testDoubledBrackets() {
+  public void testDoubleBrackets() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text [blate[xt1 ]bla[]text2]"));
+    lines.add(new Line("text [bla text1 bla text2]"));
 
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
@@ -223,30 +223,30 @@ public class FilterTxtTest {
   }
 
   @Test
-  public void testMultilineDoubledBrackets() {
+  public void testMultilineBrackets() {
     ArrayList<Line> lines = new ArrayList<Line>();
     lines.add(new Line("text [bla"));
     lines.add(new Line("te[xt1 ]bla"));
-    lines.add(new Line("[]text2]"));
+    lines.add(new Line("[text2]"));
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
     
     assertEquals(3, filteredList.size());
-    assertEquals("text ", filteredList.get(0).getText());
-    assertEquals("", filteredList.get(1).getText());
-    assertEquals("", filteredList.get(2).getText());
+    assertEquals("text [bla", filteredList.get(0).getText());
+    assertEquals("te bla", filteredList.get(1).getText());
+    assertEquals(" ", filteredList.get(2).getText());
   }
 
   @Test
-  public void testDoubledBracketsInOneLine() {
+  public void testDoubleBracketsInOneLine() {
     ArrayList<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text[bla2[bla3] blubb]"));
+    lines.add(new Line("text[bla2 bla3 blubb]"));
 
 
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
 
     assertEquals(1, filteredList.size());
-    assertEquals("text", filteredList.get(0).getText());
+    assertEquals("text ", filteredList.get(0).getText());
   }
 }
