@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -30,23 +29,10 @@ public class Chapter extends AbstractEntityBase {
   @OneToOne
   private TextSpan range;
 
-  @ManyToOne
-  protected Document document;
-
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
   public Chapter() {
-    this.document = new Document();
-  }
-
-  /**
-   * Creates a new Chapter which belongs to the given Document.
-   *
-   * @param pDocument - the Document this Chapter belongs to
-   */
-  public Chapter(Document pDocument) {
-    this.document = pDocument;
   }
 
   /**

@@ -16,5 +16,9 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
                 TestData.singlePlace);
 
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons$')).respond(TestData.persons);
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
+                TestData.singlePerson);
+
       }]);
 })(angular);
