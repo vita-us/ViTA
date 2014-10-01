@@ -63,6 +63,8 @@ public class Filter {
   private static final String MULTIPLE_WHITESPACES = "\\s+";
 
   private ArrayList<Line> entireEbookList = new ArrayList<Line>();
+  private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<Integer, Line>();
+
 
   public Filter(ArrayList<Line> newEntireEbookList) {
     this.entireEbookList = newEntireEbookList;
@@ -96,11 +98,14 @@ public class Filter {
     for (Line line : entireEbookList) {
       if (line.getText() != null) {
         if (line.getText().matches(DEFAULT_COMMENT_FILTER)) {
+
           editedLine = decideReplacementInDefaultCommentCase(line);
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+
         } else if (line.getText().matches(DEFAULT_COMMENT_FILTER_WITH_WHITESPACES)) {
           editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
           defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+
         } else if (line.getText().matches(DEFAULT_COMMENT_BEGIN)) {
           verifyExistenceOfEndBracket(removeList, defaultCommentMap, line);
         }
@@ -112,11 +117,16 @@ public class Filter {
     for (Map.Entry<Integer, Line> entry : defaultCommentMap.entrySet()) {
       entireEbookList.set(entry.getKey(), entry.getValue());
     }
+    for (Map.Entry<Integer, Line> entry : defaultCommentMapMultiline.entrySet()) {
+      entireEbookList.set(entry.getKey(), entry.getValue());
+    }
 
     // Remove the unnecessary comments in the entireEbookList
     entireEbookList.removeAll(removeList);
     removeList.clear();
     defaultCommentMap.clear();
+    defaultCommentMap.clear();
+
   }
 
   /**
@@ -129,6 +139,7 @@ public class Filter {
     String editedLine;
     if (line.getText().matches("(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+")) {
       editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
+
     } else {
       editedLine = replaceMultipleWhitespaces(line, "\\[.*\\]");
     }
@@ -152,18 +163,61 @@ public class Filter {
       // could have
       // unnecessary comments, so remove them
     } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
+     
       if (line.getText().matches(DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE)) {
+
         editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
 
       } else {
+
         editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
       }
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
     } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
+
       editedLine = line.getText().replaceAll(REPLACE_ALL_CHARACTERS, "");
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
 
+    } else {
+      if (verifyMultilineExistence(line) != null) {
+
+        for (int i = entireEbookList.indexOf(line) + 1; i <= entireEbookList
+            .indexOf(verifyMultilineExistence(line)) - 1; i++) {
+          editedLine = entireEbookList.get(i).getText().replaceAll(".*", "");
+          defaultCommentMapMultiline.put(i, new Line(editedLine));
+
+        }
+
+        editedLine = line.getText().replaceAll("\\[.*", "");
+        defaultCommentMapMultiline.put(entireEbookList.indexOf(line), new Line(editedLine));
+
+        editedLine = verifyMultilineExistence(line).getText().replaceAll(".*\\]", "");
+        defaultCommentMapMultiline.put(entireEbookList.indexOf(verifyMultilineExistence(line)),
+            new Line(editedLine));
+
+
+      }
     }
+  }
+
+
+  private Line verifyMultilineExistence(Line currentLine) {
+    for (int i = entireEbookList.indexOf(currentLine); i < entireEbookList.size(); i++) {
+
+      if (entireEbookList.get(i).getText().contains("]")) {
+        if (!entireEbookList.get(i).equals(entireEbookList.get(entireEbookList.size() - 1))) {
+          if (entireEbookList.get(i).getText().contains("]")
+              && entireEbookList.get(i + 1).getText().contains("]")) {
+          } else {
+            return entireEbookList.get(i);
+          }
+        } else {
+          return entireEbookList.get(i);
+        }
+      }
+    }
+    return null;
+
   }
 
   /**
@@ -261,8 +315,14 @@ public class Filter {
    * @return String - The edited line text. The line itself is not changed.
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
-    String editStringLine = editLine.getText().replaceAll(regex, " ");
-    return editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
+    String editStringLine;
+    if (editLine.getText().matches("^\\s{3}.*")) {
+      editStringLine = editLine.getText().replaceAll(regex, "");
+      return editStringLine;
+    } else {
+      editStringLine = editLine.getText().replaceAll(regex, " ");
+      return editStringLine.replaceAll(MULTIPLE_WHITESPACES, " ");
+    }
   }
 
 

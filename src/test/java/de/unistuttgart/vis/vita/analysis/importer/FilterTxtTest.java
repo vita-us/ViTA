@@ -230,10 +230,11 @@ public class FilterTxtTest {
     lines.add(new Line("[]text2]"));
     Filter filter = new Filter(lines);
     ArrayList<Line> filteredList = filter.filterEbookText();
-
-    assertEquals(2, filteredList.size());
+    
+    assertEquals(3, filteredList.size());
     assertEquals("text ", filteredList.get(0).getText());
     assertEquals("", filteredList.get(1).getText());
+    assertEquals("", filteredList.get(2).getText());
   }
 
   @Test
