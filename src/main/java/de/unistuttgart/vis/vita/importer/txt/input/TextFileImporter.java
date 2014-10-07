@@ -40,7 +40,7 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
  */
 public class TextFileImporter {
   private Path path;
-  private ArrayList<Line> importedLines;
+  private List<Line> importedLines;
   private List<Charset> charsets;
   private Charset usedCharset = null;
 
@@ -70,7 +70,7 @@ public class TextFileImporter {
   /**
    * The extracted lines of the file.
    */
-  public ArrayList<Line> getLines() {
+  public List<Line> getLines() {
     return importedLines;
   }
 
@@ -186,8 +186,8 @@ public class TextFileImporter {
    * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
    *         if the file is empty or the file does not contain valid english text.
    */
-  private ArrayList<Line> importData(Path path) throws UnsupportedEncodingException {
-    ArrayList<Line> lines = new ArrayList<Line>();
+  private List<Line> importData(Path path) throws UnsupportedEncodingException {
+    List<Line> lines = new ArrayList<Line>();
     BufferedReader reader = null;
     Iterator<Charset> charsetIterator = this.charsets.iterator();
     Boolean successfullyReadIn = false;
@@ -228,8 +228,8 @@ public class TextFileImporter {
    * @return ArrayList<Line>, all lines from the file
    * @throws IOException If an I/O error occurs. Thrown by the Reader.
    */
-  private ArrayList<Line> createList(BufferedReader reader) throws IOException {
-    ArrayList<Line> lines = new ArrayList<Line>();
+  private List<Line> createList(BufferedReader reader) throws IOException {
+    List<Line> lines = new ArrayList<Line>();
     String lineText;
 
     while ((lineText = reader.readLine()) != null) {
@@ -281,7 +281,7 @@ public class TextFileImporter {
    * 
    * @param lines
    */
-  private void deleteNonTextStartSymbols(ArrayList<Line> lines) {
+  private void deleteNonTextStartSymbols(List<Line> lines) {
     String specialSymbols = "[^\\s\\w\"#']";
     String manySpecialSymbolsAtTheBeginning = "^" + specialSymbols + "*";
 
@@ -305,7 +305,7 @@ public class TextFileImporter {
    * @param lines
    * @return Boolean, true if file is empty or there are no visible symbols
    */
-  private boolean fileDataIsEmpty(ArrayList<Line> lines) {
+  private boolean fileDataIsEmpty(List<Line> lines) {
     return lines.isEmpty() || allLinesAreWhitespace(lines);
   }
 
@@ -315,7 +315,7 @@ public class TextFileImporter {
    * @param lines
    * @return Boolean, true if there are no visible symbols
    */
-  private boolean allLinesAreWhitespace(ArrayList<Line> lines) {
+  private boolean allLinesAreWhitespace(List<Line> lines) {
     boolean allCheckedLinesAreWhitespace = true;
     Pattern onlyWhitespacePattern = Pattern.compile("^\\s*$");
 

@@ -22,7 +22,7 @@ public class AutomatedChapterDetection {
   private float smallHeadingsPercentage = 0.0f;
   private int bigHeadingAnalysisStart;
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private ArrayList<Line> lines = new ArrayList<Line>();
+  private List<Line> lines = new ArrayList<Line>();
   private List<Future<ChapterPosition>> activeChapterAnalyzers =
       new ArrayList<Future<ChapterPosition>>();
   private Future<ChapterPosition> markedHeadingChapters;
@@ -39,7 +39,7 @@ public class AutomatedChapterDetection {
    * 
    * @param lines ArrayList of Line - The lines to analyze, usually the text of the book.
    */
-  public AutomatedChapterDetection(ArrayList<Line> lines) {
+  public AutomatedChapterDetection(List<Line> lines) {
     this.lines = lines;
     startBasicChapterDetection();
     this.result = chooseChapterPositions();

@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class DocumentPartBuilderTxtTest {
 
   @Test
   public void testBuildDocumentPart() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     ChapterPosition position = new ChapterPosition();
 
     String firstChapterHeading = "First Chapter Heading";

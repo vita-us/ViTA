@@ -1,8 +1,9 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -14,8 +15,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testSpacesAtTheBeginning() {
-    ArrayList<Line> heading = new ArrayList<Line>();
-    ArrayList<Line> text = new ArrayList<Line>();
+    List<Line> heading = new ArrayList<Line>();
+    List<Line> text = new ArrayList<Line>();
 
     String headingString = "This is the Heading.";
     String textString = "blablabla";
@@ -34,8 +35,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testWhitelinesAtTheBeginning() {
-    ArrayList<Line> heading = new ArrayList<Line>();
-    ArrayList<Line> text = new ArrayList<Line>();
+    List<Line> heading = new ArrayList<Line>();
+    List<Line> text = new ArrayList<Line>();
 
     String headingString = "This is the Heading.";
     String textString = "blablabla";
@@ -57,8 +58,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testReduceWhitelines() {
-    ArrayList<Line> heading = new ArrayList<Line>();
-    ArrayList<Line> text = new ArrayList<Line>();
+    List<Line> heading = new ArrayList<Line>();
+    List<Line> text = new ArrayList<Line>();
 
     String headingString = "This is the\n\n\nHeading.";
     String textString = "1blablabla\n\n2blablabla";
@@ -84,8 +85,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testConcatenateTextLines() {
-    ArrayList<Line> heading = new ArrayList<Line>();
-    ArrayList<Line> text = new ArrayList<Line>();
+    List<Line> heading = new ArrayList<Line>();
+    List<Line> text = new ArrayList<Line>();
 
     String textString = "1blablabla 2blablabla";
 
@@ -101,8 +102,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testMarkedHeading() {
-    ArrayList<Line> heading = new ArrayList<Line>();
-    ArrayList<Line> text = new ArrayList<Line>();
+    List<Line> heading = new ArrayList<Line>();
+    List<Line> text = new ArrayList<Line>();
 
     String headingString = " This is the\n\n\nHeading.";
 
@@ -119,8 +120,8 @@ public class ChapterBuilderTxtTest {
 
   @Test
   public void testNullInput() {
-    ArrayList<Line> heading = null;
-    ArrayList<Line> text = null;
+    List<Line> heading = null;
+    List<Line> text = null;
 
     String headingString = "";
     String textString = "";

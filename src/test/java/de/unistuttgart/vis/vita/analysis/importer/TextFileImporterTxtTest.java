@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +9,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class TextFileImporterTxtTest {
     Path testPath = Paths.get(getClass().getResource("TheStoryOfMoscow_ANSI.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     String encodingName = textFileImporter.getNameOfDetectedEncoding();
-    ArrayList<Line> testList = textFileImporter.getLines();
+    List<Line> testList = textFileImporter.getLines();
 
     assertTrue(testList.size() == 10579);
     assertEquals(testChars, testList.get(8).getText());
@@ -43,7 +43,7 @@ public class TextFileImporterTxtTest {
     Path testPath = Paths.get(getClass().getResource("TheStoryOfMoscow_Unicode.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     String encodingName = textFileImporter.getNameOfDetectedEncoding();
-    ArrayList<Line> testList = textFileImporter.getLines();
+    List<Line> testList = textFileImporter.getLines();
 
     assertTrue(testList.size() == 10579);
     assertEquals(testChars, testList.get(8).getText());
@@ -57,10 +57,10 @@ public class TextFileImporterTxtTest {
     Path testPath = Paths.get(getClass().getResource("TheStoryOfMoscow_UnicodeBE.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     String encodingName = textFileImporter.getNameOfDetectedEncoding();
-    ArrayList<Line> testList = textFileImporter.getLines();
+    List<Line> testList = textFileImporter.getLines();
 
 
-    ArrayList<String> possibleSolutions = new ArrayList<String>();
+    List<String> possibleSolutions = new ArrayList<String>();
     possibleSolutions.add("UTF-16");
     possibleSolutions.add("UTF-16BE");
 
@@ -76,7 +76,7 @@ public class TextFileImporterTxtTest {
     Path testPath = Paths.get(getClass().getResource("TheStoryOfMoscow_UTF8.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     String encodingName = textFileImporter.getNameOfDetectedEncoding();
-    ArrayList<Line> testList = textFileImporter.getLines();
+    List<Line> testList = textFileImporter.getLines();
 
     assertTrue(testList.size() == 10579);
     assertEquals(testChars, testList.get(8).getText());
@@ -90,7 +90,7 @@ public class TextFileImporterTxtTest {
     Path testPath = Paths.get(getClass().getResource("46794.txt").toURI());
     TextFileImporter textFileImporter = new TextFileImporter(testPath);
     String encodingName = textFileImporter.getNameOfDetectedEncoding();
-    ArrayList<Line> testList = textFileImporter.getLines();
+    List<Line> testList = textFileImporter.getLines();
 
     assertTrue(testList.size() == 8648);
     assertEquals("Release Date: September 7, 2014 [EBook #46794]", testList.get(16).getText());

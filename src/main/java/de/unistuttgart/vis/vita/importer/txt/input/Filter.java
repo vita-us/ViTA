@@ -64,11 +64,11 @@ public class Filter {
   private static final String COMPLETE_BEGIN_TO_END_BRACKET = "\\[.*\\]";
   private static final String IN_DEFAULT_COMMENT = "(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+";
  
-  private ArrayList<Line> entireEbookList = new ArrayList<Line>();
+  private List<Line> entireEbookList = new ArrayList<Line>();
   private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<Integer, Line>();
 
 
-  public Filter(ArrayList<Line> newEntireEbookList) {
+  public Filter(List<Line> newEntireEbookList) {
     this.entireEbookList = newEntireEbookList;
   }
 
@@ -78,7 +78,7 @@ public class Filter {
    * 
    * @return the edited entireEbookList
    */
-  public ArrayList<Line> filterEbookText() {
+  public List<Line> filterEbookText() {
     removeComments();
     removeSpecialSigns(entireEbookList);
     return entireEbookList;

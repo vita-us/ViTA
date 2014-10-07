@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -59,7 +59,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testMultiLineDivider() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("***Start of this", true));
@@ -82,7 +82,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testMultiLineDividerWithSpaces() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line(" ***Start of this", true));
@@ -105,7 +105,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testWithoutEnding() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("***Start of this book***", true));
@@ -125,7 +125,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testWithoutStart() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("Chapter 1", true));
@@ -144,7 +144,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testNoMetadata() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("Chapter 1", true));
@@ -161,7 +161,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testWithFalseEnding() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("***Start of this book***", true));
@@ -183,7 +183,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testWithHalfMarker() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("***", true));
@@ -206,7 +206,7 @@ public class TextSplitterTxtTest {
 
   @Test
   public void testWithDoubleMarkers() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("Title: Book Title", true));
     lines.add(new Line("blabla", true));
     lines.add(new Line("*** Start of BOOK ***", true));

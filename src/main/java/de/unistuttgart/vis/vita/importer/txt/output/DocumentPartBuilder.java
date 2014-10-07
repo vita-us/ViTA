@@ -23,8 +23,8 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
  * The structure of given List-parameters can be changed by this class.
  */
 public class DocumentPartBuilder implements Callable<DocumentPart> {
-  private ArrayList<Future<Chapter>> futureChapters = new ArrayList<Future<Chapter>>();
-  private ArrayList<Line> lines;
+  private List<Future<Chapter>> futureChapters = new ArrayList<Future<Chapter>>();
+  private List<Line> lines;
   private ChapterPosition chapterPositions;
   private int partNumber;
 
@@ -38,7 +38,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
    *        and text areas of the Chapters in lines.
    */
-  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions) {
+  public DocumentPartBuilder(List<Line> lines, ChapterPosition chapterPositions) {
     this(lines, chapterPositions, 1);
   }
 
@@ -47,13 +47,12 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * 'call()'. It is necessary to determine the Document the Chapters of the DocumentPart belong to.
    * Please note that the Document of a Chapter can not be changed later!
    * 
-   * @param lines ArrayList<Line> - Consisting of all headings and texts for the Chapters in the
-   *        correct order.
+   * @param lines Consisting of all headings and texts for the Chapters in the correct order.
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
    *        and text areas of the Chapters in lines.
    * @param partNumber int - Number of the DocumentPart of the Document.
    */
-  public DocumentPartBuilder(ArrayList<Line> lines, ChapterPosition chapterPositions, int partNumber) {
+  public DocumentPartBuilder(List<Line> lines, ChapterPosition chapterPositions, int partNumber) {
     this.lines = lines;
     this.chapterPositions = chapterPositions;
     this.partNumber = partNumber;
@@ -65,8 +64,8 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   private void startChapterComputation() {
     ExecutorService executor = Executors.newCachedThreadPool();
     for (int chapterNumber = 1; chapterNumber <= chapterPositions.size(); chapterNumber++) {
-      ArrayList<Line> heading = buildHeadingList(chapterNumber);
-      ArrayList<Line> text = buildTextList(chapterNumber);
+      List<Line> heading = buildHeadingList(chapterNumber);
+      List<Line> text = buildTextList(chapterNumber);
       Callable<Chapter> chapterBuilder = new ChapterBuilder(heading, text, chapterNumber);
       Future<Chapter> futureChapter = executor.submit(chapterBuilder);
       futureChapters.add(futureChapter);
@@ -79,11 +78,11 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * @param chapterNumber int - The number of the Chapter in chapterPositions.
    * @return ArrayList<Line> - The list contains all lines of the Chapter's heading.
    */
-  private ArrayList<Line> buildHeadingList(int chapterNumber) {
+  private List<Line> buildHeadingList(int chapterNumber) {
     int startOfHeading = chapterPositions.getStartOfHeading(chapterNumber);
     int startOfText = chapterPositions.getStartOfText(chapterNumber);
 
-    ArrayList<Line> heading;
+    List<Line> heading;
     if (chapterPositions.hasHeading(chapterNumber)) {
       heading = new ArrayList<Line>(lines.subList(startOfHeading, startOfText));
     } else {
@@ -98,9 +97,9 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * Builds a real sub-list for the text of exactly one Chapter.
    * 
    * @param chapterNumber int - The number of the Chapter in chapterPositions.
-   * @return ArrayList<Line> - The list contains all lines of the Chapter's text.
+   * @return The list contains all lines of the Chapter's text.
    */
-  private ArrayList<Line> buildTextList(int chapterNumber) {
+  private List<Line> buildTextList(int chapterNumber) {
     int startOfText = chapterPositions.getStartOfText(chapterNumber);
     int endOfText = chapterPositions.getEndOfText(chapterNumber);
     return new ArrayList<Line>(lines.subList(startOfText, endOfText + 1));

@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
@@ -25,7 +25,7 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * @param startOfAnalysis int - the line at which the analysis should begin.
    * @throws IllegalArgumentException If chapterArea is null.
    */
-  public AdvancedBigHeadingChapterAnalyzer(ArrayList<Line> chapterArea,
+  public AdvancedBigHeadingChapterAnalyzer(List<Line> chapterArea,
       ChapterPosition bigHeadingPositions, int startOfAnalysis) throws IllegalArgumentException {
     super(chapterArea);
     this.chapterPositions = bigHeadingPositions.clone();

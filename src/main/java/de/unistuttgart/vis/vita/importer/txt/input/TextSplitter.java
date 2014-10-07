@@ -24,11 +24,11 @@ public class TextSplitter {
   private static final String TEXTDISTINCTION_REGEX = "start of.+[^\\p{Punct}{3}]";
   private static final String START_OF_DATADIVIDER = "^" + WHITESPACE + "\\*\\*\\*";
   private static final String END_OF_DATADIVIDER = "\\*\\*\\*" + WHITESPACE + "$";
-  private ArrayList<Line> metadataList = new ArrayList<>();
-  private ArrayList<Line> textList = new ArrayList<>();
+  private List<Line> metadataList = new ArrayList<>();
+  private List<Line> textList = new ArrayList<>();
   private String textDistinction = "";
 
-  public TextSplitter(ArrayList<Line> lines) {
+  public TextSplitter(List<Line> lines) {
     this.textList = lines;
     concatenateDatadivider();
     getMetadataSection();
@@ -42,7 +42,7 @@ public class TextSplitter {
    * 
    * @return metadataList
    */
-  public ArrayList<Line> getMetadataList() {
+  public List<Line> getMetadataList() {
     return metadataList;
   }
 
@@ -51,7 +51,7 @@ public class TextSplitter {
    * 
    * @return textList
    */
-  public ArrayList<Line> getTextList() {
+  public List<Line> getTextList() {
     return textList;
   }
 

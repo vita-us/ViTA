@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -55,13 +54,13 @@ public class FilterTxtTest {
 
   @Test
   public void testMultiLineComment() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla [this"));
     lines.add(new Line("is"));
     lines.add(new Line("a comment] blabla"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(2, filteredList.size());
     assertEquals("blabla  ", filteredList.get(0).getText());
@@ -70,11 +69,11 @@ public class FilterTxtTest {
 
   @Test
   public void testCommentInOneLineWithoutSpacesAround() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla[this]blabla"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(1, filteredList.size());
     assertEquals("blabla blabla", filteredList.get(0).getText());
@@ -83,11 +82,11 @@ public class FilterTxtTest {
 
   @Test
   public void testCommentInOneLineWithSpacesAround() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla [this] blabla"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(1, filteredList.size());
     assertEquals("blabla blabla", filteredList.get(0).getText());
@@ -95,7 +94,7 @@ public class FilterTxtTest {
 
   @Test
   public void testCommentInAWholeLineWithSpacesAround() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("comment1"));
     lines.add(new Line(""));
     lines.add(new Line("[comment2]"));
@@ -103,7 +102,7 @@ public class FilterTxtTest {
     lines.add(new Line("text"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(5, filteredList.size());
     assertEquals("comment1", filteredList.get(0).getText());
@@ -115,7 +114,7 @@ public class FilterTxtTest {
 
   @Test
   public void testRemoveSpecialSigns() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla usw"));
     lines.add(new Line("...?"));
     lines.add(new Line("???"));
@@ -124,7 +123,7 @@ public class FilterTxtTest {
     lines.add(new Line("blubb"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(4, filteredList.size());
     assertEquals("blabla usw", filteredList.get(0).getText());
@@ -134,14 +133,14 @@ public class FilterTxtTest {
 
   @Test
   public void testRemoveSpecialSignsWithWhitelineReduction() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla usw"));
     lines.add(new Line(""));
     lines.add(new Line("* * *"));
     lines.add(new Line(""));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(2, filteredList.size());
     assertEquals("blabla usw", filteredList.get(0).getText());
@@ -150,13 +149,13 @@ public class FilterTxtTest {
 
   @Test
   public void testRemoveSpecialSignBottomBorder() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blabla usw"));
     lines.add(new Line(""));
     lines.add(new Line("* * *"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(2, filteredList.size());
     assertEquals("blabla usw", filteredList.get(0).getText());
@@ -165,13 +164,13 @@ public class FilterTxtTest {
 
   @Test
   public void testRemoveSpecialSignsTopBorder() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("* * *"));
     lines.add(new Line(""));
     lines.add(new Line("blabla usw"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(2, filteredList.size());
     assertEquals("", filteredList.get(0).getText());
@@ -180,13 +179,13 @@ public class FilterTxtTest {
 
   @Test
   public void testMissingEndBracket() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("bla  blabla ["));
     lines.add(new Line("text1"));
     lines.add(new Line("text2"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(3, filteredList.size());
     assertEquals("bla  blabla [", filteredList.get(0).getText());
@@ -196,13 +195,13 @@ public class FilterTxtTest {
 
   @Test
   public void testMissingStartBracket() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("blablabla"));
     lines.add(new Line("[blubb.]text1]"));
     lines.add(new Line("text2"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(3, filteredList.size());
     assertEquals("blablabla", filteredList.get(0).getText());
@@ -212,11 +211,11 @@ public class FilterTxtTest {
 
   @Test
   public void testDoubleBrackets() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("text [bla text1 bla text2]"));
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
     
     assertEquals(1, filteredList.size());
     assertEquals("text ", filteredList.get(0).getText());
@@ -224,12 +223,12 @@ public class FilterTxtTest {
 
   @Test
   public void testMultilineBrackets() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("text [bla"));
     lines.add(new Line("te[xt1 ]bla"));
     lines.add(new Line("[text2]"));
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
     
     assertEquals(3, filteredList.size());
     assertEquals("text [bla", filteredList.get(0).getText());
@@ -239,12 +238,12 @@ public class FilterTxtTest {
 
   @Test
   public void testDoubleBracketsInOneLine() {
-    ArrayList<Line> lines = new ArrayList<Line>();
+    List<Line> lines = new ArrayList<Line>();
     lines.add(new Line("text[bla2 bla3 blubb]"));
 
 
     Filter filter = new Filter(lines);
-    ArrayList<Line> filteredList = filter.filterEbookText();
+    List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(1, filteredList.size());
     assertEquals("text ", filteredList.get(0).getText());

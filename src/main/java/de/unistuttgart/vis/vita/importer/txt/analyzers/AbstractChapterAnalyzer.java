@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -21,7 +21,7 @@ import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 public abstract class AbstractChapterAnalyzer implements Callable<ChapterPosition> {
 
   // the lines to analyze, should not be modified.
-  protected final ArrayList<Line> chapterArea;
+  protected final List<Line> chapterArea;
 
   protected int minimumChapterSize = 200;
   protected Set<LineType> skipTags = new HashSet<LineType>();
@@ -33,7 +33,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * @param chapterArea ArrayList of Line - The lines in which the Chapters are.
    * @throws IllegalArgumentException If input is null.
    */
-  public AbstractChapterAnalyzer(ArrayList<Line> chapterArea) throws IllegalArgumentException {
+  public AbstractChapterAnalyzer(List<Line> chapterArea) throws IllegalArgumentException {
     if (chapterArea == null) {
       throw new IllegalArgumentException("chapterArea must not be null");
     }

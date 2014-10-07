@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.output;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,8 +26,8 @@ public class ChapterBuilder implements Callable<Chapter> {
   private static final String WHITESPACEATTHEEND = WHITESPACE + "$";
 
   private String endOfLine = "\n";
-  private ArrayList<Line> heading;
-  private ArrayList<Line> text;
+  private List<Line> heading;
+  private List<Line> text;
   private int chapterNumber;
 
   /**
@@ -35,11 +36,11 @@ public class ChapterBuilder implements Callable<Chapter> {
    * <br>
    * The structure of given List-parameters can be changed by this class.
    * 
-   * @param heading ArrayList<Line> - The title of the Chapter. Null interpreted as empty.
-   * @param text ArrayList<Line> - The text of the Chapter, Null interpreted as empty.
-   * @param chapterNumber int - The Number of the Chapter in the Document
+   * @param heading The title of the Chapter. Null interpreted as empty.
+   * @param text The text of the Chapter, Null interpreted as empty.
+   * @param chapterNumber The Number of the Chapter in the Document
    */
-  public ChapterBuilder(ArrayList<Line> heading, ArrayList<Line> text, int chapterNumber) {
+  public ChapterBuilder(List<Line> heading, List<Line> text, int chapterNumber) {
     if (heading == null) {
       this.heading = new ArrayList<Line>();
       this.heading.add(new Line("", false));
@@ -85,7 +86,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    * @param lines ArrayList<Lines> - The Lines to transform.
    * @return String - Text of the Lines as a String.
    */
-  private String buildString(ArrayList<Line> lines) {
+  private String buildString(List<Line> lines) {
     String result = "";
     StringBuilder content = new StringBuilder();
 
@@ -104,10 +105,10 @@ public class ChapterBuilder implements Callable<Chapter> {
   /**
    * Applies some methods on the given List of Lines to assure the unified form of Chapter texts.
    * 
-   * @param text ArrayList<Line> - The Lines which should be unified in Chapter text form. They
-   *        contain the result after the method execution.
+   * @param text The Lines which should be unified in Chapter text form. They contain the result
+   *        after the method execution.
    */
-  private void unifyTextStyle(ArrayList<Line> text) {
+  private void unifyTextStyle(List<Line> text) {
     deactivateLineTypeComputation(text);
     deleteWhitelinesAtTheBeginning(text);
     deleteWhitelinesAtTheEnd(text);
@@ -120,10 +121,10 @@ public class ChapterBuilder implements Callable<Chapter> {
   /**
    * Applies some methods on the given List of Lines to assure the unified form of Chapter title.
    * 
-   * @param heading ArrayList<Line> - The Lines which should be unified in Chapter title form. They
-   *        contain the result after the method execution.
+   * @param heading The Lines which should be unified in Chapter title form. They contain the result
+   *        after the method execution.
    */
-  private void unifyHeadingStyle(ArrayList<Line> heading) {
+  private void unifyHeadingStyle(List<Line> heading) {
     deactivateLineTypeComputation(text);
     deleteSpaceCharactersAtTheBeginningOfAllLines(heading);
     deleteSpaceCharactersAtTheEndOfAllLines(heading);
@@ -155,10 +156,9 @@ public class ChapterBuilder implements Callable<Chapter> {
    * Whiteline<br>
    * Text4 Text5
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void concatenateTextLines(ArrayList<Line> lines) {
+  private void concatenateTextLines(List<Line> lines) {
 
     boolean lineBeforeWasNotWhiteline = false;
 
@@ -199,10 +199,9 @@ public class ChapterBuilder implements Callable<Chapter> {
    * Whiteline<br>
    * Text2
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void reduceWhitelines(ArrayList<Line> lines) {
+  private void reduceWhitelines(List<Line> lines) {
     boolean lineBeforeWasWhiteline = false;
     for (int index = lines.size() - 1; index >= 0; index--) {
       if (lines.get(index).getType().equals(LineType.WHITELINE)) {
@@ -220,10 +219,9 @@ public class ChapterBuilder implements Callable<Chapter> {
   /**
    * Deletes Whitelines at the beginning of the list until there is a line which is not a Whiteline.
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void deleteWhitelinesAtTheBeginning(ArrayList<Line> lines) {
+  private void deleteWhitelinesAtTheBeginning(List<Line> lines) {
     boolean onlyWhitelinesFound = true;
     while (!lines.isEmpty() && onlyWhitelinesFound) {
       int firstIndex = 0;
@@ -239,10 +237,9 @@ public class ChapterBuilder implements Callable<Chapter> {
   /**
    * Deletes Whitelines at the end of the list until there is a line which is not a Whiteline.
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void deleteWhitelinesAtTheEnd(ArrayList<Line> lines) {
+  private void deleteWhitelinesAtTheEnd(List<Line> lines) {
     boolean onlyWhitelinesFound = true;
     while (!lines.isEmpty() && onlyWhitelinesFound) {
       int lastIndex = lines.size() - 1;
@@ -258,10 +255,10 @@ public class ChapterBuilder implements Callable<Chapter> {
   /**
    * Deactivates the LineType computation of all lines.
    * 
-   * @param lines ArrayList<Line> - The Lines deactivate the computation. No new Types will be
-   *        computed, when the text is changed.
+   * @param lines The Lines deactivate the computation. No new Types will be computed, when the text
+   *        is changed.
    */
-  private void deactivateLineTypeComputation(ArrayList<Line> lines) {
+  private void deactivateLineTypeComputation(List<Line> lines) {
     for (Line line : lines) {
       line.setAutomatedTypeComputation(false);
     }
@@ -271,10 +268,9 @@ public class ChapterBuilder implements Callable<Chapter> {
    * When there are space characters at the beginning of a line, they will be deleted. Does not
    * change the structure of the list.
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void deleteSpaceCharactersAtTheBeginningOfAllLines(ArrayList<Line> lines) {
+  private void deleteSpaceCharactersAtTheBeginningOfAllLines(List<Line> lines) {
     for (Line line : lines) {
       deletePattern(line, WHITESPACEATTHEBEGINNING);
     }
@@ -284,10 +280,9 @@ public class ChapterBuilder implements Callable<Chapter> {
    * When there are space characters at the beginning of a line, they will be deleted. Does not
    * change the structure of the list.
    * 
-   * @param lines ArrayList<Line> - The Lines to transform. They contain the result after the method
-   *        execution.
+   * @param lines The Lines to transform. They contain the result after the method execution.
    */
-  private void deleteSpaceCharactersAtTheEndOfAllLines(ArrayList<Line> lines) {
+  private void deleteSpaceCharactersAtTheEndOfAllLines(List<Line> lines) {
     for (Line line : lines) {
       deletePattern(line, WHITESPACEATTHEEND);
     }
@@ -299,7 +294,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    * 
    * @param lines - The Lines to transform. They contain the result after the method execution.
    */
-  private void deleteMarkedHeadingSymbol(ArrayList<Line> lines) {
+  private void deleteMarkedHeadingSymbol(List<Line> lines) {
     for (Line line : lines) {
       if (line.getType().equals(LineType.MARKEDHEADING)) {
         line.setText(line.getText().substring(1));

@@ -79,7 +79,7 @@ public class TextImportModule implements Module<ImportResult> {
    *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
    *         file or directory
    */
-  private ArrayList<Line> importLines(Path filePath) throws InvalidPathException,
+  private List<Line> importLines(Path filePath) throws InvalidPathException,
       FileNotFoundException, UnsupportedEncodingException, SecurityException {
     TextFileImporter importer = new TextFileImporter(filePath);
     Filter filter = new Filter(importer.getLines());
@@ -93,7 +93,7 @@ public class TextImportModule implements Module<ImportResult> {
    * @param filePath Path - The path to the txt-file.
    * @return DocumentMetadata - The metadata extracted from the file.
    */
-  private DocumentMetadata extractMetadata(ArrayList<Line> metadataLines, Path filePath) {
+  private DocumentMetadata extractMetadata(List<Line> metadataLines, Path filePath) {
     MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(metadataLines, filePath);
     return metadataAnalyzer.extractMetadata();
   }
@@ -104,7 +104,7 @@ public class TextImportModule implements Module<ImportResult> {
    * @param textLines ArrayList of Line - The lines containing the text area of the file.
    * @return DocumentPart - Contains ALL Chapters of the file.
    */
-  private DocumentPart extractChapters(ArrayList<Line> textLines) {
+  private DocumentPart extractChapters(List<Line> textLines) {
     ChapterPosition chapterPosition;
     if (detectChapters) {
       AutomatedChapterDetection automatedChapterDetection =
