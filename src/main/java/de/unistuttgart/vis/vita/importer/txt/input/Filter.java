@@ -31,46 +31,26 @@ public class Filter {
 
   private static final String DEFAULT_CHARACTERS_EX_END_BRACKET = "[\\w\\s\\p{Punct}&&[^\\]]]*";
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
-                                                                      + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                      + DEFAULT_BEGIN_BRACKET
-                                                                      + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                      + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_END_BRACKET = "("
-                                                                    + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                    + DEFAULT_END_BRACKET
-                                                                    + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                    + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
+      + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET = "("
-                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                 + DEFAULT_BEGIN_BRACKET
-                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                 + DEFAULT_END_BRACKET
-                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                 + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
+      + ")+";
   private static final String DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE = "("
-                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                                + "\\s*"
-                                                                                                + DEFAULT_BEGIN_BRACKET
-                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                                + DEFAULT_END_BRACKET
-                                                                                                + "\\s*"
-                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                                                + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + "\\s*" + DEFAULT_BEGIN_BRACKET
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s*"
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET = "("
-                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                          + DEFAULT_END_BRACKET
-                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                          + DEFAULT_BEGIN_BRACKET
-                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                          + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
+      + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String ALL_CHARACTERS = ".*";
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
-                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                          + DEFAULT_BEGIN_BRACKET
-                                                                          + ALL_CHARACTERS
-                                                                          + DEFAULT_END_BRACKET
-                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
-                                                                          + ")+";
+      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + ALL_CHARACTERS
+      + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
   private static final String REPLACE_ALL_CHARACTERS = "\\[.*\\]";
   private static final String MULTIPLE_WHITESPACES = "\\s+";
   private static final String COMPLETE_BEGIN_TO_END_BRACKET = "\\[.*\\]";
@@ -80,6 +60,11 @@ public class Filter {
   private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<>();
 
 
+  /**
+   * The commited lines will be used in the methods of this class
+   * 
+   * @param newEntireEbookList
+   */
   public Filter(List<Line> newEntireEbookList) {
     this.entireEbookList = newEntireEbookList;
   }
@@ -163,7 +148,7 @@ public class Filter {
    * Verify the extistence of a end bracket after the current line
    */
   private void verifyExistenceOfEndBracket(List<Line> removeList,
-                                           Map<Integer, Line> defaultCommentMap, Line line) {
+      Map<Integer, Line> defaultCommentMap, Line line) {
     String editedLine;
     if (existsEndBracket(line)) {
       findAndReplaceComments(removeList, defaultCommentMap, line);
@@ -189,7 +174,7 @@ public class Filter {
    * comments
    */
   private void findAndReplaceComments(List<Line> removeList, Map<Integer, Line> defaultCommentMap,
-                                      Line line) {
+      Line line) {
     String editedLine;
     // the map could already have the edited lines, which come after the current line, so remove
     // only the
@@ -214,8 +199,7 @@ public class Filter {
    * @param currentLine, which helps to find the current position in the entireEbookList
    */
   private void addElementsToRemoveListAndMap(List<Line> removeList,
-                                             Map<Integer, Line> defaultCommentMap,
-                                             Line currentLine) {
+      Map<Integer, Line> defaultCommentMap, Line currentLine) {
     String editedLine;
     for (int i = entireEbookList.indexOf(currentLine) + 1; i < entireEbookList.size(); i++) {
       if (!entireEbookList.get(i).getText().matches(DEFAULT_COMMENT_END_1)) {
@@ -257,7 +241,7 @@ public class Filter {
    * Strings with a single whitespace.
    *
    * @param editLine Line - The line to edit.
-   * @param regex    String - The regex which determines what should be removed.
+   * @param regex String - The regex which determines what should be removed.
    * @return String - The edited line text. The line itself is not changed.
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
@@ -293,17 +277,17 @@ public class Filter {
   /**
    * Checks if there is a Whiteline before and after the given Line.
    *
-   * @param index      int - The index of the Line in the removeList.
+   * @param index int - The index of the Line in the removeList.
    * @param removeList List of Line - The full List containing the Line to check.
    * @return boolean - true: There is a Whiteline before and after the Line to check. false: There
-   * is no Whiteline before and after the Line to check.
+   *         is no Whiteline before and after the Line to check.
    */
   private boolean areWhitelinesAround(int index, List<Line> removeList) {
     boolean whitelinesAround = false;
     if (index > 0 && index < removeList.size() - 1) {
       whitelinesAround =
           removeList.get(index + 1).getType().equals(LineType.WHITELINE)
-          && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
+              && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
     }
     return whitelinesAround;
   }

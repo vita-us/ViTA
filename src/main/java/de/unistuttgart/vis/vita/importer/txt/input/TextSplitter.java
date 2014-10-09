@@ -16,9 +16,9 @@ public class TextSplitter {
 
   private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
   private static final String START_OF_REGEX = WHITESPACE + "\\*\\*\\*\\s*start of.+\\s*\\*\\*\\*"
-                                               + WHITESPACE;
+      + WHITESPACE;
   private static final String END_OF_REGEX = WHITESPACE + "\\*\\*\\*\\s*end of.+\\s*\\*\\*\\*"
-                                             + WHITESPACE;
+      + WHITESPACE;
   private static final String START_OF_DATADIVIDER = "^" + WHITESPACE + "\\*\\*\\*";
   private static final String END_OF_DATADIVIDER = "\\*\\*\\*" + WHITESPACE + "$";
   private static final String TEXTDISTINCTION_REGEX = "start of.+[^\\p{Punct}{3}]";
@@ -26,6 +26,11 @@ public class TextSplitter {
   private List<Line> textList = new ArrayList<>();
   private String textDistinction = "";
 
+  /**
+   * Takes the imported lines and deploys the listed methods to these lines
+   * 
+   * @param lines
+   */
   public TextSplitter(List<Line> lines) {
     this.textList = lines;
     concatenateDatadivider();
@@ -65,7 +70,7 @@ public class TextSplitter {
       line.computeType();
       if (startPattern.matcher(line.getText()).find() && containsDatadividerEnding(index)) {
         while ((index + 1 <= this.textList.size() - 1)
-               && !line.getType().equals(LineType.DATADIVIDER)) {
+            && !line.getType().equals(LineType.DATADIVIDER)) {
           line.setText(line.getText().concat(this.textList.get(index + 1).getText()));
           this.textList.remove(index + 1);
         }
@@ -93,7 +98,7 @@ public class TextSplitter {
    * one-line-datadivider appears.
    *
    * @param startPosition int - The Index of the text list from which (including) the ending should
-   *                      be searched.
+   *        be searched.
    * @return boolean - true: there is an ending. false: there is no ending.
    */
   private boolean containsDatadividerEnding(int startPosition) {

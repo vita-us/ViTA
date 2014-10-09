@@ -21,19 +21,23 @@ public class MetadataAnalyzer {
   private static final String TITLE = "^" + WHITESPACE + "((Title:)|(TITLE:)).+";
   private static final String AUTHOR = "^" + WHITESPACE + "((Author:)|(AUTHOR:)).+";
   private static final String RELEASE_DATE = "^" + WHITESPACE
-                                             + "((Release Date:)|(RELEASE DATE:)).+";
+      + "((Release Date:)|(RELEASE DATE:)).+";
   private static final String PUBLISHER = "^" + WHITESPACE + "((Publisher:)|(PUBLISHER:)).+";
   private static final String GENRE = "^" + WHITESPACE + "((Genre:)|(GENRE:)).+";
   private static final String EDITION = "^" + WHITESPACE + "((Edition:)|(EDITION:)).+";
   private List<Line> metadataList = new ArrayList<>();
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
-                                         "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:",
-                                         "GENRE:", "Edition:", "EDITION:",
-                                         "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:",
-                                         "Illustrator:", "ILLUSTRATOR:",
-                                         "Posting Date:", "POSTING DATE:"};
+      "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:",
+      "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:",
+      "Posting Date:", "POSTING DATE:"};
   private Path path;
 
+  /**
+   * The commited lines and path will be used in the methods of this class
+   * 
+   * @param newMetadataList
+   * @param newPath
+   */
   public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
     this.metadataList = newMetadataList;
     this.path = newPath;
@@ -83,7 +87,7 @@ public class MetadataAnalyzer {
     int nextIndex = metadataList.indexOf(newMetadataLine) + 1;
     if (nextIndex < metadataList.size()) {
       return !StringUtils.startsWithAny(metadataList.get(nextIndex).getText(), metadataStartArray)
-             && !metadataList.get(nextIndex).getText().matches("^[\\s]*$");
+          && !metadataList.get(nextIndex).getText().matches("^[\\s]*$");
     } else {
       return false;
     }
@@ -97,7 +101,7 @@ public class MetadataAnalyzer {
     metadataMultilineList.clear();
     int count = metadataList.indexOf(newMetadataLine) + 1;
     while (!StringUtils.startsWithAny(metadataList.get(count).getText(), metadataStartArray)
-           && !metadataList.get(count).getText().matches("^[\\s]*$")) {
+        && !metadataList.get(count).getText().matches("^[\\s]*$")) {
       metadataMultilineList.add(metadataList.get(count));
       count++;
     }
@@ -109,7 +113,8 @@ public class MetadataAnalyzer {
    *
    * @param line Line - The first line of the metadata type.
    * @return List of Line - A list containing all lines for one metadata type. At least the given
-   * line will be added, if there are more lines belongig to the type they will be added too.
+   *         line will be added, if there are more lines belongig to the type they will be added
+   *         too.
    */
   private List<Line> buildMetadataTypeList(Line line) {
     List<Line> typeList = new ArrayList<>();

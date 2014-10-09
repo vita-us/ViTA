@@ -32,6 +32,9 @@ public class MetadataBuilder {
   private DocumentMetadata documentMetadata;
   private Calendar date = null;
 
+  /**
+   * Sets the documentMetadata object with default values
+   */
   public MetadataBuilder() {
     documentMetadata = new DocumentMetadata();
     documentMetadata.setAuthor("");
@@ -63,12 +66,12 @@ public class MetadataBuilder {
       if (newMetadataTitle.contains(TITLE_VERSION1)) {
         metadataTitle =
             newMetadataTitle.substring(newMetadataTitle.lastIndexOf(TITLE_VERSION1)
-                                       + TITLE_VERSION1.length());
+                + TITLE_VERSION1.length());
         metadataTitle = metadataTitle.trim();
       } else if (newMetadataTitle.contains(TITLE_VERSION2)) {
         metadataTitle =
             newMetadataTitle.substring(newMetadataTitle.lastIndexOf(TITLE_VERSION2)
-                                       + TITLE_VERSION2.length());
+                + TITLE_VERSION2.length());
         metadataTitle = metadataTitle.trim();
       }
     }
@@ -87,12 +90,12 @@ public class MetadataBuilder {
       if (newMetadataAuthor.contains(AUTHOR_VERSION1)) {
         metadataAuthor =
             newMetadataAuthor.substring(newMetadataAuthor.lastIndexOf(AUTHOR_VERSION1)
-                                        + AUTHOR_VERSION1.length());
+                + AUTHOR_VERSION1.length());
         metadataAuthor = metadataAuthor.trim();
       } else if (newMetadataAuthor.contains(AUTHOR_VERSION2)) {
         metadataAuthor =
             newMetadataAuthor.substring(newMetadataAuthor.lastIndexOf(AUTHOR_VERSION2)
-                                        + AUTHOR_VERSION2.length());
+                + AUTHOR_VERSION2.length());
         metadataAuthor = metadataAuthor.trim();
       }
     }
@@ -110,15 +113,13 @@ public class MetadataBuilder {
       String newPublishYear = buildMetadataMultiline(publishYearList);
       if (newPublishYear.contains(RELEASE_DATE_VERSION1)) {
         metadataPublishYear =
-            newPublishYear.substring(newPublishYear
-                                         .lastIndexOf(RELEASE_DATE_VERSION1) + RELEASE_DATE_VERSION1
-                                         .length());
+            newPublishYear.substring(newPublishYear.lastIndexOf(RELEASE_DATE_VERSION1)
+                + RELEASE_DATE_VERSION1.length());
         metadataPublishYear = metadataPublishYear.trim();
       } else if (newPublishYear.contains(RELEASE_DATE_VERSION2)) {
         metadataPublishYear =
-            newPublishYear.substring(newPublishYear
-                                         .lastIndexOf(RELEASE_DATE_VERSION2) + RELEASE_DATE_VERSION2
-                                         .length());
+            newPublishYear.substring(newPublishYear.lastIndexOf(RELEASE_DATE_VERSION2)
+                + RELEASE_DATE_VERSION2.length());
         metadataPublishYear = metadataPublishYear.trim();
       }
     }
@@ -139,12 +140,12 @@ public class MetadataBuilder {
       if (newPublisher.contains(PUBLISHER_VERSION1)) {
         metadataPublisher =
             newPublisher.substring(newPublisher.lastIndexOf(PUBLISHER_VERSION1)
-                                   + PUBLISHER_VERSION1.length());
+                + PUBLISHER_VERSION1.length());
         metadataPublisher = metadataPublisher.trim();
       } else if (newPublisher.contains(PUBLISHER_VERSION2)) {
         metadataPublisher =
             newPublisher.substring(newPublisher.lastIndexOf(PUBLISHER_VERSION2)
-                                   + PUBLISHER_VERSION2.length());
+                + PUBLISHER_VERSION2.length());
         metadataPublisher = metadataPublisher.trim();
       }
     }
@@ -162,13 +163,11 @@ public class MetadataBuilder {
       String newGenre = buildMetadataMultiline(genreList);
       if (newGenre.contains(GENRE_VERSION1)) {
         metadataGenre =
-            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION1)
-                               + GENRE_VERSION1.length());
+            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION1) + GENRE_VERSION1.length());
         metadataGenre = metadataGenre.trim();
       } else if (newGenre.contains(GENRE_VERSION2)) {
         metadataGenre =
-            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION2)
-                               + GENRE_VERSION2.length());
+            newGenre.substring(newGenre.lastIndexOf(GENRE_VERSION2) + GENRE_VERSION2.length());
         metadataGenre = metadataGenre.trim();
       }
     }
@@ -187,12 +186,12 @@ public class MetadataBuilder {
       if (newEdition.contains(EDITION_VERSION1)) {
         metadataEdition =
             newEdition.substring(newEdition.lastIndexOf(EDITION_VERSION1)
-                                 + EDITION_VERSION1.length());
+                + EDITION_VERSION1.length());
         metadataEdition = metadataEdition.trim();
       } else if (newEdition.contains(EDITION_VERSION2)) {
         metadataEdition =
             newEdition.substring(newEdition.lastIndexOf(EDITION_VERSION2)
-                                 + EDITION_VERSION2.length());
+                + EDITION_VERSION2.length());
         metadataEdition = metadataEdition.trim();
       }
     }
