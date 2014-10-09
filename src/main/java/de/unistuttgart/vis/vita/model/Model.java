@@ -8,7 +8,7 @@ import javax.persistence.Persistence;
  * Represents the Model of the application.
  */
 public class Model {
-  private TextRepository textRepo;
+  private TextRepository textRepository = new TextRepository();
   private EntityManagerFactory entityManagerFactory;
   
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
@@ -46,7 +46,7 @@ public class Model {
    * @return the TextRepository
    */
   public TextRepository getTextRepository() {
-    return textRepo;
+    return textRepository;
   }
 
 }

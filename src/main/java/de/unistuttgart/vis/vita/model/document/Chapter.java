@@ -32,8 +32,7 @@ public class Chapter extends AbstractEntityBase {
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
-  public Chapter() {
-  }
+  public Chapter() {}
 
   /**
    * Gets the readable number of this chapter in the context of the document part it belongs to
@@ -120,5 +119,4 @@ public class Chapter extends AbstractEntityBase {
   public void setRange(TextSpan range) {
     this.range = range;
   }
-
 }

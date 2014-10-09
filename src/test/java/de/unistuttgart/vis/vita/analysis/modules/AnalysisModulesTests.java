@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * Unit tests for analysis modules
  */
 @RunWith(Suite.class)
-@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class})
+@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, LuceneModuleTest.class})
 public class AnalysisModulesTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisModulesTests() {

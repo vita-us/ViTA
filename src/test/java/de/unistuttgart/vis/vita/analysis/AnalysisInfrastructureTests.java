@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+
 /**
  * Tests for the analysis module infrastructure
  */
@@ -15,4 +16,5 @@ public class AnalysisInfrastructureTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisInfrastructureTests() {
   }
+  
 }
