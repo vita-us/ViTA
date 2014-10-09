@@ -1,15 +1,15 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
+import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-
-import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**
  * The MetadataAnalyzer extracts the metadata of the commited metdataList and provides the
@@ -21,15 +21,17 @@ public class MetadataAnalyzer {
   private static final String TITLE = "^" + WHITESPACE + "((Title:)|(TITLE:)).+";
   private static final String AUTHOR = "^" + WHITESPACE + "((Author:)|(AUTHOR:)).+";
   private static final String RELEASE_DATE = "^" + WHITESPACE
-      + "((Release Date:)|(RELEASE DATE:)).+";
+                                             + "((Release Date:)|(RELEASE DATE:)).+";
   private static final String PUBLISHER = "^" + WHITESPACE + "((Publisher:)|(PUBLISHER:)).+";
   private static final String GENRE = "^" + WHITESPACE + "((Genre:)|(GENRE:)).+";
   private static final String EDITION = "^" + WHITESPACE + "((Edition:)|(EDITION:)).+";
-  private List<Line> metadataList = new ArrayList<Line>();
+  private List<Line> metadataList = new ArrayList<>();
   private String[] metadataStartArray = {"Title:", "TITLE:", "Author:", "AUTHOR:", "Release Date:",
-      "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:",
-      "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:",
-      "Posting Date:", "POSTING DATE:"};
+                                         "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:",
+                                         "GENRE:", "Edition:", "EDITION:",
+                                         "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:",
+                                         "Illustrator:", "ILLUSTRATOR:",
+                                         "Posting Date:", "POSTING DATE:"};
   private Path path;
 
   public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
@@ -40,7 +42,7 @@ public class MetadataAnalyzer {
   /**
    * Extracts the metadata, which will be edited by the MetadataBuilder. The result will be saved in
    * documentMetadata.
-   * 
+   *
    * @return DocumentMetadata - The result of the analysis filled with all found information.
    */
   public DocumentMetadata extractMetadata() {
@@ -76,15 +78,12 @@ public class MetadataAnalyzer {
 
   /**
    * Check if the current metadata is multiline
-   * 
-   * @param newMetadataLine
-   * @return
    */
   private boolean isMetadataMultiLine(Line newMetadataLine) {
     int nextIndex = metadataList.indexOf(newMetadataLine) + 1;
     if (nextIndex < metadataList.size()) {
       return !StringUtils.startsWithAny(metadataList.get(nextIndex).getText(), metadataStartArray)
-          && !metadataList.get(nextIndex).getText().matches("^[\\s]*$");
+             && !metadataList.get(nextIndex).getText().matches("^[\\s]*$");
     } else {
       return false;
     }
@@ -92,16 +91,13 @@ public class MetadataAnalyzer {
 
   /**
    * Returns a list with the multilines regarding the metadata
-   * 
-   * @param newMetadataLine
-   * @return
    */
   private List<Line> getMetadataMultilines(Line newMetadataLine) {
     List<Line> metadataMultilineList = new ArrayList<Line>();
     metadataMultilineList.clear();
     int count = metadataList.indexOf(newMetadataLine) + 1;
     while (!StringUtils.startsWithAny(metadataList.get(count).getText(), metadataStartArray)
-        && !metadataList.get(count).getText().matches("^[\\s]*$")) {
+           && !metadataList.get(count).getText().matches("^[\\s]*$")) {
       metadataMultilineList.add(metadataList.get(count));
       count++;
     }
@@ -110,14 +106,13 @@ public class MetadataAnalyzer {
 
   /**
    * Builds the list of one metadata type starting at the given line.
-   * 
+   *
    * @param line Line - The first line of the metadata type.
    * @return List of Line - A list containing all lines for one metadata type. At least the given
-   *         line will be added, if there are more lines belongig to the type they will be added
-   *         too.
+   * line will be added, if there are more lines belongig to the type they will be added too.
    */
   private List<Line> buildMetadataTypeList(Line line) {
-    List<Line> typeList = new ArrayList<Line>();
+    List<Line> typeList = new ArrayList<>();
     typeList.add(line);
     if (isMetadataMultiLine(line)) {
       typeList.addAll(getMetadataMultilines(line));

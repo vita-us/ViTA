@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -8,23 +11,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-
 /**
  * Uses different Chapter Analyzer and decides which result is most likely the best result for a
  * typical English novel.
  */
 public class AutomatedChapterDetection {
+
   private static final float HUGE_CHAPTER_PERCENTAGE = 0.5f;
   private static final float MINIMUM_SMALLHEADINGS_PERCENTAGE = 0.4f;
 
   private float smallHeadingsPercentage = 0.0f;
   private int bigHeadingAnalysisStart;
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private List<Line> lines = new ArrayList<Line>();
-  private List<Future<ChapterPosition>> activeChapterAnalyzers =
-      new ArrayList<Future<ChapterPosition>>();
+  private List<Line> lines = new ArrayList<>();
+  private List<Future<ChapterPosition>> activeChapterAnalyzers = new ArrayList<>();
   private Future<ChapterPosition> markedHeadingChapters;
   private Future<ChapterPosition> bigHeadingChapters;
   private Future<ChapterPosition> advancedBigHeadingChapters;
@@ -36,7 +36,7 @@ public class AutomatedChapterDetection {
   /**
    * Instantiates a new AutomatedChapterDetection for exactly one list of lines. The result is
    * available at 'getChapterPosition()'.
-   * 
+   *
    * @param lines ArrayList of Line - The lines to analyze, usually the text of the book.
    */
   public AutomatedChapterDetection(List<Line> lines) {
@@ -47,10 +47,10 @@ public class AutomatedChapterDetection {
 
   /**
    * Returns the computed Chapter Position.
-   * 
+   *
    * @return ChapterPosition - The exact result depends on the chosen Rule for the Chapter
-   *         Detection. The result usually is not empty and contains at least one Chapter, so there
-   *         is always a result to work with.
+   * Detection. The result usually is not empty and contains at least one Chapter, so there is
+   * always a result to work with.
    */
   public ChapterPosition getChapterPosition() {
     return this.result;
@@ -97,9 +97,9 @@ public class AutomatedChapterDetection {
   /**
    * Get the results of the Chapter Analyzers and checks if the result fulfills the conditions. When
    * a result is found, all other ChapterAnalyzers are cancelled.
-   * 
+   *
    * @return ChapterPosition - A result of a Chapter Analyzer which fulfills the conditions for the
-   *         analyzer.
+   * analyzer.
    */
   private ChapterPosition chooseChapterPositions() {
     ChapterPosition analyzerResultToCheck = null;
@@ -113,7 +113,7 @@ public class AutomatedChapterDetection {
 
         AdvancedBigHeadingChapterAnalyzer advancedBigHeadingChapterPositions =
             new AdvancedBigHeadingChapterAnalyzer(lines, bigHeadingChapters.get(),
-                this.bigHeadingAnalysisStart);
+                                                  this.bigHeadingAnalysisStart);
         advancedBigHeadingChapters = executor.submit(advancedBigHeadingChapterPositions);
         activeChapterAnalyzers.add(advancedBigHeadingChapters);
         analyzerResultToCheck = advancedBigHeadingChapters.get();
@@ -152,11 +152,11 @@ public class AutomatedChapterDetection {
   /**
    * Checks if a Chapter Position fulfills the conditions to take marked heading chapters as result.
    * In this case it is enough if there is at least one chapter.
-   * 
+   *
    * @param markedHeadingPositions ChapterPosition - The information about the chapters, should be
-   *        the result of a Marked Heading Chapter Analyzer.
+   *                               the result of a Marked Heading Chapter Analyzer.
    * @return boolean - true if the inserted ChapterPosition fulfills all conditions for valid
-   *         results of the Marked Heading Analyzer.
+   * results of the Marked Heading Analyzer.
    */
   private boolean fulfillsMarkedHeadingConditions(ChapterPosition markedHeadingPositions) {
     return !markedHeadingPositions.isEmpty();
@@ -165,11 +165,11 @@ public class AutomatedChapterDetection {
   /**
    * Checks if a Chapter Position fulfills the conditions to take big heading chapters as result. In
    * this case it is enough if there is at least one chapter and there are no huge chapters.
-   * 
+   *
    * @param bigHeadingPositions ChapterPosition - The information about the chapters, should be the
-   *        result of a Big Heading Chapter Analyzer.
+   *                            result of a Big Heading Chapter Analyzer.
    * @return boolean - true if the inserted ChapterPosition fulfills all conditions for valid
-   *         results of the Big Heading Chapter Analyzer.
+   * results of the Big Heading Chapter Analyzer.
    */
   private boolean fulfillsBigHeadingConditions(ChapterPosition bigHeadingPositions) {
     return !bigHeadingPositions.isEmpty() && !hasHugeChapter(bigHeadingPositions);
@@ -179,13 +179,14 @@ public class AutomatedChapterDetection {
    * Checks if a Chapter Position fulfills the conditions to take advanced big heading chapters as
    * result. Of course they must fulfill the big heading chapter conditions and there must be an
    * amount of headings which are extended by the advanced analyzer.
-   * 
+   *
    * @param advancedBigHeadingPositions ChapterPosition - The information about the chapters, should
-   *        be the result of a Advanced Big Heading Chapter Analyzer.
+   *                                    be the result of a Advanced Big Heading Chapter Analyzer.
    * @return boolean - true if the inserted ChapterPosition fulfills all conditions for valid
-   *         results of the Advanced Big Heading Chapter Analyzer.
+   * results of the Advanced Big Heading Chapter Analyzer.
    */
-  private boolean fulfillsAdvancedBigHeadingConditions(ChapterPosition advancedBigHeadingPositions) {
+  private boolean fulfillsAdvancedBigHeadingConditions(
+      ChapterPosition advancedBigHeadingPositions) {
     boolean enoughSmallHeadings = smallHeadingsPercentage >= MINIMUM_SMALLHEADINGS_PERCENTAGE;
     return fulfillsBigHeadingConditions(advancedBigHeadingPositions) && enoughSmallHeadings;
   }
@@ -193,11 +194,11 @@ public class AutomatedChapterDetection {
   /**
    * Checks if a Chapter Position fulfills the conditions to take small heading chapters as result.
    * this case it is enough if there is at least one chapter and there are no huge chapters.
-   * 
+   *
    * @param smallHeadingPositions ChapterPosition - The information about the chapters, should be
-   *        the result of a Small Heading Chapter Analyzer.
+   *                              the result of a Small Heading Chapter Analyzer.
    * @return boolean - true if the inserted ChapterPosition fulfills all conditions for valid
-   *         results of the Small Heading Chapter Analyzer.
+   * results of the Small Heading Chapter Analyzer.
    */
   private boolean fulfillsSmallHeadingConditions(ChapterPosition smallHeadingPositions) {
     return !smallHeadingPositions.isEmpty() && !hasHugeChapter(smallHeadingPositions);
@@ -205,12 +206,13 @@ public class AutomatedChapterDetection {
 
   /**
    * Checks if a Chapter Position fulfills the conditions to take simple whitelines chapters as
-   * result. this case it is enough if there is at least one chapter and there are no huge chapters.
-   * 
+   * result. this case it is enough if there is at least one chapter and there are no huge
+   * chapters.
+   *
    * @param simpleWhitelinesPositions ChapterPosition - The information about the chapters, should
-   *        be the result of a Simple Whitelines Chapter Analyzer.
+   *                                  be the result of a Simple Whitelines Chapter Analyzer.
    * @return - true if the inserted ChapterPosition fulfills all conditions for valid results of the
-   *         Simple Whitelines Chapter Analyzer.
+   * Simple Whitelines Chapter Analyzer.
    */
   private boolean fulfillsSimpleWhitelinesConditions(ChapterPosition simpleWhitelinesPositions) {
     return !simpleWhitelinesPositions.isEmpty() && !hasHugeChapter(simpleWhitelinesPositions);
@@ -219,7 +221,7 @@ public class AutomatedChapterDetection {
   /**
    * Checks if the ChapterPositions have huge Chapters. This is atypical for a correctly analyzed
    * book.
-   * 
+   *
    * @param positions ChapterPosition - The information about the chapters.
    * @return boolean - true: there is at least one huge chapter. false: there is no huge chapter.
    */

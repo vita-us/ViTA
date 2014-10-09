@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import java.util.List;
-
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+
+import java.util.List;
 
 /**
  * Chapters will be built every time a Bigheading is found and there are at least two Whitelines in
@@ -18,7 +18,7 @@ public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
 
   /**
    * Instantiates a new BigHeadingChapterAnalyzer and sets the lines to analyze.
-   * 
+   *
    * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
    * @throws IllegalArgumentException If input is null.
    */

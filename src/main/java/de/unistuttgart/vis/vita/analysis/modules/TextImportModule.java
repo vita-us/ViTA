@@ -1,12 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -25,8 +18,16 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 @AnalysisModule
 public class TextImportModule implements Module<ImportResult> {
+
   private Path filePath;
   private Boolean detectChapters;
 
@@ -46,19 +47,19 @@ public class TextImportModule implements Module<ImportResult> {
 
   /**
    * {@inheritDoc}
-   * 
-   * @throws InvalidPathException If file is not txt
-   * @throws FileNotFoundException If file is not found.
+   *
+   * @throws InvalidPathException         If file is not txt
+   * @throws FileNotFoundException        If file is not found.
    * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
-   *         if the file is empty or the file does not contain valid English text.
-   * @throws SecurityException If a security manager exists and its
-   *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
-   *         file or directory
+   *                                      if the file is empty or the file does not contain valid
+   *                                      English text.
+   * @throws SecurityException            If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
+   *                                      method denies read access to the file or directory
    */
   public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
       throws InvalidPathException, FileNotFoundException, UnsupportedEncodingException,
-      SecurityException {
-    ImportResult importResult = null;
+             SecurityException {
+    ImportResult importResult;
     TextSplitter textSplitter = new TextSplitter(importLines(filePath));
     DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
     DocumentPart documentPart = extractChapters(textSplitter.getTextList());
@@ -68,19 +69,21 @@ public class TextImportModule implements Module<ImportResult> {
 
   /**
    * Gets the path to the txt-file and returns the data from the file.
-   * 
+   *
    * @param filePath Path - The path to the txt-file.
    * @return ArrayList of Line - The imported Lines.
-   * @throws InvalidPathException If file is not txt
-   * @throws FileNotFoundException If file is not found.
+   * @throws InvalidPathException         If file is not txt
+   * @throws FileNotFoundException        If file is not found.
    * @throws UnsupportedEncodingException If file encoding can not be detected, this can also happen
-   *         if the file is empty or the file does not contain valid English text.
-   * @throws SecurityException If a security manager exists and its
-   *         java.lang.SecurityManager.checkRead(java.lang.String) method denies read access to the
-   *         file or directory
+   *                                      if the file is empty or the file does not contain valid
+   *                                      English text.
+   * @throws SecurityException            If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
+   *                                      method denies read access to the file or directory
    */
   private List<Line> importLines(Path filePath) throws InvalidPathException,
-      FileNotFoundException, UnsupportedEncodingException, SecurityException {
+                                                       FileNotFoundException,
+                                                       UnsupportedEncodingException,
+                                                       SecurityException {
     TextFileImporter importer = new TextFileImporter(filePath);
     Filter filter = new Filter(importer.getLines());
     return filter.filterEbookText();
@@ -88,9 +91,9 @@ public class TextImportModule implements Module<ImportResult> {
 
   /**
    * Extracts the metadata from the given lines.
-   * 
+   *
    * @param metadataLines ArrayList of Line - The lines containing the metadata area of the file.
-   * @param filePath Path - The path to the txt-file.
+   * @param filePath      Path - The path to the txt-file.
    * @return DocumentMetadata - The metadata extracted from the file.
    */
   private DocumentMetadata extractMetadata(List<Line> metadataLines, Path filePath) {
@@ -100,7 +103,7 @@ public class TextImportModule implements Module<ImportResult> {
 
   /**
    * Extracts the Chapters from the given lines.
-   * 
+   *
    * @param textLines ArrayList of Line - The lines containing the text area of the file.
    * @return DocumentPart - Contains ALL Chapters of the file.
    */
@@ -120,7 +123,7 @@ public class TextImportModule implements Module<ImportResult> {
 
   /**
    * Builds the ImportResult to return the extracted data.
-   * 
+   *
    * @param metadata DocumentMetadata - The extracted metadata of the file.
    * @param chapters DocumentPart - All extracted Chapters of the file in one DocumentPart.
    * @return ImportResult - The required ImportResult.

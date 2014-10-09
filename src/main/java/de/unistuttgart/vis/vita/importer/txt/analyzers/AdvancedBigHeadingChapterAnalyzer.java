@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import java.util.List;
-
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+
+import java.util.List;
 
 /**
  * The advanced form of the Big Heading Chapter Analyzer tries to extend the heading with one
@@ -12,6 +12,7 @@ import de.unistuttgart.vis.vita.importer.txt.util.LineType;
  * percentage of extended headings will be provided.
  */
 public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
+
   private float smallHeadingsPercentage;
   private int startOfAnalysis;
 
@@ -19,14 +20,16 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * Instantiates a new AdvancedBigHeadingChapterAnalyzer which reuses the results of a
    * BigHeadingChapterAnalyzer. Therefore it needs the ChapterPosition and the List of Lines from
    * the previous Analysis, but will not change any data.
-   * 
-   * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
+   *
+   * @param chapterArea         ArrayList of Line - The lines containing the chapters. Should not be
+   *                            null.
    * @param bigHeadingPositions ChapterPosition - The ChapterPosition from the BigHeadingAnalysis.
-   * @param startOfAnalysis int - the line at which the analysis should begin.
+   * @param startOfAnalysis     int - the line at which the analysis should begin.
    * @throws IllegalArgumentException If chapterArea is null.
    */
   public AdvancedBigHeadingChapterAnalyzer(List<Line> chapterArea,
-      ChapterPosition bigHeadingPositions, int startOfAnalysis) throws IllegalArgumentException {
+                                           ChapterPosition bigHeadingPositions, int startOfAnalysis)
+      throws IllegalArgumentException {
     super(chapterArea);
     this.chapterPositions = bigHeadingPositions.clone();
     this.startOfAnalysis = startOfAnalysis;
@@ -40,7 +43,7 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
   /**
    * Gets the percentage of headings which were successfully extended with a following small
    * heading. The value is available when the ChapterPosition is available too.
-   * 
+   *
    * @return float - the percentage, value between 0 and 1
    */
   public float getSmallHeadingsPercentage() {
@@ -61,7 +64,7 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
 
   /**
    * Tries to add a Smallheading to the Heading, if there is one right behind the heading.
-   * 
+   *
    * @return int - The count of successfully added headings.
    */
   private int addOneSmallHeadingRule() {
@@ -74,12 +77,13 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
       int nextSmallHeading = getNextPosition(true, LineType.SMALLHEADING, startOfText);
       if (nextSmallHeading < endOfText && nextSmallHeading >= startOfText) {
         boolean someWhitelinesAfter =
-            (getNextPosition(false, LineType.WHITELINE, nextSmallHeading + 1) - nextSmallHeading) > 1;
+            (getNextPosition(false, LineType.WHITELINE, nextSmallHeading + 1) - nextSmallHeading)
+            > 1;
         if (onlyOneTypeBetween(startOfText - 1, nextSmallHeading, LineType.WHITELINE)
             && !onlyOneTypeBetween(nextSmallHeading, endOfText + 1, LineType.WHITELINE)
             && someWhitelinesAfter) {
           this.chapterPositions.changeChapterData(chapterNumber, startOfHeading,
-              nextSmallHeading + 1, endOfText);
+                                                  nextSmallHeading + 1, endOfText);
           numberOfAddedSmallHeadings++;
         }
       }

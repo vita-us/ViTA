@@ -1,17 +1,15 @@
 package de.unistuttgart.vis.vita.importer.txt.input;
 
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 /**
  * The Filter filters unnecessary comments in the entireEbookList and removes them
- * 
- *
  */
 public class Filter {
 
@@ -32,40 +30,54 @@ public class Filter {
   private static final String REPLACE_DEFAULT_COMMENT_END_3 = "[\\w\\s\\p{Punct}&&[^\\]]]*(\\])";
 
   private static final String DEFAULT_CHARACTERS_EX_END_BRACKET = "[\\w\\s\\p{Punct}&&[^\\]]]*";
-  private static final String ALL_CHARACTERS = ".*";
-  private static final String REPLACE_ALL_CHARACTERS = "\\[.*\\]";
-
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
-
+                                                                      + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                      + DEFAULT_BEGIN_BRACKET
+                                                                      + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                      + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_END_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
-      + ")+";
-
+                                                                    + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                    + DEFAULT_END_BRACKET
+                                                                    + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                    + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
-      + ")+";
-  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET + ALL_CHARACTERS
-      + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
-
+                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                 + DEFAULT_BEGIN_BRACKET
+                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                 + DEFAULT_END_BRACKET
+                                                                                 + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                 + ")+";
   private static final String DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + "\\s*" + DEFAULT_BEGIN_BRACKET
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + "\\s*"
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
-
+                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                                + "\\s*"
+                                                                                                + DEFAULT_BEGIN_BRACKET
+                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                                + DEFAULT_END_BRACKET
+                                                                                                + "\\s*"
+                                                                                                + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                                                + ")+";
   private static final String DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET = "("
-      + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
-      + DEFAULT_BEGIN_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
-
+                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                          + DEFAULT_END_BRACKET
+                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                          + DEFAULT_BEGIN_BRACKET
+                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                          + ")+";
+  private static final String ALL_CHARACTERS = ".*";
+  private static final String DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET = "("
+                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                          + DEFAULT_BEGIN_BRACKET
+                                                                          + ALL_CHARACTERS
+                                                                          + DEFAULT_END_BRACKET
+                                                                          + DEFAULT_CHARACTERS_EX_END_BRACKET
+                                                                          + ")+";
+  private static final String REPLACE_ALL_CHARACTERS = "\\[.*\\]";
   private static final String MULTIPLE_WHITESPACES = "\\s+";
   private static final String COMPLETE_BEGIN_TO_END_BRACKET = "\\[.*\\]";
   private static final String IN_DEFAULT_COMMENT = "(.*[^\\]])(\\[(.*[^\\[\\]])\\].*[^\\[\\]])+";
- 
+
   private List<Line> entireEbookList = new ArrayList<Line>();
-  private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<Integer, Line>();
+  private Map<Integer, Line> defaultCommentMapMultiline = new HashMap<>();
 
 
   public Filter(List<Line> newEntireEbookList) {
@@ -75,7 +87,7 @@ public class Filter {
   /**
    * Filters unnecessary comments and most lines with special signs in the entireEbookList and
    * removes them
-   * 
+   *
    * @return the edited entireEbookList
    */
   public List<Line> filterEbookText() {
@@ -133,7 +145,7 @@ public class Filter {
 
   /**
    * Returns the edited line in case of a simple found Default Comment.
-   * 
+   *
    * @param line Line - The line to edit.
    * @return String - The edited line-text, the comment is removed.
    */
@@ -141,7 +153,6 @@ public class Filter {
     String editedLine;
     if (line.getText().matches(IN_DEFAULT_COMMENT)) {
       editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
-
     } else {
       editedLine = replaceMultipleWhitespaces(line, COMPLETE_BEGIN_TO_END_BRACKET);
     }
@@ -150,13 +161,9 @@ public class Filter {
 
   /**
    * Verify the extistence of a end bracket after the current line
-   * 
-   * @param removeList
-   * @param defaultCommentMap
-   * @param line
    */
   private void verifyExistenceOfEndBracket(List<Line> removeList,
-      Map<Integer, Line> defaultCommentMap, Line line) {
+                                           Map<Integer, Line> defaultCommentMap, Line line) {
     String editedLine;
     if (existsEndBracket(line)) {
       findAndReplaceComments(removeList, defaultCommentMap, line);
@@ -165,34 +172,24 @@ public class Filter {
       // could have
       // unnecessary comments, so remove them
     } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
-
       if (line.getText().matches(DEFAULT_CHARACTERS_WHITESPACE_WITH_BEGIN_END_BRACKET_WHITESPACE)) {
-
         editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT);
-
       } else {
-
         editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT, " ");
       }
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
     } else if (line.getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_END_BRACKET)) {
-
       editedLine = line.getText().replaceAll(REPLACE_ALL_CHARACTERS, "");
       defaultCommentMap.put(entireEbookList.indexOf(line), new Line(editedLine));
-
     }
   }
 
   /**
    * Find the lines with unnecessary lines, which come after the current line, and remove those
    * comments
-   * 
-   * @param removeList
-   * @param defaultCommentMap
-   * @param line
    */
   private void findAndReplaceComments(List<Line> removeList, Map<Integer, Line> defaultCommentMap,
-      Line line) {
+                                      Line line) {
     String editedLine;
     // the map could already have the edited lines, which come after the current line, so remove
     // only the
@@ -202,10 +199,8 @@ public class Filter {
       editedLine =
           defaultCommentMap.get(entireEbookList.indexOf(line)).getText()
               .replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, " ");
-
     } else if (line.getText().matches(DEFAULT_COMMENT_BEGIN_WITH_WHITESPACES)) {
       editedLine = replaceMultipleWhitespaces(line, REPLACE_DEFAULT_COMMENT_BEGIN);
-
     } else {
       editedLine = line.getText().replaceAll(REPLACE_DEFAULT_COMMENT_BEGIN, " ");
     }
@@ -215,26 +210,22 @@ public class Filter {
 
   /**
    * Adds the unnecessary comments to the removeList and edited lines to the defaultCommentMap
-   * 
-   * @param removeList
-   * @param defaultCommentMap
-   * @param line, which helps to find the current position in the entireEbookList
+   *
+   * @param currentLine, which helps to find the current position in the entireEbookList
    */
   private void addElementsToRemoveListAndMap(List<Line> removeList,
-      Map<Integer, Line> defaultCommentMap, Line currentLine) {
+                                             Map<Integer, Line> defaultCommentMap,
+                                             Line currentLine) {
     String editedLine;
     for (int i = entireEbookList.indexOf(currentLine) + 1; i < entireEbookList.size(); i++) {
       if (!entireEbookList.get(i).getText().matches(DEFAULT_COMMENT_END_1)) {
         removeList.add(entireEbookList.get(i));
-
       } else if (entireEbookList.get(i).getText().matches(DEFAULT_COMMENT_END_2)) {
         removeList.add(entireEbookList.get(i));
         break;
-
       } else if (entireEbookList.get(i).getText().matches(DEFAULT_COMMENT_END_3)) {
         editedLine =
             entireEbookList.get(i).getText().replaceAll(REPLACE_DEFAULT_COMMENT_END_3, " ");
-
         defaultCommentMap.put(i, new Line(editedLine));
         break;
       }
@@ -243,27 +234,19 @@ public class Filter {
 
   /**
    * Checks whether one of the following lines after the current line have an end bracket
-   * 
-   * @param currentLine
-   * @return
    */
   private boolean existsEndBracket(Line currentLine) {
     for (int i = entireEbookList.indexOf(currentLine) + 1; i < entireEbookList.size(); i++) {
-
       if (entireEbookList.get(i).getText().matches(DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET)) {
         return false;
-
       } else if (entireEbookList.get(i).getText()
           .matches(DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET)) {
         return false;
-
       } else if (entireEbookList.get(i).getText()
           .matches(DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET)) {
         return true;
-
       } else if (entireEbookList.get(i).getText().matches(DEFAULT_CHARACTERS_WITH_END_BRACKET)) {
         return true;
-
       }
     }
     return false;
@@ -272,9 +255,9 @@ public class Filter {
   /**
    * Replaces all occurences of the found regex and replaces all multiple whitespaces between
    * Strings with a single whitespace.
-   * 
+   *
    * @param editLine Line - The line to edit.
-   * @param regex String - The regex which determines what should be removed.
+   * @param regex    String - The regex which determines what should be removed.
    * @return String - The edited line text. The line itself is not changed.
    */
   private String replaceMultipleWhitespaces(Line editLine, String regex) {
@@ -291,7 +274,7 @@ public class Filter {
 
   /**
    * Removes Lines from the given List, if their type is SpecialSign.
-   * 
+   *
    * @param removeList List of Line - The Lines from which Special Signs should be removed.
    */
   private void removeSpecialSigns(List<Line> removeList) {
@@ -309,20 +292,19 @@ public class Filter {
 
   /**
    * Checks if there is a Whiteline before and after the given Line.
-   * 
-   * @param index int - The index of the Line in the removeList.
+   *
+   * @param index      int - The index of the Line in the removeList.
    * @param removeList List of Line - The full List containing the Line to check.
    * @return boolean - true: There is a Whiteline before and after the Line to check. false: There
-   *         is no Whiteline before and after the Line to check.
+   * is no Whiteline before and after the Line to check.
    */
   private boolean areWhitelinesAround(int index, List<Line> removeList) {
     boolean whitelinesAround = false;
     if (index > 0 && index < removeList.size() - 1) {
       whitelinesAround =
           removeList.get(index + 1).getType().equals(LineType.WHITELINE)
-              && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
+          && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
     }
     return whitelinesAround;
   }
-
 }

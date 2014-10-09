@@ -1,18 +1,17 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 /**
- * Implements Callable returning ChapterPosition.<br>
- * <br>
- * 
+ * Implements Callable returning ChapterPosition.<br> <br>
+ *
  * The Chapter Analyzer takes the text Lines of an eBook and returns the Positions of the found
  * Chapters. The Abstract Chapter Analyzer itself provides some protected auxiliary methods and
  * attributes. To implement a concrete Chapter Analyzer Rule you have to extend this class and
@@ -24,12 +23,12 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   protected final List<Line> chapterArea;
 
   protected int minimumChapterSize = 200;
-  protected Set<LineType> skipTags = new HashSet<LineType>();
+  protected Set<LineType> skipTags = new HashSet<>();
   protected ChapterPosition chapterPositions = new ChapterPosition();
 
   /**
    * Initialize the Abstract Chapter Analyzer and set the lines to analyze.
-   * 
+   *
    * @param chapterArea ArrayList of Line - The lines in which the Chapters are.
    * @throws IllegalArgumentException If input is null.
    */
@@ -48,14 +47,14 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
   /**
    * Get the line index at which the analysis begins.
-   * 
+   *
    * @return int - index at which analysis begins. The value is a valid index of the list of lines.
    */
   public abstract int getStartOfAnalysis();
 
   /**
    * The Detection Rule which builds the ChapterPosition.
-   * 
+   *
    * @return ChapterPosition - The positions of the detected chapters.
    */
   protected abstract ChapterPosition useRule();
@@ -72,7 +71,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * Gets the start of the analysis when the clauses behind a skip tag and everything before should
    * be skipped. To avoid the whole text being skipped, a position in the second half of the text
    * will be recognized as error and 0 will be returned.
-   * 
+   *
    * @return int - The found start position for analysis.
    */
   protected int getStartPosition() {
@@ -105,7 +104,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
           lastFoundPosition = lineIndex + 1;
         }
       }
-      // Prepearing next line data
+      // Preparing next line data
       lastLineWasWhite = line.getType().equals(LineType.WHITELINE);
       lineIndex++;
     }
@@ -119,18 +118,18 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   /**
    * Detects the beginning of a Chapter everytime the given LineType is found or everytime the given
    * LineType is NOT found.
-   * 
-   * @param findThisType - Boolean - true: the type marks the start of the Chapter. false: all other
-   *        types mark the start of the Chapter.
-   * @param type LineType - The type of the Line.
+   *
+   * @param findThisType  - Boolean - true: the type marks the start of the Chapter. false: all
+   *                      other types mark the start of the Chapter.
+   * @param type          LineType - The type of the Line.
    * @param startPosition int - Line index at which the analysis should start.
    * @return ChapterPosition - Contains positions of all found simple chapters.
    */
   protected ChapterPosition detectSimpleChapters(Boolean findThisType, LineType type,
-      int startPosition) {
-    int startOfHeading = -1;
+                                                 int startPosition) {
+    int startOfHeading;
     int endOfText = -1;
-    int nextPosition = -1;
+    int nextPosition;
 
     // initialize position; both -1 if there is none.
     startOfHeading = getNextPosition(findThisType, type, startPosition);
@@ -140,8 +139,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     while (startOfHeading < nextPosition) {
       endOfText = nextPosition - 1;
       this.chapterPositions.addChapter(startOfHeading,
-          getSimpleStartOfText(startOfHeading, endOfText),
-          endOfText);
+                                       getSimpleStartOfText(startOfHeading, endOfText),
+                                       endOfText);
 
       // set data for next chapter
       startOfHeading = nextPosition;
@@ -156,10 +155,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * This rule assures that all headings of the given chapters have at least one Whiteline after the
    * found heading. If not, the Chapter will be attached to the Chapter before or deleted if there
    * is no chapter before.
-   * 
+   *
    * @param extendHeading Boolean - If attached and chapter before has empty text.. True: the new
-   *        heading will contain the both headings. False: the new heading will only contain the
-   *        heading of the chapter before.
+   *                      heading will contain the both headings. False: the new heading will only
+   *                      contain the heading of the chapter before.
    */
   protected void useWhitelineAfterRule(Boolean extendHeading) {
     for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
@@ -171,7 +170,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
       int textBorder;
 
       boolean someWhitelinesAfter =
-          (getNextPosition(false, LineType.WHITELINE, thisChapterBeginning + 1) - thisChapterBeginning) > 1;
+          (getNextPosition(false, LineType.WHITELINE, thisChapterBeginning + 1)
+           - thisChapterBeginning) > 1;
 
       if (!someWhitelinesAfter) {
         if (isEmptyChapter(chapterNumber - 1) && extendHeading) {
@@ -180,7 +180,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
           textBorder = beforeChapterTextStart;
         }
         this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
-            textBorder, thisChapterTextEnd);
+                                                textBorder, thisChapterTextEnd);
         this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
@@ -188,7 +188,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     if (!this.chapterPositions.isEmpty()) {
       int firstChapterBeginning = this.chapterPositions.getStartOfHeading(1);
       boolean someWhitelinesAfter =
-          (getNextPosition(false, LineType.WHITELINE, firstChapterBeginning + 1) - firstChapterBeginning) > 1;
+          (getNextPosition(false, LineType.WHITELINE, firstChapterBeginning + 1)
+           - firstChapterBeginning) > 1;
       if (!someWhitelinesAfter) {
         this.chapterPositions.deleteChapter(1);
       }
@@ -198,16 +199,16 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   /**
    * This rule assures that for the given heading at least two Whitelines are in front. Exceptions
    * are at the beginning of the text analysis.
-   * 
+   *
    * @param startHeading int - start of the chapter's heading.
    * @return Boolean - true: Chapter fits the rule. false: Chapter does not fit the rule.
    */
   protected boolean fitsTwoWhitelinesBeforeRule(int startHeading) {
-    boolean chapterFits = false;
+    boolean chapterFits;
     if (startHeading - getStartOfAnalysis() >= 2) {
       chapterFits =
           chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE)
-              && chapterArea.get(startHeading - 2).getType().equals(LineType.WHITELINE);
+          && chapterArea.get(startHeading - 2).getType().equals(LineType.WHITELINE);
     } else if (startHeading - getStartOfAnalysis() == 1) {
       chapterFits = chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE);
     } else {
@@ -220,10 +221,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * This rule assures that for all given chapters at least two Whitelines are in front of the
    * heading. If this is not the case, it will be attached to the Chapter before or deleted if there
    * is no chapter before.
-   * 
+   *
    * @param extendHeading Boolean - If attached and chapter before has empty text.. True: the new
-   *        heading will contain the both headings. False: the new heading will only contain the
-   *        heading of the chapter before.
+   *                      heading will contain the both headings. False: the new heading will only
+   *                      contain the heading of the chapter before.
    */
   protected void useTwoWhitelinesBeforeRule(Boolean extendHeading) {
     for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
@@ -241,8 +242,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
           textBorder = beforeChapterTextStart;
         }
         this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
-            textBorder,
-            thisChapterTextEnd);
+                                                textBorder,
+                                                thisChapterTextEnd);
         this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
@@ -250,8 +251,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     int firstChapter = 1;
     if (!this.chapterPositions.isEmpty()
         && !fitsTwoWhitelinesBeforeRule(this.chapterPositions.getStartOfHeading(firstChapter))) {
-        this.chapterPositions.deleteChapter(firstChapter);
-      }
+      this.chapterPositions.deleteChapter(firstChapter);
+    }
   }
 
 
@@ -259,10 +260,11 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * This rule assures that there are no empty chapters. An empty chapter's text only contains
    * Whitelines. If there is an empty chapter, the chapter behind will be attached to the Chapter.
    * If in the end the last chapter or the first chapter is empty, they will be deleted.
-   * 
+   *
    * @param extendHeading Boolean - If attached.. True: the new heading will contain the text of the
-   *        chapter before and the old headings. False: the new heading will only contain the
-   *        heading of the chapter before, the rest will be added to the text.
+   *                      chapter before and the old headings. False: the new heading will only
+   *                      contain the heading of the chapter before, the rest will be added to the
+   *                      text.
    */
   protected void useEmptyChapterRule(Boolean extendHeading) {
     for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
@@ -279,8 +281,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
           textBorder = beforeChapterTextStart;
         }
         this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
-            textBorder,
-            thisChapterTextEnd);
+                                                textBorder,
+                                                thisChapterTextEnd);
         this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
@@ -302,15 +304,16 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * First all little chapters at the beginning will be deleted until there is a big chapter. Then
    * chapters with a very short text will be attached to the chapter before. If there is no chapter
    * before, the chapter will be deleted.
-   * 
+   *
    * @param minimumLength - The minimum amount of characters a chapter should have. This includes
-   *        invisible characters in lines which are not a Whiteline.
+   *                      invisible characters in lines which are not a Whiteline.
    * @param extendHeading Boolean - If attached.. True: the new heading will contain the text of the
-   *        chapter before and the old headings. False: the new heading will only contain the
-   *        heading of the chapter before, the rest will be added to the text.
+   *                      chapter before and the old headings. False: the new heading will only
+   *                      contain the heading of the chapter before, the rest will be added to the
+   *                      text.
    */
   protected void useLittleChapterRule(int minimumLength,
-      boolean extendHeading) {
+                                      boolean extendHeading) {
     deleteLittleChaptersAtTheBeginning(minimumLength);
     for (int chapterNumber = this.chapterPositions.size(); chapterNumber >= 2; chapterNumber--) {
       int beforeChapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber - 1);
@@ -326,8 +329,8 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
           textBorder = beforeChapterTextStart;
         }
         this.chapterPositions.changeChapterData(chapterNumber - 1, beforeChapterBeginning,
-            textBorder,
-            thisChapterTextEnd);
+                                                textBorder,
+                                                thisChapterTextEnd);
         this.chapterPositions.deleteChapter(chapterNumber);
       }
     }
@@ -341,10 +344,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
   /**
    * Checks if the Chapter's text contains only Whitelines.
-   * 
+   *
    * @param chapterNumber int - The index of the Chapter, should be between 1 and Chapter's size.
    * @return boolean - true: the Chapter's text contains only Whitelines. false: there are other
-   *         Linetypes.
+   * Linetypes.
    */
   protected boolean isEmptyChapter(int chapterNumber) {
     int chapterBeginning = this.chapterPositions.getStartOfHeading(chapterNumber);
@@ -352,18 +355,18 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     int chapterTextEnd = this.chapterPositions.getEndOfText(chapterNumber);
 
     return (onlyOneTypeBetween(chapterTextStart - 1, chapterTextEnd + 1, LineType.WHITELINE))
-        || ((chapterTextEnd - chapterBeginning) == 0);
+           || ((chapterTextEnd - chapterBeginning) == 0);
   }
 
   /**
    * From the given start position, the next position of a type will be returned.
-   * 
+   *
    * @param thisType Boolean - true: search for type. false: search for everything else than type.
-   * @param type LineType - The type to search.
-   * @param start int - The number of the line at which the next position should be searched. This
-   *        value must be a valid index of the list of lines.
+   * @param type     LineType - The type to search.
+   * @param start    int - The number of the line at which the next position should be searched.
+   *                 This value must be a valid index of the list of lines.
    * @return int - The next position of the given type OR everything else than the given type,
-   *         depending on thisType. Will return -1 if nothing is found or start value is not valid.
+   * depending on thisType. Will return -1 if nothing is found or start value is not valid.
    */
   protected int getNextPosition(Boolean thisType, LineType type, int start) {
     int nextPosition = -1;
@@ -372,9 +375,9 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
         Line line = chapterArea.get(index);
         LineType lineType = line.getType();
         if (thisType && type.equals(lineType)) {
-            nextPosition = index;
+          nextPosition = index;
         } else if (!thisType && !type.equals(lineType)) {
-            nextPosition = index;
+          nextPosition = index;
         }
 
         // if- or else-if has to be executed then you can finish.
@@ -388,7 +391,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
   /**
    * Counts the length of all non-Whiteline-lines in the Chapter's text.
-   * 
+   *
    * @param chapterNumber int - The index of the Chapter, should be between 1 and Chapter's size.
    * @return int - The sum of the lengths. Invisible Characters are added too.
    */
@@ -407,12 +410,12 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
 
   /**
    * Checks if the lines between the given borders have the same type.
-   * 
+   *
    * @param start int - Bottom border, excluding this line.
-   * @param end int - Top border, excluding this line.
-   * @param type LineType - The type which the lines should have.
+   * @param end   int - Top border, excluding this line.
+   * @param type  LineType - The type which the lines should have.
    * @return boolean - true if all the lines between the borders have the given type. Will also
-   *         return true if no lines are analysed.
+   * return true if no lines are analysed.
    */
   protected boolean onlyOneTypeBetween(int start, int end, LineType type) {
     boolean sameType = true;
@@ -431,9 +434,9 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * From start and end of the Chapter, the start of the text will be computed. It is assumed that
    * the heading is always the first line. When there is only one line, this line will formally be
    * set as text.
-   * 
+   *
    * @param startOfHeading int - the start of the heading is the start of the chapter
-   * @param endOfText int - the end of the text is the end of the chapter
+   * @param endOfText      int - the end of the text is the end of the chapter
    * @return int - the start of the text
    */
   private int getSimpleStartOfText(int startOfHeading, int endOfText) {
@@ -449,11 +452,11 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   /**
    * A chapter from the given start to the end of the lines will be created, if the values are
    * valid.
-   * 
+   *
    * @param startOfHeading int - start of the chapter, is valid if the line with this index exists.
-   * @param startOfText int - start of text, is valid if the line with this index exists. A number
-   *        smaller than startOfHeading will be corrected so the first line of the chapter is the
-   *        heading.
+   * @param startOfText    int - start of text, is valid if the line with this index exists. A
+   *                       number smaller than startOfHeading will be corrected so the first line of
+   *                       the chapter is the heading.
    */
   private void addLastChapter(int startOfHeading, int startOfText) {
     int correctStartOfText = startOfText;
@@ -471,9 +474,9 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
   /**
    * Deletes all chapters at the beginning until there is chapter containing more characters than
    * determined by the minimum length.
-   * 
+   *
    * @param minimumLength - The minimum amount of characters a chapter should have. This includes
-   *        invisible characters in lines which are not a Whiteline.
+   *                      invisible characters in lines which are not a Whiteline.
    */
   private void deleteLittleChaptersAtTheBeginning(int minimumLength) {
     while (this.chapterPositions.size() > 1 && computeTextLength(1) < minimumLength) {
