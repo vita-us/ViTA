@@ -1,10 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.lucene.search.IndexSearcher;
-
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -15,10 +10,13 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
+import org.apache.lucene.search.IndexSearcher;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * LuceneModule class with its result IndexSearcher
- * 
- *
  */
 @AnalysisModule(dependencies = {ImportResult.class, Model.class, DocumentPersistenceContext.class})
 public class LuceneModule implements Module<IndexSearcher> {
@@ -50,7 +48,7 @@ public class LuceneModule implements Module<IndexSearcher> {
     if (!documentParts.isEmpty()) {
       for (DocumentPart documentPart : documentParts) {
         textRepository.storeChaptersTexts(documentPart.getChapters(),
-            documentPersistenceContext.getDocumentId());
+                                          documentPersistenceContext.getDocumentId());
       }
       indexSearcher =
           textRepository.getIndexSearcherForDocument(documentPersistenceContext.getDocumentId());

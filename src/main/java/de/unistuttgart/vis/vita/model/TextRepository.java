@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -20,17 +18,22 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 
-import de.unistuttgart.vis.vita.model.document.Chapter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages texts for the model.
  */
 public class TextRepository {
+
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
-
+  List<Document> docs = new ArrayList<>();
   private DirectoryFactory directoryFactory;
+  // list of directories
+  private List<Directory> indexes = new ArrayList<>();
 
   /**
    * Creates a TextRepository with the default DirectoryFactory
@@ -41,27 +44,18 @@ public class TextRepository {
 
   /**
    * Creates a TextRepository with a custom DirectoryFactory
-   * 
+   *
    * @param directoryFactory the factory that should be used to instantiate lucene directories
    */
   public TextRepository(DirectoryFactory directoryFactory) {
     this.directoryFactory = directoryFactory;
   }
 
-  // list of directories
-  private List<Directory> indexes = new ArrayList<Directory>();
-
-  List<Document> docs = new ArrayList<Document>();
-
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
-   * 
-   * @param chapterToPopulate
-   * @throws IOException
-   * @throws ParseException
    */
   public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
-      ParseException {
+                                                                                       ParseException {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
@@ -74,8 +68,6 @@ public class TextRepository {
 
   /**
    * Stores a list of chapters of an ebook in a lucene directory
-   * 
-   * @param chaptersToStore
    */
   public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
       throws IOException {
@@ -94,10 +86,6 @@ public class TextRepository {
 
   /**
    * Returns the related IndexSearcher regarding this document
-   * 
-   * @param document
-   * @return
-   * @throws IOException
    */
   public IndexSearcher getIndexSearcherForDocument(String documentId) throws IOException {
     Directory directory = directoryFactory.getDirectory(documentId);
@@ -106,7 +94,6 @@ public class TextRepository {
   }
 
   /**
-   * 
    * @return the indexes
    */
   public List<Directory> getIndexes() {
@@ -115,9 +102,6 @@ public class TextRepository {
 
   /**
    * Creates a document and adds the chapter id and chapter text field to this
-   * 
-   * @param chapterToStore
-   * @return
    */
   private Document addFieldsToDocument(Chapter chapterToStore) {
     Document document = new Document();
