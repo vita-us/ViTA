@@ -164,240 +164,120 @@
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.0626
+            "progress": 0
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.0701
+            "progress": 0.05
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.086
+            "progress": 0.05
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.0892
+            "progress": 0.1
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.1534
+            "progress": 0.2
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.173
+            "progress": 0.25
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.1931
+            "progress": 0.3
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.2281
+            "progress": 0.35
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.218
+            "progress": 0.5
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.2227
+            "progress": 0.55
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.2992
+            "progress": 0.65
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.3327
+            "progress": 0.7
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.3527
+            "progress": 0.7
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.392
+            "progress": 0.75
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.368
+            "progress": 0.8
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.3992
+            "progress": 0.85
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.4477
+            "progress": 0.85
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.4921
+            "progress": 0.90
           },
           "length": 14123
         }, {
           "start": {
             "chapter": 1.18,
             "offset": 13,
-            "progress": 0.4752
+            "progress": 0.95
           },
           "end": {
             "chapter": 1.18,
             "offset": 29,
-            "progress": 0.4798
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.4829
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.5356
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.4891
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.5153
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.6351
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.6443
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.6652
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.68
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.6915
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.7176
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.6953
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.7287
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.7583
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.7688
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.8525
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.8771
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.951
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.9784
-          },
-          "length": 14123
-        }, {
-          "start": {
-            "chapter": 1.18,
-            "offset": 13,
-            "progress": 0.9583
-          },
-          "end": {
-            "chapter": 1.18,
-            "offset": 29,
-            "progress": 0.9876
+            "progress": 1
           },
           "length": 14123
         }]
