@@ -73,10 +73,6 @@
         // unclickable/invisible
         var minBarWidth = 1.5;
 
-        // define how much bigger occurrence rects get when selected
-        var extraBarWidthSelected = 3;
-        var extraBarHeightSelected = 3;
-
         // Helper function to append a node to the end of its parent
         // as svg elements are drawn on top of each other in order of dom
         // structure
@@ -132,16 +128,12 @@
 
         // Select the occurrence of the given rect
         function selectOccurrence(occurrenceRect) {
-          enlargeOccurrenceRect(occurrenceRect, extraBarHeightSelected, extraBarWidthSelected);
-
           occurrenceRect.classed('selected', true);
           occurrenceRect.moveToFront();
         }
 
         // Deselect the occurrence of the given rect
         function deselectOccurrence(occurrenceRect) {
-          enlargeOccurrenceRect(occurrenceRect, -1 * extraBarHeightSelected, -1
-                  * extraBarWidthSelected);
           // move it to the front so its visible
           occurrenceRect.classed('selected', false);
         }
@@ -197,25 +189,6 @@
             }
           });
           return occurrenceRect;
-        }
-
-        // Enlargens an occurrence rect by the given values while also
-        // displacing
-        // it
-        // so it appears to have the same center
-        // negative values make the rect smaller
-        function enlargeOccurrenceRect(occurrenceRect, extraHeight, extraWidth) {
-          var rectHeight = parseFloat(occurrenceRect.attr('height'));
-          var rectWidth = parseFloat(occurrenceRect.attr('width'));
-
-          var rectX = occurrenceRect.attr('x');
-          var rectY = occurrenceRect.attr('y');
-
-          occurrenceRect.attr('height', rectHeight + extraHeight);
-          occurrenceRect.attr('width', rectWidth + extraWidth);
-
-          occurrenceRect.attr('x', rectX - extraWidth / 2);
-          occurrenceRect.attr('y', rectY - extraHeight / 2);
         }
 
       }
