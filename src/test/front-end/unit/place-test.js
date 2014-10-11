@@ -24,7 +24,7 @@ describe('PlaceCtrl', function() {
 
   it('should create "place" model', inject(function($controller, TestData) {
 
-    expect(scope.place).toEqualData({});
+    expect(scope.place).not.toBeDefined();
     $httpBackend.flush();
     expect(scope.place).toEqualData(TestData.singlePlace);
 

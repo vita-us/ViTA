@@ -1,0 +1,24 @@
+/*
+ * Design of the document overview
+ */
+
+.overview-preview-images {
+    @preview-image-width: 152px;
+  
+    img {
+      border: 1px solid @border-color;
+      max-width: @preview-image-width;
+    }
+    
+    .description {
+      display: block;
+      text-align: center;
+    }
+    
+    h4 {
+      width: @preview-image-width;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+}

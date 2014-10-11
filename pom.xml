@@ -47,6 +47,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
+          <argLine>-Xms2048m -Xmx2048m -XX:MaxPermSize=512m</argLine>
           <includes>
             <include>**/AllTests.java</include>
           </includes>
@@ -152,17 +153,43 @@
       <artifactId>junit</artifactId>
       <version>4.11</version>
     </dependency>
-	    
-	<dependency>
-	  <groupId>org.hamcrest</groupId>
-	  <artifactId>hamcrest-all</artifactId>
-	  <version>1.3</version>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.jayway.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>1.6.1</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>4.9.0</version>
+      <version>4.10.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>4.10.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>4.10.0</version>
     </dependency>
 
     <dependency>
@@ -187,7 +214,7 @@
     <dependency>
       <groupId>uk.ac.gate</groupId>
       <artifactId>gate-core</artifactId>
-      <version>6.1</version>
+      <version>8.0</version>
     </dependency>
 
     <dependency>
@@ -214,10 +241,41 @@
       <artifactId>h2</artifactId>
       <version>1.4.180</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.9-RC1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jodah</groupId>
+      <artifactId>typetools</artifactId>
+      <version>0.3.1</version>
+    </dependency>
   </dependencies>
 
   <properties>
     <jersey.version>2.10.1</jersey.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.1</version>
+        <configuration>
+          <show>public</show>
+          <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+          <docletArtifact>
+            <groupId>org.umlgraph</groupId>
+            <artifactId>umlgraph</artifactId>
+            <version>5.6.6</version>
+          </docletArtifact>
+          <additionalparam>-inferrel -inferdep -qualify -hide "java.*" -collpackages java.util.*</additionalparam>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

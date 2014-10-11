@@ -282,6 +282,97 @@
           "length": 14123
         }]
       },
+
+      singlePerson: {
+        "id": "person8Hugo",
+        "displayName": "Hugo",
+        "type": "person",
+        "attributes": [{
+          "id": "attr12397",
+          "content": "15",
+          "type": "age"
+        }, {
+          "id": "at65657",
+          "content": "Hugo Martin",
+          "type": "name"
+        }],
+        "rankingValue": 3,
+        "entityRelations": [{
+          "relatedEntity": "person10Ben",
+          "weight": 0.81234
+        }, {
+          "relatedEntity": "person18Bert",
+          "weight": 0.7345
+        }]
+      },
+
+      persons: {
+        "totalCount": 2,
+        "persons": [{
+          "id": "person8Hugo",
+          "displayName": "Hugo",
+          "type": "person",
+          "rankingValue": 3
+        }, {
+          "id": "person10Bert",
+          "displayName": "Bert",
+          "type": "person",
+          "rankingValue": 7
+        }]
+      },
+
+      graphNetworkEntities: [{
+        "id": "person8Andi",
+        "displayName": "Andi",
+        "type": "person",
+        "attributes": [{
+          "id": "attr12397",
+          "content": "15",
+          "type": "age"
+        }, {
+          "id": "at65657",
+          "content": "Andreas",
+          "type": "name"
+        }],
+        "rankingValue": 3,
+        "entityRelations": [{
+          "relatedEntity": "person10Bert",
+          "weight": 0.81234
+        }, {
+          "relatedEntity": "person18Ben",
+          "weight": 0.7345
+        }]
+      }, {
+        "id": "person10Bert",
+        "displayName": "Bert",
+        "type": "person",
+        "attributes": [{
+          "id": "attr1041",
+          "content": "22",
+          "type": "age"
+        }, {
+          "id": "at7214",
+          "content": "Bert Bauer",
+          "type": "name"
+        }],
+        "rankingValue": 2,
+        "entityRelations": [{
+          "relatedEntity": "person8Hugo",
+          "weight": 0.222
+        }]
+      }, {
+        "id": "person61Nobody",
+        "displayName": "Nobody",
+        "type": "person",
+        "attributes": [{
+          "id": "at542",
+          "content": "Nobo Dy",
+          "type": "name"
+        }],
+        "rankingValue": 25,
+        "entityRelations": []
+      }]
+
     };
   });
 })(angular);

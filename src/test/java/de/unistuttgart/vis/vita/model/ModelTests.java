@@ -11,7 +11,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgressTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({EntityRelationTest.class, TextPositionTest.class, TextSpanTest.class,
-    FeatureProgressTest.class})
+    FeatureProgressTest.class, TextRepositoryTest.class})
 public class ModelTests {
 
   // hidden constructor
