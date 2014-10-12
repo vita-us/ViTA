@@ -63,8 +63,8 @@ public class FilterTxtTest {
     List<Line> filteredList = filter.filterEbookText();
 
     assertEquals(2, filteredList.size());
-    assertEquals("blabla  ", filteredList.get(0).getText());
-    assertEquals("  blabla", filteredList.get(1).getText());
+    assertEquals("blabla ", filteredList.get(0).getText());
+    assertEquals(" blabla", filteredList.get(1).getText());
   }
 
   @Test
@@ -205,7 +205,7 @@ public class FilterTxtTest {
 
     assertEquals(3, filteredList.size());
     assertEquals("blablabla", filteredList.get(0).getText());
-    assertEquals("", filteredList.get(1).getText());
+    assertEquals(" text1]", filteredList.get(1).getText());
     assertEquals("text2", filteredList.get(2).getText());
   }
 
