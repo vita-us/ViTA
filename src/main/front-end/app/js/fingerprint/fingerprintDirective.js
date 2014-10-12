@@ -45,7 +45,7 @@
         if (!angular.equals(newValue, oldValue)) {
           removeFingerPrint();
           buildFingerPrint(scope, element, attrs);
-        } else {
+        } else if (!angular.isUndefined(newValue)) {
           // can only happen during initialization
           buildFingerPrint(scope, element, attrs);
         }
@@ -56,7 +56,7 @@
         if (!angular.equals(newValue, oldValue)) {
           removeChapterSeparators();
           buildChapterSeparators(scope, element, attrs);
-        } else {
+        } else if (!angular.isUndefined(newValue)) {
           buildChapterSeparators(scope, element, attrs);
         }
       }, true);
@@ -65,7 +65,8 @@
        * Builds the fingerprint including the occurrence rects
        */
       function buildFingerPrint(scope, element, attrs) {
-        var occurrences = scope.occurrences || [];
+        // work with a copy to avoid updating the fingerprint
+        var occurrences = angular.copy(scope.occurrences) || [];
         var occurrenceCount = occurrences.length;
 
         occurrences.map(function(occurrence, index) {
@@ -90,6 +91,8 @@
 
         // mousewheel navigation
         // svg[0] because we need to convert from d3 selector to jquery
+        // first call off() otherwise listeners accumulate as data changes
+        $(svg[0]).off();
         $(svg[0]).mousewheel(onMouseWheel);
 
         function buildOccurrenceRects() {
