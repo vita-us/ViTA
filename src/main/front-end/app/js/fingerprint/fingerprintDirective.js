@@ -42,23 +42,24 @@
 
       // watch for our occurrences to load/change
       scope.$watch('occurrences', function(newValue, oldValue) {
-        if (!angular.isUndefined(oldValue)) {
+        if (!angular.equals(newValue, oldValue)) {
           removeFingerPrint();
-        }
-        if (!angular.isUndefined(newValue)) {
+          buildFingerPrint(scope, element, attrs);
+        } else {
+          // can only happen during initialization
           buildFingerPrint(scope, element, attrs);
         }
-      });
+      }, true);
 
       // watch for our parts to load/change
       scope.$watch('parts', function(newValue, oldValue) {
-        if (!angular.isUndefined(oldValue)) {
+        if (!angular.equals(newValue, oldValue)) {
           removeChapterSeparators();
-        }
-        if (!angular.isUndefined(newValue)) {
+          buildChapterSeparators(scope, element, attrs);
+        } else {
           buildChapterSeparators(scope, element, attrs);
         }
-      });
+      }, true);
 
       /**
        * Builds the fingerprint including the occurrence rects
@@ -203,7 +204,7 @@
        * Builds the chapter separators
        */
       function buildChapterSeparators(scope, element, attrs) {
-        var chapters = getChaptersFromParts(scope.parts);
+        var chapters = angular.isUndefined(scope.parts) ? [] : getChaptersFromParts(scope.parts);
 
         var chapterLineGroupEnter = chapterLineGroup.selectAll('line').data(chapters).enter();
 
