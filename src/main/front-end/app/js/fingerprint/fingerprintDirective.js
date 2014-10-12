@@ -23,7 +23,7 @@
 
       // Scale for the width of rectangles
       var widthScale = d3.scale.linear().domain([0, 1]).range([0, width]);
-
+      // Scale fot the height of rectangles
       var heightScale = d3.scale.linear().domain([0, 1]).range([0, height]);
 
       // create the central svg element all other elements live in
@@ -36,11 +36,11 @@
       var backgroundRect = svg.append('rect').attr('width', widthScale(1)).attr('height',
               heightScale(1)).classed('background', true).attr('x', 0).attr('y', 0);
 
-      // Define groups for occurrence recrs and chapter lines
+      // Define groups for occurrence rects and chapter lines
       var rectGroup = svg.append('g').classed('occurrences', true);
       var chapterLineGroup = svg.append('g').classed('chapter-separators', true);
 
-      // wait for our data to load
+      // watch for our occurrences to load/change
       scope.$watch('occurrences', function(newValue, oldValue) {
         if (!angular.isUndefined(oldValue)) {
           removeFingerPrint();
@@ -50,7 +50,7 @@
         }
       });
 
-      // wait for our parts to load
+      // watch for our parts to load/change
       scope.$watch('parts', function(newValue, oldValue) {
         if (!angular.isUndefined(oldValue)) {
           removeChapterSeparators();
@@ -60,6 +60,9 @@
         }
       });
 
+      /**
+       * Builds the fingerprint including the occurrence rects
+       */
       function buildFingerPrint(scope, element, attrs) {
         var occurrences = scope.occurrences || [];
         var occurrenceCount = occurrences.length;
@@ -143,6 +146,7 @@
           return svg.select('.selected');
         }
 
+        // Return true if the given rect is selected, false otherwise
         function isSelected(occurrenceRect) {
           return occurrenceRect.classed('selected');
         }
@@ -179,10 +183,12 @@
           return false;
         }
 
-        // Return the occurrence rect with the given index
-        // null if no such rect exists
+        /**
+         * Return the occurrence rect with the given index, null if no such rect
+         * exists
+         */
         function getOccurrenceRect(index) {
-          var occurrenceRect;
+          var occurrenceRect = null;
           svg.selectAll('.occurrences rect').each(function(occurrence, i) {
             if (occurrence.index === index) {
               occurrenceRect = d3.select(this);
@@ -193,14 +199,9 @@
 
       }
 
-      function removeFingerPrint() {
-        rectGroup.selectAll('rect').remove();
-      }
-
-      function removeChapterSeparators() {
-        chapterLineGroup.selectAll('line').remove();
-      }
-
+      /**
+       * Builds the chapter separators
+       */
       function buildChapterSeparators(scope, element, attrs) {
         var chapters = getChaptersFromParts(scope.parts);
 
@@ -233,12 +234,29 @@
 
       }
 
+      /**
+       * Returns an array of chapters from the given parts
+       */
       function getChaptersFromParts(parts) {
         var chapters = [];
         parts.forEach(function(part) {
           chapters = chapters.concat(part.chapters);
         });
         return chapters;
+      }
+
+      /**
+       * Removes the fingerprint including the occurence rects
+       */
+      function removeFingerPrint() {
+        rectGroup.selectAll('rect').remove();
+      }
+
+      /**
+       * Removes the chapter separators
+       */
+      function removeChapterSeparators() {
+        chapterLineGroup.selectAll('line').remove();
       }
     }
 
