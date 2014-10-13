@@ -5,7 +5,7 @@
 
   // Controller responsible for the overview page
   vitaControllers.controller('OverviewCtrl', ['$scope', 'Document', 'Page', '$routeParams',
-      'Progress', function($scope, Document, Page, $routeParams, Progress) {
+      'AnalysisProgress', function($scope, Document, Page, $routeParams, AnalysisProgress) {
 
         Document.get({
           documentId: $routeParams.documentId
@@ -15,11 +15,12 @@
           Page.setUpForDocument(document);
         });
 
-        Progress.get({
+        AnalysisProgress.get({
           documentId: $routeParams.documentId
         }, function(progress) {
           $scope.progress = progress;
         });
+
       }]);
 
 })(angular);

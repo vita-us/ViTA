@@ -186,7 +186,7 @@
         "entityRelations": []
       }],
 
-      documentProgress: {
+      analysisProgress: {
         "graphView": {
           "isReady": false,
           "progress": 0.7123

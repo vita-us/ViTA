@@ -13,7 +13,7 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
-                TestData.documentProgress);
+                TestData.analysisProgress);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
