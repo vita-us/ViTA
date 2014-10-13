@@ -20,7 +20,7 @@
       }
 
       return filteredEntities;
-    }
+    };
 
     function containsQueryCaseInsensitive(text, query) {
       var lowerCaseText = text.toLowerCase();
