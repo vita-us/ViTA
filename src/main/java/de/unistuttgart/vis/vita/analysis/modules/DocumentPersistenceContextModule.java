@@ -8,6 +8,7 @@ import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 
 @AnalysisModule
 public class DocumentPersistenceContextModule implements Module<DocumentPersistenceContext> {
+
   private String id;
 
   public DocumentPersistenceContextModule(String id) {
@@ -15,11 +16,12 @@ public class DocumentPersistenceContextModule implements Module<DocumentPersiste
   }
 
   @Override
-  public void observeProgress(double progress) {}
+  public void observeProgress(double progress) {
+  }
 
   @Override
   public DocumentPersistenceContext execute(ModuleResultProvider result,
-      ProgressListener progressListener) throws Exception {
+                                            ProgressListener progressListener) throws Exception {
     return new DocumentPersistenceContext() {
       @Override
       public String getDocumentId() {

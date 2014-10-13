@@ -10,7 +10,8 @@ import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
  * Unit tests for analysis modules
  */
 @RunWith(Suite.class)
-@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class})
+@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class,
+    LuceneModuleTest.class})
 public class AnalysisModulesTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisModulesTests() {
