@@ -123,9 +123,8 @@ public class MetadataBuilder {
         metadataPublishYear = metadataPublishYear.trim();
       }
     }
-    if (isValidPublisherYear(metadataPublishYear)) {
-      documentMetadata.setPublishYear(date.get(Calendar.YEAR));
-    }
+    setPublishYear(metadataPublishYear);
+
   }
 
   /**
@@ -218,22 +217,23 @@ public class MetadataBuilder {
   /**
    * Checks if the date format of the publisherYear is valid
    */
-  private boolean isValidPublisherYear(String publisherYear) {
+  private void setPublishYear(String newPublishYear) {
+
     List<SimpleDateFormat> dateFormats = new ArrayList<>();
     dateFormats.add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
 
+    date = Calendar.getInstance();
     for (SimpleDateFormat dateFormat : dateFormats) {
       try {
-        date = Calendar.getInstance();
-        date.setTime(dateFormat.parse(publisherYear));
-        return true;
+        
+        date.setTime(dateFormat.parse(newPublishYear));
+        documentMetadata.setPublishYear(date.get(Calendar.YEAR));
+
       } catch (ParseException ex) {
         // do nothing
       }
     }
-    return false;
   }
-
 }
