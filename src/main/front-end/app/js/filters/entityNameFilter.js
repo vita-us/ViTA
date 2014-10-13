@@ -14,13 +14,20 @@
         var entity = entities[i];
 
         // Look for the query string case insensitive
-        if (entity.displayName.toLowerCase().indexOf(query.toLowerCase()) > -1) {
+        if (containsQueryCaseInsensitive(entity.displayName, query)) {
           filteredEntities.push(entity);
         }
       }
 
       return filteredEntities;
-    };
+    }
+
+    function containsQueryCaseInsensitive(text, query) {
+      var lowerCaseText = text.toLowerCase();
+      var lowerCaseQuery = query.toLowerCase();
+
+      return lowerCaseText.indexOf(lowerCaseQuery) > -1;
+    }
   });
 
 })(angular);
