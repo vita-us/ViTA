@@ -25,6 +25,16 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
                     + "FROM TextSpan ts, Entity e "
                     + "WHERE e.id = :entityId "
                     + "AND ts MEMBER OF e.occurrences"),
+                    
+  @NamedQuery(name = "TextSpan.findTextSpansForRelations",
+  query = "SELECT ts1 "
+      + "FROM   TextSpan ts1, Entity e "
+      + "WHERE  EXISTS (SELECT 1 FROM   TextSpan ts2 "
+        + "WHERE  ts2.start.offset <= ts1.end.offset "
+        + "AND    ts2.end.offset   >= ts1.start.offset "
+        + "AND    ts2.id         <>  ts1.id) "
+      + "AND    e.id IN :entityIds "
+      + "AND    ts1 MEMBER OF e.occurrences"),
       
   @NamedQuery(name = "TextSpan.findTextSpanById",
               query = "SELECT ts "
