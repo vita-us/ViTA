@@ -129,7 +129,6 @@
 
         // Deselect the occurrence of the given rect
         function deselectOccurrence(occurrenceRect) {
-          // move it to the front so its visible
           occurrenceRect.classed('selected', false);
         }
 
