@@ -5,7 +5,8 @@
 
   // Controller responsible for the overview page
   vitaControllers.controller('OverviewCtrl', ['$scope', 'Document', 'Page', '$routeParams',
-      'AnalysisProgress', function($scope, Document, Page, $routeParams, AnalysisProgress) {
+      'AnalysisProgress', '$interval',
+      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval) {
 
         Document.get({
           documentId: $routeParams.documentId
@@ -15,10 +16,24 @@
           Page.setUpForDocument(document);
         });
 
-        AnalysisProgress.get({
-          documentId: $routeParams.documentId
-        }, function(progress) {
-          $scope.progress = progress;
+        loadAnalysisProgress();
+        // Load the analysis progress repeatedly
+        var timerToken = $interval(function() {
+          loadAnalysisProgress();
+        }, 5000);
+
+        function loadAnalysisProgress() {
+          AnalysisProgress.get({
+            documentId: $routeParams.documentId
+          }, function(progress) {
+            $scope.progress = progress;
+          });
+        }
+
+        $scope.$on('$destroy', function() {
+          if (timerToken) {
+            $interval.cancel(timerToken);
+          }
         });
 
       }]);

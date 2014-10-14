@@ -35,4 +35,22 @@ describe('OverviewCtrl', function() {
     expect(scope.progress).toEqualData(TestData.analysisProgress);
   }));
 
+  it('should load the status repeatedly', inject(function($interval) {
+    // Ensure the current data are different from the changed data
+    $httpBackend.flush();
+    expect(scope.progress.graphView.isReady).toBe(false);
+
+    // Respond with the changed data
+    $httpBackend.expectGET('/documents/123/progress').respond({
+      graphView: {
+        isReady: true
+      }
+    });
+    // Simulate the expected time interval
+    $interval.flush(5000);
+    $httpBackend.flush();
+
+    expect(scope.progress.graphView.isReady).toBe(true);
+  }));
+
 });
