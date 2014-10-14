@@ -10,16 +10,7 @@
       var SVG_WIDTH = $(element).width();
       var SVG_HEIGHT = attrs.height || MINIMUM_SVG_HEIGHT;
 
-      var margin = {
-        top: 5,
-        right: 5,
-        bottom: 5,
-        left: 5
-      };
-
-      // compute width and height considering margins
-      var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top
-              - margin.bottom;
+      var width = SVG_WIDTH, height = SVG_HEIGHT;
 
       // Scale for the width of rectangles
       var widthScale = d3.scale.linear().domain([0, 1]).range([0, width]);
@@ -27,10 +18,7 @@
       var heightScale = d3.scale.linear().domain([0, 1]).range([0, height]);
 
       // create the central svg element all other elements live in
-      var svg = d3.select(element[0]).append('svg').attr('width',
-              width + margin.left + margin.right).attr('height',
-              height + margin.top + margin.bottom).append('g').attr('transform',
-              'translate(' + margin.left + ',' + margin.top + ')');
+      var svg = d3.select(element[0]).append('svg').attr('width', width).attr('height', height);
 
       // make background rectangle all the occurrence rectangles are inside
       var backgroundRect = svg.append('rect').attr('width', widthScale(1)).attr('height',
