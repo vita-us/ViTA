@@ -20,5 +20,7 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
                 TestData.singlePerson);
 
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/wordcloud$')).respond(TestData.wordcloud);
+
       }]);
 })(angular);
