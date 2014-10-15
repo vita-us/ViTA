@@ -19,12 +19,20 @@
             updateGraph(scope.entities);
           }
         }, true);
+
+        scope.$watch('height', function(newValue, oldValue) {
+          if (!angular.equals(newValue, oldValue)) {
+            // Fallback on the default value on an invalid parameter
+            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT
+            updateHeight(newHeight);
+          }
+        });
       }
     };
 
     var MINIMUM_GRAPH_HEIGHT = 400, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
-    var graph, force, nodes, links, drag;
+    var graph, force, nodes, links, drag, svgContainer;
 
     function buildGraph(element, entities, height) {
       var container = d3.select(element[0]);
@@ -54,12 +62,14 @@
             d.fixed = false;
           });
 
-      graph = container.append('svg')
+      svgContainer = container.append('svg')
           .classed('graph-network', true)
           .attr('width', width)
           .attr('height', height)
-          .call(zoom)
-          .append('g'); // an extra group for zooming
+          .call(zoom);
+
+      // Encapsulate the graph in a group for easier zooming and dragging
+      graph = svgContainer.append('g');
 
       var graphData = parseEntitiesToGraphData(entities);
 
@@ -214,6 +224,15 @@
           .start();
 
       redrawElements(graphData);
+    }
+
+    function updateHeight(height) {
+      // Get the current graph width
+      var width = svgContainer.attr('width');
+
+      // Set the new attributes
+      svgContainer.attr('height', height);
+      force.size([width, height]).resume();
     }
 
     return directive;
