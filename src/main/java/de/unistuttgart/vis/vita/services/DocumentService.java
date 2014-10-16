@@ -125,14 +125,13 @@ public class DocumentService {
     Response response = null;
     try {
       em.getTransaction().begin();
-      em.remove(readDocumentFromDatabase());
+      Document docToDelete = readDocumentFromDatabase();
+      em.remove(docToDelete);
       em.getTransaction().commit();
 
       response = Response.noContent().build();
-    } catch (IllegalArgumentException iae) {
-      throw new WebApplicationException(iae, Response.status(Response.Status.NOT_FOUND).build());
-    } catch (RollbackException rbe) {
-      throw new WebApplicationException(rbe);
+    } catch (NoResultException nre) {
+      throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
     }
     return response;
   }
