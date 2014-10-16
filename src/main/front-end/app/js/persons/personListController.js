@@ -5,10 +5,13 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PersonListCtrl', ['$scope', 'Document', 'Page', 'Person',
-      '$routeParams', function($scope, Document, Page, Person, $routeParams) {
+      '$routeParams', 'CssClass', function($scope, Document, Page, Person, $routeParams, CssClass) {
         Person.get({
           documentId: $routeParams.documentId
         }, function(response) {
+          response.persons.forEach(function(entry) {
+            entry.rankingValueClass = CssClass.forRankingValue(entry.rankingValue);
+          });
           $scope.persons = response.persons;
         });
 
