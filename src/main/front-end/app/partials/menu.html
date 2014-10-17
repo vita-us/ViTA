@@ -1,11 +1,22 @@
-<div id="menu-list" class="list-group">
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/overview">Overview</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/characters">Characters</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/places">Places</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/fingerprint">Fingerprint</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/graphnetwork">Graph-Network</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/wordcloud">Word Cloud</a>
-  <a href="#" class="list-group-item" ng-href="#/documents/{{Page.documentId}}/documentview">
-    Document <span class="glyphicon glyphicon-new-window"></span>
-  </a>
-</div>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapse-2">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+  </div>
+  <div id="collapse-2" class="collapse navbar-collapse">
+    <ul class="nav nav-stacked">
+      <li><a ng-href="#/documents/{{Page.documentId}}/overview">Overview</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/characters">Characters</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/places">Places</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/fingerprint">Fingerprint</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/graphnetwork">Graph-Network</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/wordcloud">Word Cloud</a></li>
+      <li><a ng-href="#/documents/{{Page.documentId}}/documentview">
+        Document <span class="glyphicon glyphicon-new-window"></span>
+      </a></li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
