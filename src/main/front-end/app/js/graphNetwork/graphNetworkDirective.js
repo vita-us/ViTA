@@ -9,16 +9,24 @@
       restrict: 'A',
       scope: {
         entities: '=',
+        width: '@',
         height: '@'
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.height);
+        buildGraph(element, scope.entities, scope.width, scope.height);
 
         scope.$watch('entities', function(newValue, oldValue) {
           if (!angular.equals(newValue, oldValue)) {
             updateGraph(scope.entities);
           }
         }, true);
+
+        scope.$watch('width', function(newValue, oldValue) {
+          if(!angular.equals(newValue, oldValue)) {
+            var newWidth = new Value || MINIMUM_GRAPH_WIDTH
+            updateWidth(newWidth);
+          }
+        });
 
         scope.$watch('height', function(newValue, oldValue) {
           if (!angular.equals(newValue, oldValue)) {
@@ -30,13 +38,14 @@
       }
     };
 
-    var MINIMUM_GRAPH_HEIGHT = 400, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+    var MINIMUM_GRAPH_WIDTH = 300, MINIMUM_GRAPH_HEIGHT = 300, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
     var graph, force, nodes, links, drag, svgContainer;
 
-    function buildGraph(element, entities, height) {
+    function buildGraph(element, entities, width, height) {
       var container = d3.select(element[0]);
-      var width = $(container.node()).width();
+      // var width = $(container.node()).width();
+      width = width || MINIMUM_GRAPH_WIDTH;
       height = height || MINIMUM_GRAPH_HEIGHT;
 
       // Set the zoom with its min and max magnifications
@@ -224,6 +233,15 @@
           .start();
 
       redrawElements(graphData);
+    }
+
+    function updateWidth(width) {
+      // Get the current graph height
+      var height = svgContainer.attr('height');
+
+      // Set the new attributes
+      svgContainer.attr('width', width);
+      force.size([width, height]).resume();
     }
 
     function updateHeight(height) {
