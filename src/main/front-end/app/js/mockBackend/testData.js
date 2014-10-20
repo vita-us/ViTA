@@ -184,8 +184,35 @@
         }],
         "rankingValue": 25,
         "entityRelations": []
-      }]
+      }],
 
+      analysisProgress: {
+        "graphView": {
+          "isReady": false,
+          "progress": 0.7123
+        },
+        "wordCloud": {
+          "isReady": true,
+          "progress": 1.0
+        },
+        "places": {
+          "isReady": false,
+          "progress": 0.6123
+        },
+        "persons": {
+          "isReady": false,
+          "progress": 0.001
+        },
+        "fingerPrints": {
+          "isReady": false,
+          "progress": 0.81238
+        },
+        "text": {
+          "isReady": true,
+          "progress": 1.0
+        }
+      }
     };
+
   });
 })(angular);
