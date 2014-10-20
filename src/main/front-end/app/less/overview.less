@@ -4,6 +4,11 @@
 
 .overview-preview-images {
     @preview-image-width: 152px;
+    
+    .link-to-visualization {
+      display: block;
+      position: relative;
+    }
   
     img {
       border: 1px solid @border-color;
@@ -23,9 +28,13 @@
     }
 
     .status {
-      font-size: 32px;
       position: absolute;
-      top: 20px;
-      left: calc(@preview-image-width/2);
+      top: 15px;
+      left: 0;
+      font-size: 32px;
+      width: @preview-image-width;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
     }
 }
