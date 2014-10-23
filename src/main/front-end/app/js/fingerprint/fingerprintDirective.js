@@ -133,7 +133,7 @@
 
         function onMouseWheel(event, delta) {
           var selectedOccurence = getSelectedOccurrence();
-          if (selectedOccurence.empty()) {
+          if (!selectedOccurence.empty()) {
 
             deselectOccurrence(selectedOccurence);
 
