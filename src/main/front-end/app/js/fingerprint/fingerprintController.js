@@ -5,9 +5,13 @@
 
   // Controller responsible for the fingerprint page
   vitaControllers.controller('FingerprintCtrl', ['$scope', 'Fingerprint', 'Page', '$routeParams',
-      'TestData', function($scope, Fingerprint, Page, $routeParams, TestData) {
-        // TODO: Use a service instead
-        $scope.parts = TestData.parts.parts;
+      'DocumentParts', function($scope, Fingerprint, Page, $routeParams, DocumentParts) {
+
+        DocumentParts.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.parts = response.parts;
+        });
 
         Fingerprint.get({
           documentId: $routeParams.documentId,

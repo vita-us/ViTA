@@ -12,10 +12,12 @@
         $httpBackend.whenGET(new RegExp('/documents$')).respond(TestData.documents);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
 
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/parts$')).respond(TestData.parts);
+
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
                 TestData.singlePlace);
-        
+
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/[^/]+/fingerprints+$')).respond(
                 TestData.fingerprint);
 
