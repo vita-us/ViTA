@@ -39,23 +39,23 @@
       scope.$watch('occurrences', function(newValue, oldValue) {
         if (!angular.equals(newValue, oldValue)) {
           removeFingerPrint();
-          buildFingerPrint(scope, element, attrs);
+          buildFingerPrint(scope);
         } else if (!angular.isUndefined(newValue)) {
           // can only happen during initialization
-          buildFingerPrint(scope, element, attrs);
+          buildFingerPrint(scope);
         }
       }, true);
 
       scope.$watch('parts', function(newValue, oldValue) {
         if (!angular.equals(newValue, oldValue)) {
           removeChapterSeparators();
-          buildChapterSeparators(scope, element, attrs);
+          buildChapterSeparators(scope);
         } else if (!angular.isUndefined(newValue)) {
-          buildChapterSeparators(scope, element, attrs);
+          buildChapterSeparators(scope);
         }
       }, true);
 
-      function buildFingerPrint(scope, element, attrs) {
+      function buildFingerPrint(scope) {
         // work with a copy to avoid updating the fingerprint
         var occurrences = angular.copy(scope.occurrences) || [];
         var occurrenceCount = occurrences.length;
@@ -81,7 +81,7 @@
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
 	        rectGroupEnter.append('rect')
-             .attr('x', function (occurrence, i) {
+             .attr('x', function (occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
               })
@@ -161,7 +161,7 @@
         function getOccurrenceRect(index) {
           var occurrenceRect;
           svgContainer.selectAll('.occurrences rect')
-              .each(function(occurrence, i) {
+              .each(function(occurrence) {
                 if (occurrence.index === index) {
                   occurrenceRect = d3.select(this);
                 }
@@ -171,7 +171,7 @@
 
       }
 
-      function buildChapterSeparators(scope, element, attrs) {
+      function buildChapterSeparators(scope) {
         var chapters = angular.isUndefined(scope.parts) ? [] : getChaptersFromParts(scope.parts);
 
         var chapterLineGroupEnter = chapterLineGroup.selectAll('line').data(chapters).enter();
@@ -230,7 +230,7 @@
         parts: '=',
         height: '@'
       },
-      link: link,
+      link: link
     };
   }]);
 
