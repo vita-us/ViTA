@@ -77,6 +77,11 @@ module.exports = function(grunt) {
           dest: '<%= javascriptPath %>'
         }, {
           expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-mousewheel/',
+          src: ['jquery.mousewheel.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
           cwd: '<%= bowerrc.directory %>/angular-resource/',
           src: ['angular-resource.js'],
           dest: '<%= javascriptPath %>'

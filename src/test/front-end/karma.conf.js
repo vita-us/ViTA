@@ -4,6 +4,7 @@ module.exports = function(config) {
     basePath: '../../../',
 
     files: ['src/main/front-end/app/bower_components/jquery/dist/jquery.js',
+        'src/main/front-end/app/bower_components/jquery-mousewheel/jquery.mousewheel.js',
         'src/main/front-end/app/bower_components/angular/angular.js',
         'src/main/front-end/app/bower_components/angular-route/angular-route.js',
         'src/main/front-end/app/bower_components/angular-resource/angular-resource.js',

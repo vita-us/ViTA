@@ -39,7 +39,7 @@
       controller: 'PlaceCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
-      controller: ''
+      controller: 'FingerprintCtrl'
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
       controller: 'GraphNetworkCtrl'
