@@ -25,8 +25,7 @@
       // TODO: Coloring?
       var fill = d3.scale.category20();
 
-      // create the central svg element all other elements live in
-      var svg = d3.select(element[0])
+      var svgContainer = d3.select(element[0])
           .append('svg')
           .attr('width', SVG_WIDTH)
           .attr('height', SVG_HEIGHT)
@@ -34,7 +33,6 @@
           // >> 1 because we want to start positioning words from the center of the svg
           .attr('transform', 'translate(' + [SVG_WIDTH >> 1, SVG_HEIGHT >> 1] + ')');
 
-      // create the cloud layout
       var cloud = d3.layout.cloud()
           .size([SVG_WIDTH, SVG_HEIGHT])
           .padding(5)
@@ -43,19 +41,17 @@
           .fontSize(getSize)
           .on("end", draw);
 
-      // wait for our data to load
       scope.$watch('items', function(newValue, oldValue) {
-        buildWordCloud(scope, element, attrs);
+        buildWordCloud(scope);
       }, true);
 
-      function buildWordCloud(scope, element, attrs) {
+      function buildWordCloud(scope) {
         var items = scope.items || [];
 
         var minFrequency = getMinFrequency(items);
         var maxFrequency = getMaxFrequency(items);
 
-        // the least frequent word gets the smallest font, most frequent the
-        // largest
+        // the least frequent word gets the smallest font, most frequent the largest
         wordSizeScale = d3.scale.linear()
             .domain([minFrequency, maxFrequency])
             .range([MIN_FONTSIZE, MAX_FONTSIZE]);
@@ -63,9 +59,8 @@
         cloud.stop().words(itemsToCloudData(items), getText).start();
       }
 
-      // Actually draw/move/remove words in the wordcloud as we now know their position
       function draw(words) {
-        var updateSelection = svg.selectAll("text").data(words, getText);
+        var updateSelection = svgContainer.selectAll("text").data(words, getText);
 
         // deal with words that remain
         styleWords(updateSelection);
@@ -86,18 +81,15 @@
             .text(getText);
       }
 
-      // Converts an array of items from the rest-api to the cloud data of the
-      // d3-cloud library
+      // Converts an array of items from the rest-api to the cloud data of the d3-cloud library
       function itemsToCloudData(items) {
         return items.map(function(item) {
           return {
             text: item.word,
-            size: wordSizeScale(item.frequency),
+            size: wordSizeScale(item.frequency)
           };
         });
       }
-
-      // Various functions to access certain attributes of data
 
       function getText(d) {
         return d.text;
@@ -138,9 +130,9 @@
       restrict: 'A',
       scope: {
         items: '=',
-        height: '@',
+        height: '@'
       },
-      link: link,
+      link: link
     };
   }]);
 
