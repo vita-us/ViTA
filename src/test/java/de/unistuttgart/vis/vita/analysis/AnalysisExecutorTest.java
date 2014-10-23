@@ -63,7 +63,6 @@ public class AnalysisExecutorTest {
     await().until(moduleProgressIs(targetModuleInstance, 0.25));
     await().until(moduleExecuted(dependencyModuleInstance));
 
-    assertThat(dependencyModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleState.getResultProvider().getResultFor(Integer.class),
         is(IntProvidingModule.RESULT));
     assertThat(targetModuleState.isExecutable(), is(true));
@@ -80,7 +79,6 @@ public class AnalysisExecutorTest {
     verify(observer).onFinish(executor);
     verifyNoMoreInteractions(observer);
 
-    assertThat(targetModuleState.getThread().isAlive(), is(false));
     assertThat(targetModuleInstance.hasBeenExecuted(), is(true));
     assertThat(executor.getFailedModules().values(), is(empty()));
     assertThat(targetModuleInstance.getCurrentProgress(), is(1.0));
