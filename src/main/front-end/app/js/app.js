@@ -1,10 +1,13 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices']);
+  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
+      'vitaDirectives', 'vitaFilters']);
 
   angular.module('vitaControllers', []);
   angular.module('vitaServices', ['ngResource']);
+  angular.module('vitaDirectives', []);
+  angular.module('vitaFilters', []);
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/documents', {
@@ -22,18 +25,24 @@
     }).when('/documents/:documentId/overview', {
       templateUrl: 'partials/overview.html',
       controller: 'OverviewCtrl'
-    }).when('/documents/:documentId/profiles', {
-      templateUrl: 'partials/profiles.html',
-      controller: ''
+    }).when('/documents/:documentId/characters', {
+      templateUrl: 'partials/persons.html',
+      controller: 'PersonListCtrl'
+    }).when('/documents/:documentId/characters/:personId', {
+      templateUrl: 'partials/person.html',
+      controller: 'PersonCtrl'
     }).when('/documents/:documentId/places', {
       templateUrl: 'partials/places.html',
       controller: 'PlaceListCtrl'
+    }).when('/documents/:documentId/places/:placeId', {
+      templateUrl: 'partials/place.html',
+      controller: 'PlaceCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
-      controller: ''
+      controller: 'FingerprintCtrl'
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
-      controller: ''
+      controller: 'GraphNetworkCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: ''
@@ -62,7 +71,7 @@
         this.tab = tab;
         this.breadcrumbs = null;
       }
-    }
+    };
   });
 
   app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {

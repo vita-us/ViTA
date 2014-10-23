@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.nio.file.Path;
@@ -48,7 +49,7 @@ public class AnalysisControllerTest {
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
     String id = controller.scheduleDocumentAnalysis(path);
-    verifyExecutorCreated(path);
+    verifyExecutorCreated(id, path);
 
     assertThat(controller.documentsInQueue(), is(0)); // nothing queued, just one working
     assertThat(controller.isWorking(), is(true));
@@ -128,10 +129,10 @@ public class AnalysisControllerTest {
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
 
-    controller.scheduleDocumentAnalysis(path1);
-    controller.scheduleDocumentAnalysis(path2);
+    String id1 = controller.scheduleDocumentAnalysis(path1);
+    String id2 = controller.scheduleDocumentAnalysis(path2);
 
-    verifyExecutorCreated(path1);
+    verifyExecutorCreated(id1, path1);
     verify(executor).start();
     assertThat(controller.documentsInQueue(), is(1));
     assertThat(controller.isWorking(), is(true));
@@ -140,7 +141,7 @@ public class AnalysisControllerTest {
     prepareExecutor(path2);
     analysisObserver.onFinish(executor1);
 
-    verifyExecutorCreated(path2);
+    verifyExecutorCreated(id2, path2);
     verify(executor).start();
     assertThat(controller.documentsInQueue(), is(0));
     assertThat(controller.isWorking(), is(true));
@@ -151,14 +152,14 @@ public class AnalysisControllerTest {
     Path path1 = Paths.get("path/to/file.name");
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
-    controller.scheduleDocumentAnalysis(path1);
-    controller.scheduleDocumentAnalysis(path2);
-    verifyExecutorCreated(path1);
+    String id1 = controller.scheduleDocumentAnalysis(path1);
+    String id2 = controller.scheduleDocumentAnalysis(path2);
+    verifyExecutorCreated(id1, path1);
     AnalysisExecutor executor1 = executor;
     prepareExecutor(path2);
     analysisObserver.onFail(executor1);
 
-    verifyExecutorCreated(path2);
+    verifyExecutorCreated(id2, path2);
     verify(executor).start();
     assertThat(controller.documentsInQueue(), is(0));
     assertThat(controller.isWorking(), is(true));
@@ -173,7 +174,7 @@ public class AnalysisControllerTest {
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
     String id = controller.scheduleDocumentAnalysis(path);
-    verifyExecutorCreated(path);
+    verifyExecutorCreated(id, path);
 
     controller.cancelAnalysis(id);
 
@@ -181,16 +182,16 @@ public class AnalysisControllerTest {
     controller.restartAnalysis(id);
 
     // Make sure it has been called the second time
-    verify(executorFactory, times(2)).createExecutor(path);
+    verify(executorFactory, times(2)).createExecutor(id, path);
   }
 
   private void prepareExecutor(Path path) {
     executor = mock(AnalysisExecutor.class);
-    when(executorFactory.createExecutor(path)).thenReturn(executor);
+    when(executorFactory.createExecutor(anyString(), eq(path))).thenReturn(executor);
   }
 
-  private void verifyExecutorCreated(Path path) {
-    verify(executorFactory).createExecutor(path);
+  private void verifyExecutorCreated(String id, Path path) {
+    verify(executorFactory).createExecutor(id, path);
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());

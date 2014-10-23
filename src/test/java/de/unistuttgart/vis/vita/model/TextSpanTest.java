@@ -38,7 +38,7 @@ public class TextSpanTest {
     Document doc = new Document();
     DocumentMetrics metrics = doc.getMetrics();
     metrics.setCharacterCount(DOCUMENT_LENGTH);
-    chapter = new Chapter(doc);
+    chapter = new Chapter();
 
     pos1 = new TextPosition(chapter, OFFSET_1);
     pos2 = new TextPosition(chapter, OFFSET_2);

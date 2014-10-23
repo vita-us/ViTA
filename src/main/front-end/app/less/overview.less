@@ -3,19 +3,38 @@
  */
 
 .overview-preview-images {
-  .preview {
-    float: left;
-    margin-right: 10px;
-    margin-bottom: 20px;
+    @preview-image-width: 152px;
+    
+    .link-to-visualization {
+      display: block;
+      position: relative;
+    }
   
     img {
       border: 1px solid @border-color;
-      margin-bottom: 5px;
+      max-width: @preview-image-width;
     }
     
     .description {
       display: block;
       text-align: center;
     }
-  }
+    
+    h4 {
+      width: @preview-image-width;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      font-size: 32px;
+      width: @preview-image-width;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
 }
