@@ -10,6 +10,7 @@ module.exports = function(grunt) {
     javascriptPath: '<%= appPath %>js/',
     cssPath: '<%= appPath %>css/',
     fontPath: '<%= appPath %>fonts/',
+    templatePath: '<%= appPath %>templates/',
 
     pkg: grunt.file.readJSON('package.json'),
     bowerrc: grunt.file.readJSON('.bowerrc'),
@@ -112,6 +113,11 @@ module.exports = function(grunt) {
           cwd: 'app/img',
           src: ['**'],
           dest: '<%= appPath %>img/'
+        }, {
+          expand: true,
+          cwd: 'app/templates',
+          src: ['**'],
+          dest: '<%= appPath %>templates/'
         }]
       }
     },
