@@ -60,7 +60,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, entityIdList);
 
     // convert TextSpans into Occurrences
-    // TODO compute intersections or return all occurrences with overlap
+    // TODO compute intersections
     List<Occurrence> occurrences = covertSpansToOccurrences(readTextSpans);
 
     // put occurrences into a response and send it

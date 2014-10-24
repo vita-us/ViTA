@@ -61,13 +61,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person originPerson = personTestData.createTestPerson(1);
     
     // non overlapping TextSpan
-    TextPosition originSeparateStart = new TextPosition(testChapter, 0);
-    TextPosition originSeparateEnd = new TextPosition(testChapter, 1000);
+    TextPosition originSeparateStart = new TextPosition(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
+    TextPosition originSeparateEnd = new TextPosition(testChapter, 101000);
     TextSpan originSeparateSpan = new TextSpan(originSeparateStart, originSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition originStart = new TextPosition(testChapter, 5000);
-    TextPosition originEnd = new TextPosition(testChapter, 15000);
+    TextPosition originStart = new TextPosition(testChapter, 105000);
+    TextPosition originEnd = new TextPosition(testChapter, 115000);
     TextSpan originSpan = new TextSpan(originStart, originEnd);
     
     originPerson.getOccurrences().add(originSpan);
@@ -77,13 +77,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person targetPerson = personTestData.createTestPerson(2);
     
     // non-overlapping TextSpan
-    TextPosition targetSeparateStart = new TextPosition(testChapter, 22000);
-    TextPosition targetSeparateEnd  = new TextPosition(testChapter, 23000);
+    TextPosition targetSeparateStart = new TextPosition(testChapter, 122000);
+    TextPosition targetSeparateEnd  = new TextPosition(testChapter, 123000);
     TextSpan targetSeparateSpan = new TextSpan(targetSeparateStart, targetSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition targetStart = new TextPosition(testChapter, 10000);
-    TextPosition targetEnd = new TextPosition(testChapter, 20000);
+    TextPosition targetStart = new TextPosition(testChapter, 110000);
+    TextPosition targetEnd = new TextPosition(testChapter, 120000);
     TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
     
     targetPerson.getOccurrences().add(targetSpan);
@@ -149,6 +149,7 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
                                                       .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
+    
     assertEquals(2, receivedOccurrences.size());
     
     // check content of response

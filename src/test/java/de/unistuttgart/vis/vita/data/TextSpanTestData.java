@@ -12,8 +12,8 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  */
 public class TextSpanTestData {
   
-  public static final int TEST_TEXT_SPAN_START = 5200;
-  public static final int TEST_TEXT_SPAN_END = 5250;
+  public static final int TEST_TEXT_SPAN_START = 105200;
+  public static final int TEST_TEXT_SPAN_END = 105250;
   public static final int TEST_TEXT_SPAN_LENGTH = 50;
   
   /**
