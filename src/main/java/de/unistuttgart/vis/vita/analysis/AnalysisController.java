@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -15,11 +17,9 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
- * The AnalysisController resolves the dependencies of every module. It also provides a optimized
- * order corresponding to the computers cores.
- *
- * The controller starts and cancels the analysis.
+ * Maintains a document queue and controls start and stop of their analysis
  */
+@ApplicationScoped
 public class AnalysisController {
   private Model model;
   private AnalysisExecutorFactory executorFactory;
@@ -40,6 +40,7 @@ public class AnalysisController {
    * 
    * @param model The model with data.
    */
+  @Inject
   public AnalysisController(Model model) {
     this(model, ModuleRegistry.getDefaultRegistry());
   }
