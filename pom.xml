@@ -281,7 +281,16 @@
             <version>5.6.6</version>
           </docletArtifact>
           <additionalparam>-inferrel -inferdep -qualify -hide "java.*" -collpackages java.util.*</additionalparam>
-        </configuration>
+        </configuration>        
+        <reportSets>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+              <!-- exclude test-javadoc -->
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
     </plugins>
   </reporting>
