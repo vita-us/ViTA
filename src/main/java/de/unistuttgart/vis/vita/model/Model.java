@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -18,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * Represents the Model of the application.
  */
-@RequestScoped
+@ApplicationScoped
 public class Model {
   private TextRepository textRepository = new TextRepository();
   private EntityManagerFactory entityManagerFactory;

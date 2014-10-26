@@ -21,7 +21,9 @@ import de.unistuttgart.vis.vita.model.document.Document;
  */
 @ApplicationScoped
 public class AnalysisController {
+  @Inject
   private Model model;
+  
   private AnalysisExecutorFactory executorFactory;
   
   private Queue<Document> analysisQueue = new PriorityQueue<>();
@@ -43,6 +45,13 @@ public class AnalysisController {
   @Inject
   public AnalysisController(Model model) {
     this(model, ModuleRegistry.getDefaultRegistry());
+  }
+  
+  /**
+   * This constructor should not be used manually, only by the CDI framework
+   */
+  public AnalysisController() {
+    this(null); // Model will be set by CDI framework
   }
 
   /**
