@@ -1,12 +1,17 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -79,8 +84,21 @@ public class AttributeOccurrencesService extends OccurrencesService {
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") double rangeEnd) {
-    // TODO implement AttributeOccurrencesService
-    return new OccurrencesResponse();
+    // gets the data
+	List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
+	
+	// convert TextSpans to Occurences
+	List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
+	
+    return new OccurrencesResponse(occurences);
   }
+
+private List<TextSpan> readTextSpansFromDatabase(int steps) {
+	TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
+													  TextSpan.class);
+	query.setParameter("attributeId", attributeId);
+	query.setMaxResults(steps);
+	return query.getResultList();
+}
 
 }
