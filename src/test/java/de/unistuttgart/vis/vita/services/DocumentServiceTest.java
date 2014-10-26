@@ -26,6 +26,7 @@ public class DocumentServiceTest extends ServiceTest {
   private String renameId;
   private DocumentTestData testData;
   private String deletionId;
+  private String notExistingId;
   
   /**
    * Writes some test documents into the unit test database.
@@ -75,7 +76,7 @@ public class DocumentServiceTest extends ServiceTest {
    * Tests whether a document can be renamed using REST.
    */
   @Test
-  public void testPutDocument() {
+  public void testRenameDocument() {
     DocumentRenameRequest req = new DocumentRenameRequest(renameId, DocumentTestData.TEST_DOCUMENT_TITLE_1);
     Entity<DocumentRenameRequest> reqEntity = Entity.entity(req, MediaType.APPLICATION_JSON_TYPE);
     Response actualResponse = target("documents/" + renameId).request().put(reqEntity);
@@ -90,6 +91,20 @@ public class DocumentServiceTest extends ServiceTest {
   }
   
   /**
+   * Tests whether renaming a not existing document causes an HTTP-404
+   */
+  @Test
+  public void testRenameNotExistingDocument() {
+    notExistingId = "notExistingID";
+    DocumentRenameRequest req = new DocumentRenameRequest(notExistingId, "Renamed");
+    Entity<DocumentRenameRequest> reqEntity = Entity.entity(req, MediaType.APPLICATION_JSON_TYPE);
+    Response actualResponse = target("document/" + notExistingId).request().put(reqEntity);
+    
+    // should whether HTTP status indicates "Not Found"
+    assertEquals(404, actualResponse.getStatus());
+  }
+  
+  /**
    * Tests whether a document can be deleted using REST.
    */
   @Test
@@ -101,6 +116,33 @@ public class DocumentServiceTest extends ServiceTest {
     // can not be caught anymore
     Response response = target("documents/" + deletionId).request().get();
     assertEquals(404, response.getStatus());
+  }
+  
+  /**
+   * Tests whether a HTTP-400 is returned when trying to delete a not existing document
+   */
+  @Test
+  public void testDeleteNotExistingDocument() {
+    // document does not exist
+    assertFalse(canBeCaught(notExistingId));
+    
+    // try to delete it anyway
+    Response actualResponse = target("documents/" + notExistingId).request().delete();
+    assertEquals(404, actualResponse.getStatus());
+    
+    // document can still not be caught
+    assertFalse(canBeCaught(notExistingId));
+  }
+  
+  /**
+   * Returns whether a document with the given id can be caught using REST.
+   * 
+   * @param idToCheck - the id of the document to be caught
+   * @return true if HTTP status is not 404, false otherwise
+   */
+  private boolean canBeCaught(String idToCheck) {
+    Response response = target("documents/" + idToCheck).request().get();
+    return (response.getStatus() != 404);
   }
 
 }

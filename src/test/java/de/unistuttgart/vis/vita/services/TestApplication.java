@@ -4,6 +4,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.Model;
 
 public class TestApplication extends ResourceConfig {
@@ -17,6 +18,7 @@ public class TestApplication extends ResourceConfig {
     @Override
     protected void configure() {
       bind(Model.createUnitTestModelWithoutDrop()).to(Model.class);
+      bind(AnalysisController.class).to(AnalysisController.class);
     }
   }
 }

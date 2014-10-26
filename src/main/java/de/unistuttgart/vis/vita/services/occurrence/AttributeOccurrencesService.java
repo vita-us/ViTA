@@ -78,7 +78,6 @@ public class AttributeOccurrencesService extends OccurrencesService {
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
    */
-  @Override
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,

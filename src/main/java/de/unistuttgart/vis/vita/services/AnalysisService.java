@@ -1,12 +1,12 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
 /**
@@ -15,6 +15,9 @@ import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 public class AnalysisService {
   
   private String documentId;
+  
+  @Inject
+  private AnalysisController analysisController;
 
   /**
    * Sets the id of the document this service refers to.
@@ -37,7 +40,7 @@ public class AnalysisService {
     Response response = null;
     
     if (documentId.equals(idRequest.getId())) {
-      new AnalysisController(new Model()).cancelAnalysis(idRequest.getId());
+      analysisController.cancelAnalysis(idRequest.getId());
       response = Response.noContent().build();
     } else {
       response = Response.serverError().build();

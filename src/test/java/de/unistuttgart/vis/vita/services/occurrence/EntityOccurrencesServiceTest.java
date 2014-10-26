@@ -31,14 +31,12 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  */
 public class EntityOccurrencesServiceTest extends ServiceTest {
 
-  private static final int ABSOLUTE_START_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
-                                                    + TextSpanTestData.TEST_TEXT_SPAN_START;
+  private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
   private static final double START_PROGRESS = ABSOLUTE_START_OFFSET
                                                 / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
   
 
-  private static final int ABSOLUTE_END_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
-                                                  + TextSpanTestData.TEST_TEXT_SPAN_END;
+  private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
   private static final double END_PROGRESS = ABSOLUTE_END_OFFSET
                                                 / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
   

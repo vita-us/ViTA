@@ -84,7 +84,7 @@ public class EntityRelationsService {
       throw new WebApplicationException("No entities specified!");
     } else {
       // convert entity id string
-      entityIds = convertIdStringToList(eIds);
+      entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
       
       // get relations from database how they are read depends on 'type'
       switch (type.toLowerCase()) {
@@ -104,14 +104,6 @@ public class EntityRelationsService {
     
     // create the response and return it
     return new RelationsResponse(entityIds, createConfiguration(relations));
-  }
-
-  private List<String> convertIdStringToList(String idString) {
-    List<String> idList = new ArrayList<>();
-    for (String subString : idString.replaceAll("\\[|\\]","").split(",")) {
-      idList.add(subString.trim());
-    }
-    return idList;
   }
 
   /**
