@@ -4,7 +4,7 @@
     <form role="form" action="#" class="text-upload-form">
       <div class="form-group">
         <label for="document-input">Import a new document</label> <input type="file"
-          id="document-input" onchange="angular.element(this).scope().saveFileLocally(this.files)">
+          id="document-input" data-file-model="file">
       </div>
       <button class="btn btn-default" ng-click="uploadSelectedFile()">Import</button>
     </form>
