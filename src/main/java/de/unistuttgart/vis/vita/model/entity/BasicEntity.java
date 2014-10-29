@@ -121,10 +121,10 @@ public class BasicEntity {
   @Override
   public String toString() {
     return "BasicEntity{" +
-           "displayName='" + displayName + '\'' +
+           "type=" + type +
+           ", displayName='" + displayName + '\'' +
            ", occurrences=" + StringUtils.join(occurrences, ", ") +
            ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
-           ", type=" + type +
            '}';
   }
 }
