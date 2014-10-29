@@ -1,5 +1,26 @@
-<div>
-  <div class="list-group">
-    <a ng-href="#/documents/{{document.id}}" class="list-group-item" ng-repeat="document in documents">{{document.metadata.title}}</a>
+<div class="row">
+
+  <div class="col-md-6">
+    <form role="form" action="#" class="text-upload-form">
+      <div class="form-group">
+        <label for="document-input">Import a new document</label> <input type="file"
+          id="document-input" data-file-model="file">
+      </div>
+      <button class="btn btn-default" ng-click="uploadSelectedFile()">Import</button>
+    </form>
+
+    <div>
+      <h2>Existing documents</h2>
+      <div class="list-group">
+        <a ng-href="#/documents/{{document.id}}" class="list-group-item"
+          ng-repeat="document in documents">{{document.metadata.title}}</a>
+      </div>
+    </div>
   </div>
+
+  <div class="col-md-6">
+    <h2>Preview</h2>
+    // TODO
+  </div>
+
 </div>
