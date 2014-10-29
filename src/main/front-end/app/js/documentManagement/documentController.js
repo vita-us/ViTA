@@ -14,7 +14,7 @@
 
         $scope.uploadSelectedFile = function() {
           if ($scope.file) {
-            FileUpload.uploadFileToUrl($scope.file, '/documents', function(data, status) {
+            FileUpload.uploadFileToUrl($scope.file, './webapi/documents', function(data, status) {
               // TODO on success
               console.log(data, status);
             }, function(data, status) {

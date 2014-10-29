@@ -4,7 +4,7 @@
   var vitaServices = angular.module('vitaServices');
 
   vitaServices.factory('AnalysisProgress', ['$resource', function($resource) {
-    return $resource('/documents/:documentId/progress', {}, {
+    return $resource('./webapi/documents/:documentId/progress', {}, {
       get: {
         method: 'GET'
       }
