@@ -78,13 +78,17 @@
         "displayName": "Hamburg",
         "type": "place",
         "attributes": [{
+          "id": "tzui",
+          "content": "21",
+          "type": "appearance"
+        }, {
           "id": "attr12697",
-          "content": "1700km2",
-          "type": "unknown"
+          "content": "a, specific, number, of, attributes",
+          "type": "attributes"
         }, {
           "id": "at65157",
-          "content": "North Germany",
-          "type": "unknown"
+          "content": "Brut, Streitmacht, Sauron, Schicksalsberg",
+          "type": "co-occurences"
         }],
         "rankingValue": 3,
         "entityRelations": [{
