@@ -14,6 +14,12 @@ import javax.persistence.NamedQuery;
       query = "SELECT ps "
       + "FROM Person ps"),
       
+  @NamedQuery(name = "Person.findPersonsInDocument",
+              query = "SELECT ps "
+                    + "FROM Person ps, Document d "
+                    + "WHERE d.id = :documentId "
+                    + "AND ps MEMBER OF d.content.persons"),
+      
   @NamedQuery(name = "Person.findPersonById",
       query = "SELECT ps "
       + "FROM Person ps "
