@@ -1,7 +1,7 @@
 (function(angular) {
   'use strict';
 
-  var app = angular.module('vita', ['ngRoute', 'ngMockE2E', 'vitaControllers', 'vitaServices',
+  var app = angular.module('vita', ['ngRoute', 'vitaControllers', 'vitaServices',
       'vitaDirectives', 'vitaFilters']);
 
   angular.module('vitaControllers', []);
