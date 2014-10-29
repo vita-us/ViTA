@@ -85,7 +85,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     Set<Annotation> extracted = new TreeSet<>();
 
     for (Annotation annotation : annotations) {
-      if (annotation.getType().equals("Person") || annotation.getType().equals("Place")) {
+      if (annotation.getType().equals("Person") || annotation.getType().equals("Location")) {
         extracted.add(annotation);
       }
     }
