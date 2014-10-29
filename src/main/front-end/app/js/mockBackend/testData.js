@@ -288,13 +288,25 @@
         "displayName": "Hugo",
         "type": "person",
         "attributes": [{
+          "id": "at65657",
+          "content": "Hugo Martin",
+          "type": "name"
+        }, {
           "id": "attr12397",
           "content": "15",
           "type": "age"
         }, {
-          "id": "at65657",
-          "content": "Hugo Martin",
-          "type": "name"
+          "id": "asdf",
+          "content": "381",
+          "type": "appearence"
+        }, {
+          "id": "qwer",
+          "content": "a, specific, number, of, attributes",
+          "type": "attributes"
+        }, {
+          "id": "yxcv",
+          "content": "Gandalf, Sam, Gollum, Aragorn, Merry, Pippin",
+          "type": "co-occurences"
         }],
         "rankingValue": 3,
         "entityRelations": [{
