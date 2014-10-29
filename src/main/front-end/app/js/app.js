@@ -80,6 +80,10 @@
     Page.showMenu = true;
     Page.tab = 1;
     $scope.Page = Page;
+
+    $scope.openDocumentView = function() {
+      window.open('documentview.html', 'documentView', 'width=0,height=0,left=0,alwaysRaised=yes');
+    };
   }]);
 
 })(angular);

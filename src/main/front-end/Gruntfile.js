@@ -101,7 +101,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'app/',
-          src: ['index.html'],
+          src: ['*.html'],
           dest: '<%= appPath %>'
         }, {
           expand: true,
