@@ -11,6 +11,7 @@ import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.entity.PersonService;
 
 /**
  * Performs test on PersonService to check whether GET works correctly.

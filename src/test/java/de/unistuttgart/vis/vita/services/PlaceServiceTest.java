@@ -11,6 +11,7 @@ import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.services.entity.PlaceService;
 
 /**
  * Performs test on PlaceService to check whether GET works correctly.

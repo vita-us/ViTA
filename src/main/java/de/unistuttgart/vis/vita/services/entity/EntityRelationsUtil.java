@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.services;
+package de.unistuttgart.vis.vita.services.entity;
 
 import java.util.ArrayList;
 import java.util.List;

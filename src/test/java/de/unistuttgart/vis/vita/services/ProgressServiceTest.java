@@ -11,6 +11,7 @@ import de.unistuttgart.vis.vita.data.ProgressTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 
 /**
  * Performs a test on the ProgressService, requesting the progress for a test document using GET.
