@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.Nullable;
+
 import gate.Annotation;
 
 /**
@@ -37,7 +39,7 @@ import gate.Annotation;
 @AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class, StanfordNLPResult.class})
 public class EntityRecognitionModule implements Module<BasicEntityCollection> {
 
-  Map<Integer, BasicEntity> idMap = new HashMap<>();
+  private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
   private StanfordNLPResult stanfordNLPResult;
@@ -45,7 +47,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
 
   @Override
   public void observeProgress(double progress) {
-
+    // TODO calculating the progress
   }
 
   @Override
@@ -55,12 +57,17 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
     stanfordNLPResult = result.getResultFor(StanfordNLPResult.class);
     this.progressListener = progressListener;
+
     startAnalysis();
 
     progressListener.observeProgress(1);
     return buildResult();
   }
 
+  /**
+   * Starts the analysis by going through all annotations and create or update the necessary
+   * entities.
+   */
   private void startAnalysis() {
     for (DocumentPart part : importResult.getParts()) {
       for (Chapter chapter : part.getChapters()) {
@@ -72,6 +79,11 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     }
   }
 
+  /**
+   * Builds the result for the module containing the values of the map.
+   *
+   * @return Collection of all basic entities.
+   */
   private BasicEntityCollection buildResult() {
     return new BasicEntityCollection() {
       @Override
@@ -81,6 +93,11 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     };
   }
 
+  /**
+   * Filters the gate annotations to only contain persons and locations.
+   * @param annotations The gate annotation set.
+   * @return The new filtered set.
+   */
   private Set<Annotation> filterEntityAnnotations(Set<Annotation> annotations) {
     Set<Annotation> extracted = new TreeSet<>();
 
@@ -93,6 +110,12 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     return extracted;
   }
 
+  /**
+   * Creates a new entity out of the annotation in the given chapter.
+   * If the entity already exists it will be updated with the matching position.
+   * @param theAnnotation The annotation to work with.
+   * @param chapter The chapter in which the annotation can be found.
+   */
   private void createBasicEntity(Annotation theAnnotation, Chapter chapter) {
     BasicEntity entity = getExistingEntityForAnnotation(theAnnotation);
     String annotatedText = getAnnotatedText(chapter.getText(), theAnnotation);
@@ -122,6 +145,12 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     // TODO relations, ...
   }
 
+  /**
+   * Updates the name attributes for the given entity.
+   * @param entity The entity to be updated.
+   * @param annotatedText The extracted name.
+   * @param textSpan The position of the name.
+   */
   private void updateNameAttributes(BasicEntity entity, String annotatedText, TextSpan textSpan) {
     for (Attribute currentAttribute : entity.getNameAttributes()) {
       if (currentAttribute.getContent().equals(annotatedText)) {
@@ -136,6 +165,14 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     entity.getNameAttributes().add(newAttribute);
   }
 
+  /**
+   * Searches for an already existing entity in the map.
+   *
+   * @param theAnnotation The annotation to work with.
+   * @return The existing entity if found else null.
+   */
+  @SuppressWarnings("unchecked")
+  @Nullable
   private BasicEntity getExistingEntityForAnnotation(Annotation theAnnotation) {
     List<Integer> matches = (List<Integer>) theAnnotation.getFeatures().get("matches");
 
@@ -153,6 +190,12 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     return null;
   }
 
+  /**
+   * Creates a textpan for the given annotation. The textpan has the offset in the given chapter.
+   * @param theAnnotation The annotation to work with.
+   * @param chapter The chapter in which the annotation can be found.
+   * @return The Textspan of the annotation.
+   */
   private TextSpan getTextSpan(Annotation theAnnotation, Chapter chapter) {
     TextPosition
         posStart = new TextPosition(chapter, theAnnotation.getStartNode().getOffset().intValue());
@@ -163,6 +206,12 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     return new TextSpan(posStart, posEnd);
   }
 
+  /**
+   * Extract the annotated text.
+   * @param text The text to cut out the annotated part.
+   * @param theAnnotation The annotation to work with.
+   * @return The annotated text.
+   */
   private String getAnnotatedText(String text, Annotation theAnnotation) {
     int start = theAnnotation.getStartNode().getOffset().intValue();
     int end = theAnnotation.getEndNode().getOffset().intValue();
