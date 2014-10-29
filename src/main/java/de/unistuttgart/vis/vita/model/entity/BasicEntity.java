@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The information about an entity that can be collected in the first pass
  * <p>
@@ -114,5 +116,14 @@ public class BasicEntity {
    */
   public void setEntityRelations(Set<EntityRelation<BasicEntity>> entityRelations) {
     this.entityRelations = entityRelations;
+  }
+
+  @Override
+  public String toString() {
+    return "BasicEntity{" +
+           "displayName='" + displayName + '\'' +
+           ", occurrences=" + StringUtils.join(occurrences, ", ") +
+           ", type=" + type +
+           '}';
   }
 }
