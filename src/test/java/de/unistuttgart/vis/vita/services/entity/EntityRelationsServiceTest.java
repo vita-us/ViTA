@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.services;
+package de.unistuttgart.vis.vita.services.entity;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +23,7 @@ import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsService;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;

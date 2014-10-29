@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.services;
+package de.unistuttgart.vis.vita.services.analysis;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
@@ -11,6 +11,7 @@ import de.unistuttgart.vis.vita.data.ProgressTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 
 /**

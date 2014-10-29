@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.services;
+package de.unistuttgart.vis.vita.services.document;
 
 import static org.junit.Assert.*;
 
@@ -14,6 +14,7 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.document.DocumentService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 
