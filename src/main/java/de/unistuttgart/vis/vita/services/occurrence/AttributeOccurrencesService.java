@@ -18,11 +18,11 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Provides a method to GET the occurrences of the current attribute and entity.
  */
 public class AttributeOccurrencesService extends OccurrencesService {
-  
+
   private String attributeId;
 
   private String entityId;
-  
+
   /**
    * Creates new AttributeOccurrencesService and injects Model.
    * 
@@ -32,7 +32,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
   public AttributeOccurrencesService(Model model) {
     em = model.getEntityManager();
   }
-  
+
   /**
    * Sets the id of the document this service refers to and returns this
    * AttributeOccurrencesService.
@@ -47,7 +47,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
   }
 
   /**
-   * Sets the id of the entity which occurrences should be got and returns this 
+   * Sets the id of the entity which occurrences should be got and returns this
    * AttributeOccurrencesService.
    * 
    * @param eId - the id of the entity which occurrences should be got
@@ -57,9 +57,9 @@ public class AttributeOccurrencesService extends OccurrencesService {
     this.entityId = eId;
     return this;
   }
-  
+
   /**
-   * Sets the id of the attribute which occurrences should be got and returns this 
+   * Sets the id of the attribute which occurrences should be got and returns this
    * AttributeOccurrencesService.
    * 
    * @param attrId - the id of the attribute which occurrences should be got
@@ -81,23 +81,24 @@ public class AttributeOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
+                                            @QueryParam("rangeStart") double rangeStart, 
                                             @QueryParam("rangeEnd") double rangeEnd) {
+    
     // gets the data
-	List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
-	
-	// convert TextSpans to Occurences
-	List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
-	
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
+
+    // convert TextSpans to occurrences
+    List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
+
     return new OccurrencesResponse(occurences);
   }
 
-private List<TextSpan> readTextSpansFromDatabase(int steps) {
-	TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
-													  TextSpan.class);
-	query.setParameter("attributeId", attributeId);
-	query.setMaxResults(steps);
-	return query.getResultList();
-}
+  private List<TextSpan> readTextSpansFromDatabase(int steps) {
+    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute", 
+                                                      TextSpan.class);
+    query.setParameter("attributeId", attributeId);
+    query.setMaxResults(steps);
+    return query.getResultList();
+  }
 
 }
