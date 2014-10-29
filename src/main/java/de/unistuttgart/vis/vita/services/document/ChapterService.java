@@ -44,7 +44,7 @@ public class ChapterService {
   
   /**
    * Returns the requested chapter
-   * @return
+   * @return the chapter
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)

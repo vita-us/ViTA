@@ -51,7 +51,7 @@ public class Chapter extends AbstractEntityBase {
   /**
    * Sets the readable number of this chapter in the context of the document part it belongs to
    *
-   * @param the number, starting from 1
+   * @param newNumber - the number starting from 1
    */
   public void setNumber(int newNumber) {
     this.number = newNumber;
