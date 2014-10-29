@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -7,8 +9,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-
-import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents one attribute of an entity found in the document. This contains an id, type, content
@@ -26,7 +26,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 public class Attribute extends AbstractEntityBase {
   private AttributeType type;
   private String content;
-
   @OneToMany
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
@@ -49,6 +48,14 @@ public class Attribute extends AbstractEntityBase {
     this();
     this.type = pType;
     this.content = pContent;
+  }
+
+  @Override
+  public String toString() {
+    return "Attribute{" +
+           "type=" + type +
+           ", content='" + content + '\'' +
+           '}';
   }
 
   /**

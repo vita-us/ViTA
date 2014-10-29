@@ -123,6 +123,7 @@ public class BasicEntity {
     return "BasicEntity{" +
            "displayName='" + displayName + '\'' +
            ", occurrences=" + StringUtils.join(occurrences, ", ") +
+           ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
            ", type=" + type +
            '}';
   }

@@ -17,11 +17,14 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,7 +37,7 @@ import gate.Annotation;
 @AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class, StanfordNLPResult.class})
 public class EntityRecognitionModule implements Module<BasicEntityCollection> {
 
-  Map<String, BasicEntity> entityMap = new HashMap<>();
+  Map<Integer, BasicEntity> idMap = new HashMap<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
   private StanfordNLPResult stanfordNLPResult;
@@ -73,7 +76,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     return new BasicEntityCollection() {
       @Override
       public Collection<BasicEntity> getEntities() {
-        return entityMap.values();
+        return idMap.values();
       }
     };
   }
@@ -91,15 +94,13 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
   }
 
   private void createBasicEntity(Annotation theAnnotation, Chapter chapter) {
+    BasicEntity entity = getExistingEntityForAnnotation(theAnnotation);
     String annotatedText = getAnnotatedText(chapter.getText(), theAnnotation);
 
-    if (entityMap.containsKey(annotatedText)) {
-      BasicEntity entity = entityMap.get(annotatedText);
+    if (entity == null) {
+      entity = new BasicEntity();
 
-      entity.getOccurences().add(getTextSpan(theAnnotation, chapter));
-    } else {
-      BasicEntity newEntity = new BasicEntity();
-      newEntity.setDisplayName(annotatedText);
+      entity.setDisplayName(annotatedText);
       EntityType type;
 
       if (theAnnotation.getType().equals("Person")) {
@@ -108,13 +109,48 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
         type = EntityType.PLACE;
       }
 
-      newEntity.setType(type);
-      newEntity.getOccurences().add(getTextSpan(theAnnotation, chapter));
+      entity.setType(type);
 
-      entityMap.put(newEntity.getDisplayName(), newEntity);
-
-      // TODO relations, ...
+      idMap.put(theAnnotation.getId(), entity);
     }
+    TextSpan textSpan = getTextSpan(theAnnotation, chapter);
+
+    updateNameAttributes(entity, annotatedText, textSpan);
+
+    entity.getOccurences().add(textSpan);
+
+    // TODO relations, ...
+  }
+
+  private void updateNameAttributes(BasicEntity entity, String annotatedText, TextSpan textSpan) {
+    for (Attribute currentAttribute : entity.getNameAttributes()) {
+      if (currentAttribute.getContent().equals(annotatedText)) {
+        currentAttribute.getOccurrences().add(textSpan);
+        return;
+      }
+    }
+
+    Attribute newAttribute = new Attribute(AttributeType.NAME, annotatedText);
+
+    newAttribute.getOccurrences().add(textSpan);
+    entity.getNameAttributes().add(newAttribute);
+  }
+
+  private BasicEntity getExistingEntityForAnnotation(Annotation theAnnotation) {
+    List<Integer> matches = (List<Integer>) theAnnotation.getFeatures().get("matches");
+
+    // If no matches are found
+    if (matches == null) {
+      return null;
+    }
+
+    for (int i : matches) {
+      if (idMap.containsKey(i)) {
+        return idMap.get(i);
+      }
+    }
+
+    return null;
   }
 
   private TextSpan getTextSpan(Annotation theAnnotation, Chapter chapter) {
