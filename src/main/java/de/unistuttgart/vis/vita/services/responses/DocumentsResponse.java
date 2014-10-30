@@ -13,7 +13,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 @XmlRootElement
 public class DocumentsResponse extends AbstractListResponse {
   
-  // @XmlElementWrapper(name = "documents")
   @XmlElement(name = "documents")
   private List<Document> documents;
   
