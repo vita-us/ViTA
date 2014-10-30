@@ -13,13 +13,8 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +25,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.doubleThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
@@ -44,14 +48,14 @@ public class EntityRecognitionModuleTest {
       CHAPTERS =
       {""};
 
-  private List<DocumentPart> parts = new ArrayList<>();
-  private ModuleResultProvider resultProvider;
-  private ProgressListener progressListener;
-  private List<Chapter> chapterObjects;
-  private BasicEntityCollection collection;
+  private static List<DocumentPart> parts = new ArrayList<>();
+  private static ModuleResultProvider resultProvider;
+  private static ProgressListener progressListener;
+  private static List<Chapter> chapterObjects;
+  private static BasicEntityCollection collection;
 
-  @Before
-  public void setUp() throws Exception {
+  @BeforeClass
+  public static void setUp() throws Exception {
     resultProvider = mock(ModuleResultProvider.class);
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
@@ -69,8 +73,8 @@ public class EntityRecognitionModuleTest {
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
 
-  private void loadText() {
-    URL resourceUrl = getClass().getResource("LOTR_CP1.txt");
+  private static void loadText() {
+    URL resourceUrl = EntityRecognitionModuleTest.class.getResource("LOTR_CP1.txt");
     File file = new File(resourceUrl.getFile());
     String bigString = "";
 
@@ -86,7 +90,7 @@ public class EntityRecognitionModuleTest {
     CHAPTERS[0] = bigString;
   }
 
-  private void fillText() {
+  private static void fillText() {
     DocumentPart part = new DocumentPart();
     parts.add(part);
 
