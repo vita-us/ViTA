@@ -31,7 +31,13 @@ body#document-view {
   height: 100%;
   
   .document-view-menu {
-  
+    margin-bottom: 30px;
+    
+    &> div {
+      @media (min-width: 768px) { 
+        position: fixed;
+      }
+    }
   }
   
   .document-view-text {
