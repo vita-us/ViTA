@@ -29,8 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.annotation.Nullable;
-
 import gate.Annotation;
 
 /**
@@ -69,13 +67,36 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
    * entities.
    */
   private void startAnalysis() {
-    for (DocumentPart part : importResult.getParts()) {
-      for (Chapter chapter : part.getChapters()) {
-        for (Annotation annieAnnotation : filterEntityAnnotations(
-            annieNLPResult.getAnnotationsForChapter(chapter))) {
+    double currentProgress;
+    List<DocumentPart> documentParts = importResult.getParts();
+    int currentPart = 1;
+    int currentChapter = 1;
+    int currentAnnotation = 1;
+
+    for (DocumentPart part : documentParts) {
+      List<Chapter> chapters = part.getChapters();
+
+      for (Chapter chapter : chapters) {
+        Set<Annotation> annotations = filterEntityAnnotations(
+            annieNLPResult.getAnnotationsForChapter(chapter));
+
+        for (Annotation annieAnnotation : annotations) {
           createBasicEntity(annieAnnotation, chapter);
+          currentProgress =
+              (((double) currentPart) / documentParts.size()) * (((double) currentChapter)
+                                                                 / chapters.size()) * (
+                  ((double) currentAnnotation) / annotations.size());
+          progressListener.observeProgress(currentProgress);
+
+          currentAnnotation++;
         }
+
+        currentAnnotation = 1;
+        currentChapter++;
       }
+
+      currentChapter = 1;
+      currentPart++;
     }
   }
 
