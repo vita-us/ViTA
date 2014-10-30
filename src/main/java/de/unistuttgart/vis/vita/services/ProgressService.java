@@ -10,6 +10,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
@@ -46,25 +47,28 @@ public class ProgressService {
    */
   @GET
   public AnalysisProgress getProgress() {
-    AnalysisProgress readProgress = null;
-    
+    // Make sure the document exists
+    Document doc;
     try {
-      readProgress = readProgressFromDatabase();
+      doc = readDocumentFromDatabase();
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
     
-    return readProgress;
+    // Right after document creation, the progress is not persisted. It is assumed to be zero.
+    if (doc.getProgress() == null)
+      return new AnalysisProgress();
+
+    return doc.getProgress();
   }
-  
+
   /**
-   * Reads the analysis progress of the current document from database and returns it.
+   * Reads the document from the database and returns it.
    * 
-   * @return analysis progress of the current document
+   * @return the document with the current id
    */
-  private AnalysisProgress readProgressFromDatabase() {
-    TypedQuery<AnalysisProgress> query =
-        em.createNamedQuery("AnalysisProgress.findProgressByDocumentId", AnalysisProgress.class);
+  private Document readDocumentFromDatabase() {
+    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", documentId);
     return query.getSingleResult();
   }
