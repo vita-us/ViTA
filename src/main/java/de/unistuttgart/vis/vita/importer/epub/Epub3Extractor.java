@@ -8,21 +8,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
-public class Epub3Extractor {
+public class Epub3Extractor extends AbstractEpubExtractor {
 
-  private List<Resource> resources;
   private org.jsoup.nodes.Document document;
   private ContentBuilder contentBuilder = new ContentBuilder();
   private EpubChapterBuilder epubChapterBuilder = new EpubChapterBuilder();
   private Elements sections;
 
-  public Epub3Extractor(List<Resource> newResources) {
-    this.resources = newResources;
+  public Epub3Extractor(Book book) throws IOException {
+    super(book);
   }
 
   public Document getDocument() throws IOException {
@@ -37,7 +39,7 @@ public class Epub3Extractor {
 
   //Checks if ebook has parts
   private boolean existsPartInEpub3() throws IOException {
-    if (!resources.isEmpty()) {
+    if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
           document =
@@ -58,7 +60,7 @@ public class Epub3Extractor {
   private DocumentPart getPartEpub3() throws IOException {
     DocumentPart documentPart = new DocumentPart();
     List<Chapter> chapters = new ArrayList<Chapter>();
-    if (!resources.isEmpty()) {
+    if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
           document =
@@ -137,6 +139,18 @@ public class Epub3Extractor {
     Elements chapterParagraphs = section.getElementsByTag("p");
     String chapter = chapterParagraphs.text();
     parts.add(epubChapterBuilder.buildChapter(chapter));
+  }
+
+  @Override
+  public List<List<Line>> getPartList() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<ChapterPosition> getChapterPositionList() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

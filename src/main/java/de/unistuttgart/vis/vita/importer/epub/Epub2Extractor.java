@@ -12,22 +12,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
-public class Epub2Extractor {
+public class Epub2Extractor extends AbstractEpubExtractor{
 
-  private List<Resource> resources = new ArrayList<Resource>();
   private Document document;
   private ContentBuilder contentBuilder = new ContentBuilder();
   private EpubChapterBuilder epubChapterBuilder = new EpubChapterBuilder();
   private List<String> ids = new ArrayList<String>();
-  private Resource tocResource = null;
 
-  public Epub2Extractor(Resource newTocResource, List<Resource> newResources) throws IOException {
-    this.tocResource = newTocResource;
-    this.resources = newResources;
+  public Epub2Extractor(Book book) throws IOException {
+    super(book);
     addIds();
   }
 
@@ -135,6 +135,18 @@ public class Epub2Extractor {
       return stringTokenizer.nextToken();
     }
     return "";
+  }
+
+  @Override
+  public List<List<Line>> getPartList() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<ChapterPosition> getChapterPositionList() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

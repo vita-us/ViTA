@@ -26,8 +26,7 @@ public class Epub2ExtractorPartTest {
     Path testPath = Paths.get(getClass().getResource("pg78.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
     Epub2Extractor epub3Extractor =
-        new Epub2Extractor(epubFileImporter.getEbook().getNcxResource(), epubFileImporter
-            .getEbook().getContents());
+        new Epub2Extractor(epubFileImporter.getEbook());
     document = epub3Extractor.getDocument();
   }
 
