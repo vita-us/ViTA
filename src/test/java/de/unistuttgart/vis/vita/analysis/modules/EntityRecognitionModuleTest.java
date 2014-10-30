@@ -127,6 +127,17 @@ public class EntityRecognitionModuleTest {
     //System.out.println(StringUtils.join(collection.getEntities(), "\n"));
   }
 
+  @Test
+  public void testProgressIsReported() throws Exception {
+    // Check that the 0%-100% range is covered approximately
+    // This does not test smoothness as the call times are not considered.
+    int steps = 100;
+    for (int i = 0; i < steps; i++) {
+      verify(progressListener, atLeastOnce()).observeProgress(doubleThat(
+          closeTo((double) i / steps, (double) 1 / steps)));
+    }
+  }
+
   private boolean checkIfNameExists(BasicEntity entity, String nameToSearch) {
     for(Attribute attribute : entity.getNameAttributes()) {
       if(attribute.getContent().equals(nameToSearch)) {
