@@ -118,6 +118,11 @@ module.exports = function(grunt) {
           cwd: 'app/templates',
           src: ['**'],
           dest: '<%= appPath %>templates/'
+        }, {
+          expand: true,
+          cwd: 'app/js/',
+          src: ['shared-worker.js'],
+          dest: '<%= javascriptPath %>'
         }]
       }
     },
@@ -172,7 +177,7 @@ module.exports = function(grunt) {
       },
       scripts: {
         files: ['app/js/**/*.js'],
-        tasks: ['concat']
+        tasks: ['concat', 'copy:statics']
       }
     }
   });
