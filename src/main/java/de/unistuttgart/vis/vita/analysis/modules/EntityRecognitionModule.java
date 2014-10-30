@@ -172,7 +172,6 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
    * @return The existing entity if found else null.
    */
   @SuppressWarnings("unchecked")
-  @Nullable
   private BasicEntity getExistingEntityForAnnotation(Annotation theAnnotation) {
     List<Integer> matches = (List<Integer>) theAnnotation.getFeatures().get("matches");
 
