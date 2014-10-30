@@ -10,6 +10,7 @@ module.exports = function(grunt) {
     javascriptPath: '<%= appPath %>js/',
     cssPath: '<%= appPath %>css/',
     fontPath: '<%= appPath %>fonts/',
+    templatePath: '<%= appPath %>templates/',
 
     pkg: grunt.file.readJSON('package.json'),
     bowerrc: grunt.file.readJSON('.bowerrc'),
@@ -76,6 +77,11 @@ module.exports = function(grunt) {
           dest: '<%= javascriptPath %>'
         }, {
           expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-mousewheel/',
+          src: ['jquery.mousewheel.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
           cwd: '<%= bowerrc.directory %>/angular-resource/',
           src: ['angular-resource.js'],
           dest: '<%= javascriptPath %>'
@@ -112,6 +118,11 @@ module.exports = function(grunt) {
           cwd: 'app/img',
           src: ['**'],
           dest: '<%= appPath %>img/'
+        }, {
+          expand: true,
+          cwd: 'app/templates',
+          src: ['**'],
+          dest: '<%= appPath %>templates/'
         }]
       }
     },

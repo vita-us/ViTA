@@ -96,6 +96,193 @@
         }]
       },
 
+      parts: {
+        "totalCount": "15",
+        "parts": [{
+          "number": 1,
+          "title": "DerersteTeil",
+          "chapters": [{
+            "id": "1.13",
+            "title": "Seenot",
+            "number": 13,
+            "length": 242341,
+            "range": {
+              "start": {
+                "chapter": "1.13",
+                "offset": 13,
+                "progress": 0
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29,
+                "progress": 0.237261231
+              },
+              "length": 14123
+            }
+          }, {
+            "id": "1.14",
+            "title": "Baum",
+            "number": 14,
+            "length": 581234,
+            "range": {
+              "start": {
+                "chapter": "1.14",
+                "offset": 123,
+                "progress": 0.29
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29888,
+                "progress": 0.487261231
+              },
+              "length": 82342
+            }
+          }, {
+            "id": "1.15",
+            "title": "SeenotamEnde",
+            "number": 15,
+            "length": 8215,
+            "range": {
+              "start": {
+                "chapter": "1.15",
+                "offset": 115,
+                "progress": 0.682381
+              },
+              "end": {
+                "chapter": "1.15",
+                "offset": 229,
+                "progress": 0.87261231
+              },
+              "length": 14123
+            }
+          }]
+        }]
+      },
+
+      fingerprint: {
+        "occurrences": [{
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.05
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.05
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.1
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.2
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.25
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.3
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.35
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.5
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.55
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.65
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.7
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.7
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.75
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.8
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.85
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.85
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.90
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.95
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 1
+          },
+          "length": 14123
+        }]
+      },
+
       singlePerson: {
         "id": "person8Hugo",
         "displayName": "Hugo",
@@ -310,6 +497,33 @@
         }]
       },
 
+      analysisProgress: {
+        "graphView": {
+          "isReady": false,
+          "progress": 0.7123
+        },
+        "wordCloud": {
+          "isReady": true,
+          "progress": 1.0
+        },
+        "places": {
+          "isReady": false,
+          "progress": 0.6123
+        },
+        "persons": {
+          "isReady": false,
+          "progress": 0.001
+        },
+        "fingerPrints": {
+          "isReady": false,
+          "progress": 0.81238
+        },
+        "text": {
+          "isReady": true,
+          "progress": 1.0
+        }
+      }
     };
+
   });
 })(angular);

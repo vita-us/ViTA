@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
@@ -21,10 +22,14 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
     @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
         + "WHERE c.title = :chapterTitle")})
 public class Chapter extends AbstractEntityBase {
+  
   private int number;
   private String title;
-  private String text;
   private int length;
+  
+  // text attribute is transient, this means it will not be persisted in the database!
+  @Transient
+  private String text;
 
   @OneToOne
   private TextSpan range;

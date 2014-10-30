@@ -2,8 +2,6 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -12,13 +10,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Embeddable
 public class TextPosition implements Comparable<TextPosition> {
+  
   @ManyToOne
   private Chapter chapter;
-
   private int offset;
-
-  @Transient
-  private Double progress;
   
   /**
    * Creates a new TextPosition setting all fields to default values.
@@ -88,6 +83,6 @@ public class TextPosition implements Comparable<TextPosition> {
   
   @Override
   public String toString() {
-    return String.format("Pos %d", offset, chapter);
+    return String.format("Pos %d %s", offset, chapter);
   }
 }
