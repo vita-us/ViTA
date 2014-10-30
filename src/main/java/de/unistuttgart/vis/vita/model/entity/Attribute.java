@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -41,7 +43,6 @@ public class Attribute extends AbstractEntityBase {
   
   private AttributeType type;
   private String content;
-
   @OneToMany
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
@@ -64,6 +65,14 @@ public class Attribute extends AbstractEntityBase {
     this();
     this.type = pType;
     this.content = pContent;
+  }
+
+  @Override
+  public String toString() {
+    return "Attribute{" +
+           "type=" + type +
+           ", content='" + content + '\'' +
+           '}';
   }
 
   /**
