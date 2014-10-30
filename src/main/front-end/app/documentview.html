@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html ng-app="vita" ng-controller="DocumentViewCtrl">
 <head>
-<title>Document View</title>
+<meta charset="utf-8">
+<title>ViTA - Document</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
-<body>
-  <p>{{response}}</p>
+<body id="document-view">
+  <div class="container-fluid" id="document-view-header">
+    <h2>Title of the document</h2>
+  </div>
+  <div class="container-fluid" id="document-view-main">
+    <div class="row">
+      <div class="col-sm-3 document-view-menu">
+        Left menu
+      </div>
+      <div class="col-md-9 document-view-text">
+        Text of the document                  
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" id="document-view-footer">
+    Search bar
+    <p>{{response}}</p>
+  </div>
+
   <script src="js/jquery.js"></script>
   <script src="js/jquery.mousewheel.js"></script>
   <script src="js/bootstrap.js"></script>
