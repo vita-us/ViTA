@@ -7,8 +7,6 @@
       '$httpBackend',
       'TestData',
       function($httpBackend, TestData) {
-
-        $httpBackend.whenGET(new RegExp('\.html$')).passThrough();
         
         /*
          * except for fingerprint and occurrences of relations and attributes, all of the 
@@ -16,5 +14,7 @@
          */
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/[^/]+/fingerprints+$')).respond(
                 TestData.fingerprint);
+
+        $httpBackend.whenGET(new RegExp('.*')).passThrough();
       }]);
 })(angular);
