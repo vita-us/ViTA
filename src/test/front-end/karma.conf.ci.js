@@ -14,7 +14,7 @@ module.exports = function(config) {
     reporters: ['progress', 'junit', 'coverage'],
 
     plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-junit-reporter',
-              'karma-coverage'],
+              'karma-coverage', 'karma-ng-html2js-preprocessor'],
 
     junitReporter: {
       outputFile: 'target/surefire-reports/TEST-front-end.xml',
@@ -22,7 +22,8 @@ module.exports = function(config) {
     },
 
     preprocessors: {
-      'src/main/front-end/app/js/**/*.js': ['coverage']
+      'src/main/front-end/app/js/**/*.js': ['coverage'],
+      'src/main/front-end/app/templates/*.html': ['ng-html2js']
     },
 
     coverageReporter: {
