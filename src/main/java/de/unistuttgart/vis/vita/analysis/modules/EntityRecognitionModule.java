@@ -69,12 +69,14 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
   private void startAnalysis() {
     double currentProgress;
     List<DocumentPart> documentParts = importResult.getParts();
-    int currentPart = 1;
-    int currentChapter = 1;
-    int currentAnnotation = 1;
+    int currentPart = 0;
+    int currentChapter = 0;
+    int currentAnnotation = 0;
+    double partFactor = 1 / documentParts.size();
 
     for (DocumentPart part : documentParts) {
       List<Chapter> chapters = part.getChapters();
+      double chapterFactor = 1 / chapters.size();
 
       for (Chapter chapter : chapters) {
         Set<Annotation> annotations = filterEntityAnnotations(
@@ -82,10 +84,10 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
 
         for (Annotation annieAnnotation : annotations) {
           createBasicEntity(annieAnnotation, chapter);
-          currentProgress =
-              (((double) currentPart) / documentParts.size()) * (((double) currentChapter)
-                                                                 / chapters.size()) * (
-                  ((double) currentAnnotation) / annotations.size());
+          double partProgress = ((double)currentPart) / documentParts.size();
+          double chapterProgress = partFactor * ((double)currentChapter) / chapters.size();
+          double annotProgress = chapterFactor * ((double)currentAnnotation) / annotations.size();
+          currentProgress = partProgress + chapterProgress + annotProgress;
           progressListener.observeProgress(currentProgress);
 
           currentAnnotation++;
