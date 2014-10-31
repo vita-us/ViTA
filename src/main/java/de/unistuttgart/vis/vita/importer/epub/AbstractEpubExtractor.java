@@ -26,8 +26,8 @@ public abstract class AbstractEpubExtractor {
   public AbstractEpubExtractor(Book book) throws IOException {
     super();
 
-     this.tocResource = book.getNcxResource();
-     this.resources = book.getContents();
+    this.tocResource = book.getNcxResource();
+    this.resources = book.getContents();
   }
 
   /**
@@ -45,4 +45,12 @@ public abstract class AbstractEpubExtractor {
    * @return The positions of the chapters in a part.
    */
   public abstract List<ChapterPosition> getChapterPositionList();
+
+  /**
+   * The list contains the titles of the parts. The n-th element of the list belongs to the n-th
+   * part of the book.
+   * 
+   * @return The titles of the parts.
+   */
+  public abstract List<String> getTitleList();
 }

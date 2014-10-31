@@ -149,4 +149,10 @@ public class Epub2Extractor extends AbstractEpubExtractor{
     return null;
   }
 
+  @Override
+  public List<String> getTitleList() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }
