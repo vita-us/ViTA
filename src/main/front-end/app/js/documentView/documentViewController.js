@@ -5,7 +5,6 @@
 
   vitaControllers.controller('DocumentViewCtrl', ['$scope', 'DocumentViewReceiver',
       function($scope, DocumentViewReceiver) {
-        DocumentViewReceiver.sendTestMessage();
 
         $scope.response = 'nothing received';
         DocumentViewReceiver.onReceive(function(messageData) {

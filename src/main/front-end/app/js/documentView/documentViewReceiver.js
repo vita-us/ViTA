@@ -19,13 +19,13 @@
       }
     }, false);
 
-    this.sendTestMessage = function() {
+    function sendMessage(type, message) {
       worker.port.postMessage({
         sender: 'DOCUMENTVIEW',
-        type: 'none',
-        message: 'hello vitaApp'
+        type: type || 'none',
+        message: message
       });
-    };
+    }
 
     this.onReceive = function(callback) {
       onReceiveCallback = callback;

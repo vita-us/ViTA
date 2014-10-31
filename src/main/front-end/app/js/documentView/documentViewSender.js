@@ -19,13 +19,13 @@
       }
     }, false);
 
-    this.sendTestMessage = function() {
+    function sendMessage(type, message) {
       worker.port.postMessage({
         sender: 'APP',
-        type: 'none',
-        message: 'hello documentview'
+        type: type || 'none',
+        message: message
       });
-    };
+    }
 
     this.onReceive = function(callback) {
       onReceiveCallback = callback;
