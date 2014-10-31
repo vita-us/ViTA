@@ -4,7 +4,7 @@
   var vitaServices = angular.module('vitaServices');
 
   vitaServices.service('DocumentViewSender', ['SharedWorkerFactory', function(workerFactory) {
-    var worker = workerFactory.create(), onReceiveCallback;
+    var worker = workerFactory.create(), onReceiveCallback, onDocumentIdRequestCallback;
 
     // Register this port at the shared worker
     worker.port.start();
@@ -14,8 +14,13 @@
     });
 
     worker.port.addEventListener('message', function(event) {
+      var message = event.data;
+
       if (onReceiveCallback instanceof Function) {
-        onReceiveCallback(event.data);
+        onReceiveCallback(message);
+      }
+      if (onDocumentIdRequestCallback instanceof Function && message.type === 'DOCUMENTIDREQUEST') {
+        onDocumentIdRequestCallback(message);
       }
     }, false);
 
@@ -27,12 +32,20 @@
       });
     }
 
-    this.sendOccurrences = function(occurrences) {
-      sendMessage('OCCURRENCES', occurrences);
-    };
-
     this.onReceive = function(callback) {
       onReceiveCallback = callback;
+    };
+
+    this.onDocumentIdRequest = function(documentIdCallback) {
+      onDocumentIdRequestCallback = documentIdCallback;
+    };
+
+    this.sendDocumentId = function(documentId) {
+      sendMessage('DOCUMENTID', documentId);
+    };
+
+    this.sendOccurrences = function(occurrences) {
+      sendMessage('OCCURRENCES', occurrences);
     };
 
   }]);
