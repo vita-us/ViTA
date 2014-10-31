@@ -116,7 +116,7 @@
     }
 
     /**
-     * Returns the maximum frequency from an array of
+     * Returns the maximum frequency from an array of word data
      * @param {object[]} array of word data
      */
     function getMaxFrequency(items) {
@@ -126,7 +126,7 @@
     }
 
     /**
-     * Returns the minimum frequency from an array of items
+     * Returns the minimum frequency from an array of word data
      * @param {object[]} array of word data
      */
     function getMinFrequency(items) {
