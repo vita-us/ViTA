@@ -31,7 +31,7 @@
           .attr('height', SVG_HEIGHT)
           .append('g')
           // >> 1 because we want to start positioning words from the center of the svg
-          .attr('transform', 'translate(' + [SVG_WIDTH >> 1, SVG_HEIGHT >> 1] + ')');
+          .attr('transform', 'translate(' + [SVG_WIDTH / 2, SVG_HEIGHT / 2] + ')');
 
       var cloud = d3.layout.cloud()
           .size([SVG_WIDTH, SVG_HEIGHT])
@@ -41,7 +41,7 @@
           .fontSize(getSize)
           .on("end", draw);
 
-      scope.$watch('items', function(newValue, oldValue) {
+      scope.$watch('items', function() {
         buildWordCloud(scope);
       }, true);
 
