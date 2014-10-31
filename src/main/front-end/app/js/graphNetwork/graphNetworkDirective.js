@@ -133,7 +133,7 @@
 
     function calculateLinkDistance(link) {
       var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
-      return MINIMUM_LINK_DISTANCE + variableDistance * link.weight;
+      return MAXIMUM_LINK_DISTANCE - variableDistance * link.weight
     }
 
     function setNewPositions() {
