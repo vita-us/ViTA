@@ -24,4 +24,4 @@ onconnect = function(event) {
       forwardMessage(message, appPort);
     }
   });
-}
+};

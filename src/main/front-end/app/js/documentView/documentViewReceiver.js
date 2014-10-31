@@ -9,11 +9,11 @@
     // Register this port at the shared worker
     worker.port.start();
     worker.port.postMessage({
-      sender: "DOCUMENTVIEW",
-      type: "REGISTER"
+      sender: 'DOCUMENTVIEW',
+      type: 'REGISTER'
     });
 
-    worker.port.addEventListener("message", function(event) {
+    worker.port.addEventListener('message', function(event) {
       if (onReceiveCallback instanceof Function) {
         onReceiveCallback(event.data);
       }
@@ -21,9 +21,9 @@
 
     this.sendTestMessage = function() {
       worker.port.postMessage({
-        sender: "DOCUMENTVIEW",
-        type: "none",
-        message: "hello vitaApp"
+        sender: 'DOCUMENTVIEW',
+        type: 'none',
+        message: 'hello vitaApp'
       });
     };
 

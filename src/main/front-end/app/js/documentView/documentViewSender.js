@@ -9,11 +9,11 @@
     // Register this port at the shared worker
     worker.port.start();
     worker.port.postMessage({
-      sender: "APP",
-      type: "REGISTER"
+      sender: 'APP',
+      type: 'REGISTER'
     });
 
-    worker.port.addEventListener("message", function(event) {
+    worker.port.addEventListener('message', function(event) {
       if (onReceiveCallback instanceof Function) {
         onReceiveCallback(event.data);
       }
@@ -21,9 +21,9 @@
 
     this.sendTestMessage = function() {
       worker.port.postMessage({
-        sender: "APP",
-        type: "none",
-        message: "hello documentview"
+        sender: 'APP',
+        type: 'none',
+        message: 'hello documentview'
       });
     };
 
