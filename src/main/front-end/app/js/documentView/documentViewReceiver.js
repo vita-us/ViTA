@@ -4,7 +4,7 @@
   var vitaServices = angular.module('vitaServices');
 
   vitaServices.service('DocumentViewReceiver', ['SharedWorkerFactory', function(workerFactory) {
-    var worker = workerFactory.create(), onReceiveCallback;
+    var worker = workerFactory.create(), onReceiveCallback, onOccurrenceCallback;
 
     // Register this port at the shared worker
     worker.port.start();
@@ -14,8 +14,13 @@
     });
 
     worker.port.addEventListener('message', function(event) {
+      var message = event.data;
+
       if (onReceiveCallback instanceof Function) {
-        onReceiveCallback(event.data);
+        onReceiveCallback(message);
+      }
+      if (onOccurrenceCallback instanceof Function && message.type === 'OCCURRENCES') {
+        onOccurrenceCallback(message);
       }
     }, false);
 
@@ -29,6 +34,10 @@
 
     this.onReceive = function(callback) {
       onReceiveCallback = callback;
+    };
+
+    this.onOccurrences = function(occurrenceCallback) {
+      onOccurrenceCallback = occurrenceCallback;
     };
 
   }]);

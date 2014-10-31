@@ -27,6 +27,10 @@
       });
     }
 
+    this.sendOccurrences = function(occurrences) {
+      sendMessage('OCCURRENCES', occurrences);
+    };
+
     this.onReceive = function(callback) {
       onReceiveCallback = callback;
     };
