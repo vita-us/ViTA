@@ -25,7 +25,7 @@ public class Epub3ExtractorPartTest {
       IOException {
     Path testPath = Paths.get(getClass().getResource("moby-dick-mo-20120214.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    Epub3Extractor epub3Extractor = new Epub3Extractor(epubFileImporter.getEbook().getContents());
+    Epub3Extractor epub3Extractor = new Epub3Extractor(epubFileImporter.getEbook());
     document = epub3Extractor.getDocument();
   }
 

@@ -22,7 +22,7 @@ public class EpubFileImporter {
   }
 
   public Book getEbook() throws FileNotFoundException, IOException {
-    Book ebook = null;
+    Book ebook = new Book();
     EpubReader epubReader = new EpubReader();
     zipInputStream =
         new ZipInputStream(new FileInputStream(path.toFile()), Charset.forName("Cp437"));

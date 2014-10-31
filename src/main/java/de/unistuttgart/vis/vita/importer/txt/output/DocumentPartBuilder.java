@@ -14,10 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * Implements Callable - returning a DocumentPart. <br> <br> The DocumentPartBuilder is the link
- * between Chapter Analyzer and the DocumentPart Objects used by all other components of ViTA. It
- * transforms the result of the Chapter Analyzer into a DocumentPart.<br> <br> The structure of
- * given List-parameters can be changed by this class.
+ * Implements Callable - returning a DocumentPart. <br>
+ * <br>
+ * The DocumentPartBuilder is the link between Chapter Analyzer and the DocumentPart Objects used by
+ * all other components of ViTA. It transforms the result of the Chapter Analyzer into a
+ * DocumentPart.<br>
+ * <br>
+ * The structure of given List-parameters can be changed by this class.
  */
 public class DocumentPartBuilder implements Callable<DocumentPart> {
 
@@ -25,16 +28,17 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   private List<Line> lines;
   private ChapterPosition chapterPositions;
   private int partNumber;
+  private String partTitle;
 
   /**
    * Instantiates a new DocumentPartBuilder, the DocumentPart will be build when calling the method
    * 'call()'. It is necessary to determine the Document the Chapters of the DocumentPart belong to.
    * Please note that the Document of a Chapter can not be changed later!
    *
-   * @param lines            ArrayList<Line> - Consisting of all headings and texts for the Chapters
-   *                         in the correct order.
+   * @param lines ArrayList<Line> - Consisting of all headings and texts for the Chapters in the
+   *        correct order.
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
-   *                         and text areas of the Chapters in lines.
+   *        and text areas of the Chapters in lines.
    */
   public DocumentPartBuilder(List<Line> lines, ChapterPosition chapterPositions) {
     this(lines, chapterPositions, 1);
@@ -45,21 +49,36 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * 'call()'. It is necessary to determine the Document the Chapters of the DocumentPart belong to.
    * Please note that the Document of a Chapter can not be changed later!
    *
-   * @param lines            Consisting of all headings and texts for the Chapters in the correct
-   *                         order.
+   * @param lines Consisting of all headings and texts for the Chapters in the correct order.
    * @param chapterPositions ChapterPosition - Contains the information of the position of heading
-   *                         and text areas of the Chapters in lines.
-   * @param partNumber       int - Number of the DocumentPart of the Document.
+   *        and text areas of the Chapters in lines.
+   * @param partNumber int - Number of the DocumentPart of the Document.
    */
   public DocumentPartBuilder(List<Line> lines, ChapterPosition chapterPositions, int partNumber) {
-    this.lines = lines;
-    this.chapterPositions = chapterPositions;
-    this.partNumber = partNumber;
+    this(lines, chapterPositions, partNumber, "");
   }
 
   /**
-   * Starts the Threads for the construction of all Chapters and adds the Objects to
-   * futureChapters.
+   * Instantiates a new DocumentPartBuilder, the DocumentPart will be build when calling the method
+   * 'call()'. It is necessary to determine the Document the Chapters of the DocumentPart belong to.
+   * Please note that the Document of a Chapter can not be changed later!
+   *
+   * @param lines Consisting of all headings and texts for the Chapters in the correct order.
+   * @param chapterPositions ChapterPosition - Contains the information of the position of heading
+   *        and text areas of the Chapters in lines.
+   * @param partNumber int - Number of the DocumentPart of the Document.
+   * @param partTitle The title of the part.
+   */
+  public DocumentPartBuilder(List<Line> lines, ChapterPosition chapterPositions, int partNumber,
+      String partTitle) {
+    this.lines = lines;
+    this.chapterPositions = chapterPositions;
+    this.partNumber = partNumber;
+    this.partTitle = partTitle;
+  }
+
+  /**
+   * Starts the Threads for the construction of all Chapters and adds the Objects to futureChapters.
    */
   private void startChapterComputation() {
     ExecutorService executor = Executors.newCachedThreadPool();
@@ -126,13 +145,15 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
    * Builds the DocumentPart and sets all known attributes.
    *
    * @param partNumber int - The number of this part in the Document.
-   * @param chapters   List of Chapter - All Chapters of the DocumentPart.
+   * @param partTitle The title  of this part.
+   * @param chapters List of Chapter - All Chapters of the DocumentPart.
    * @return DocumentPart - The constructed DocumentPart.
    */
-  private DocumentPart buildDocumentPart(int partNumber, List<Chapter> chapters) {
+  private DocumentPart buildDocumentPart(int partNumber, String partTitle, List<Chapter> chapters) {
     DocumentPart documentPart = new DocumentPart();
     documentPart.getChapters().addAll(chapters);
     documentPart.setNumber(partNumber);
+    documentPart.setTitle(partTitle.trim());
     return documentPart;
   }
 
@@ -140,6 +161,6 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
   public DocumentPart call() {
     startChapterComputation();
     List<Chapter> chapters = buildChapterList();
-    return buildDocumentPart(partNumber, chapters);
+    return buildDocumentPart(this.partNumber, this.partTitle, chapters);
   }
 }
