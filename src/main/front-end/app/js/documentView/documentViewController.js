@@ -3,15 +3,20 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('DocumentViewCtrl', ['$scope', 'DocumentViewReceiver',
-      function($scope, DocumentViewReceiver) {
+  vitaControllers.controller('DocumentViewCtrl', ['$scope', 'DocumentViewReceiver', 'Document',
+      function($scope, DocumentViewReceiver, Document) {
 
-        $scope.response = 'nothing received';
-        DocumentViewReceiver.onReceive(function(messageData) {
-          $scope.response = messageData.message || 'no message';
-          $scope.$apply();
+        DocumentViewReceiver.onDocumentId(function(messageData) {
+          var documentId = messageData.message;
+
+          Document.get({
+            documentId: documentId
+          }, function(document) {
+            $scope.document = document;
+          });
         });
 
+        DocumentViewReceiver.requestDocumentId();
       }]);
 
 })(angular);

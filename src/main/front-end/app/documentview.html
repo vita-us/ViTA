@@ -8,7 +8,7 @@
 </head>
 <body id="document-view">
   <div class="container-fluid" id="document-view-header">
-    <h2>Title of the document</h2>
+    <h2>{{document.metadata.title}}</h2>
   </div>
   <div class="container-fluid" id="document-view-main">
     <div class="row">
@@ -24,7 +24,6 @@
   </div>
   <div class="container-fluid" id="document-view-footer">
     Search bar
-    <p>{{response}}</p>
   </div>
 
   <script src="js/jquery.js"></script>
