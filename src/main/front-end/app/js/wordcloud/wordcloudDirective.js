@@ -74,14 +74,17 @@
       }
 
       function styleWords(words) {
-        words
-            .style("font-size", getFontSize)
+        words.style("font-size", getFontSize)
             .style("fill", getFill)
             .attr("transform", getTransform)
             .text(getText);
       }
 
-      // Converts an array of items from the rest-api to the cloud data of the d3-cloud library
+      /**
+       * Converts an array of items from the rest-api to the cloud data of the
+       * d3-cloud library
+       * @param {object[]} array of word data
+       */
       function itemsToCloudData(items) {
         return items.map(function(item) {
           return {
@@ -112,14 +115,20 @@
       }
     }
 
-    // Returns the maximum frequency from an array of items
+    /**
+     * Returns the maximum frequency from an array of
+     * @param {object[]} array of word data
+     */
     function getMaxFrequency(items) {
       return Math.max.apply(0, items.map(function(item) {
         return item.frequency;
       }));
     }
 
-    //Returns the minimum frequency from an array of items
+    /**
+     * Returns the minimum frequency from an array of items
+     * @param {object[]} array of word data
+     */
     function getMinFrequency(items) {
       return Math.min.apply(0, items.map(function(item) {
         return item.frequency;
