@@ -19,7 +19,7 @@ onconnect = function(event) {
     if (message.sender === "APP") {
       appPort = port;
       forwardMessage(message, documentViewPort);
-    } else if (message.sender === "DOCUMENTVIEW") {
+    } else if (message.sender === "DOCUMENT_VIEW") {
       documentViewPort = port;
       forwardMessage(message, appPort);
     }
