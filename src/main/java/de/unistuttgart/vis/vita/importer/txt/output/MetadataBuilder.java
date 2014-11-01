@@ -223,6 +223,8 @@ public class MetadataBuilder {
     dateFormats.add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH));
+
 
     date = Calendar.getInstance();
     for (SimpleDateFormat dateFormat : dateFormats) {

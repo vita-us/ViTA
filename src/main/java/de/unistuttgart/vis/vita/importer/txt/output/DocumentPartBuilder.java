@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.importer.txt.output;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -107,7 +108,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
     } else {
       heading = new ArrayList<>();
       // set default value
-      heading.add(new Line("Chapter " + chapterNumber, false));
+      heading.add(new TxtModuleLine("Chapter " + chapterNumber, false));
     }
     return heading;
   }

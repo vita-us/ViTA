@@ -17,6 +17,7 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.importer.txt.input.Filter;
 import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 
 /**
  * JUnit test on Filter
@@ -55,9 +56,9 @@ public class FilterTxtTest {
   @Test
   public void testMultiLineComment() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla [this"));
-    lines.add(new Line("is"));
-    lines.add(new Line("a comment] blabla"));
+    lines.add(new TxtModuleLine("blabla [this"));
+    lines.add(new TxtModuleLine("is"));
+    lines.add(new TxtModuleLine("a comment] blabla"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -70,7 +71,7 @@ public class FilterTxtTest {
   @Test
   public void testCommentInOneLineWithoutSpacesAround() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla[this]blabla"));
+    lines.add(new TxtModuleLine("blabla[this]blabla"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -83,7 +84,7 @@ public class FilterTxtTest {
   @Test
   public void testCommentInOneLineWithSpacesAround() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla [this] blabla"));
+    lines.add(new TxtModuleLine("blabla [this] blabla"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -95,11 +96,11 @@ public class FilterTxtTest {
   @Test
   public void testCommentInAWholeLineWithSpacesAround() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("comment1"));
-    lines.add(new Line(""));
-    lines.add(new Line("[comment2]"));
-    lines.add(new Line(""));
-    lines.add(new Line("text"));
+    lines.add(new TxtModuleLine("comment1"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("[comment2]"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("text"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -115,12 +116,12 @@ public class FilterTxtTest {
   @Test
   public void testRemoveSpecialSigns() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla usw"));
-    lines.add(new Line("...?"));
-    lines.add(new Line("???"));
-    lines.add(new Line(""));
-    lines.add(new Line("* * *"));
-    lines.add(new Line("blubb"));
+    lines.add(new TxtModuleLine("blabla usw"));
+    lines.add(new TxtModuleLine("...?"));
+    lines.add(new TxtModuleLine("???"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("* * *"));
+    lines.add(new TxtModuleLine("blubb"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -134,10 +135,10 @@ public class FilterTxtTest {
   @Test
   public void testRemoveSpecialSignsWithWhitelineReduction() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla usw"));
-    lines.add(new Line(""));
-    lines.add(new Line("* * *"));
-    lines.add(new Line(""));
+    lines.add(new TxtModuleLine("blabla usw"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("* * *"));
+    lines.add(new TxtModuleLine(""));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -150,9 +151,9 @@ public class FilterTxtTest {
   @Test
   public void testRemoveSpecialSignBottomBorder() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blabla usw"));
-    lines.add(new Line(""));
-    lines.add(new Line("* * *"));
+    lines.add(new TxtModuleLine("blabla usw"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("* * *"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -165,9 +166,9 @@ public class FilterTxtTest {
   @Test
   public void testRemoveSpecialSignsTopBorder() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("* * *"));
-    lines.add(new Line(""));
-    lines.add(new Line("blabla usw"));
+    lines.add(new TxtModuleLine("* * *"));
+    lines.add(new TxtModuleLine(""));
+    lines.add(new TxtModuleLine("blabla usw"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -180,9 +181,9 @@ public class FilterTxtTest {
   @Test
   public void testMissingEndBracket() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("bla  blabla ["));
-    lines.add(new Line("text1"));
-    lines.add(new Line("text2"));
+    lines.add(new TxtModuleLine("bla  blabla ["));
+    lines.add(new TxtModuleLine("text1"));
+    lines.add(new TxtModuleLine("text2"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -196,9 +197,9 @@ public class FilterTxtTest {
   @Test
   public void testMissingStartBracket() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("blablabla"));
-    lines.add(new Line("[blubb.]text1]"));
-    lines.add(new Line("text2"));
+    lines.add(new TxtModuleLine("blablabla"));
+    lines.add(new TxtModuleLine("[blubb.]text1]"));
+    lines.add(new TxtModuleLine("text2"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -212,7 +213,7 @@ public class FilterTxtTest {
   @Test
   public void testDoubleBrackets() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text [bla text1 bla text2]"));
+    lines.add(new TxtModuleLine("text [bla text1 bla text2]"));
 
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
@@ -224,9 +225,9 @@ public class FilterTxtTest {
   @Test
   public void testMultilineBrackets() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text [bla"));
-    lines.add(new Line("te[xt1 ]bla"));
-    lines.add(new Line("[text2]"));
+    lines.add(new TxtModuleLine("text [bla"));
+    lines.add(new TxtModuleLine("te[xt1 ]bla"));
+    lines.add(new TxtModuleLine("[text2]"));
     Filter filter = new Filter(lines);
     List<Line> filteredList = filter.filterEbookText();
     
@@ -239,7 +240,7 @@ public class FilterTxtTest {
   @Test
   public void testDoubleBracketsInOneLine() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("text[bla2 bla3 blubb]"));
+    lines.add(new TxtModuleLine("text[bla2 bla3 blubb]"));
 
 
     Filter filter = new Filter(lines);

@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.input;
 
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -221,7 +222,7 @@ public class TextFileImporter {
     String lineText;
 
     while ((lineText = reader.readLine()) != null) {
-      Line aNewline = new Line(lineText);
+      Line aNewline = new TxtModuleLine(lineText);
       lines.add(aNewline);
     }
 

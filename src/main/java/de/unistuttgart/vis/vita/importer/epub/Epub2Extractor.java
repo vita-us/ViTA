@@ -90,7 +90,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
     for (List<Epubline> chapter : epublineReviser.formateChapters(chapters)) {
       for (Epubline epubline : chapter) {
-        chaptersLines.add(new Line(epubline.getEpubline()));
+        chaptersLines.add(new EpubModuleLine(epubline.getEpubline()));
       }
     }
     partLines.add(chaptersLines);
@@ -106,7 +106,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<Line> chaptersLines = new ArrayList<Line>();
       for (List<Epubline> chapter : part) {
         for (Epubline epubline : chapter) {
-          chaptersLines.add(new Line(epubline.getEpubline()));
+          chaptersLines.add(new EpubModuleLine(epubline.getEpubline()));
         }
       }
       partsLines.add(chaptersLines);

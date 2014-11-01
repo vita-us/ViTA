@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.importer.txt.output;
 
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import java.util.ArrayList;
@@ -40,14 +41,14 @@ public class ChapterBuilder implements Callable<Chapter> {
   public ChapterBuilder(List<Line> heading, List<Line> text, int chapterNumber) {
     if (heading == null) {
       this.heading = new ArrayList<>();
-      this.heading.add(new Line("", false));
+      this.heading.add(new TxtModuleLine("", false));
     } else {
       this.heading = heading;
     }
 
     if (text == null) {
       this.text = new ArrayList<>();
-      this.text.add(new Line("", false));
+      this.text.add(new TxtModuleLine("", false));
     } else {
       this.text = text;
     }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.importer.epub.EpubModuleLine;
 import de.unistuttgart.vis.vita.importer.epub.BookBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
@@ -29,27 +30,27 @@ public class EpubBookBuilderTest {
     partTitles.add("PART I");
     ChapterPosition position1 = new ChapterPosition();
 
-    part1.add(new Line("Chapter Heading"));
-    part1.add(new Line("   "));
-    part1.add(new Line("blablabla"));
-    part1.add(new Line("   "));
-    part1.add(new Line("blabla"));
-    part1.add(new Line("   "));
+    part1.add(new EpubModuleLine("Chapter Heading"));
+    part1.add(new EpubModuleLine("   "));
+    part1.add(new EpubModuleLine("blablabla"));
+    part1.add(new EpubModuleLine("   "));
+    part1.add(new EpubModuleLine("blabla"));
+    part1.add(new EpubModuleLine("   "));
     position1.addChapter(0, 2, 5);
     
-    part1.add(new Line("  blabla "));
-    part1.add(new Line("  blubb "));
-    part1.add(new Line("  bla "));
+    part1.add(new EpubModuleLine("  blabla "));
+    part1.add(new EpubModuleLine("  blubb "));
+    part1.add(new EpubModuleLine("  bla "));
     position1.addChapter(6, 6, 8);
 
     List<Line> part2 = new ArrayList<Line>();
     partTitles.add(" PART II ");
     ChapterPosition position2 = new ChapterPosition();
 
-    part2.add(new Line("Chapter Heading"));
-    part2.add(new Line("   "));
-    part2.add(new Line("blablabla"));
-    part2.add(new Line("   "));
+    part2.add(new EpubModuleLine("Chapter Heading"));
+    part2.add(new EpubModuleLine("   "));
+    part2.add(new EpubModuleLine("blablabla"));
+    part2.add(new EpubModuleLine("   "));
     position2.addChapter(0, 1, 3);
     
     partLines.add(part1);

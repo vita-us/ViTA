@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,6 +15,8 @@ import org.jsoup.select.Elements;
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Date;
+import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 public class MetadataAnalyzerEpub {
@@ -37,79 +37,72 @@ public class MetadataAnalyzerEpub {
   }
 
   public DocumentMetadata extractMetadata() throws IOException, ParseException {
-    DocumentMetadata documentMetadata = new DocumentMetadata();
-    documentMetadata.setAuthor(getAuthor());
-    documentMetadata.setEdition(getEdition());
-    documentMetadata.setGenre(getGenre());
-    documentMetadata.setPublisher(getPublisher());
-    documentMetadata.setPublishYear(getPublishYear());
-    documentMetadata.setTitle(getTitle());
-
-    return documentMetadata;
+    MetadataBuilder metadataBuilder = new MetadataBuilder();
+    metadataBuilder.setAuthor(getAuthor());
+    metadataBuilder.setEdition(getEdition());
+    metadataBuilder.setGenre(getGenre());
+    metadataBuilder.setPublisher(getPublisher());
+    metadataBuilder.setPublishYear(getPublishYear());
+    metadataBuilder.setTitle(getTitle());
+    return metadataBuilder.getMetadata();
   }
 
-  private String getTitle() {
+  private List<Line> getTitle() {
+    List<Line> titleList = new ArrayList<Line>();
     String title = (new File(path.toString()).getName());
     if (ebook != null) {
       if (!ebook.getTitle().isEmpty()) {
         title = ebook.getTitle();
       }
     }
-    return title;
+    titleList.add(new EpubModuleLine(title, false));
+    return titleList;
   }
 
-  private String getAuthor() {
-    String author = "";
+  private List<Line> getAuthor() {
+    List<Line> author = new ArrayList<Line>();
     if (!ebook.getMetadata().getAuthors().isEmpty()) {
-
       for (Author nameParts : ebook.getMetadata().getAuthors()) {
-        author = nameParts.getFirstname() + " " + nameParts.getLastname();
+        String authorName = nameParts.getFirstname() + " " + nameParts.getLastname() + ";";
+        author.add(new EpubModuleLine(authorName, false));
       }
     }
+    // remove ; from last author
+    String lastAuthor = author.get(author.size() - 1).getText();
+    author.get(author.size() - 1).setText(lastAuthor.substring(0, lastAuthor.length()));
     return author;
   }
 
-  private String getPublisher() {
-    String publisher = "";
+  private List<Line> getPublisher() {
+    List<Line> publisherList = new ArrayList<Line>();
     if (!ebook.getMetadata().getPublishers().isEmpty()) {
-      if (ebook.getMetadata().getPublishers().size() > 1) {
-        publisher = ebook.getMetadata().getPublishers().get(0);
-        
-        for (int i = 1; i < ebook.getMetadata().getPublishers().size(); i++) {
-          publisher += ", "+ ebook.getMetadata().getPublishers().get(i);
-        }
-      }else{
-        publisher = ebook.getMetadata().getPublishers().get(0);
+      for (int i = 0; i < ebook.getMetadata().getPublishers().size(); i++) {
+        publisherList.add(new EpubModuleLine(ebook.getMetadata().getPublishers().get(i) + ";", false));
       }
     }
-    return publisher;
+    // remove ; from last publisher
+    String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
+    publisherList.get(publisherList.size() - 1).setText(lastPublisher.substring(0, lastPublisher.length()));
+    return publisherList;
 
   }
 
-  private int getPublishYear() throws ParseException {
-    String publisherYear = null;
-    Calendar date = Calendar.getInstance();
-    try {
+  private List<Line> getPublishYear() throws ParseException {
+    List<Line> publishYearList = new ArrayList<Line>();
       if (!ebook.getMetadata().getDates().isEmpty()) {
 
         for (Date dateItem : ebook.getMetadata().getDates()) {
           if (dateItem.getEvent().toString().toLowerCase().matches(PUBLICATION)) {
-            publisherYear = dateItem.getValue();
-            date.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(publisherYear));
+            publishYearList.add(new EpubModuleLine(dateItem.getValue(),false));
             break;
           }
         }
       }
-    } catch (ParseException ex) {
-      Logger log = Logger.getLogger("Exception");
-      log.log(Level.SEVERE, "Incorrect date format", ex);
-      return 0;
-    }
-    return date.get(Calendar.YEAR);
+    return publishYearList;
 
   }
 
-  private String getGenre() throws IOException {
+  private List<Line> getGenre() throws IOException {
     String genre = "";
     document =
         Jsoup.parse(contentBuilder
@@ -119,11 +112,12 @@ public class MetadataAnalyzerEpub {
     for (Element metadataItem : metadata) {
       genre = extractMetadataByAttribute(genre, metadataItem, GENRE);
     }
-
-    return genre;
+    List<Line> genreList = new ArrayList<Line>();
+    genreList.add(new EpubModuleLine(genre, false));
+    return genreList;
   }
 
-  private String getEdition() throws IOException {
+  private List<Line> getEdition() throws IOException {
     String edition = "";
     document =
         Jsoup.parse(contentBuilder
@@ -133,7 +127,9 @@ public class MetadataAnalyzerEpub {
     for (Element metadataItem : metadata) {
       edition = extractMetadataByAttribute(edition, metadataItem, EDITION);
     }
-    return edition;
+    List<Line> editionList = new ArrayList<Line>();
+    editionList.add(new EpubModuleLine(edition, false));
+    return editionList;
   }
 
   private String extractMetadataByAttribute(String metadata, Element metadataItem, String attribute) {
