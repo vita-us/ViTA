@@ -15,8 +15,11 @@ import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.output.TextImportResult;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -63,8 +66,25 @@ public class TextImportModule implements Module<ImportResult> {
     TextSplitter textSplitter = new TextSplitter(importLines(filePath));
     DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
     DocumentPart documentPart = extractChapters(textSplitter.getTextList());
+    setChapterRanges(documentPart);
     importResult = buildImportResult(documentMetadata, documentPart);
     return importResult;
+  }
+  
+  /**
+   * Sets the {@link Chapter#getRange()} property of all the chapters in the part, assuming the
+   * document consists only of the one given part.
+   * 
+   * @param part the parts whose chapters to modify
+   */
+  private void setChapterRanges(DocumentPart part) {
+    int currentPosition = 0;
+    for (Chapter chapter : part.getChapters()) {
+      chapter.setRange(new TextSpan(
+          TextPosition.fromGlobalOffset(chapter, currentPosition),
+          TextPosition.fromGlobalOffset(chapter, currentPosition + chapter.getLength())));
+      currentPosition += chapter.getLength();
+    }
   }
 
   /**
