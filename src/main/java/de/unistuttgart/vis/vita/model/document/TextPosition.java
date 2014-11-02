@@ -15,11 +15,36 @@ public class TextPosition implements Comparable<TextPosition> {
   private Chapter chapter;
   private int offset;
   
+  private TextPosition() { }
+
   /**
-   * Creates a new TextPosition setting all fields to default values.
+   * Creates a new TextPosition by specifying the chapter and the document-wide character offset
+   *
+   * @param pChapter - the chapter this TextPosition lies in
+   * @param pOffset - the global offset of this TextPosition within the document
    */
-  public TextPosition() {
-    this.chapter = new Chapter();
+  private TextPosition(Chapter pChapter, int pOffset) {
+    // This constructor is private to prevent confusion about global/local offsets
+    // The factory methods should be used instead.
+    
+    if (pOffset < 0) {
+      throw new IllegalArgumentException("offset must not be negative!");
+    }
+
+    this.chapter = pChapter;
+    this.offset = pOffset;
+  }
+
+  /**
+   * Creates a new TextPosition by specifying the chapter and the chapter-local character offset
+   *
+   * @param pChapter - the chapter this TextPosition lies in
+   * @param pOffset - the offset of this TextPosition within the chapter
+   */
+  public static TextPosition fromLocalOffset(Chapter chapter, int localOffset) {
+    return new TextPosition(
+        chapter,
+        chapter.getRange().getStart().getOffset() + localOffset);
   }
 
   /**
@@ -28,13 +53,10 @@ public class TextPosition implements Comparable<TextPosition> {
    * @param pChapter - the chapter this TextPosition lies in
    * @param pOffset - the global offset of this TextPosition within the document
    */
-  public TextPosition(Chapter pChapter, int pOffset) {
-    if (pOffset < 0) {
-      throw new IllegalArgumentException("offset must not be negative!");
-    }
-
-    this.chapter = pChapter;
-    this.offset = pOffset;
+  public static TextPosition fromGlobalOffset(Chapter chapter, int localOffset) {
+    return new TextPosition(
+        chapter,
+        localOffset);
   }
 
   /**

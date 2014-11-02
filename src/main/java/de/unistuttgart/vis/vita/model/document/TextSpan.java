@@ -86,6 +86,17 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     this.end = pEnd;
     this.length = diff;
   }
+  
+  /**
+   * Creates a text span from two offsets within a common chapter
+   * @param chapter
+   * @param startOffset the start of the span, relative to the chapter beginning
+   * @param endOffset the end of the span, relative to the chapter end
+   */
+  public TextSpan(Chapter chapter, int startOffset, int endOffset) {
+    this(TextPosition.fromLocalOffset(chapter, startOffset),
+        TextPosition.fromLocalOffset(chapter, endOffset));
+  }
 
   /**
    * @return the start of the TextSpan

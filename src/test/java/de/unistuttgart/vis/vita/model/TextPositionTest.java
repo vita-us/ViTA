@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Performs some simple tests on the TestPosition class.
@@ -32,26 +34,36 @@ public class TextPositionTest {
   }
 
   @Test
-  public void testGetters() {
-    TextPosition pos = new TextPosition(chapter, 7);
+  public void testFromGobalOffset() {
+    TextPosition pos = TextPosition.fromGlobalOffset(chapter, 7);
     assertEquals(chapter, pos.getChapter());
     assertEquals(7, pos.getOffset());
     // offset ist tested in depth below
   }
 
+  @Test
+  public void testFromLocalOffset() {
+    chapter.setRange(new TextSpan(
+        TextPosition.fromGlobalOffset(chapter, 20),
+        TextPosition.fromGlobalOffset(chapter, 40)));
+    TextPosition pos = TextPosition.fromLocalOffset(chapter, 10);
+    assertThat(pos.getOffset(), is(30));
+    assertThat(pos.getChapter(), is(chapter));
+  }
+  
   /**
    * Checks whether a negative offset causes an IllegalArgumentException to be thrown.
    */
   @Test(expected = IllegalArgumentException.class)
   public void testNegativeOffset() {
-    new TextPosition(chapter, -42);
+    TextPosition.fromGlobalOffset(chapter, -42);
   }
   
   @Test
   public void testCompareTo() {
-    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
     
     assertEquals(1, pos1.compareTo(null));
     assertEquals(-1, pos1.compareTo(pos2));
@@ -62,9 +74,9 @@ public class TextPositionTest {
 
   @Test
   public void testEquals() {
-    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
     
     assertTrue(pos1.equals(pos1Duplicate));
     assertFalse(pos1.equals(pos2));
@@ -75,9 +87,9 @@ public class TextPositionTest {
   
   @Test
   public void testHashCode() {
-    TextPosition pos1 = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = new TextPosition(chapter, OFFSET_TEST);
-    TextPosition pos2 = new TextPosition(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
     
     assertEquals(pos1.hashCode(), pos1Duplicate.hashCode());
     assertNotEquals(pos1.hashCode(), pos2.hashCode());
