@@ -5,6 +5,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -43,7 +44,7 @@ public class Attribute extends AbstractEntityBase {
   
   private AttributeType type;
   private String content;
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
 
