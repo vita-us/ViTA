@@ -8,14 +8,24 @@
       '$interval', function($scope, Document, Page, FileUpload, $interval) {
         Page.setUp('Documents', 1);
 
+        $scope.uploading = false;
+
         loadDocuments();
         var timerId = $interval(loadDocuments, 5000);
 
         $scope.uploadSelectedFile = function() {
+          // allow only a single upload simultaneously
+          if ($scope.uploading) { return; }
+
           if ($scope.file) {
+            $scope.uploading = true;
+
             FileUpload.uploadFileToUrl($scope.file, '/documents', function(data, status) {
               // nothing to do: we poll the documents every X seconds
+              resetUploadField();
+              $scope.uploading = false;
             }, function(data, status) {
+              $scope.uploading = false;
               alert('Upload of ' + $scope.file.name + ' failed.');
             });
           } else {
@@ -27,6 +37,10 @@
           Document.get(function(response) {
             $scope.documents = response.documents;
           });
+        }
+
+        function resetUploadField() {
+          document.getElementById('document-input').value = '';
         }
 
         $scope.$on('$destroy', function() {
