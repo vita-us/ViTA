@@ -11,9 +11,6 @@ import org.jsoup.select.Elements;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
@@ -21,33 +18,25 @@ public class Epub3Extractor extends AbstractEpubExtractor {
 
   private org.jsoup.nodes.Document document;
   private ContentBuilder contentBuilder = new ContentBuilder();
-  private EpubChapterBuilder epubChapterBuilder = new EpubChapterBuilder();
   private Elements sections;
+  private ChapterPositionMaker chapterPositionMaker;
 
   public Epub3Extractor(Book book) throws IOException {
     super(book);
   }
 
-  public Document getDocument() throws IOException {
-    Document newDocument = new Document();
-    if (existsPartInEpub3()) {
-      newDocument.getContent().getParts().addAll(getPartsEpub3());
-    } else {
-      newDocument.getContent().getParts().add(getPartEpub3());
-    }
-    return newDocument;
-  }
 
-  //Checks if ebook has parts
+
+  // Checks if ebook has parts
   private boolean existsPartInEpub3() throws IOException {
     if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
           document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          sections = document.select("section");
+          sections = document.select(Constants.SECTION);
           for (Element sectionItem : sections) {
-            if (sectionItem.attr("epub:type").toLowerCase().contains("part")) {
+            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
               return true;
             }
           }
@@ -57,44 +46,79 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     return false;
   }
 
-  
-  private DocumentPart getPartEpub3() throws IOException {
-    DocumentPart documentPart = new DocumentPart();
-    List<Chapter> chapters = new ArrayList<Chapter>();
+
+  private List<List<String>> extractChapters() throws IOException {
+    List<List<String>> chapters = new ArrayList<List<String>>();
     if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
           document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          Elements sections = document.select("section");
+          Elements sections = document.select(Constants.SECTION);
           for (Element sectionItem : sections) {
-            if (sectionItem.attr("epub:type").toLowerCase().contains("chapter")) {
-              Elements chapterParagraphs = sectionItem.getElementsByTag("p");
-              String chapter = chapterParagraphs.text();
-              chapters.add(epubChapterBuilder.buildChapter(chapter));
+            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)) {
+              Elements chapterParagraphs = sectionItem.getAllElements();
+              chapters.add(getChapterLines(chapterParagraphs));
             }
           }
 
         }
       }
     }
-    documentPart.getChapters().addAll(chapters);
-    return documentPart;
+    return chapters;
   }
 
-  private List<DocumentPart> getPartsEpub3() throws IOException {
-    List<DocumentPart> parts = new ArrayList<DocumentPart>();
+  private List<List<Line>> getPartLines() throws IOException {
+    List<List<Line>> partLines = new ArrayList<List<Line>>();
+    List<Line> chaptersLines = new ArrayList<Line>();
+
+    for (List<String> chapter : extractChapters()) {
+      for (String chapterLine : chapter) {
+        chaptersLines.add(new EpubModuleLine(chapterLine));
+        chaptersLines.add(new EpubModuleLine(""));
+      }
+    }
+    partLines.add(chaptersLines);
+    return partLines;
+  }
+
+  private List<List<Line>> getPartsLines() throws IOException {
+    List<List<Line>> partsLines = new ArrayList<List<Line>>();
+
+    for (List<List<String>> part : extractParts()) {
+      List<Line> chaptersLines = new ArrayList<Line>();
+      for (List<String> chapter : part) {
+        for (String chapterLine : chapter) {
+
+          chaptersLines.add(new EpubModuleLine(chapterLine));
+          chaptersLines.add(new EpubModuleLine(""));
+        }
+      }
+      partsLines.add(chaptersLines);
+    }
+    return partsLines;
+  }
+
+  private List<String> getChapterLines(Elements chapterParagraphs) {
+    List<String> chapterLines = new ArrayList<String>();
+    for (Element chapterParagraph : chapterParagraphs) {
+      chapterLines.add(chapterParagraph.getAllElements().get(0).text());
+    }
+    return chapterLines;
+
+  }
+
+  private List<List<List<String>>> extractParts() throws IOException {
+    List<List<List<String>>> parts = new ArrayList<List<List<String>>>();
     if (!resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
           document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          sections = document.select("section");
+          sections = document.select(Constants.SECTION);
           for (Element sectionItem : sections) {
-            if (sectionItem.attr("epub:type").toLowerCase().contains("part")) {
-              DocumentPart documentPart = new DocumentPart();
-              documentPart.getChapters().addAll(partBuilder(resourceItem, sectionItem));
-              parts.add(documentPart);
+            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+              parts.add(partBuilder(resourceItem, sectionItem));
             }
           }
         }
@@ -103,17 +127,18 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     return parts;
   }
 
-  private List<Chapter> partBuilder(Resource newResource, Element newSection) throws IOException {
-    List<Chapter> partsChapters = new ArrayList<Chapter>();
+  private List<List<String>> partBuilder(Resource newResource, Element newSection)
+      throws IOException {
+    List<List<String>> partChapters = new ArrayList<List<String>>();
 
     // iterate through the current resource
     for (int i = sections.indexOf(newSection) + 1; i < sections.size(); i++) {
 
-      if (sections.get(i).attr("epub:type").toLowerCase().contains("chapter")
-          && !sections.get(i).attr("epub:type").toLowerCase().contains("part")) {
-        addChapterToPart(partsChapters, sections.get(i));
+      if (sections.get(i).attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)
+          && !sections.get(i).attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+        addChapterToPart(partChapters, sections.get(i));
       } else {
-        return partsChapters;
+        return partChapters;
       }
     }
 
@@ -121,43 +146,78 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     for (int j = resources.indexOf(newResource) + 1; j < resources.size(); j++) {
       document =
           Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j).getInputStream()));
-      sections = document.select("section");
+      sections = document.select(Constants.SECTION);
       for (Element sectionItem : sections) {
-        if (sectionItem.attr("epub:type").toLowerCase().contains("chapter")
-            && !sectionItem.attr("epub:type").toLowerCase().contains("part")) {
-          addChapterToPart(partsChapters, sectionItem);
+        if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)
+            && !sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+          addChapterToPart(partChapters, sectionItem);
 
         } else {
-          return partsChapters;
+          return partChapters;
         }
       }
     }
-    return partsChapters;
+    return partChapters;
 
   }
 
-  private void addChapterToPart(List<Chapter> parts, Element section) {
-    Elements chapterParagraphs = section.getElementsByTag("p");
-    String chapter = chapterParagraphs.text();
-    parts.add(epubChapterBuilder.buildChapter(chapter));
-  }
+  private void addChapterToPart(List<List<String>> partChapters, Element section) {
+    Elements chapterParagraphs = section.getAllElements();
+    List<String> chapter = getChapterLines(chapterParagraphs);
+    partChapters.add(chapter);
 
-  @Override
-  public List<List<Line>> getPartList() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
-  public List<ChapterPosition> getChapterPositionList() {
-    // TODO Auto-generated method stub
-    return null;
+  public List<List<Line>> getPartList() throws IOException {
+    if (existsPartInEpub3()) {
+    
+      return getPartsLines();
+    } else {
+      return getPartLines();
+    }
   }
 
   @Override
-  public List<String> getTitleList() {
-    // TODO Auto-generated method stub
-    return null;
+  public List<ChapterPosition> getChapterPositionList() throws IOException {
+    chapterPositionMaker = new ChapterPositionMaker();
+    if (existsPartInEpub3()) {
+
+      List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
+      
+      for(List<List<String>> part: extractParts()){
+        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub3(part));
+      }
+
+      return chapterPositionsParts;
+      
+    } else {
+
+      List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
+      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub3(extractChapters()));
+      return chapterPositionsPart;
+    }
+  }
+
+  @Override
+  public List<String> getTitleList() throws IOException {
+    List<String> titleList = new ArrayList<String>();
+    
+    if (!resources.isEmpty()) {
+      for (Resource resourceItem : resources) {
+        if (resourceItem != null) {
+          document =
+              Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
+          sections = document.select(Constants.SECTION);
+          for (Element sectionItem : sections) {
+            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+              titleList.add(sectionItem.text());
+            }
+          }
+        }
+      }
+    }
+    return titleList;
   }
 
 }
