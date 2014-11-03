@@ -3,6 +3,10 @@ package de.unistuttgart.vis.vita.importer.epub;
 import de.unistuttgart.vis.vita.importer.txt.util.AbstractLine;
 import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
+/**
+ * A Line contains a text-line of the imported file. This Line class can compute a type for the line
+ * and can be used to build chapters at the end of the epub extract.
+ */
 public class EpubModuleLine extends AbstractLine{
 
   /**

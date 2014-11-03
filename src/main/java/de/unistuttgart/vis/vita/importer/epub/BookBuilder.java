@@ -31,10 +31,8 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
    * 
    * @param partLines All lines of the book divided in parts.
    * @param chapterPositions ChapterPositions for all the parts in partLines..
-   * @throws IllegalArgumentException If the dimensions of the input does not fit.
    */
-  public BookBuilder(List<List<Line>> partLines, List<ChapterPosition> chapterPositions)
-      throws IllegalArgumentException {
+  public BookBuilder(List<List<Line>> partLines, List<ChapterPosition> chapterPositions){
     this(partLines, chapterPositions, null);
   }
 
@@ -50,10 +48,9 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
    * @param partLines All lines of the book divided in parts.
    * @param chapterPositions ChapterPositions for all the parts in partLines..
    * @param partTitles The titles of a part. N-th element belongs to the n-th part.
-   * @throws IllegalArgumentException If the dimensions of the input does not fit.
    */
   public BookBuilder(List<List<Line>> partLines, List<ChapterPosition> chapterPositions,
-      List<String> partTitles) throws IllegalArgumentException {
+      List<String> partTitles) {
     this.partLines = partLines;
     this.chapterPositions = chapterPositions;
     this.partTitles = partTitles;
@@ -75,7 +72,8 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
 
     // check input data
     if (this.partLines.size() != this.chapterPositions.size()) {
-      throw new IllegalArgumentException("Input of different size is not allowed");
+      throw new IllegalStateException("Input of different size " + this.partLines.size() + " and "
+          + this.chapterPositions.size() + "is not allowed");
     }
     size = this.partLines.size();
   }

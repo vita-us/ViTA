@@ -135,7 +135,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     for (int i = sections.indexOf(newSection) + 1; i < sections.size(); i++) {
 
       if (sections.get(i).attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)
-          && !sections.get(i).attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+          && !sections.get(i).attr(Constants.EPUB_TYPE).toLowerCase()
+              .contains(Constants.EPUB3_PART)) {
         addChapterToPart(partChapters, sections.get(i));
       } else {
         return partChapters;
@@ -161,6 +162,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
 
   }
 
+
   private void addChapterToPart(List<List<String>> partChapters, Element section) {
     Elements chapterParagraphs = section.getAllElements();
     List<String> chapter = getChapterLines(chapterParagraphs);
@@ -171,7 +173,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   @Override
   public List<List<Line>> getPartList() throws IOException {
     if (existsPartInEpub3()) {
-    
+
       return getPartsLines();
     } else {
       return getPartLines();
@@ -184,17 +186,18 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     if (existsPartInEpub3()) {
 
       List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
-      
-      for(List<List<String>> part: extractParts()){
+
+      for (List<List<String>> part : extractParts()) {
         chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub3(part));
       }
 
       return chapterPositionsParts;
-      
+
     } else {
 
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
-      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub3(extractChapters()));
+      chapterPositionsPart.add(chapterPositionMaker
+          .calculateChapterPositionsEpub3(extractChapters()));
       return chapterPositionsPart;
     }
   }
@@ -202,7 +205,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   @Override
   public List<String> getTitleList() throws IOException {
     List<String> titleList = new ArrayList<String>();
-    
+
     if (!resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {

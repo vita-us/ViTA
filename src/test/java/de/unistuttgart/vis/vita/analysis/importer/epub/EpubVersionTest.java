@@ -19,21 +19,21 @@ public class EpubVersionTest {
 
   @Test(expected = NoExtractorFoundException.class )
   public void testUnknown() throws IOException, NoExtractorFoundException{
-    EpubVersion.getExtractorForVersion(EpubVersion.unknown,null);
+    EpubVersion.getExtractorForVersion(EpubVersion.UNKNOWN,null);
   }
   
   @Test
   public void testStandard2() throws IOException, NoExtractorFoundException, URISyntaxException{
     Path testPath = Paths.get(getClass().getResource("moby-dick-mo-20120214.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    assertEquals(Epub2Extractor.class, EpubVersion.getExtractorForVersion(EpubVersion.standard2,epubFileImporter.getEbook()).getClass());
+    assertEquals(Epub2Extractor.class, EpubVersion.getExtractorForVersion(EpubVersion.STANDARD2,epubFileImporter.getEbook()).getClass());
   }
   
   @Test
   public void testStandard3() throws IOException, NoExtractorFoundException, URISyntaxException{
     Path testPath = Paths.get(getClass().getResource("moby-dick-mo-20120214.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    assertEquals(Epub3Extractor.class, EpubVersion.getExtractorForVersion(EpubVersion.standard3,epubFileImporter.getEbook()).getClass());
+    assertEquals(Epub3Extractor.class, EpubVersion.getExtractorForVersion(EpubVersion.STANDARD3,epubFileImporter.getEbook()).getClass());
   }
   
 }

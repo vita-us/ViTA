@@ -24,7 +24,7 @@ public class EpubVersionDetectorTest {
     Book book = epubFileImporter.getEbook();
     
     EpubVersionDetector detector = new EpubVersionDetector(book);
-    assertEquals(EpubVersion.unknown,detector.getVersion());
+    assertEquals(EpubVersion.UNKNOWN,detector.getVersion());
   }
   
   
@@ -35,7 +35,7 @@ public class EpubVersionDetectorTest {
     Book book = epubFileImporter.getEbook();
     
     EpubVersionDetector detector = new EpubVersionDetector(book);
-    assertEquals(EpubVersion.standard2,detector.getVersion());
+    assertEquals(EpubVersion.STANDARD2,detector.getVersion());
   }
   
   @Test
@@ -45,6 +45,6 @@ public class EpubVersionDetectorTest {
     Book book = epubFileImporter.getEbook();
             
     EpubVersionDetector detector = new EpubVersionDetector(book);
-    assertEquals(EpubVersion.standard3,detector.getVersion());
+    assertEquals(EpubVersion.STANDARD3,detector.getVersion());
   }
 }

@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.importer.epub;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
@@ -14,8 +13,8 @@ import nl.siegmann.epublib.domain.Resource;
  * defines some auxiliary methods, which can be helpful to extract epubs in general.
  */
 public abstract class AbstractEpubExtractor {
-  protected List<Resource> resources = new ArrayList<Resource>();
-  protected Resource tocResource = null;
+  protected List<Resource> resources;
+  protected Resource tocResource;
 
   /**
    * Initializes an Epub Extractor for a given book.

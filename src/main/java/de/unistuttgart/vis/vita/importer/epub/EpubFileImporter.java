@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.importer.epub;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -21,8 +20,8 @@ public class EpubFileImporter {
     this.path = newPath;
   }
 
-  public Book getEbook() throws FileNotFoundException, IOException {
-    Book ebook = new Book();
+  public Book getEbook() throws IOException {
+    Book ebook;
     EpubReader epubReader = new EpubReader();
     zipInputStream =
         new ZipInputStream(new FileInputStream(path.toFile()), Charset.forName("Cp437"));

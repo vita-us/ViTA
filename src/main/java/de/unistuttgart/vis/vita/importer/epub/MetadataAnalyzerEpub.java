@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.importer.epub;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +18,11 @@ import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
+/**
+ * Reads the metadata from the ePub-file and transforms it into a DocumentMetadata, which is the
+ * standard type for metadata in the ViTA-Project. If something can't be read this class will behave
+ * robust, and return default or empty values.
+ */
 public class MetadataAnalyzerEpub {
 
   private static final String PUBLICATION = "publication";
@@ -31,12 +35,25 @@ public class MetadataAnalyzerEpub {
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Document document;
 
+  /**
+   * Will extract the metadata from the given book.
+   * 
+   * @param newEbook The ebook to extract the metadata from.
+   * @param newPath The path to the eBook-file, the filename acts as alternative for the ebook's
+   *        title.
+   */
   public MetadataAnalyzerEpub(Book newEbook, Path newPath) {
     this.ebook = newEbook;
     this.path = newPath;
   }
 
-  public DocumentMetadata extractMetadata() throws IOException, ParseException {
+  /**
+   * Extracts the metadata from the ebook and returns the metadata..
+   * 
+   * @return the ebook's metadata.
+   */
+  public DocumentMetadata extractMetadata() {
+    // use the metadata builder for the correct format
     MetadataBuilder metadataBuilder = new MetadataBuilder();
     metadataBuilder.setAuthor(getAuthor());
     metadataBuilder.setEdition(getEdition());
@@ -47,18 +64,28 @@ public class MetadataAnalyzerEpub {
     return metadataBuilder.getMetadata();
   }
 
+  /**
+   * Get the ebook's title.
+   * 
+   * @return The title in line-representation.
+   */
   private List<Line> getTitle() {
     List<Line> titleList = new ArrayList<Line>();
-    String title = (new File(path.toString()).getName());
-    if (ebook != null) {
-      if (!ebook.getTitle().isEmpty()) {
-        title = ebook.getTitle();
-      }
+    // use file name...
+    String title = new File(path.toString()).getName();
+    // ... or better use title from the book, if it is possible.
+    if (ebook != null && !ebook.getTitle().isEmpty()) {
+      title = ebook.getTitle();
     }
     titleList.add(new EpubModuleLine(title, false));
     return titleList;
   }
 
+  /**
+   * Get the ebook's author.
+   * 
+   * @return The author in line-representation.
+   */
   private List<Line> getAuthor() {
     List<Line> author = new ArrayList<Line>();
     if (!ebook.getMetadata().getAuthors().isEmpty()) {
@@ -73,67 +100,102 @@ public class MetadataAnalyzerEpub {
     return author;
   }
 
+  /**
+   * Get the ebook's publisher.
+   * 
+   * @return The publisher in line-representation.
+   */
   private List<Line> getPublisher() {
     List<Line> publisherList = new ArrayList<Line>();
     if (!ebook.getMetadata().getPublishers().isEmpty()) {
       for (int i = 0; i < ebook.getMetadata().getPublishers().size(); i++) {
-        publisherList.add(new EpubModuleLine(ebook.getMetadata().getPublishers().get(i) + ";", false));
+        publisherList.add(new EpubModuleLine(ebook.getMetadata().getPublishers().get(i) + ";",
+            false));
       }
     }
     // remove ; from last publisher
     String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
-    publisherList.get(publisherList.size() - 1).setText(lastPublisher.substring(0, lastPublisher.length()));
+    publisherList.get(publisherList.size() - 1).setText(
+        lastPublisher.substring(0, lastPublisher.length()));
     return publisherList;
-
   }
 
-  private List<Line> getPublishYear() throws ParseException {
+  /**
+   * Get the ebook's publish year.
+   * 
+   * @return The publish year in line-representation.
+   */
+  private List<Line> getPublishYear() {
     List<Line> publishYearList = new ArrayList<Line>();
-      if (!ebook.getMetadata().getDates().isEmpty()) {
+    if (!ebook.getMetadata().getDates().isEmpty()) {
 
-        for (Date dateItem : ebook.getMetadata().getDates()) {
-          if (dateItem.getEvent().toString().toLowerCase().matches(PUBLICATION)) {
-            publishYearList.add(new EpubModuleLine(dateItem.getValue(),false));
-            break;
-          }
+      for (Date dateItem : ebook.getMetadata().getDates()) {
+        if (dateItem.getEvent().toString().toLowerCase().matches(PUBLICATION)) {
+          publishYearList.add(new EpubModuleLine(dateItem.getValue(), false));
+          break;
         }
       }
+    }
     return publishYearList;
-
   }
 
-  private List<Line> getGenre() throws IOException {
+  /**
+   * Get the ebook's genre.
+   * 
+   * @return The genre in line-representation.
+   */
+  private List<Line> getGenre() {
     String genre = "";
-    document =
-        Jsoup.parse(contentBuilder
-            .getStringFromInputStream(ebook.getOpfResource().getInputStream()));
-    Elements metadata = document.select(METADATA);
-
-    for (Element metadataItem : metadata) {
-      genre = extractMetadataByAttribute(genre, metadataItem, GENRE);
-    }
     List<Line> genreList = new ArrayList<Line>();
-    genreList.add(new EpubModuleLine(genre, false));
+    try {
+      document =
+          Jsoup.parse(contentBuilder.getStringFromInputStream(ebook.getOpfResource()
+              .getInputStream()));
+      Elements metadata = document.select(METADATA);
+
+      for (Element metadataItem : metadata) {
+        genre = extractMetadataByAttribute(metadataItem, GENRE);
+      }
+      genreList.add(new EpubModuleLine(genre, false));
+    } catch (IOException e) {
+      // Ignore and write empty data
+    }
     return genreList;
   }
 
-  private List<Line> getEdition() throws IOException {
+  /**
+   * Get the ebook's edition.
+   * 
+   * @return The edition in line-representation.
+   */
+  private List<Line> getEdition() {
     String edition = "";
-    document =
-        Jsoup.parse(contentBuilder
-            .getStringFromInputStream(ebook.getOpfResource().getInputStream()));
-    Elements metadata = document.select(METADATA);
-
-    for (Element metadataItem : metadata) {
-      edition = extractMetadataByAttribute(edition, metadataItem, EDITION);
-    }
     List<Line> editionList = new ArrayList<Line>();
-    editionList.add(new EpubModuleLine(edition, false));
+    try {
+      document =
+          Jsoup.parse(contentBuilder.getStringFromInputStream(ebook.getOpfResource()
+              .getInputStream()));
+      Elements metadata = document.select(METADATA);
+
+      for (Element metadataItem : metadata) {
+        edition = extractMetadataByAttribute(metadataItem, EDITION);
+      }
+      editionList.add(new EpubModuleLine(edition, false));
+    } catch (IOException e) {
+      // Ignore and write empty data
+    }
     return editionList;
   }
 
-  private String extractMetadataByAttribute(String metadata, Element metadataItem, String attribute) {
-
+  /**
+   * Get the text of the first occurrence of the attribute out of the given element.
+   * 
+   * @param metadataItem The element in which the attribute should be foud.
+   * @param attribute The attribute from which the text should be returned.
+   * @return Text of the attribute found first.
+   */
+  private String extractMetadataByAttribute(Element metadataItem, String attribute) {
+    String metadata = "";
     for (Element metadataItemElement : metadataItem.getAllElements()) {
       if (metadataItemElement.tagName().toLowerCase().contains(attribute)) {
         metadata = metadataItemElement.text();
