@@ -49,11 +49,9 @@ public class MetadataAnalyzerEpub {
 
   private List<Line> getTitle() {
     List<Line> titleList = new ArrayList<Line>();
-    String title = (new File(path.toString()).getName());
-    if (ebook != null) {
-      if (!ebook.getTitle().isEmpty()) {
+    String title = new File(path.toString()).getName();
+    if (ebook != null &&  !ebook.getTitle().isEmpty()) {
         title = ebook.getTitle();
-      }
     }
     titleList.add(new EpubModuleLine(title, false));
     return titleList;
