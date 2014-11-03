@@ -30,29 +30,25 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 public class AttributeOccurrencesServiceTest extends ServiceTest {
-  
-  private static final int ABSOLUTE_START_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
-      + TextSpanTestData.TEST_TEXT_SPAN_START;
-  private static final double START_PROGRESS = ABSOLUTE_START_OFFSET
-      / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+  private static final int    ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
+  private static final double START_PROGRESS        = ABSOLUTE_START_OFFSET
+                                                        / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
 
-  private static final int ABSOLUTE_END_OFFSET = ChapterTestData.TEST_CHAPTER_RANGE_START
-      + TextSpanTestData.TEST_TEXT_SPAN_END;
-  private static final double END_PROGRESS = ABSOLUTE_END_OFFSET
-      / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+  private static final int    ABSOLUTE_END_OFFSET   = TextSpanTestData.TEST_TEXT_SPAN_END;
+  private static final double END_PROGRESS          = ABSOLUTE_END_OFFSET
+                                                        / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
 
-  private static final double DELTA = 0.001;
+  private static final double DELTA                 = 0.001;
 
-  private String documentId;
-  private String entityId;
-  private String chapterId;
-  private String attributeId;
+  private String              documentId;
+  private String              entityId;
+  private String              chapterId;
+  private String              attributeId;
 
   @Before
   public void setUp() throws Exception {
-    super.setUp();
-    
     // first set up test data
+    super.setUp();
     TextSpanTestData testData = new TextSpanTestData();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     Chapter testChapter = new ChapterTestData().createTestChapter();
@@ -67,6 +63,7 @@ public class AttributeOccurrencesServiceTest extends ServiceTest {
     TextSpan attributeTextSpan = testData.createTestTextSpan(testChapter);
     Person testEntity = new PersonTestData().createTestPerson(1);
     Attribute testAttribute = new AttributeTestData().createTestAttribute(1);
+    testEntity.getAttributes().add(testAttribute);
     testAttribute.getOccurrences().add(attributeTextSpan);
 
     // id for query
@@ -88,27 +85,24 @@ public class AttributeOccurrencesServiceTest extends ServiceTest {
     em.close();
   }
 
-  @Override
   protected Application configure() {
     return new ResourceConfig(AttributeOccurrencesService.class);
   }
 
   /**
-   * Checks whether occurrences for attribute of an entity can be caught using the REST interface.
+   * Checks whether occurrences for attribute of an entity can be caught using
+   * the REST interface.
    */
   @Test
   public void testGetOccurences() {
-    String path = "/documents/" + documentId 
-                + "/entities/" + entityId 
-                + "/attributes/" + attributeId
-                + "/occurrences";
-    
-    System.out.println("Jetzt gehts los");
+
+
+    String path = "/documents/" + documentId + "/entities/" + entityId + "/attributes/"
+        + attributeId + "/occurrences";
 
     OccurrencesResponse actualResponse = target(path).queryParam("steps", 100)
-                                                      .queryParam("rangeStart", 0.0)
-                                                      .queryParam("rangeEnd", 1.0)
-                                                      .request().get(OccurrencesResponse.class);
+        .queryParam("rangeStart", 0.0).queryParam("rangeEnd", 1.0).request()
+        .get(OccurrencesResponse.class);
 
     // check response and amount of occurrences
     assertNotNull(actualResponse);
