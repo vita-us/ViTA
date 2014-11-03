@@ -10,7 +10,7 @@ public class Constants {
   public static final String TEXT = "Text";
   public static final String CHAPTER_TITLE = "chaptertitle";
   public static final String CLASS = "class";
-  public static final String PGMONOSPACED= "pgmonospaced";
+  public static final String PGMONOSPACED = "pgmonospaced";
   public static final String PARAGRAPH_TAGNAME = "p";
   public static final String TOC = "toc";
   public static final String FOOT = "foot";
@@ -19,4 +19,8 @@ public class Constants {
   public static final String CONTENT = "content";
   public static final String SOURCE = "src";
   public static final String PGEPUBID = "pgepubid";
+  public static final String SECTION = "section";
+  public static final String EPUB3_PART = "part";
+  public static final String EPUB_TYPE = "epub:type";
+  public static final String CHAPTER = "chapter";
 }
