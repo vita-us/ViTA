@@ -20,12 +20,11 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Elements sections;
   private ChapterPositionMaker chapterPositionMaker;
+  private EmptyLinesRemover emptyLinesRemover;
 
   public Epub3Extractor(Book book) throws IOException {
     super(book);
   }
-
-
 
   // Checks if ebook has parts
   private boolean existsPartInEpub3() throws IOException {
@@ -69,10 +68,16 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   }
 
   private List<List<Line>> getPartLines() throws IOException {
+    emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
 
-    for (List<String> chapter : extractChapters()) {
+    List<List<String>> currentPart = new ArrayList<List<String>>();
+    currentPart = extractChapters();
+    emptyLinesRemover.removeEmptyLinesPart(currentPart);
+
+
+    for (List<String> chapter : currentPart) {
       for (String chapterLine : chapter) {
         chaptersLines.add(new EpubModuleLine(chapterLine));
         chaptersLines.add(new EpubModuleLine(""));
@@ -83,9 +88,13 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   }
 
   private List<List<Line>> getPartsLines() throws IOException {
+    emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
-
-    for (List<List<String>> part : extractParts()) {
+    List<List<List<String>>> currentParts = new ArrayList<List<List<String>>>();
+    currentParts = extractParts();
+    emptyLinesRemover.removeEmptyLinesParts(currentParts);
+   
+    for (List<List<String>> part : currentParts) {
       List<Line> chaptersLines = new ArrayList<Line>();
       for (List<String> chapter : part) {
         for (String chapterLine : chapter) {
@@ -102,7 +111,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private List<String> getChapterLines(Elements chapterParagraphs) {
     List<String> chapterLines = new ArrayList<String>();
     for (Element chapterParagraph : chapterParagraphs) {
-      chapterLines.add(chapterParagraph.getAllElements().get(0).text());
+      chapterLines.add(chapterParagraph.ownText());
     }
     return chapterLines;
 
@@ -162,12 +171,10 @@ public class Epub3Extractor extends AbstractEpubExtractor {
 
   }
 
-
   private void addChapterToPart(List<List<String>> partChapters, Element section) {
     Elements chapterParagraphs = section.getAllElements();
     List<String> chapter = getChapterLines(chapterParagraphs);
     partChapters.add(chapter);
-
   }
 
   @Override
@@ -186,15 +193,12 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     if (existsPartInEpub3()) {
 
       List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
-
       for (List<List<String>> part : extractParts()) {
         chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub3(part));
       }
-
       return chapterPositionsParts;
 
     } else {
-
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
       chapterPositionsPart.add(chapterPositionMaker
           .calculateChapterPositionsEpub3(extractChapters()));
