@@ -21,7 +21,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
 
   private org.jsoup.nodes.Document document;
   private ContentBuilder contentBuilder = new ContentBuilder();
-  private EpubChapterBuilder epubChapterBuilder = new EpubChapterBuilder();
+  // TODO:
+  // private EpubChapterBuilder epubChapterBuilder = new EpubChapterBuilder();
   private Elements sections;
 
   public Epub3Extractor(Book book) throws IOException {
@@ -71,7 +72,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
             if (sectionItem.attr("epub:type").toLowerCase().contains("chapter")) {
               Elements chapterParagraphs = sectionItem.getElementsByTag("p");
               String chapter = chapterParagraphs.text();
-              chapters.add(epubChapterBuilder.buildChapter(chapter));
+              // TODO:
+              //chapters.add(epubChapterBuilder.buildChapter(chapter));
             }
           }
 
@@ -139,7 +141,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private void addChapterToPart(List<Chapter> parts, Element section) {
     Elements chapterParagraphs = section.getElementsByTag("p");
     String chapter = chapterParagraphs.text();
-    parts.add(epubChapterBuilder.buildChapter(chapter));
+    // TODO:
+    // parts.add(epubChapterBuilder.buildChapter(chapter));
   }
 
   @Override
