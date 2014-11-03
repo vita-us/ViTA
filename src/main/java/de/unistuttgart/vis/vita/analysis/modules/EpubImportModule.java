@@ -74,7 +74,8 @@ public class EpubImportModule implements Module<ImportResult> {
    * 
    * @param book The book from which the chapters should be extracted.
    * @return The chapters are stored in the parts.
-   * @throws IOException Thrown if there is a problem while extracting data from the file.
+   * @throws IOException Thrown if there is a problem while extracting data from the file, for
+   *         example: File not found, does not fit to the epub-format,...
    * @throws NoExtractorFoundException Thrown of this epub-version can not be extracted.
    */
   private List<DocumentPart> extractChapters(Book book) throws IOException,

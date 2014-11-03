@@ -30,27 +30,22 @@ public class EpubVersionDetector {
    * 
    * @return The version of the book.
    */
-  public EpubVersion getVersion() {
-    EpubVersion version = EpubVersion.unknown;
-    try {
-      if (!(book == null)) {
-        document =
-            Jsoup.parse(contentBuilder.getStringFromInputStream(book.getOpfResource()
-                .getInputStream()));
+  public EpubVersion getVersion() throws IOException {
+    EpubVersion version = EpubVersion.UNKNOWN;
+    if (!(book == null)) {
+      document =
+          Jsoup.parse(contentBuilder.getStringFromInputStream(book.getOpfResource()
+              .getInputStream()));
 
-        // the version can be found in 'package'
-        Element element = document.select("package").first();
+      // the version can be found in 'package'
+      Element element = document.select("package").first();
 
-        // check text at 'version' and set correct EpubVersion
-        if (element.attr("version").toLowerCase().contains("2.0")) {
-          version = EpubVersion.standard2;
-        } else if (element.attr("version").toLowerCase().contains("3.0")) {
-          version = EpubVersion.standard3;
-        }
+      // check text at 'version' and set correct EpubVersion
+      if (element.attr("version").toLowerCase().contains("2.0")) {
+        version = EpubVersion.STANDARD2;
+      } else if (element.attr("version").toLowerCase().contains("3.0")) {
+        version = EpubVersion.STANDARD3;
       }
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
     return version;
   }

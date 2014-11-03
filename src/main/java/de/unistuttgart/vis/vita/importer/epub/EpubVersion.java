@@ -8,7 +8,7 @@ import nl.siegmann.epublib.domain.Book;
  * All possible versions of epub-formats. The class also knows the Extractor which fits to a version.
  */
 public enum EpubVersion {
-  unknown, standard2, standard3;
+  UNKNOWN, STANDARD2, STANDARD3;
 
   /**
    * Gets the correct Extractor for a given version.
@@ -22,10 +22,10 @@ public enum EpubVersion {
   public static AbstractEpubExtractor getExtractorForVersion(EpubVersion version, Book book) throws IOException, NoExtractorFoundException{
     AbstractEpubExtractor extractor;
     switch(version){
-      case standard2:
+      case STANDARD2:
         extractor = new Epub2Extractor(book);
         break;
-      case standard3:
+      case STANDARD3:
         extractor = new Epub3Extractor(book);
         break;
       default:
