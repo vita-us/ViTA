@@ -15,14 +15,13 @@
         $scope.uploadSelectedFile = function() {
           if ($scope.file) {
             FileUpload.uploadFileToUrl($scope.file, '/documents', function(data, status) {
-              // TODO on success
-              console.log(data, status);
+              // nothing to do: angular requests the latest document listing and
+              // we poll them too
             }, function(data, status) {
-              // TODO error handling
-              console.log(data, status);
+              alert('Upload of ' + $scope.file.name + ' failed.');
             });
           } else {
-            alert("Please select a document first.");
+            alert('Please select a document first.');
           }
         };
 
