@@ -114,12 +114,10 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     return partsLines;
   }
 
-  private void addEpublinesToList(List<List<Epubline>> chaptersWithParts) throws IOException {
+  private void addEpublinesToList(List<List<List<Epubline>>> parts) throws IOException {
     for (List<List<Epubline>> part : epublineReviser.formateParts(epublineTraitsExtractor
         .getPartsEpublines(chapters))) {
-      for (List<Epubline> chapter : part) {
-        chaptersWithParts.add(chapter);
-      }
+      parts.add(part);
     }
   }
 
@@ -139,13 +137,20 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
     if (epub2IdsExtractor.existsPart()) {
 
-      List<List<Epubline>> chaptersWithParts = new ArrayList<List<Epubline>>();
-      addEpublinesToList(chaptersWithParts);
+      List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
+      List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
+      addEpublinesToList(parts);
+      
+      for(List<List<Epubline>> part: parts){
+        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book));
+      }
 
-      return chapterPositionMaker.calculateChapterPositions(chaptersWithParts, book);
+      return chapterPositionsParts;
     } else {
+      List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
+      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(chapters, book));
 
-      return chapterPositionMaker.calculateChapterPositions(chapters, book);
+      return chapterPositionsPart;
     }
   }
 
