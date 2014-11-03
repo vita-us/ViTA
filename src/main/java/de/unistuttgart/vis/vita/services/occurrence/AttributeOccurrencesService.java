@@ -95,6 +95,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
 private List<TextSpan> readTextSpansFromDatabase(int steps) {
 	TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
 													  TextSpan.class);
+	query.setParameter("entityId", entityId);
 	query.setParameter("attributeId", attributeId);
 	query.setMaxResults(steps);
 	return query.getResultList();
