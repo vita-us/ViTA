@@ -49,7 +49,7 @@
           }, function(response) {
             removeFingerPrint();
             buildFingerPrint(response.occurrences);
-          }, function(error) {
+          }, function() {
             removeFingerPrint();
           });
         }
