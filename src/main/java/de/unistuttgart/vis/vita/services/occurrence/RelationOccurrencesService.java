@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.services.EntityRelationsUtil;
+import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 

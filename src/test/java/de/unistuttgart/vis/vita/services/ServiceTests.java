@@ -4,8 +4,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import de.unistuttgart.vis.vita.services.analysis.AnalysisServiceTest;
+import de.unistuttgart.vis.vita.services.analysis.ProgressServiceTest;
+import de.unistuttgart.vis.vita.services.document.ChapterServiceTest;
+import de.unistuttgart.vis.vita.services.document.DocumentPartsServiceTest;
+import de.unistuttgart.vis.vita.services.document.DocumentServiceTest;
+import de.unistuttgart.vis.vita.services.document.DocumentsServiceTest;
 import de.unistuttgart.vis.vita.services.entity.AttributeServiceTest;
 import de.unistuttgart.vis.vita.services.entity.AttributesServiceTest;
+import de.unistuttgart.vis.vita.services.entity.EntityRelationsServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PersonServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PersonsServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PlaceServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PlacesServiceTest;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesServiceTest;
 import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesServiceTest;
 

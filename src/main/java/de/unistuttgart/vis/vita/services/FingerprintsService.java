@@ -10,9 +10,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
-public class WordCloudService {
+public class FingerprintsService {
   
   private String documentId;
 
@@ -22,21 +21,23 @@ public class WordCloudService {
   private ResourceContext resourceContext;
 
   @Inject
-  public WordCloudService(Model model) {
+  public FingerprintsService(Model model) {
     em = model.getEntityManager();
   }
 
-  public WordCloudService setDocumentId(String docId) {
-    this.documentId = docId;
+  public FingerprintsService setDocumentId(String documentId) {
+    this.documentId = documentId;
     return this;
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public WordCloud getWordCloudContent(@QueryParam("wordCount") int wordCount,
-                                        @QueryParam("entityId") String entityId) {
-    // TODO implement WordCloudService
-    return new WordCloud();
+  public FingerprintsService getFingerprint(@QueryParam("steps") int steps,
+                                              @QueryParam("rangeStart") double rangeStart,
+                                              @QueryParam("rangeEnd") double rangeEnd,
+                                              @QueryParam("entityIds") String eIds) {
+    // TODO not implemented yet!
+    return null;
   }
 
 }
