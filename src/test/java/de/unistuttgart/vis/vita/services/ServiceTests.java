@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.services.entity.PersonServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PersonsServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PlaceServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PlacesServiceTest;
+import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesServiceTest;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesServiceTest;
 import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesServiceTest;
 
@@ -29,7 +30,7 @@ import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesServiceTe
     PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class, 
     DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
     EntityOccurrencesServiceTest.class, AttributesServiceTest.class, AttributeServiceTest.class,
-    RelationOccurrencesServiceTest.class})
+    RelationOccurrencesServiceTest.class, AttributeOccurrencesServiceTest.class})
 public class ServiceTests {
 
 }
