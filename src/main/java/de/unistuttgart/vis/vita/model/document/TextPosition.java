@@ -41,22 +41,22 @@ public class TextPosition implements Comparable<TextPosition> {
    * @param pChapter - the chapter this TextPosition lies in
    * @param pOffset - the offset of this TextPosition within the chapter
    */
-  public static TextPosition fromLocalOffset(Chapter chapter, int localOffset) {
+  public static TextPosition fromLocalOffset(Chapter pChapter, int localOffset) {
     return new TextPosition(
-        chapter,
-        chapter.getRange().getStart().getOffset() + localOffset);
+        pChapter,
+        pChapter.getRange().getStart().getOffset() + localOffset);
   }
 
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
    *
    * @param pChapter - the chapter this TextPosition lies in
-   * @param pOffset - the global offset of this TextPosition within the document
+   * @param globalOffset - the global offset of this TextPosition within the document
    */
-  public static TextPosition fromGlobalOffset(Chapter chapter, int localOffset) {
+  public static TextPosition fromGlobalOffset(Chapter pChapter, int globalOffset) {
     return new TextPosition(
-        chapter,
-        localOffset);
+        pChapter,
+        globalOffset);
   }
 
   /**
