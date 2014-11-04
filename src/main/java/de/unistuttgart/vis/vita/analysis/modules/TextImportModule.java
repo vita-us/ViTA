@@ -1,5 +1,12 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -21,15 +28,8 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
 @AnalysisModule
-public class TextImportModule implements Module<ImportResult> {
+public class TextImportModule extends Module<ImportResult> {
 
   private Path filePath;
   private Boolean detectChapters;
@@ -41,11 +41,6 @@ public class TextImportModule implements Module<ImportResult> {
   public TextImportModule(Path filePath, Boolean detectChapters) {
     this.filePath = filePath;
     this.detectChapters = detectChapters;
-  }
-
-  @Override
-  public void observeProgress(double progress) {
-    // do nothing
   }
 
   /**

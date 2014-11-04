@@ -10,13 +10,7 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
  * the analysis.
  */
 @AnalysisModule(dependencies = { EntityFeatureModule.class })
-public class MainAnalysisModule implements Module<Void> {
-
-  @Override
-  public void observeProgress(double progress) {
-    // Ignore progress reports
-  }
-
+public class MainAnalysisModule extends Module<Void> {
   @Override
   public Void execute(ModuleResultProvider result, ProgressListener progressListener) {
     return null;
