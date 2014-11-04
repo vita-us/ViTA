@@ -1,12 +1,15 @@
 <div class="row">
 
   <div class="col-md-6">
-    <form role="form" action="#" class="text-upload-form">
+    <form role="form" class="text-upload-form">
       <div class="form-group">
         <label for="document-input">Import a new document</label> <input type="file"
           id="document-input" data-file-model="file">
       </div>
-      <button class="btn btn-default" ng-click="uploadSelectedFile()">Import</button>
+      <button ng-class="{active: uploading}" class="btn btn-default"
+        ng-click="uploadSelectedFile()">
+        <span ng-show="uploading" class="glyphicon glyphicon-refresh spin"></span> Import
+      </button>
     </form>
 
     <div>
