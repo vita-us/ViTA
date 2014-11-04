@@ -42,6 +42,8 @@ public class EntityFeatureModuleTest {
   private Chapter chapter;
   private EntityFeatureModule module;
   private EntityManager em;
+  private ModuleResultProvider resultProvider;
+  private ProgressListener listener;
   
   @Before
   public void setUp() throws Exception {
@@ -52,20 +54,21 @@ public class EntityFeatureModuleTest {
     DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
     when(context.getDocumentId()).thenReturn(document.getId());
     
-    ModuleResultProvider resultProvider = mock(ModuleResultProvider.class);
+    resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(entities);
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
     
-    ProgressListener listener = mock(ProgressListener.class);
+    listener = mock(ProgressListener.class);
     
     module = new EntityFeatureModule();
-    module.execute(resultProvider, listener);
-    em.refresh(document);
   }
   
   @Test
-  public void testEntitiesArePersisted() {
+  public void testEntitiesArePersisted() throws Exception {
+    module.execute(resultProvider, listener);
+    em.refresh(document);
+
     assertThat(document.getContent().getPersons(), hasSize(1));
     Person person = document.getContent().getPersons().get(0);
     assertThat(person.getDisplayName(), is(NAME1_1));
@@ -78,7 +81,10 @@ public class EntityFeatureModuleTest {
   }
   
   @Test
-  public void testAttributesArePersisted() {
+  public void testAttributesArePersisted() throws Exception {
+    module.execute(resultProvider, listener);
+    em.refresh(document);
+
     Place place = document.getContent().getPlaces().get(0);
     assertThat(place.getAttributes(), hasSize(1));
     Attribute attribute = place.getAttributes().iterator().next();
@@ -87,10 +93,40 @@ public class EntityFeatureModuleTest {
   }
   
   @Test
-  public void testOccurrencesArePersisted() {
+  public void testOccurrencesArePersisted() throws Exception {
+    module.execute(resultProvider, listener);
+    em.refresh(document);
+
     Place place = document.getContent().getPlaces().get(0);
     assertThat(place.getOccurrences(), contains(
         new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END)));
+  }
+
+  @Test
+  public void testProgressIsSetToReadyAfterwards() throws Exception {
+    module.execute(resultProvider, listener);
+    em.refresh(document);
+
+    assertThat(document.getProgress().getPersonsProgress().getProgress(), is(1.0));
+    assertThat(document.getProgress().getPlacesProgress().getProgress(), is(1.0));
+    assertThat(document.getProgress().getPersonsProgress().isReady(), is(true));
+    assertThat(document.getProgress().getPlacesProgress().isReady(), is(true));
+  }
+
+  @Test
+  public void testProgressIsReportedDuringExecution() {
+    module.observeProgress(0.2); // should be ignored as model is not provided yet
+
+    module.dependencyFinished(Model.class, resultProvider.getResultFor(Model.class));
+    module.dependencyFinished(DocumentPersistenceContext.class,
+        resultProvider.getResultFor(DocumentPersistenceContext.class));
+    module.observeProgress(0.5);
+
+    em.refresh(document);
+    assertThat(document.getProgress().getPersonsProgress().getProgress(), is(0.5));
+    assertThat(document.getProgress().getPlacesProgress().getProgress(), is(0.5));
+    assertThat(document.getProgress().getPersonsProgress().isReady(), is(false));
+    assertThat(document.getProgress().getPlacesProgress().isReady(), is(false));
   }
 
   private void prepareDatabase() {
