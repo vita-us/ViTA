@@ -13,7 +13,7 @@ describe('PlaceCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123/places/456').respond(TestData.singlePlace);
+    $httpBackend.expectGET('webapi/documents/123/places/456').respond(TestData.singlePlace);
     $routeParams.documentId = '123';
     $routeParams.placeId = '456';
     scope = $rootScope.$new();

@@ -9,23 +9,23 @@
       function($httpBackend, TestData) {
 
         $httpBackend.whenGET(new RegExp('\.html$')).passThrough();
-        $httpBackend.whenGET(new RegExp('/documents$')).respond(TestData.documents);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
+        $httpBackend.whenGET(new RegExp('webapi/documents$')).respond(TestData.documents);
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+$')).respond(TestData.singleDocument);
 
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/progress$')).respond(
                 TestData.analysisProgress);
 
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/parts$')).respond(TestData.parts);
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/parts$')).respond(TestData.parts);
 
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/places$')).respond(TestData.places);
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/places/[^/]+$')).respond(
                 TestData.singlePlace);
 
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/[^/]+/fingerprints+$')).respond(
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/[^/]+/fingerprints+$')).respond(
                 TestData.fingerprint);
 
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons$')).respond(TestData.persons);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/persons$')).respond(TestData.persons);
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/persons/[^/]+$')).respond(
                 TestData.singlePerson);
 
       }]);
