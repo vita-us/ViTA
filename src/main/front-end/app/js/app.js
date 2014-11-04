@@ -39,13 +39,13 @@
       controller: 'PlaceCtrl'
     }).when('/documents/:documentId/fingerprint', {
       templateUrl: 'partials/fingerprint.html',
-      controller: ''
+      controller: 'FingerprintCtrl'
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
       controller: 'GraphNetworkCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
-      controller: ''
+      controller: 'WordcloudCtrl'
     }).when('/documents/:documentId/documentview', {
       templateUrl: 'partials/documentview.html',
       controller: ''

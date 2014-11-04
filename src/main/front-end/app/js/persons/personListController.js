@@ -5,7 +5,11 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PersonListCtrl', ['$scope', 'Document', 'Page', 'Person',
-      '$routeParams', function($scope, Document, Page, Person, $routeParams) {
+      '$routeParams', 'CssClass', function($scope, Document, Page, Person, $routeParams, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
+
         Person.get({
           documentId: $routeParams.documentId
         }, function(response) {
