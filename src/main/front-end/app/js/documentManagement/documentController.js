@@ -15,16 +15,18 @@
 
         $scope.uploadSelectedFile = function() {
           // allow only a single upload simultaneously
-          if ($scope.uploading) { return; }
+          if ($scope.uploading) {
+            return;
+          }
 
           if ($scope.file) {
             $scope.uploading = true;
 
-            FileUpload.uploadFileToUrl($scope.file, '/documents', function(data, status) {
+            FileUpload.uploadFileToUrl($scope.file, '/documents', function() {
               // nothing to do: we poll the documents every X seconds
               resetUploadField();
               $scope.uploading = false;
-            }, function(data, status) {
+            }, function() {
               $scope.uploading = false;
               alert('Upload of ' + $scope.file.name + ' failed.');
             });
