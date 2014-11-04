@@ -22,20 +22,22 @@ import com.google.common.collect.ImmutableMap;
 public class Model {
   private TextRepository textRepository = new TextRepository();
   private EntityManagerFactory entityManagerFactory;
-  
+
   private static final String RELATIVE_DATA_DIRECTORY_ROOT = ".vita";
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
-  private static final String UNITTEST_PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita.unittest.drop";
-  private static final String UNITTEST_PERSISTENCE_UNIT_NAME_NODROP = "de.unistuttgart.vis.vita.unittest";
+  private static final String UNITTEST_PERSISTENCE_UNIT_NAME =
+      "de.unistuttgart.vis.vita.unittest.drop";
+  private static final String UNITTEST_PERSISTENCE_UNIT_NAME_NODROP =
+      "de.unistuttgart.vis.vita.unittest";
 
   static {
-    /* 
+    /*
      * Glassfish does not use the driver provided in the war if not explicitly loaded:
      * https://java.net/jira/browse/GLASSFISH-19451
      */
     loadDriver();
   }
-  
+
   private static Path getDefaultDataDirectory() {
     String appName;
     try {
@@ -43,13 +45,15 @@ public class Model {
     } catch (NamingException e) {
       throw new RuntimeException("Unable to determine application name", e);
     }
-    return Paths.get(System.getProperty("user.home")).resolve(RELATIVE_DATA_DIRECTORY_ROOT).resolve(appName);
+    return Paths.get(System.getProperty("user.home")).resolve(RELATIVE_DATA_DIRECTORY_ROOT)
+        .resolve(appName);
   }
-  
+
   /**
    * Create a Model to be used in unit tests
    * <p>
    * The database will be automatically dropped and recreated for each call.
+   * 
    * @return the model
    */
   public static Model createUnitTestModel() {
@@ -59,34 +63,36 @@ public class Model {
   public static Model createUnitTestModelWithoutDrop() {
     return new Model(UNITTEST_PERSISTENCE_UNIT_NAME_NODROP);
   }
-  
+
   /**
    * Create a default Model instance
    */
   public Model() {
     Path path = getDefaultDataDirectory().resolve("db");
-    Map<String, String> properties = ImmutableMap.of("hibernate.connection.url", "jdbc:h2:" + path.toString());
-    entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
+    Map<String, String> properties =
+        ImmutableMap.of("hibernate.connection.url", "jdbc:h2:" + path.toString());
+    entityManagerFactory =
+        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
   }
-  
+
   private Model(String persistenceUnitName) {
-	entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+    entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
   }
-  
+
   /**
    * @return The entity manager.
    */
   public EntityManager getEntityManager() {
-	  return entityManagerFactory.createEntityManager();
+    return entityManagerFactory.createEntityManager();
   }
-  
+
   /**
    * @return the TextRepository
    */
   public TextRepository getTextRepository() {
     return textRepository;
   }
-  
+
   private static void loadDriver() {
     try {
       Class.forName("org.h2.Driver");

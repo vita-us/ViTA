@@ -37,7 +37,9 @@ public class Chapter extends AbstractEntityBase {
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
-  public Chapter() {}
+  public Chapter() {
+    // no-argument constructor needed for JPA
+  }
 
   /**
    * Gets the readable number of this chapter in the context of the document part it belongs to
