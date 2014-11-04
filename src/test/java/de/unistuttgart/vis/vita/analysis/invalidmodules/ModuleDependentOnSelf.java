@@ -6,12 +6,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 @AnalysisModule(dependencies = String.class)
-public class ModuleDependentOnSelf implements Module<String> {
-
-  @Override
-  public void observeProgress(double progress) {
-
-  }
+public class ModuleDependentOnSelf extends Module<String> {
 
   @Override
   public String execute(ModuleResultProvider result, ProgressListener progressListener) {

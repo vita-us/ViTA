@@ -5,6 +5,15 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import gate.Annotation;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -22,31 +31,17 @@ import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import gate.Annotation;
-
 /**
  *
  */
 @AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class, StanfordNLPResult.class})
-public class EntityRecognitionModule implements Module<BasicEntityCollection> {
+public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
   private StanfordNLPResult stanfordNLPResult;
   private ProgressListener progressListener;
-
-  @Override
-  public void observeProgress(double progress) {
-    // TODO calculating the progress
-  }
 
   @Override
   public BasicEntityCollection execute(ModuleResultProvider result,

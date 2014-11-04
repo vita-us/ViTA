@@ -5,23 +5,6 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import de.unistuttgart.vis.vita.analysis.Module;
-import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
-import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
-import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Corpus;
@@ -35,11 +18,28 @@ import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 import gate.util.persistence.PersistenceManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import de.unistuttgart.vis.vita.analysis.Module;
+import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
+
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
 @AnalysisModule(dependencies = {ImportResult.class})
-public class ANNIEModule implements Module<AnnieNLPResult> {
+public class ANNIEModule extends Module<AnnieNLPResult> {
 
   private static final double GATE_LOAD_PROGRESS_FRACTION = 0.1;
   private static final double ANNIE_LOAD_PROGRESS_FRACTION = 0.2;
@@ -54,11 +54,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
   private int documentsFinished = 0;
   private int maxDocuments;
   private double progressSteps;
-
-  @Override
-  public void observeProgress(double progress) {
-
-  }
 
   @Override
   public AnnieNLPResult execute(ModuleResultProvider result, ProgressListener progressListener)

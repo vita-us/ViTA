@@ -7,16 +7,12 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 
 @AnalysisModule
-public class DocumentPersistenceContextModule implements Module<DocumentPersistenceContext> {
+public class DocumentPersistenceContextModule extends Module<DocumentPersistenceContext> {
 
   private String id;
 
   public DocumentPersistenceContextModule(String id) {
     this.id = id;
-  }
-
-  @Override
-  public void observeProgress(double progress) {
   }
 
   @Override
