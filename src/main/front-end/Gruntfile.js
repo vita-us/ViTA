@@ -95,6 +95,11 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/d3/',
           src: ['d3.js'],
           dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/d3-cloud/',
+          src: ['d3.layout.cloud.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {

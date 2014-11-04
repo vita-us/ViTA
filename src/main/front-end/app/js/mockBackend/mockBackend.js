@@ -7,13 +7,15 @@
       '$httpBackend',
       'TestData',
       function($httpBackend, TestData) {
-        
-        /*
-         * except for fingerprint and occurrences of relations and attributes, all of the 
-         * REST services originally mentioned should work now
-         */
+
+        // fingerprint, occurrences of relations and attributes aren't working
+        // currently
         $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/[^/]+/fingerprints+$')).respond(
                 TestData.fingerprint);
+
+        // implementation of the wordcloud is currently delayed
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/wordcloud$')).respond(
+                TestData.wordcloud);
 
         $httpBackend.whenGET(new RegExp('.*')).passThrough();
         $httpBackend.whenPOST(new RegExp('.*')).passThrough();

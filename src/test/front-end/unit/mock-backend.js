@@ -28,5 +28,8 @@
         $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/persons/[^/]+$')).respond(
                 TestData.singlePerson);
 
+        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/wordcloud$')).respond(
+                TestData.wordcloud);
+
       }]);
 })(angular);
