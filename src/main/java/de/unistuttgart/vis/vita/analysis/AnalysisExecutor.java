@@ -211,16 +211,18 @@ public class AnalysisExecutor {
   }
 
   /**
-   * Recursively removes the module and all modules that depend on it
+   * Recursively removes the module and all modules that depend on it. Will notify the dependent
+   * modules that their dependency has failed
    * 
    * @param moduleToRemove the module to remove
    */
   private synchronized void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
     scheduledModules.remove(moduleToRemove);
     List<ModuleExecutionState> scheduledModulesCopy = ImmutableList.copyOf(scheduledModules);
-    for (ModuleExecutionState module : scheduledModulesCopy) {
-      if (module.getRemainingDependencies().contains(moduleToRemove.getModuleClass())) {
-        removeModuleAndDependencies(module);
+    for (ModuleExecutionState dependentModule : scheduledModulesCopy) {
+      if (dependentModule.getRemainingDependencies().contains(moduleToRemove.getModuleClass())) {
+        dependentModule.notifyModuleFailed(moduleToRemove.getModuleClass());
+        removeModuleAndDependencies(dependentModule);
       }
     }
   }
