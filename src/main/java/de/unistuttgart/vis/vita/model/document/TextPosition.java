@@ -15,7 +15,16 @@ public class TextPosition implements Comparable<TextPosition> {
   private Chapter chapter;
   private int offset;
   
-  private TextPosition() { }
+  /**
+   * Creates a new instance of TextPosition. 
+   * <p>Use factory methods 
+   * {@link TextPosition#fromGlobalOffset(Chapter, int)} and 
+   * {@link TextPosition#fromLocalOffset(Chapter, int)} instead to avoid misunderstandings 
+   * concerning the offsets. </p>
+   */
+  protected TextPosition() {
+    // no-argument constructor needed for JPA
+  }
 
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
