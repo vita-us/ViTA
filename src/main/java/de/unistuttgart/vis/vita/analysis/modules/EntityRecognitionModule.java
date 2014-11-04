@@ -21,10 +21,8 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.analysis.results.StanfordNLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
@@ -34,13 +32,12 @@ import de.unistuttgart.vis.vita.model.entity.EntityType;
 /**
  *
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class, StanfordNLPResult.class})
+@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class})
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
-  private StanfordNLPResult stanfordNLPResult;
   private ProgressListener progressListener;
 
   @Override
@@ -48,7 +45,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
                                        ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
-    stanfordNLPResult = result.getResultFor(StanfordNLPResult.class);
     this.progressListener = progressListener;
 
     startAnalysis();
