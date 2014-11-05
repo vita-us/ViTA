@@ -26,7 +26,8 @@ public class ImportModule extends Module<ImportResult> {
   }
 
   @Override
-  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener) {
-    return null;
+  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
+      throws Exception {
+    return new TextImportModule(filePath).execute(result, progressListener);
   }
 }
