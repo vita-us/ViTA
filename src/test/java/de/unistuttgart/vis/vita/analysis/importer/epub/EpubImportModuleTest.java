@@ -31,7 +31,7 @@ public class EpubImportModuleTest {
     
     Path epub2TestPath = Paths.get(getClass().getResource("pg78.epub").toURI());
     EpubImportModule epub2ImportModule = new EpubImportModule(epub2TestPath);
-    epub2Result = epub2ImportModule.execute(null, null);
+    //epub2Result = epub2ImportModule.execute(null, null);
   }
   @Test
   public void testEpub3Sizes() {
@@ -54,6 +54,7 @@ public class EpubImportModuleTest {
   public void testEpub3Chapters() {
 
     // First Part first chapter: starting
+    //TODO: System.out.println(epub3Result.getParts().get(0).getChapters().get(0).getText());
     assertTrue(epub3Result.getParts().get(0).getChapters().get(0).getText()
         .startsWith("Call me Ishmael. Some years ago—never mind"));
 

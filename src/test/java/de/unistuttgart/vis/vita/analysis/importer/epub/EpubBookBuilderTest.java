@@ -19,7 +19,7 @@ public class EpubBookBuilderTest {
   private List<DocumentPart> partsWithEmptyTitles;
   private List<DocumentPart> emptyParts;
   private List<DocumentPart> nullParts;
-
+  
   @Before
   public void setUp() {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
@@ -110,5 +110,31 @@ public class EpubBookBuilderTest {
     List<ChapterPosition> chapterPositions = new ArrayList<ChapterPosition>();
     chapterPositions.add(new ChapterPosition());
     new BookBuilder(partLines, chapterPositions);
+  }
+  
+
+  @Test
+  public void testOffsets(){
+    DocumentPart part1 = parts.get(0);
+    DocumentPart part2 = parts.get(1);
+    
+    // Chapter 1
+    int startChapter1 = part1.getChapters().get(0).getRange().getStart().getOffset();
+    int endChapter1 = part1.getChapters().get(0).getRange().getEnd().getOffset();
+    // new line -> \n is one char
+    assertEquals(0,startChapter1);
+    assertEquals(17,endChapter1);
+    
+    // Chapter 2
+    int startChapter2 = part1.getChapters().get(1).getRange().getStart().getOffset();
+    int endChapter2 = part1.getChapters().get(1).getRange().getEnd().getOffset();
+    assertEquals(17,startChapter2);
+    assertEquals(33,endChapter2);
+    
+    // Chapter 3
+    int startChapter3 = part2.getChapters().get(0).getRange().getStart().getOffset();
+    int endChapter3 = part2.getChapters().get(0).getRange().getEnd().getOffset();
+    assertEquals(33,startChapter3);
+    assertEquals(42,endChapter3);
   }
 }

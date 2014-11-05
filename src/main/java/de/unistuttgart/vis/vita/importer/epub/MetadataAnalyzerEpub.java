@@ -95,8 +95,10 @@ public class MetadataAnalyzerEpub {
       }
     }
     // remove ; from last author
-    String lastAuthor = author.get(author.size() - 1).getText();
-    author.get(author.size() - 1).setText(lastAuthor.substring(0, lastAuthor.length()));
+    if (!author.isEmpty()) {
+      String lastAuthor = author.get(author.size() - 1).getText();
+      author.get(author.size() - 1).setText(lastAuthor.substring(0, lastAuthor.length()));
+    }
     return author;
   }
 
@@ -114,9 +116,11 @@ public class MetadataAnalyzerEpub {
       }
     }
     // remove ; from last publisher
-    String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
-    publisherList.get(publisherList.size() - 1).setText(
-        lastPublisher.substring(0, lastPublisher.length()));
+    if (!publisherList.isEmpty()) {
+      String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
+      publisherList.get(publisherList.size() - 1).setText(
+          lastPublisher.substring(0, lastPublisher.length()));
+    }
     return publisherList;
   }
 

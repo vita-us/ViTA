@@ -72,7 +72,7 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
 
     // check input data
     if (this.partLines.size() != this.chapterPositions.size()) {
-      throw new IllegalStateException("Input of different size " + this.partLines.size() + " and "
+      throw new IllegalArgumentException("Input of different size " + this.partLines.size() + " and "
           + this.chapterPositions.size() + "is not allowed");
     }
     size = this.partLines.size();
@@ -117,7 +117,10 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
   @Override
   public List<DocumentPart> call() {
     startPartComputation();
-    return buildChapterList();
+    List<DocumentPart> parts = buildChapterList();
+    BookAttributeBuilder attributeBuilder = new BookAttributeBuilder(parts);
+    attributeBuilder.buildAttributes();
+    return parts;
   }
 
 }
