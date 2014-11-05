@@ -42,9 +42,13 @@
 
       scope.$watch('entityIds', function(newValue, oldValue) {
         if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
+          if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+            removeFingerPrint();
+            return;
+          }
           Fingerprint.get({
             documentId: scope.documentId,
-            entityIds: scope.entityIds,
+            entityIds: scope.entityIds.join(','),
             steps: occurrenceSteps
           }, function(response) {
             removeFingerPrint();

@@ -14,7 +14,7 @@
         });
 
         $scope.documentId = $routeParams.documentId;
-        $scope.entityIds = '34534,23459';
+        $scope.entityIds = ['34534', '3459'];
       }]);
 
 })(angular);

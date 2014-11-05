@@ -11,7 +11,7 @@ describe('Fingerprint Directive', function() {
     $httpBackend.expectGET('/documents/123/456,789/fingerprints?steps=0').respond(
             TestData.fingerprint);
 
-    scope.entityIds = '456,789';
+    scope.entityIds = ['456', '789'];
     scope.documentId = '123';
     scope.parts = TestData.parts.parts;
 
@@ -45,7 +45,7 @@ describe('Fingerprint Directive', function() {
     $httpBackend.expectGET('/documents/123/999/fingerprints?steps=0').respond(
             updatedFingerprintData);
 
-    scope.entityIds = '999';
+    scope.entityIds = ['999'];
     element.scope().$apply();
 
     $httpBackend.flush();
@@ -63,16 +63,12 @@ describe('Fingerprint Directive', function() {
     expect(element.find('.chapter-separators').children().length).toBe(initialSeparatorCount - 2);
   }));
 
-  it('should display no occurence rect if the data is undefined', inject(function(_$httpBackend_) {
-    $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET(/.*/).respond(undefined);
-
+  it('should display no occurence rect if the data is undefined', function() {
     scope.entityIds = undefined;
     element.scope().$apply();
 
-    $httpBackend.flush();
     expect(element.find('.occurrences').children().length).toBe(0);
-  }));
+  });
 
   it('should display no chapter separator if the parts are undefined', function() {
     scope.parts = undefined;
