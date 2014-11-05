@@ -9,10 +9,10 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
  * The target module that depends on all enabled feature modules so that they will be executed in
  * the analysis.
  */
-@AnalysisModule(dependencies = { EntityFeatureModule.class })
-public class MainAnalysisModule extends Module<Void> {
+@AnalysisModule(dependencies = {TextFeatureModule.class, EntityFeatureModule.class})
+public class MainAnalysisModule extends Module<MainAnalysisModule> {
   @Override
-  public Void execute(ModuleResultProvider result, ProgressListener progressListener) {
-    return null;
+  public MainAnalysisModule execute(ModuleResultProvider result, ProgressListener progressListener) {
+    return this; // do nothing
   }
 }
