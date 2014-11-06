@@ -21,6 +21,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private Elements sections;
   private ChapterPositionMaker chapterPositionMaker;
   private EmptyLinesRemover emptyLinesRemover;
+  private PartsAndChaptersReviser reviser;
 
   public Epub3Extractor(Book book) throws IOException {
     super(book);
@@ -93,7 +94,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     List<List<List<String>>> currentParts = new ArrayList<List<List<String>>>();
     currentParts = extractParts();
     emptyLinesRemover.removeEmptyLinesParts(currentParts);
-   
+
     for (List<List<String>> part : currentParts) {
       List<Line> chaptersLines = new ArrayList<Line>();
       for (List<String> chapter : part) {
@@ -115,6 +116,50 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     }
     return chapterLines;
 
+  }
+
+  public List<String> test() throws IOException {
+    List<String> chapter = new ArrayList<String>();
+    String span = "";
+    document =
+        Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(6).getInputStream()));
+    sections = document.select(Constants.SECTION);
+    Elements elements = sections.get(0).getAllElements();
+    for (int i = 1; i < elements.size(); i++) {
+      if (!elements.get(i).tagName().matches("span")) {
+        if (!elements.get(i).getAllElements().isEmpty()) {
+          Elements innerElements = elements.get(i).getAllElements();
+
+          if (existsSpan(innerElements)) {
+            if (elements.get(i).ownText().isEmpty()) {
+              for (Element innerElement : innerElements) {
+                if (innerElement.tagName().matches("span")) {
+                  span += innerElement.ownText() + " ";
+                }
+              }
+              chapter.add(span);
+              span = "";
+            }else{
+              chapter.add(elements.get(i).text());
+            }
+          } else {
+            chapter.add(elements.get(i).ownText());
+          }
+        } else {
+          chapter.add(elements.get(i).ownText());
+        }
+      }
+    }
+    return chapter;
+  }
+
+  public boolean existsSpan(Elements innerElements) {
+    for (Element innerElement : innerElements) {
+      if (innerElement.tagName().matches("span")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private List<List<List<String>>> extractParts() throws IOException {
@@ -190,18 +235,26 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   @Override
   public List<ChapterPosition> getChapterPositionList() throws IOException {
     chapterPositionMaker = new ChapterPositionMaker();
+    emptyLinesRemover = new EmptyLinesRemover();
+    reviser = new PartsAndChaptersReviser();
+    
     if (existsPartInEpub3()) {
-
+      List<List<List<String>>> currentParts = new ArrayList<List<List<String>>>();
+      currentParts = extractParts();
+      emptyLinesRemover.removeEmptyLinesParts(currentParts);
       List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
-      for (List<List<String>> part : extractParts()) {
+      for (List<List<String>> part : reviser.formatePartsEpub3(currentParts)) {
         chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub3(part));
       }
       return chapterPositionsParts;
 
     } else {
+      List<List<String>> currentPart = new ArrayList<List<String>>();
+      currentPart = extractChapters();
+      emptyLinesRemover.removeEmptyLinesPart(currentPart);
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
       chapterPositionsPart.add(chapterPositionMaker
-          .calculateChapterPositionsEpub3(extractChapters()));
+          .calculateChapterPositionsEpub3(reviser.formatePartEpub3(currentPart)));
       return chapterPositionsPart;
     }
   }
