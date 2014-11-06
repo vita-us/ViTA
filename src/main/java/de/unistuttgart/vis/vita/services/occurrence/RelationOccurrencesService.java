@@ -51,26 +51,43 @@ public class RelationOccurrencesService extends OccurrencesService {
     // check parameters
     if (steps <= 0) {
       throw new WebApplicationException("Illegal amount of steps!");
-    } 
+    }
+    
+    // TODO make RelationOccurrencesService also consider steps!
+    
+    int startOffset;
+    int endOffset;
+    
+    // compute offsets for the range
+    try {
+      startOffset = getStartOffset(rangeStart);
+      endOffset = getEndOffset(rangeEnd);
+    } catch (IllegalRangeException e) {
+      throw new WebApplicationException(e);
+    }
     
     // convert comma separated String into List of ids
     List<String> entityIdList = EntityRelationsUtil.convertIdStringToList(entityIds);
     
     // fetch the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, entityIdList);
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, entityIdList, startOffset, endOffset);
 
     // convert TextSpans into Occurrences
-    // TODO compute intersections
     List<Occurrence> occurrences = covertSpansToOccurrences(readTextSpans);
 
     // put occurrences into a response and send it
     return new OccurrencesResponse(occurrences);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int steps, List<String> entityIdList) {
+  private List<TextSpan> readTextSpansFromDatabase(int steps, 
+                                                    List<String> entityIdList, 
+                                                    int startOffset, 
+                                                    int endOffset) {
     TypedQuery<TextSpan> query =
         em.createNamedQuery("TextSpan.findTextSpansForRelations", TextSpan.class);
     query.setParameter("entityIds", entityIdList);
+    query.setParameter("rangeStart", startOffset);
+    query.setParameter("rangeEnd", endOffset);
     query.setMaxResults(steps);
     return query.getResultList();
   }

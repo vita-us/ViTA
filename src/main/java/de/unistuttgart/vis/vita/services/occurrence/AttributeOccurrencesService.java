@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
@@ -89,21 +90,40 @@ public class AttributeOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
-      @QueryParam("rangeStart") double rangeStart, @QueryParam("rangeEnd") double rangeEnd) {
+                                            @QueryParam("rangeStart") double rangeStart, 
+                                            @QueryParam("rangeEnd") double rangeEnd) {
+    // check steps
+    if (steps <= 0) {
+      throw new WebApplicationException("Illegal amount of steps!");
+    }
+    
+    int startOffset;
+    int endOffset;
+    
+    // compute offsets for the range
+    try {
+      startOffset = getStartOffset(rangeStart);
+      endOffset = getEndOffset(rangeEnd);
+    } catch (IllegalRangeException e) {
+      throw new WebApplicationException(e);
+    }
+    
     // gets the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps);
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, startOffset, endOffset);
 
-    // convert TextSpans to Occurences
+    // convert TextSpans to Occurrences
     List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
 
     return new OccurrencesResponse(occurences);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int steps) {
+  private List<TextSpan> readTextSpansFromDatabase(int steps, int startOffset, int endOffset) {
     TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
         TextSpan.class);
     query.setParameter("entityId", entityId);
     query.setParameter("attributeId", attributeId);
+    query.setParameter("rangeStart", startOffset);
+    query.setParameter("rangeEnd", endOffset);
     query.setMaxResults(steps);
     return query.getResultList();
   }
