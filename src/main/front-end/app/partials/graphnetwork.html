@@ -6,20 +6,23 @@
     <div class="col-md-8">
       <div class="row">
         <div data-fingerprint class="fingerprint-container" data-occurrences="occurrences" data-parts="parts"></div>
-          <div data-fingerprint class="fingerprint-container" data-occurrences="occurrences" data-parts="parts"></div>
-        </div>
+        <p>
+          <label for="amount">Percentage:</label>
+          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
+        <div id="slider-range"></div>
         <graph-network entities="entities"></graph-network>
       </div>
-      <div class="col-md-2">
-        <div class="row">
-          <button type="button" class="btn btn-default btn-block">Reset</button>
-          <button type="button" class="btn btn-default btn-block">Deselect all</button>
-        </div>
-        <div class="row">
-          <input type="search" ng-model="search" placeholder="Search..." class="form-control" style="margin-top:5px; margin-bottom:5px;">
-          <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-            <a ng-repeat="person in persons | entityNameFilter:search" href="#" class="list-group-item">{{person.displayName}}<input type="checkbox" class="pull-right"></a>
-          </div>
+    </div>
+    <div class="col-md-2">
+      <div class="row">
+        <button type="button" class="btn btn-default btn-block">Reset</button>
+        <button type="button" class="btn btn-default btn-block">Deselect all</button>
+      </div>
+      <div class="row">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control" style="margin-top:5px; margin-bottom:5px;">
+        <div ng-controller="PersonListCtrl" class="list-group" id="list1">
+          <a ng-repeat="person in persons | entityNameFilter:search" href="#" class="list-group-item">{{person.displayName}}<input type="checkbox" class="pull-right"></a>
         </div>
       </div>
     </div>
