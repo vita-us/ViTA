@@ -159,6 +159,27 @@
         }]
       },
 
+      singleChapter: {
+        "id": "1.13",
+        "title": "Seenot",
+        "number": 13,
+        "length": 128438,
+        "text": "gaaaaanz ... viiiiieleeeee ... Woeerteeer, Saetze, etc.",
+        "range": {
+          "start": {
+            "chapter": "1.13",
+            "offset": 13,
+            "progress": 0.182381
+          },
+          "end": {
+            "chapter": "1.13",
+            "offset": 29,
+            "progress": 0.87261231
+          },
+          "length": 14123
+        }
+      },
+
       fingerprint: {
         "occurrences": [{
           "start": {
