@@ -14,9 +14,9 @@
     <div class="row">
       <div class="col-sm-3 document-view-menu">
         <div class="part" data-ng-repeat="part in parts">
-          Part {{part.number}} - {{part.title}}
+          Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
           <div class="chapter" data-ng-repeat="chapter in part.chapters">
-            Chapter {{chapter.number}} - {{chapter.title}}
+            Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}
           </div>
         </div>
       </div>
