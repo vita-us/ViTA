@@ -4,7 +4,7 @@
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('chapter', ['ChapterText', function(ChapterText) {
-    function link(scope, element, attrs) {
+    function link(scope) {
       ChapterText.get({
         documentId: scope.documentId,
         chapterId: scope.chapterData.id

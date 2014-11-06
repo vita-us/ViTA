@@ -4,7 +4,7 @@
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('part', function() {
-    function link(scope, element, attrs) {
+    function link(scope) {
       scope.chapters = scope.partData.chapters;
     }
 
