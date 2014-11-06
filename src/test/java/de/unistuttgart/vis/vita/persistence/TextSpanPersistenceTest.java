@@ -138,6 +138,8 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     TypedQuery<TextSpan> personQ = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
                                                         TextSpan.class);
     personQ.setParameter("entityId", personId);
+    personQ.setParameter("rangeStart", 0);
+    personQ.setParameter("rangeEnd", 200000);
     
     List<TextSpan> actualPersonTextSpans = personQ.getResultList();
     
