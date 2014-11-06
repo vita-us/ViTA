@@ -8,8 +8,8 @@ describe('Fingerprint Directive', function() {
     scope = $rootScope.$new();
 
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123/456,789/fingerprints?steps=0').respond(
-            TestData.fingerprint);
+    $httpBackend.expectGET('/documents/123/entities/fingerprints?entityIds=456,789&steps=0')
+            .respond(TestData.fingerprint);
 
     scope.entityIds = ['456', '789'];
     scope.documentId = '123';
@@ -42,7 +42,7 @@ describe('Fingerprint Directive', function() {
     var updatedFingerprintData = TestData.fingerprint;
     updatedFingerprintData.occurrences = newOccurrences;
 
-    $httpBackend.expectGET('/documents/123/999/fingerprints?steps=0').respond(
+    $httpBackend.expectGET('/documents/123/entities/fingerprints?entityIds=999&steps=0').respond(
             updatedFingerprintData);
 
     scope.entityIds = ['999'];
