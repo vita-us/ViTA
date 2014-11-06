@@ -18,7 +18,8 @@
         </div>
       </div>
       <div class="col-sm-9 document-view-text">
-        Text of the document
+        <div data-part data-ng-repeat="part in parts" data-part-data="part"
+          data-document-id="document.id"></div>
       </div>
     </div>
   </div>
