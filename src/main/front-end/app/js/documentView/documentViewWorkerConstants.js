@@ -9,7 +9,7 @@
     this.DOCUMENT_ID_REQUEST = 'DOCUMENT_ID_REQUEST';
     this.DOCUMENT_VIEW = 'DOCUMENT_VIEW';
     this.OCCURRENCES = 'OCCURRENCES';
-    this.REGISTER = 'REGISTER'
+    this.REGISTER = 'REGISTER';
   });
 
 })(angular);

@@ -44,7 +44,7 @@
 
     this.onDocumentId = function(documentIdCallback) {
       onDocumentIdCallback = documentIdCallback;
-    }
+    };
 
     this.onOccurrences = function(occurrenceCallback) {
       onOccurrenceCallback = occurrenceCallback;
