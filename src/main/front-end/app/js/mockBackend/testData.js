@@ -100,7 +100,7 @@
         "totalCount": "15",
         "parts": [{
           "number": 1,
-          "title": "DerersteTeil",
+          "title": "Der erste Teil",
           "chapters": [{
             "id": "1.13",
             "title": "Seenot",
@@ -139,7 +139,7 @@
             }
           }, {
             "id": "1.15",
-            "title": "SeenotamEnde",
+            "title": "Seenot am Ende",
             "number": 15,
             "length": 8215,
             "range": {

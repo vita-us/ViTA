@@ -13,8 +13,11 @@
   <div class="container-fluid" id="document-view-main">
     <div class="row">
       <div class="col-sm-3 document-view-menu">
-        <div>
-          Left menu
+        <div class="part" data-ng-repeat="part in parts">
+          Part {{part.number}} - {{part.title}}
+          <div class="chapter" data-ng-repeat="chapter in part.chapters">
+            Chapter {{chapter.number}} - {{chapter.title}}
+          </div>
         </div>
       </div>
       <div class="col-sm-9 document-view-text">
