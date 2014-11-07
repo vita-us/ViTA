@@ -1,9 +1,11 @@
-(function(angular, $) {
+(function(angular) {
   'use strict';
 
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('graphNetwork', ['CssClass', function(CssClass) {
+
+    var MINIMUM_GRAPH_WIDTH = 300, MINIMUM_GRAPH_HEIGHT = 300;
 
     var directive = {
       restrict: 'A',
@@ -23,7 +25,7 @@
 
         scope.$watch('width', function(newValue, oldValue) {
           if(!angular.equals(newValue, oldValue)) {
-            var newWidth = newValue || MINIMUM_GRAPH_WIDTH
+            var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
             updateWidth(newWidth);
           }
         });
@@ -31,20 +33,19 @@
         scope.$watch('height', function(newValue, oldValue) {
           if (!angular.equals(newValue, oldValue)) {
             // Fallback on the default value on an invalid parameter
-            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT
+            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT;
             updateHeight(newHeight);
           }
         });
       }
     };
 
-    var MINIMUM_GRAPH_WIDTH = 300, MINIMUM_GRAPH_HEIGHT = 300, MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+    var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
     var graph, force, nodes, links, drag, svgContainer;
 
     function buildGraph(element, entities, width, height) {
       var container = d3.select(element[0]);
-      // var width = $(container.node()).width();
       width = width || MINIMUM_GRAPH_WIDTH;
       height = height || MINIMUM_GRAPH_HEIGHT;
 
@@ -256,4 +257,4 @@
     return directive;
   }]);
 
-})(angular, jQuery);
+})(angular);
