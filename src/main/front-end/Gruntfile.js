@@ -96,16 +96,16 @@ module.exports = function(grunt) {
           src: ['d3.js'],
           dest: '<%= javascriptPath %>'
         }, {
-	  expand: true,
-	  cwd: '<%= bowerrc.directory %>/jquery-ui/',
-	  src: ['jquery-ui.js'],
-	  dest: '<%= javascriptPath %>'
-	}, {
-	  expand: true,
-	  cwd: '<%= bowerrc.directory %>/jquery-ui/themes/smoothness/',
-	  src: ['jquery-ui.css'],
-	  dest: '<%= cssPath %>'
-	}]
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-ui/',
+          src: ['jquery-ui.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-ui/themes/smoothness/',
+          src: ['jquery-ui.css'],
+          dest: '<%= cssPath %>'
+        }]
       },
       statics: {
         files: [{
