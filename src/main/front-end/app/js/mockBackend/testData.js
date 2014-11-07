@@ -16,6 +16,39 @@
             "publishYear": 1957,
             "genre": "Fantasy",
             "edition": "Limited Edition"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            status: "success"
           }
         }, {
           "id": "doc14",
@@ -26,6 +59,39 @@
             "publishYear": 1968,
             "genre": "Krimi",
             "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            status: "scheduled"
           }
         }]
       },
@@ -47,12 +113,45 @@
           "placeCount": 2,
           "wordCount": 1999
         },
+        "progress": {
+          "graphView": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.7123
+          },
+          "wordCloud": {
+            "isReady": true,
+            "isFailed": false,
+            "progress": 1.0
+          },
+          "places": {
+            "isReady": false,
+            "isFailed": true,
+            "progress": 0.6123
+          },
+          "persons": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.001
+          },
+          "fingerPrints": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.81238
+          },
+          "text": {
+            "isReady": true,
+            "isFailed": false,
+            "progress": 1.0
+          },
+          status: "success"
+        },
         "content": {
-          "parts": {
+          "parts": [{
             "chapters": ["chapter1", "chapter2", "chapter3"],
             "number": 1,
             "title": "Der erste Teil"
-          },
+          }],
           "persons": ["person8Ben", "person10Bert"],
           "places": ["place2Paris", "place10Mordor"]
         }
@@ -500,29 +599,37 @@
       analysisProgress: {
         "graphView": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.7123
         },
         "wordCloud": {
           "isReady": true,
+          "isFailed": false,
           "progress": 1.0
         },
         "places": {
           "isReady": false,
+          "isFailed": true,
           "progress": 0.6123
         },
         "persons": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.001
         },
         "fingerPrints": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.81238
         },
         "text": {
           "isReady": true,
+          "isFailed": false,
           "progress": 1.0
-        }
+        },
+        status: "scheduled/running/success/cancelled/failed"
       }
+
     };
 
   });
