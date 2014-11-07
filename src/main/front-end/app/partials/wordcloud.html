@@ -9,10 +9,9 @@
           <input type="search" ng-model="search" placeholder="Search..." class="form-control"
             style="margin-bottom: 5px">
           <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-            <a class="list-group-item">global <input type="checkbox" class="pull-right"></a>
+            <a class="list-group-item">global</a>
             <a ng-repeat="person in persons | entityNameFilter:search" ng-click="onClick(person)"
-              class="list-group-item">{{person.displayName}}<input type="checkbox"
-              class="pull-right"></a>
+              Class="list-group-item">{{person.displayName}}</a>
           </div>
         </div>
       </div>
