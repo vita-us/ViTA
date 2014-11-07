@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -9,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
  * Represents one attribute of an entity found in the document. This contains an id, type, content
@@ -16,17 +19,30 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  */
 @javax.persistence.Entity
 @NamedQueries({
-    @NamedQuery(name = "Attribute.findAllAttributes", query = "SELECT a " + "FROM Attribute a"),
+    @NamedQuery(name = "Attribute.findAllAttributes", 
+                query = "SELECT a " 
+                      + "FROM Attribute a"),
 
-    @NamedQuery(name = "Attribute.findAttributeById", query = "SELECT a " + "FROM Attribute a "
-        + "WHERE a.id = :attributeId"),
+    @NamedQuery(name = "Attribute.findAttributeById", 
+                query = "SELECT a " 
+                      + "FROM Attribute a "
+                      + "WHERE a.id = :attributeId"),
+                      
+    @NamedQuery(name = "Attribute.findAttributesForEntity",
+                query = "SELECT a "
+                      + "FROM Attribute a, Entity e "
+                      + "WHERE e.id = :entityId "
+                      + "AND a MEMBER OF e.attributes"),
 
-    @NamedQuery(name = "Attribute.findAttributeByType", query = "SELECT a " + "FROM Attribute a "
-        + "WHERE a.type = :attributeType")})
+    @NamedQuery(name = "Attribute.findAttributeByType", 
+                query = "SELECT a " 
+                      + "FROM Attribute a "
+                      + "WHERE a.type = :attributeType")}
+)
 public class Attribute extends AbstractEntityBase {
+  
   private AttributeType type;
   private String content;
-
   @OneToMany
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
@@ -49,6 +65,14 @@ public class Attribute extends AbstractEntityBase {
     this();
     this.type = pType;
     this.content = pContent;
+  }
+
+  @Override
+  public String toString() {
+    return "Attribute{" +
+           "type=" + type +
+           ", content='" + content + '\'' +
+           '}';
   }
 
   /**
@@ -86,6 +110,15 @@ public class Attribute extends AbstractEntityBase {
    */
   public SortedSet<TextSpan> getOccurrences() {
     return occurrences;
+  }
+
+  /**
+   * Creates a flat representation of this Attribute without occurrences.
+   * 
+   * @return BasicAttribute representing this Attribute
+   */
+  public BasicAttribute toBasicAttribute() {
+    return new BasicAttribute(getId(), type.toString(), content);
   }
 
 }

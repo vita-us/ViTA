@@ -8,12 +8,19 @@ import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.data.ChapterTestData;
+import de.unistuttgart.vis.vita.data.PersonTestData;
+import de.unistuttgart.vis.vita.data.TextSpanTestData;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.entity.Person;
 
+/**
+ * Performs tests whether instances of TextSpan can be persisted correctly.
+ */
 public class TextSpanPersistenceTest extends AbstractPersistenceTest {
-  
-  // test data
+
   private static final int TEST_TEXT_SPAN_START = 10000;
   private static final int TEST_TEXT_SPAN_END = 11000;
   private static final int TEST_TEXT_SPAN_DIFF = 1000;
@@ -42,10 +49,8 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * @return test text span
    */
   private TextSpan createTestTextSpan() {
-    
     TextPosition start = new TextPosition(null, TEST_TEXT_SPAN_START);
     TextPosition end = new TextPosition(null, TEST_TEXT_SPAN_END);
-    
     return new TextSpan(start, end);
   }
   
@@ -83,7 +88,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * @throws Exception
    */
   @Test
-  public void testNamedQueries() throws Exception {
+  public void testFindingAllAndSpecificTextSpans() {
     TextSpan testTextSpan = createTestTextSpan();
     
     em.persist(testTextSpan);
@@ -105,6 +110,40 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     TextSpan idTextSpan = idQ.getSingleResult();
     
     checkData(idTextSpan);
+  }
+
+  /**
+   * Checks whether TextSpans for a specific entity can be found using a named query.
+   */
+  @Test
+  public void testFindingSpanForEntity() {
+    // first set up test data
+    TextSpanTestData testData = new TextSpanTestData();
+    Chapter c = new ChapterTestData().createTestChapter();
+    TextSpan personTextSpan = testData.createTestTextSpan(c);
+    Person testPerson = new PersonTestData().createTestPerson(1);
+    testPerson.getOccurrences().add(personTextSpan);
+    
+    // save ids for query
+    String chapterId = c.getId();
+    String personId = testPerson.getId();
+    
+    // now persist it
+    em.persist(c);
+    em.persist(personTextSpan);
+    em.persist(testPerson);
+    startNewTransaction();
+    
+    // read TextSpans from database
+    TypedQuery<TextSpan> personQ = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
+                                                        TextSpan.class);
+    personQ.setParameter("entityId", personId);
+    
+    List<TextSpan> actualPersonTextSpans = personQ.getResultList();
+    
+    // finally check read data
+    assertEquals(1, actualPersonTextSpans.size());
+    testData.checkData(actualPersonTextSpans.get(0), chapterId);
   }
 
 }

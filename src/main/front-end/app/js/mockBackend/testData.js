@@ -96,6 +96,193 @@
         }]
       },
 
+      parts: {
+        "totalCount": "15",
+        "parts": [{
+          "number": 1,
+          "title": "DerersteTeil",
+          "chapters": [{
+            "id": "1.13",
+            "title": "Seenot",
+            "number": 13,
+            "length": 242341,
+            "range": {
+              "start": {
+                "chapter": "1.13",
+                "offset": 13,
+                "progress": 0
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29,
+                "progress": 0.237261231
+              },
+              "length": 14123
+            }
+          }, {
+            "id": "1.14",
+            "title": "Baum",
+            "number": 14,
+            "length": 581234,
+            "range": {
+              "start": {
+                "chapter": "1.14",
+                "offset": 123,
+                "progress": 0.29
+              },
+              "end": {
+                "chapter": "1.13",
+                "offset": 29888,
+                "progress": 0.487261231
+              },
+              "length": 82342
+            }
+          }, {
+            "id": "1.15",
+            "title": "SeenotamEnde",
+            "number": 15,
+            "length": 8215,
+            "range": {
+              "start": {
+                "chapter": "1.15",
+                "offset": 115,
+                "progress": 0.682381
+              },
+              "end": {
+                "chapter": "1.15",
+                "offset": 229,
+                "progress": 0.87261231
+              },
+              "length": 14123
+            }
+          }]
+        }]
+      },
+
+      fingerprint: {
+        "occurrences": [{
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.05
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.05
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.1
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.2
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.25
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.3
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.35
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.5
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.55
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.65
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.7
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.7
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.75
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.8
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.85
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.85
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 0.90
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": 1.18,
+            "offset": 13,
+            "progress": 0.95
+          },
+          "end": {
+            "chapter": 1.18,
+            "offset": 29,
+            "progress": 1
+          },
+          "length": 14123
+        }]
+      },
+
       singlePerson: {
         "id": "person8Hugo",
         "displayName": "Hugo",
@@ -184,8 +371,159 @@
         }],
         "rankingValue": 25,
         "entityRelations": []
-      }]
+      }],
 
+      wordcloud: {
+        "items": [{
+          "word": "Ring",
+          "frequency": 95
+        }, {
+          "word": "Time",
+          "frequency": 44
+        }, {
+          "word": "Sword",
+          "frequency": 22
+        }, {
+          "word": "Darkness",
+          "frequency": 11
+        }, {
+          "word": "River",
+          "frequency": 5
+        }, {
+          "word": "Fear",
+          "frequency": 10
+        }, {
+          "word": "Mountains",
+          "frequency": 17
+        }, {
+          "word": "Company",
+          "frequency": 34
+        }, {
+          "word": "Hands",
+          "frequency": 66
+        }, {
+          "word": "Together",
+          "frequency": 23
+        }, {
+          "word": "Beyond",
+          "frequency": 5
+        }, {
+          "word": "Road",
+          "frequency": 82
+        }, {
+          "word": "Words",
+          "frequency": 72
+        }, {
+          "word": "Night",
+          "frequency": 49
+        }, {
+          "word": "End",
+          "frequency": 60
+        }, {
+          "word": "Against",
+          "frequency": 19
+        }, {
+          "word": "Door",
+          "frequency": 37
+        }, {
+          "word": "Upon",
+          "frequency": 61
+        }, {
+          "word": "Fire",
+          "frequency": 86
+        }, {
+          "word": "Folk",
+          "frequency": 73
+        }, {
+          "word": "Soon",
+          "frequency": 71
+        }, {
+          "word": "Suddenly",
+          "frequency": 19
+        }, {
+          "word": "Voice",
+          "frequency": 6
+        }, {
+          "word": "Moment",
+          "frequency": 3
+        }, {
+          "word": "Above",
+          "frequency": 64
+        }, {
+          "word": "Gate",
+          "frequency": 68
+        }, {
+          "word": "Looking",
+          "frequency": 16
+        }, {
+          "word": "Indeed",
+          "frequency": 42
+        }, {
+          "word": "North",
+          "frequency": 28
+        }, {
+          "word": "Ran",
+          "frequency": 47
+        }, {
+          "word": "Clear",
+          "frequency": 28
+        }, {
+          "word": "Riders",
+          "frequency": 2
+        }, {
+          "word": "Since",
+          "frequency": 64
+        }, {
+          "word": "Gone",
+          "frequency": 23
+        }, {
+          "word": "Light",
+          "frequency": 33
+        }, {
+          "word": "Away",
+          "frequency": 53
+        }, {
+          "word": "About",
+          "frequency": 17
+        }, {
+          "word": "Behind",
+          "frequency": 41
+        }, {
+          "word": "Back",
+          "frequency": 49
+        }, {
+          "word": "Go",
+          "frequency": 63
+        }]
+      },
+
+      analysisProgress: {
+        "graphView": {
+          "isReady": false,
+          "progress": 0.7123
+        },
+        "wordCloud": {
+          "isReady": true,
+          "progress": 1.0
+        },
+        "places": {
+          "isReady": false,
+          "progress": 0.6123
+        },
+        "persons": {
+          "isReady": false,
+          "progress": 0.001
+        },
+        "fingerPrints": {
+          "isReady": false,
+          "progress": 0.81238
+        },
+        "text": {
+          "isReady": true,
+          "progress": 1.0
+        }
+      }
     };
+
   });
 })(angular);

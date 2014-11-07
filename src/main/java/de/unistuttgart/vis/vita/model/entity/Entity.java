@@ -36,7 +36,7 @@ public abstract class Entity extends AbstractEntityBase {
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
 
-  @OneToMany
+  @OneToMany(mappedBy = "originEntity")
   private Set<EntityRelation<Entity>> entityRelations;
 
   /**

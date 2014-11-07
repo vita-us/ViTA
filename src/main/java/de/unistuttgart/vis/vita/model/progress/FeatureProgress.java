@@ -1,8 +1,11 @@
 package de.unistuttgart.vis.vita.model.progress;
 
+import javax.persistence.Embeddable;
+
 /**
  * Represents the progress of the analysis for a specific feature of the software.
  */
+@Embeddable
 public class FeatureProgress {
 
   // attributes

@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
@@ -22,32 +22,22 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
     @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
         + "WHERE c.title = :chapterTitle")})
 public class Chapter extends AbstractEntityBase {
+  
   private int number;
   private String title;
-  private String text;
   private int length;
+  
+  // text attribute is transient, this means it will not be persisted in the database!
+  @Transient
+  private String text;
 
   @OneToOne
   private TextSpan range;
 
-  @ManyToOne
-  protected Document document;
-
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
-  public Chapter() {
-    this.document = new Document();
-  }
-
-  /**
-   * Creates a new Chapter which belongs to the given Document.
-   *
-   * @param pDocument - the Document this Chapter belongs to
-   */
-  public Chapter(Document pDocument) {
-    this.document = pDocument;
-  }
+  public Chapter() {}
 
   /**
    * Gets the readable number of this chapter in the context of the document part it belongs to
@@ -134,5 +124,4 @@ public class Chapter extends AbstractEntityBase {
   public void setRange(TextSpan range) {
     this.range = range;
   }
-
 }

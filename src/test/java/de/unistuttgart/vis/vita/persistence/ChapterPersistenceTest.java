@@ -8,16 +8,25 @@ import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**
  * Performs tests whether instances of Chapter can be persisted correctly.
  */
 public class ChapterPersistenceTest extends AbstractPersistenceTest {
-  private static final int TEST_CHAPTER_LENGTH = 2531244;
-  private static final int TEST_CHAPTER_NUMBER = 11;
-  private static final String TEST_CHAPTER_TEXT = "This is a very short Chapter.";
-  private static final String TEST_CHAPTER_TITLE = "A Knife in the Dark";
+  
+  private ChapterTestData testData;
+  
+  /**
+   * Creates a test data instance.
+   */
+  @Override
+  public void setUp() {
+    super.setUp();
+    
+    this.testData = new ChapterTestData();
+  }
 
   /**
    * Checks whether one Chapter can be persisted.
@@ -25,7 +34,7 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testPersistOneChapter() {
     // first set up a Chapter
-    Chapter chapter = createTestChapter();
+    Chapter chapter = testData.createTestChapter();
 
     // persist this chapter
     em.persist(chapter);
@@ -37,23 +46,8 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
     // check whether data is correct
     assertEquals(1, chapters.size());
     Chapter readChapter = chapters.get(0);
-    checkData(readChapter);
-  }
 
-  /**
-   * Creates a new Chapter, sets attributes to test values and returns it.
-   * 
-   * @return test chapter
-   */
-  private Chapter createTestChapter() {
-    Chapter chapter = new Chapter(null);
-
-    chapter.setLength(TEST_CHAPTER_LENGTH);
-    chapter.setNumber(TEST_CHAPTER_NUMBER);
-    chapter.setText(TEST_CHAPTER_TEXT);
-    chapter.setTitle(TEST_CHAPTER_TITLE);
-
-    return chapter;
+    testData.checkData(readChapter);
   }
 
   /**
@@ -68,24 +62,11 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether the given chapter is not <code>null</code> and includes the correct test data.
-   * 
-   * @param chapterToCheck - the chapter which should be checked
-   */
-  private void checkData(Chapter chapterToCheck) {
-    assertNotNull(chapterToCheck);
-    assertEquals(TEST_CHAPTER_LENGTH, chapterToCheck.getLength());
-    assertEquals(TEST_CHAPTER_NUMBER, chapterToCheck.getNumber());
-    assertEquals(TEST_CHAPTER_TEXT, chapterToCheck.getText());
-    assertEquals(TEST_CHAPTER_TITLE, chapterToCheck.getTitle());
-  }
-
-  /**
    * Checks whether all Named Queries of Chapter are working correctly.
    */
   @Test
   public void testNamedQueries() {
-    Chapter testChapter = createTestChapter();
+    Chapter testChapter = testData.createTestChapter();
 
     em.persist(testChapter);
     startNewTransaction();
@@ -96,7 +77,7 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
 
     assertTrue(allChapters.size() > 0);
     Chapter readChapter = allChapters.get(0);
-    checkData(readChapter);
+    testData.checkData(readChapter);
 
     String id = readChapter.getId();
 
@@ -105,13 +86,13 @@ public class ChapterPersistenceTest extends AbstractPersistenceTest {
     idQ.setParameter("chapterId", id);
     Chapter idChapter = idQ.getSingleResult();
 
-    checkData(idChapter);
+    testData.checkData(idChapter);
 
     // check Named Query finding chapters by title
     TypedQuery<Chapter> titleQ = em.createNamedQuery("Chapter.findChapterByTitle", Chapter.class);
-    titleQ.setParameter("chapterTitle", TEST_CHAPTER_TITLE);
+    titleQ.setParameter("chapterTitle", ChapterTestData.TEST_CHAPTER_TITLE);
     Chapter titleChapter = titleQ.getSingleResult();
 
-    checkData(titleChapter);
+    testData.checkData(titleChapter);
   }
 }

@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
-import de.unistuttgart.vis.vita.analysis.modules.IntProvidingModule;
-import de.unistuttgart.vis.vita.analysis.modules.MockModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.IntProvidingModule;
+import de.unistuttgart.vis.vita.analysis.mockmodules.MockModule;
 
 public class ModuleExecutionStateTest {
   private ModuleClass targetModule;
