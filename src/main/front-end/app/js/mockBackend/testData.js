@@ -373,6 +373,15 @@
         "entityRelations": []
       }],
 
+      entityRelations: {
+        "entityIds": ["person8Andi", "person10Bert", "person61Nobody"],
+        "relations": [{
+          "personAId": "person8Andi",
+          "personBId": "person10Bert",
+          "weight": 0.81234
+        }]
+      },
+
       analysisProgress: {
         "graphView": {
           "isReady": false,
