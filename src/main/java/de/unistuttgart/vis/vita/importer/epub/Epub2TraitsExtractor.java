@@ -11,12 +11,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-public class EpublineTraitsExtractor {
+public class Epub2TraitsExtractor {
 
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Book book = new Book();
 
-  public EpublineTraitsExtractor(Book newBook) {
+  public Epub2TraitsExtractor(Book newBook) {
     this.book = newBook;
 
   }

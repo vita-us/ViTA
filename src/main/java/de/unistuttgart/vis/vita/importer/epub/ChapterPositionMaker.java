@@ -7,12 +7,12 @@ import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 
 public class ChapterPositionMaker {
 
-  private EpublineTraitsExtractor epublineTraitsExtractor;
+  private Epub2TraitsExtractor epublineTraitsExtractor;
 
   public ChapterPosition calculateChapterPositionsEpub2(List<List<Epubline>> newChapters,
       Book newBook, int textStartOffset) {
 
-    epublineTraitsExtractor = new EpublineTraitsExtractor(newBook);
+    epublineTraitsExtractor = new Epub2TraitsExtractor(newBook);
     int currentSize = 0;
     ChapterPosition chapterPosition = new ChapterPosition();
     for (List<Epubline> chapter : newChapters) {

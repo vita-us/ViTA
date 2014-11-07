@@ -22,14 +22,14 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   private List<List<Epubline>> chapters = new ArrayList<List<Epubline>>();
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
   private ChapterPositionMaker chapterPositionMaker = new ChapterPositionMaker();
-  private EpublineTraitsExtractor epublineTraitsExtractor;
+  private Epub2TraitsExtractor epublineTraitsExtractor;
   private Epub2IdsAndTitlesExtractor epub2IdsExtractor;
 
 
   public Epub2Extractor(Book book) throws IOException {
     super(book);
     this.book = book;
-    epublineTraitsExtractor = new EpublineTraitsExtractor(book);
+    epublineTraitsExtractor = new Epub2TraitsExtractor(book);
     epub2IdsExtractor = new Epub2IdsAndTitlesExtractor(book);
     extractChaptersEpub2();
   }

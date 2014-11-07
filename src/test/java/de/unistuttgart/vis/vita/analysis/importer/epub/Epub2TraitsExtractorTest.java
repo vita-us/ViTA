@@ -22,11 +22,11 @@ import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
 import de.unistuttgart.vis.vita.importer.epub.Epub2IdsAndTitlesExtractor;
 import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 import de.unistuttgart.vis.vita.importer.epub.Epubline;
-import de.unistuttgart.vis.vita.importer.epub.EpublineTraitsExtractor;
+import de.unistuttgart.vis.vita.importer.epub.Epub2TraitsExtractor;
 
-public class EpublineTraitsExtractorTest {
+public class Epub2TraitsExtractorTest {
 
-  private EpublineTraitsExtractor epublineTraitsExtractor;
+  private Epub2TraitsExtractor epublineTraitsExtractor;
   private List<Epubline> epublines = new ArrayList<Epubline>();
   private ContentBuilder contentBuilder = new ContentBuilder();
   private List<Epubline> chapter = new ArrayList<Epubline>();
@@ -36,7 +36,7 @@ public class EpublineTraitsExtractorTest {
 
     Path testPath = Paths.get(getClass().getResource("pg244.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    epublineTraitsExtractor = new EpublineTraitsExtractor(epubFileImporter.getEbook());
+    epublineTraitsExtractor = new Epub2TraitsExtractor(epubFileImporter.getEbook());
     Epub2IdsAndTitlesExtractor extractor =
         new Epub2IdsAndTitlesExtractor(epubFileImporter.getEbook());
     Resource resource = epubFileImporter.getEbook().getContents().get(3);
