@@ -1,11 +1,12 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import java.util.Arrays;
 
-import de.unistuttgart.vis.vita.analysis.Module;
+import javax.persistence.EntityManager;
+
+import org.apache.lucene.search.IndexSearcher;
+
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
-import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
@@ -13,51 +14,26 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
 
 /**
- * The feature module that stores document outline.
+ * The feature module that stores document outline and document metadata
  * 
  * "Feature module" means that it interacts with the data base. It stores the progress as well as
  * the result.
+ * 
+ * This module depends on {@link IndexSearcher} which guarantees that the document text is persisted
+ * in lucene.
  */
-@AnalysisModule(dependencies = {ImportResult.class, DocumentPersistenceContext.class,
-    Model.class})
-public class TextFeatureModule extends Module<TextFeatureModule> {
-  private Model model;
-  private String documentId;
-  
-  @Override
-  public void dependencyFinished(Class<?> resultClass, Object result) {
-    if (resultClass == DocumentPersistenceContext.class) {
-      documentId = ((DocumentPersistenceContext) result).getDocumentId();
-    } else if (resultClass == Model.class) {
-      model = (Model) result;
-    }
-  }
+@AnalysisModule(dependencies = {ImportResult.class, DocumentPersistenceContext.class, Model.class,
+    IndexSearcher.class})
+public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> {
 
   @Override
-  public void observeProgress(double progress) {
-    if (documentId == null || model == null)
-      return; // cannot report progress yet
-
-    EntityManager em = model.getEntityManager();
-    Document doc = getDocument(em);
-    if (!doc.getProgress().getPersonsProgress().isReady()) {
-      em.getTransaction().begin();
-      doc.getProgress().setTextProgress(new FeatureProgress(progress, false));
-      em.getTransaction().commit();
-    }
-  }
-
-  @Override
-  public TextFeatureModule execute(ModuleResultProvider result, ProgressListener progressListener)
+  public TextFeatureModule storeResults(ModuleResultProvider result, Document document,
+      EntityManager em)
       throws Exception {
-    model = result.getResultFor(Model.class);
-    EntityManager em = model.getEntityManager();
-    em.getTransaction().begin();
-    documentId = result.getResultFor(DocumentPersistenceContext.class).getDocumentId();
-    Document document = getDocument(em);
     
     ImportResult importResult = result.getResultFor(ImportResult.class);
     
@@ -68,18 +44,15 @@ public class TextFeatureModule extends Module<TextFeatureModule> {
         em.persist(chapter);
       }
     }
-    em.merge(document);
     
-    document.getProgress().setTextProgress(new FeatureProgress(1, true));
-    em.getTransaction().commit();
-    
+    document.setMetadata(importResult.getMetadata());
+
     return this;
   }
-  
-  protected Document getDocument(EntityManager em) {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    return query.getSingleResult();
+
+  @Override
+  protected Iterable<FeatureProgress> getProgresses(AnalysisProgress progress) {
+    return Arrays.asList(progress.getTextProgress());
   }
 
 }
