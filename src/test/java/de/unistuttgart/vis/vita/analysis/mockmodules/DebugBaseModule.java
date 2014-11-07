@@ -7,7 +7,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 /**
  * A base class for modules that shows when they begin and finish
  */
-public abstract class DebugBaseModule<T> implements Module<T> {
+public abstract class DebugBaseModule<T> extends Module<T> {
   private boolean hasBeenExecuted = false;
   private boolean hasBeenCalled = false;
   private boolean hasBeenInterrupted = false;

@@ -52,8 +52,8 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
 
     // set up test chapter
     Chapter testChapter = new ChapterTestData().createTestChapter();
-    TextPosition chapterStart = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition chapterEnd = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
+    TextPosition chapterStart = TextPosition.fromGlobalOffset(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
+    TextPosition chapterEnd = TextPosition.fromGlobalOffset(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
     TextSpan chapterRange = new TextSpan(chapterStart, chapterEnd);
     testChapter.setRange(chapterRange);
     
@@ -61,13 +61,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person originPerson = personTestData.createTestPerson(1);
     
     // non overlapping TextSpan
-    TextPosition originSeparateStart = new TextPosition(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition originSeparateEnd = new TextPosition(testChapter, 101000);
+    TextPosition originSeparateStart = TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
+    TextPosition originSeparateEnd = TextPosition.fromGlobalOffset(testChapter, 101000);
     TextSpan originSeparateSpan = new TextSpan(originSeparateStart, originSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition originStart = new TextPosition(testChapter, 105000);
-    TextPosition originEnd = new TextPosition(testChapter, 115000);
+    TextPosition originStart = TextPosition.fromGlobalOffset(testChapter, 105000);
+    TextPosition originEnd = TextPosition.fromGlobalOffset(testChapter, 115000);
     TextSpan originSpan = new TextSpan(originStart, originEnd);
     
     originPerson.getOccurrences().add(originSpan);
@@ -77,13 +77,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person targetPerson = personTestData.createTestPerson(2);
     
     // non-overlapping TextSpan
-    TextPosition targetSeparateStart = new TextPosition(testChapter, 122000);
-    TextPosition targetSeparateEnd  = new TextPosition(testChapter, 123000);
+    TextPosition targetSeparateStart = TextPosition.fromGlobalOffset(testChapter, 122000);
+    TextPosition targetSeparateEnd  = TextPosition.fromGlobalOffset(testChapter, 123000);
     TextSpan targetSeparateSpan = new TextSpan(targetSeparateStart, targetSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition targetStart = new TextPosition(testChapter, 110000);
-    TextPosition targetEnd = new TextPosition(testChapter, 120000);
+    TextPosition targetStart = TextPosition.fromGlobalOffset(testChapter, 110000);
+    TextPosition targetEnd = TextPosition.fromGlobalOffset(testChapter, 120000);
     TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
     
     targetPerson.getOccurrences().add(targetSpan);

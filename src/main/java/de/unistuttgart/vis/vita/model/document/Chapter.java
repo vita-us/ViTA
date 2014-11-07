@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -31,13 +32,16 @@ public class Chapter extends AbstractEntityBase {
   @Transient
   private String text;
 
-  @OneToOne
+  @OneToOne(cascade=CascadeType.ALL)
   private TextSpan range;
 
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
-  public Chapter() {}
+  public Chapter() {
+    range = new TextSpan(TextPosition.fromGlobalOffset(this, 0),
+        TextPosition.fromGlobalOffset(this, 0));
+  }
 
   /**
    * Gets the readable number of this chapter in the context of the document part it belongs to

@@ -1,20 +1,9 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
-import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
-import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
-import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.BasicEntity;
-import de.unistuttgart.vis.vita.model.entity.EntityType;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,18 +14,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
+import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 /**
  * Unit tests for analysis modules
@@ -110,9 +101,7 @@ public class EntityRecognitionModuleTest {
 
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PERSON));
-    assertThat(person.getOccurences(), hasItem(
-        new TextSpan(new TextPosition(chapterObjects.get(0), 5750),
-                     new TextPosition(chapterObjects.get(0), 5759))));
+    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 5750, 5759)));
     assertTrue(checkIfNameExists(person, "Frodo"));
     assertTrue(checkIfNameExists(person, "Mr. Frodo"));
   }
@@ -123,9 +112,7 @@ public class EntityRecognitionModuleTest {
 
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PLACE));
-    assertThat(person.getOccurences(), hasItem(
-        new TextSpan(new TextPosition(chapterObjects.get(0), 4103),
-                     new TextPosition(chapterObjects.get(0), 4111))));
+    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 4103, 4111)));
     assertTrue(checkIfNameExists(person, "Buckland"));
 
     //System.out.println(StringUtils.join(collection.getEntities(), "\n"));
