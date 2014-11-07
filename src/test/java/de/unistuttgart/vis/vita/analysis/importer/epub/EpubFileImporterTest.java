@@ -15,6 +15,11 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
 import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 
+/**
+ * JUnit test on EpubFileImporter
+ * 
+ *
+ */
 public class EpubFileImporterTest {
 
   private EpubFileImporter epubFileImporter;

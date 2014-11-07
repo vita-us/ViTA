@@ -17,6 +17,11 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.importer.epub.Epub2IdsAndTitlesExtractor;
 import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 
+/**
+ * JUnit test on Epub2IdsAndExtractor
+ * 
+ *
+ */
 public class Epub2IdsAndExtractorTest {
 
   private Epub2IdsAndTitlesExtractor epub2Extractor;
@@ -24,6 +29,8 @@ public class Epub2IdsAndExtractorTest {
   private boolean existsPart = false;
   private List<List<String>> partsChaptersIds = new ArrayList<List<String>>();
   private List<String> tableOfContentsIds = new ArrayList<String>();
+  
+  // the table of contents contains 18 ids, so therefore the array is created
   private String[] stringNumbers = {"00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
       "10", "11", "12", "13", "14", "15", "16", "17", "18"};
 

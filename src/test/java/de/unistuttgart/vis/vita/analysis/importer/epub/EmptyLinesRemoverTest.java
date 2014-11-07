@@ -9,6 +9,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import de.unistuttgart.vis.vita.importer.epub.EmptyLinesRemover;
 
+/**
+ * JUnit test on EmptyLinesRemover
+ * 
+ *
+ */
 public class EmptyLinesRemoverTest {
 
   private EmptyLinesRemover emptyLinesRemover = new EmptyLinesRemover();

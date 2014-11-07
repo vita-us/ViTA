@@ -24,6 +24,11 @@ import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 import de.unistuttgart.vis.vita.importer.epub.Epubline;
 import de.unistuttgart.vis.vita.importer.epub.Epub2TraitsExtractor;
 
+/**
+ * JUnit test on Epub2TraitsExtractor
+ * 
+ *
+ */
 public class Epub2TraitsExtractorTest {
 
   private Epub2TraitsExtractor epublineTraitsExtractor;
@@ -58,6 +63,7 @@ public class Epub2TraitsExtractorTest {
     lines.add(new Epubline("Text", "Text b", ""));
     lines.add(new Epubline("Textend", "End text", ""));
 
+    // add the correct Epubline object regarding "Heading", "TextStart" and "TextEnd"
     epublines.add(epublineTraitsExtractor.getHeading(lines));
     epublines.add(epublineTraitsExtractor.getTextStart(lines));
     epublines.add(epublineTraitsExtractor.getTextEnd(lines));

@@ -14,6 +14,11 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.importer.epub.Epubline;
 import de.unistuttgart.vis.vita.importer.epub.PartsAndChaptersReviser;
 
+/**
+ * JUnit test on PartsAndChapterReviser
+ * 
+ *
+ */
 public class PartsAndChaptersReviserTest {
 
   private List<List<Epubline>> formatedPartEpub2 = new ArrayList<List<Epubline>>();
@@ -77,6 +82,7 @@ public class PartsAndChaptersReviserTest {
     linesToAnnotate.add(new Epubline("Text", "Text b", ""));
     linesToAnnotate.add(new Epubline("Text", "Text c", ""));
      
+    // annotate the lines with correct mode("Heading", "TextStart" and "TextEnd")
     reviser.annotateTextStartAndEndOfEpublines(linesToAnnotate);
   }
 
@@ -139,9 +145,6 @@ public class PartsAndChaptersReviserTest {
     assertTrue(linesToAnnotate.get(1).getMode().matches("Textstart"));
     assertTrue(linesToAnnotate.get(2).getMode().matches("Text"));
     assertTrue(linesToAnnotate.get(3).getMode().matches("Textend"));
-
-
-    
 
   }
 }

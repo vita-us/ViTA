@@ -13,6 +13,11 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
 import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 
+/**
+ * JUnit test on ContentBuilder
+ * 
+ *
+ */
 public class ContentBuilderTest {
 
   private ContentBuilder contentBuilder = new ContentBuilder();
