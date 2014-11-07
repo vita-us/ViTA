@@ -22,6 +22,13 @@
                " - " + $( "#slider-range" ).slider( "values", 1 ) );
         };
 	test();
+
+        function onSliderChange(rangeStart, rangeEnd) {
+          // TODO connect with the slider
+          $scope.rangeStart = rangeStart;
+          $scope.rangeEnd = rangeEnd;
+        }
+
       }]);
 
 })(angular);

@@ -3,7 +3,11 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('graphNetwork', ['CssClass', function(CssClass) {
+  vitaDirectives.directive('graphNetwork', [
+      'CssClass',
+      'EntityRelation',
+      '$routeParams',
+      function(CssClass, EntityRelation, $routeParams) {
 
     var directive = {
       replace: false,
@@ -11,15 +15,16 @@
       scope: {
         entities: '=',
         width: '@',
-        height: '@'
+        height: '@',
+        rangeStart: '=',
+        rangeEnd: '='
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.width, scope.height);
+        buildGraph(element, scope);
+        fetchRelationsAndDrawElements(scope.entities, scope.rangeStart, scope.rangeEnd);
 
-        scope.$watch('entities', function(newValue, oldValue) {
-          if (!angular.equals(newValue, oldValue)) {
-            updateGraph(scope.entities);
-          }
+        scope.$watch('[entities,rangeStart,rangeEnd]', function() {
+          fetchRelationsAndDrawElements(scope.entities, scope.rangeStart, scope.rangeEnd);
         }, true);
       }
     };
@@ -28,10 +33,10 @@
 
     var graph, force, nodes, links;
 
-    function buildGraph(element, entities, width, height) {
+    function buildGraph(element, scope) {
       var container = d3.select(element[0]);
-      width = width || 800;
-      height = height || 400;
+      var width = scope.width || 800;
+      var height = scope.height || 400;
 
       graph = container.append("svg")
           .classed("graph-network", true)
@@ -39,33 +44,53 @@
           .attr("height", height)
           .append('g'); // an extra group for zooming
 
-      var graphData = parseEntitiesToGraphData(entities);
+      // Order matters - elements of last group are drawn on top
+      graph.append('g').attr('id', "linkGroup");
+      graph.append('g').attr('id', "nodeGroup");
 
       force = d3.layout.force()
-          .nodes(graphData.nodes)
-          .links(graphData.links)
           .size([width, height])
           .charge(-200)
           .gravity(0.025)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
-
-      redrawElements(graphData);
-
-      force.start();
     }
 
-    function parseEntitiesToGraphData(entities) {
+    function fetchRelationsAndDrawElements(entities, rangeStart, rangeEnd) {
       // Handle undefined data as empty dataset
       entities = entities || [];
 
-      var entityIdNodeMap = mapEntitiesToNodes(entities);
-      var links = [];
+      var entityIds = entities.map(function(entity) {
+        return entity.id;
+      });
 
-      // Create all possible links of each entity
-      for (var i = 0, l = entities.length; i < l; i++) {
-        var newLinks = createLinksForEntity(entities[i], entityIdNodeMap);
-        links = links.concat(newLinks);
+      EntityRelation.get({
+        documentId: $routeParams.documentId,
+        entityIds: entityIds.join(','),
+        rangeStart: rangeStart,
+        rangeEnd: rangeEnd,
+        type: 'person'
+      }, function(relationData) {
+        var graphData = parseEntitiesToGraphData(entities, relationData);
+
+        redrawElements(graphData);
+
+        force.nodes(graphData.nodes)
+            .links(graphData.links)
+            .start();
+      });
+    }
+
+    function parseEntitiesToGraphData(entities, relationData) {
+      var entityIdNodeMap = mapEntitiesToNodes(entities, relationData.entityIds);
+
+      var links = [];
+      var relations = relationData.relations;
+
+      for (var i = 0, l = relations.length; i < l; i++) {
+        var relation = relations[i];
+
+        links.push(createLinkFromRelation(relation, entityIdNodeMap));
       }
 
       return {
@@ -74,61 +99,40 @@
       };
     }
 
-    function mapEntitiesToNodes(entities) {
+    function mapEntitiesToNodes(entities, idsOfDisplayedEntities) {
       var nodeMap = d3.map();
 
+      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
+        var entityId = idsOfDisplayedEntities[i];
+
+        // Create nodes for displayed entities
+        nodeMap.set(entityId, {
+          id: entityId
+        });
+      }
+
+      // Add additional data of the entities
       for (var i = 0, l = entities.length; i < l; i++) {
         var entity = entities[i];
 
-        // Create a shallow copy. We need this, because otherwise d3 would
-        // modify the original data
-        nodeMap.set(entity.id, {
-          id: entity.id,
-          displayName: entity.displayName,
-          type: entity.type,
-          rankingValue: entity.rankingValue
-        });
+        if (nodeMap.has(entity.id)) {
+          var entityNode = nodeMap.get(entity.id);
+
+          entityNode.displayName = entity.displayName;
+          entityNode.rankingValue = entity.rankingValue;
+          entityNode.type = entity.type;
+        }
       }
 
       return nodeMap;
     }
 
-    function createLinksForEntity(entity, entityIdNodeMap) {
-      var links = [];
-
-      var possibleRelations = collectPossibleRelations(entity.entityRelations, entityIdNodeMap
-              .keys());
-
-      for (var i = 0, l = possibleRelations.length; i < l; i++) {
-        var relation = possibleRelations[i];
-
-        var link = {
-          // d3 graph attributes
-          source: entityIdNodeMap.get(entity.id),
-          target: entityIdNodeMap.get(relation.relatedEntity),
-          // copy other useful attributes
-          relatedEntity: entityIdNodeMap.get(relation.relatedEntity),
-          weight: relation.weight
-        };
-
-        links.push(link);
+    function createLinkFromRelation(relation, entityIdNodeMap) {
+      return {
+        source: entityIdNodeMap.get(relation.personAId),
+        target: entityIdNodeMap.get(relation.personBId),
+        weight: relation.weight
       }
-
-      return links;
-    }
-
-    function collectPossibleRelations(relations, displayedEntityIds) {
-      var possibleRelations = [];
-
-      for (var i = 0, l = relations.length; i < l; i++) {
-        var relation = relations[i];
-
-        if (displayedEntityIds.indexOf(relation.relatedEntity) > -1) {
-          possibleRelations.push(relation);
-        }
-      }
-
-      return possibleRelations;
     }
 
     function calculateLinkDistance(link) {
@@ -162,32 +166,24 @@
        * entity might disappear, but this directive receives completely new
        * objects - even for unchanged entities.
        */
-      graph.selectAll('*').remove();
 
-      links = graph.selectAll('.link')
-          .data(graphData.links)
-          .enter().append('line')
-          .classed('link', true);
+      links = graph.select('#linkGroup').selectAll('.link')
+          .data(graphData.links);
 
-      nodes = graph.selectAll('.node')
-          .data(graphData.nodes)
-          .enter().append('circle')
+      links.exit().remove();
+      links.enter().append('line').classed('link', true);
+
+      nodes = graph.select('#nodeGroup').selectAll('.node')
+          .data(graphData.nodes);
+
+      nodes.exit().remove();
+      nodes.enter().append('circle')
           .attr("class", function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
           .attr('r', 20)
           .call(force.drag);
-    }
-
-    function updateGraph(entities) {
-      var graphData = parseEntitiesToGraphData(entities);
-
-      force.nodes(graphData.nodes)
-          .links(graphData.links)
-          .start();
-
-      redrawElements(graphData);
     }
 
     return directive;
