@@ -3,8 +3,15 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'TestData',
-      function($scope, $routeParams, TestData) {
+  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'TestData', 'Document',
+      'Page', function($scope, $routeParams, TestData, Document, Page) {
+        Document.get({
+          documentId: $routeParams.documentId
+        }, function(document) {
+          Page.breadcrumbs = 'Graph-Network';
+          Page.setUpForDocument(document);
+        });
+
         // TODO replace when implementing the graph network page
         $scope.entities = TestData.graphNetworkEntities;
 
