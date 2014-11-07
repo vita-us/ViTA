@@ -23,14 +23,14 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
   private ChapterPositionMaker chapterPositionMaker = new ChapterPositionMaker();
   private EpublineTraitsExtractor epublineTraitsExtractor;
-  private Epub2IdsExtractor epub2IdsExtractor;
+  private Epub2IdsAndTitlesExtractor epub2IdsExtractor;
 
 
   public Epub2Extractor(Book book) throws IOException {
     super(book);
     this.book = book;
     epublineTraitsExtractor = new EpublineTraitsExtractor(book);
-    epub2IdsExtractor = new Epub2IdsExtractor(book);
+    epub2IdsExtractor = new Epub2IdsAndTitlesExtractor(book);
     extractChaptersEpub2();
   }
 
@@ -58,7 +58,6 @@ public class Epub2Extractor extends AbstractEpubExtractor {
           }
         }
       }
-
       removeEmptyChapters(chapters);
     }
   }
