@@ -6,7 +6,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 
@@ -26,7 +28,7 @@ public abstract class OccurrencesService {
    * @param textSpans - the TextSpans to be converted
    * @return list of Occurrences
    */
-  public List<Occurrence> covertSpansToOccurrences(List<TextSpan> textSpans) {
+  public List<Occurrence> convertSpansToOccurrences(List<TextSpan> textSpans) {
     List<Occurrence> occurrences = new ArrayList<>();
     int docLength = getDocumentLength();
     
@@ -99,5 +101,51 @@ public abstract class OccurrencesService {
   public boolean isValidRangeValue(double rangeValue) {
     return rangeValue >= 0 && rangeValue <= 1;
   }
+
+  /**
+   * Returns the chapter which surrounds the position with the given offset.
+   * 
+   * @param offset - the global character offset of the position for which the surrounding chapter
+   *        should be found
+   * @return the surrounding chapter
+   */
+  protected Chapter getSurroundingChapter(int offset) {
+    TypedQuery<Chapter> chapterQ = em.createNamedQuery("Chapter.findChapterByOffset", 
+                                                        Chapter.class);
+    chapterQ.setParameter("offset", offset);
+    
+    List<Chapter> chapters = chapterQ.getResultList();
+    if (chapters.size() == 1) {
+      return chapters.get(0);
+    }
+    
+    return null;
+  }
+
+  protected List<Occurrence> getGranularEntityOccurrences(int steps, int startOffset, int endOffset) {
+    // compute sizes of range and steps
+    int rangeSize = endOffset - startOffset;
+    int stepSize = rangeSize / steps;
+  
+    List<TextSpan> stepSpans = new ArrayList<>();
+  
+    for (int step = 0; step < steps; step++) {
+      int stepStart = startOffset + (stepSize * step);
+      int stepEnd = startOffset + (stepSize * (step + 1));
+  
+      if (getNumberOfSpansInStep(stepStart, stepEnd) > 0) {
+        // create new Positions with offset and surrounding Chapter
+        TextPosition startPos = new TextPosition(getSurroundingChapter(stepStart), stepStart);
+        TextPosition endPos = new TextPosition(getSurroundingChapter(stepEnd), stepEnd);
+  
+        // create and add new Span
+        stepSpans.add(new TextSpan(startPos, endPos));
+      }
+    }
+  
+    return convertSpansToOccurrences(stepSpans);
+  }
+
+  protected abstract int getNumberOfSpansInStep(int stepStart, int stepEnd);
 
 }

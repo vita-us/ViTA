@@ -32,7 +32,27 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * fetch their relation using REST.
  */
 public class RelationOccurrencesServiceTest extends ServiceTest {
-
+  
+  /*
+   * SP for the separate TextSpans without an overlap
+   */
+  private static final int SP1_START_OFFSET = 100000;
+  private static final int SP1_END_OFFSET   = 101000;
+  
+  private static final int SP2_START_OFFSET = 122000;
+  private static final int SP2_END_OFFSET   = 123000;
+  
+  /*
+   * OL for overlapping TextSpans with an overlap 
+   */
+  private static final int OL1_START_OFFSET = 105000;
+  private static final int OL1_END_OFFSET   = 115000;
+  
+  private static final int OL2_START_OFFSET = 110000;
+  private static final int OL2_END_OFFSET   = 120000;
+  
+  private static final int OL_LENGTH = OL2_END_OFFSET - OL1_START_OFFSET;
+  
   private PersonTestData personTestData;
   private EntityRelationTestData relationTestData;
   
@@ -52,8 +72,8 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
 
     // set up test chapter
     Chapter testChapter = new ChapterTestData().createTestChapter();
-    TextPosition chapterStart = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition chapterEnd = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
+    TextPosition chapterStart = new TextPosition(null, 0);
+    TextPosition chapterEnd = new TextPosition(null, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextSpan chapterRange = new TextSpan(chapterStart, chapterEnd);
     testChapter.setRange(chapterRange);
     
@@ -61,13 +81,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person originPerson = personTestData.createTestPerson(1);
     
     // non overlapping TextSpan
-    TextPosition originSeparateStart = new TextPosition(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition originSeparateEnd = new TextPosition(testChapter, 101000);
+    TextPosition originSeparateStart = new TextPosition(testChapter, SP1_START_OFFSET);
+    TextPosition originSeparateEnd = new TextPosition(testChapter, SP1_END_OFFSET);
     TextSpan originSeparateSpan = new TextSpan(originSeparateStart, originSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition originStart = new TextPosition(testChapter, 105000);
-    TextPosition originEnd = new TextPosition(testChapter, 115000);
+    TextPosition originStart = new TextPosition(testChapter, OL1_START_OFFSET);
+    TextPosition originEnd = new TextPosition(testChapter, OL1_END_OFFSET);
     TextSpan originSpan = new TextSpan(originStart, originEnd);
     
     originPerson.getOccurrences().add(originSpan);
@@ -77,13 +97,13 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     Person targetPerson = personTestData.createTestPerson(2);
     
     // non-overlapping TextSpan
-    TextPosition targetSeparateStart = new TextPosition(testChapter, 122000);
-    TextPosition targetSeparateEnd  = new TextPosition(testChapter, 123000);
+    TextPosition targetSeparateStart = new TextPosition(testChapter, SP2_START_OFFSET);
+    TextPosition targetSeparateEnd  = new TextPosition(testChapter, SP2_END_OFFSET);
     TextSpan targetSeparateSpan = new TextSpan(targetSeparateStart, targetSeparateEnd);
     
     // overlapping TextSpan
-    TextPosition targetStart = new TextPosition(testChapter, 110000);
-    TextPosition targetEnd = new TextPosition(testChapter, 120000);
+    TextPosition targetStart = new TextPosition(testChapter, OL2_START_OFFSET);
+    TextPosition targetEnd = new TextPosition(testChapter, OL2_END_OFFSET);
     TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
     
     targetPerson.getOccurrences().add(targetSpan);
@@ -150,15 +170,11 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
     
-    assertEquals(2, receivedOccurrences.size());
+    assertEquals(1, receivedOccurrences.size());
     
     // check content of response
-    for (Occurrence occ: receivedOccurrences) {
-      assertTrue(105000 <= occ.getStart().getOffset());
-      assertTrue(110000 >= occ.getStart().getOffset());
-      assertTrue(115000 <= occ.getEnd().getOffset());
-      assertTrue(120000 >= occ.getEnd().getOffset());
-    }
+    Occurrence receivedOccurrence = receivedOccurrences.get(0);
+    assertTrue(OL_LENGTH <= receivedOccurrence.getLength());
   }
 
 }

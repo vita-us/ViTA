@@ -10,10 +10,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
-public class SearchEntityService extends OccurrencesService {
+public class SearchEntityService {
   
   private String documentId;
   private String entityId;

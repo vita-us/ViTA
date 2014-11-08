@@ -107,25 +107,26 @@ public class AttributeOccurrencesService extends OccurrencesService {
     } catch (IllegalRangeException e) {
       throw new WebApplicationException(e);
     }
-    
-    // gets the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, startOffset, endOffset);
 
     // convert TextSpans to Occurrences
-    List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
+    List<Occurrence> occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
 
-    return new OccurrencesResponse(occurences);
+    return new OccurrencesResponse(occs);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int steps, int startOffset, int endOffset) {
+  private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
     TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
         TextSpan.class);
     query.setParameter("entityId", entityId);
     query.setParameter("attributeId", attributeId);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);
-    query.setMaxResults(steps);
     return query.getResultList();
+  }
+
+  @Override
+  protected int getNumberOfSpansInStep(int stepStart, int stepEnd) {
+    return readTextSpansFromDatabase(stepStart, stepEnd).size();
   }
 
 }

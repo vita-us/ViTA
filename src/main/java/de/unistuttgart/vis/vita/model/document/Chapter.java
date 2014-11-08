@@ -14,13 +14,24 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
+    @NamedQuery(name = "Chapter.findAllChapters", 
+        query = "SELECT c " 
+              + "FROM Chapter c"),
 
-    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.id = :chapterId"),
+    @NamedQuery(name = "Chapter.findChapterById",
+      query = "SELECT c " 
+            + "FROM Chapter c "
+            + "WHERE c.id = :chapterId"),
 
-    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.title = :chapterTitle")})
+    @NamedQuery(name = "Chapter.findChapterByTitle", 
+      query = "SELECT c " 
+            + "FROM Chapter c "
+            + "WHERE c.title = :chapterTitle"),
+        
+    @NamedQuery(name = "Chapter.findChapterByOffset", 
+      query = "SELECT c "
+            + "FROM Chapter c "
+            + "WHERE :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
   
   private int number;

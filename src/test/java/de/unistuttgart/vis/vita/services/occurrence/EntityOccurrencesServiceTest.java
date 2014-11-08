@@ -32,15 +32,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 public class EntityOccurrencesServiceTest extends ServiceTest {
 
   private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
-  private static final double START_PROGRESS = ABSOLUTE_START_OFFSET
-                                                / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
-  
-
   private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
-  private static final double END_PROGRESS = ABSOLUTE_END_OFFSET
-                                                / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
-  
-  private static final double DELTA = 0.001;
   
   private String docId;
   private String chapterId;
@@ -56,8 +48,8 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
     
     // Set range of the chapter
-    TextPosition rangeStartPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition rangeEndPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
+    TextPosition rangeStartPos = new TextPosition(null, 0);
+    TextPosition rangeEndPos = new TextPosition(null, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
     
@@ -114,20 +106,18 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
     
     Occurrence receivedOccurence = occurrences.get(0);
     
-    // check start position
+    // check start position, should be lower or equals
     AbsoluteTextPosition absoluteStart = receivedOccurence.getStart();
     assertEquals(chapterId, absoluteStart.getChapter());
-    assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
-    assertEquals(START_PROGRESS, absoluteStart.getProgress().doubleValue(), DELTA);
+    assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
     
-    // check start position
+    // check start position, should be greater or equals
     AbsoluteTextPosition absoluteEnd = receivedOccurence.getEnd();
     assertEquals(chapterId, absoluteEnd.getChapter());
-    assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
-    assertEquals(END_PROGRESS, absoluteEnd.getProgress().doubleValue(), DELTA);
+    assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
     
-    // check the length
-    assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+    // check the length, should be greater or equals
+    assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength());
   }
 
 }

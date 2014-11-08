@@ -21,6 +21,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  */
 public class RelationOccurrencesService extends OccurrencesService {
 
+  private List<String> entityIds;
+
   /**
    * Creates new RelationOccurrencesService and injects Model.
    * 
@@ -47,49 +49,44 @@ public class RelationOccurrencesService extends OccurrencesService {
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart, 
                                             @QueryParam("rangeEnd") double rangeEnd,
-                                            @QueryParam("entityIds") String entityIds) {
-    // check parameters
+                                            @QueryParam("entityIds") String eIds) {
+    
+    // first check steps
     if (steps <= 0) {
-      throw new WebApplicationException("Illegal amount of steps!");
+      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
     }
-    
-    // TODO make RelationOccurrencesService also consider steps!
-    
-    int startOffset;
-    int endOffset;
-    
-    // compute offsets for the range
+        
+    // then check range and calculate offsets
+    int startOffset, endOffset;
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
-    } catch (IllegalRangeException e) {
-      throw new WebApplicationException(e);
+    } catch(IllegalRangeException ire) {
+      throw new WebApplicationException(ire);
     }
     
-    // convert comma separated String into List of ids
-    List<String> entityIdList = EntityRelationsUtil.convertIdStringToList(entityIds);
+    entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
     
-    // fetch the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, entityIdList, startOffset, endOffset);
-
-    // convert TextSpans into Occurrences
-    List<Occurrence> occurrences = covertSpansToOccurrences(readTextSpans);
-
-    // put occurrences into a response and send it
-    return new OccurrencesResponse(occurrences);
+    // get occurrences in the given granularity
+    List<Occurrence> occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
+    
+    // create response and return it
+    return new OccurrencesResponse(occs);
+    
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int steps, 
-                                                    List<String> entityIdList, 
-                                                    int startOffset, 
-                                                    int endOffset) {
+  private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
     TypedQuery<TextSpan> query =
         em.createNamedQuery("TextSpan.findTextSpansForRelations", TextSpan.class);
-    query.setParameter("entityIds", entityIdList);
+    query.setParameter("entityIds", entityIds);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);
-    query.setMaxResults(steps);
     return query.getResultList();
+  }
+
+  @Override
+  protected int getNumberOfSpansInStep(int stepStart, int stepEnd) {
+    return readTextSpansFromDatabase(stepStart, stepEnd).size();
   }
 
 }
