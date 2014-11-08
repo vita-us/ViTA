@@ -14,9 +14,7 @@ public class EmptyLinesRemover {
 
   public void removeEmptyLinesParts(List<List<List<String>>> currentParts) {
     for (List<List<String>> currentPart : currentParts) {
-      for (List<String> chapter : currentPart) {
-        chapter.removeAll(Collections.singleton(""));
-      }
+      removeEmptyLinesPart(currentPart);
     }
   }
 

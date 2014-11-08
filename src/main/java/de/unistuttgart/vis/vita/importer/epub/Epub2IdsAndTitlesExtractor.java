@@ -17,7 +17,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Epub2IdsExtractor {
+public class Epub2IdsAndTitlesExtractor {
 
   private Book book = new Book();
   private List<String> tocIds = new ArrayList<String>();
@@ -26,7 +26,7 @@ public class Epub2IdsExtractor {
   private Matcher matcher;
   private Document document;
 
-  public Epub2IdsExtractor(Book newBook) throws IOException {
+  public Epub2IdsAndTitlesExtractor(Book newBook) throws IOException {
     this.book = newBook;
     addIds();
 
