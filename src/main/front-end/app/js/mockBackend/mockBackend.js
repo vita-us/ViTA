@@ -11,7 +11,9 @@
         $httpBackend.whenGET(new RegExp('\.html$')).passThrough();
         $httpBackend.whenGET(new RegExp('/documents$')).respond(TestData.documents);
         $httpBackend.whenPOST(new RegExp('/documents$')).respond({documentId: 'testDocId'});
+
         $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
+        $httpBackend.whenDELETE(new RegExp('/documents/[^/]+$')).respond(undefined);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
                 TestData.analysisProgress);
