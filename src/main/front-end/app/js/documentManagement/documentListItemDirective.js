@@ -15,15 +15,19 @@
         switch (scope.document.progress.status) {
         case 'cancelled':
           scope.statusIconClass = 'glyphicon-remove-circle';
+          scope.operationIconClass = 'glyphicon-repeat';
           break;
         case 'failed':
           scope.statusIconClass = 'glyphicon-exclamation-sign';
+          scope.operationIconClass = 'glyphicon-repeat';
           break;
         case 'running':
           scope.statusIconClass = 'glyphicon-play-circle';
+          scope.operationIconClass = 'glyphicon-ban-circle';
           break;
         case 'scheduled':
           scope.statusIconClass = 'glyphicon-time';
+          scope.operationIconClass = 'glyphicon-ban-circle';
           break;
         case 'success':
           scope.statusIconClass = 'glyphicon-ok-circle';
