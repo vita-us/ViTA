@@ -6,7 +6,7 @@
   app.factory('TestData', function() {
     return {
       documents: {
-        "totalCount": 2,
+        "totalCount": 5,
         "documents": [{
           "id": "doc13a",
           "metadata": {
@@ -92,6 +92,135 @@
               "progress": 1.0
             },
             "status": "scheduled"
+          }
+        }, {
+          "id": "doc16",
+          "metadata": {
+            "title": "Rapunzel",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1928,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "failed"
+          }
+        }, {
+          "id": "doc18",
+          "metadata": {
+            "title": "Schneewittchen",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1958,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "cancelled"
+          }
+        }, {
+          "id": "doc20",
+          "metadata": {
+            "title": "Rumpelstielzchen",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1952,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "running"
           }
         }]
       },
