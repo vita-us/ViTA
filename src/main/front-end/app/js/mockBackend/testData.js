@@ -498,23 +498,23 @@
       },
 
       wordcloudhugo: {
-	"items": [{
-	  "word": "Hugo",
-	  "frequency": 42
-	}, {
-	  "word": "Test",
-	  "frequency": 23
-	}]
+        "items": [{
+          "word": "Hugo",
+          "frequency": 42
+        }, {
+          "word": "Test",
+          "frequency": 23
+        }]
       },
 
       wordcloudbert: {
-	"items": [{
-	  "word": "Bert",
-	  "frequency": 42
-	}, {
-	  "word": "Word",
-	  "frequency": 23
-	}]
+        "items": [{
+          "word": "Bert",
+          "frequency": 42
+        }, {
+          "word": "Word",
+          "frequency": 23
+        }]
       },
 
       analysisProgress: {
