@@ -7,9 +7,22 @@
   vitaControllers.controller('WordcloudCtrl', ['$scope', 'Wordcloud', 'Page', '$routeParams',
       function($scope, Wordcloud, Page, $routeParams) {
 
-        $scope.onClick = function(person) {
-          // Use the clicked person as you want
-        }
+        $scope.update=  function(person) {
+          Wordcloud.get({
+            documentId: $routeParams.documentId,
+	    entityId: person.id
+          }, function(response) {
+            $scope.wordcloud = response.items;
+          });
+        };
+
+	$scope.global = function() {
+          Wordcloud.get({
+            documentId: $routeParams.documentId
+          }, function(response) {
+            $scope.wordcloud = response.items;
+          });
+	};
 
         Wordcloud.get({
           documentId: $routeParams.documentId
@@ -17,5 +30,4 @@
           $scope.wordcloud = response.items;
         });
       }]);
-
 })(angular);
