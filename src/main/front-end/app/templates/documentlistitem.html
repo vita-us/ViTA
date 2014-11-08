@@ -1,6 +1,10 @@
-<span class="glyphicon {{statusIconClass}}"></span>
+<span class="glyphicon {{statusIconClass}}" title="{{statusDescription}}"></span>
 <a ng-href="#/documents/{{document.id}}">
   {{document.metadata.title}}
 </a>
-<a class="pull-right glyphicon glyphicon-trash" href=""></a>
-<a class="pull-right glyphicon {{operationIconClass}}" href=""></a>
+<a class="pull-right" href="">
+  <span class="glyphicon glyphicon-trash" title="Delete document"></span>
+</a>
+<a class="pull-right" href="">
+  <span class="glyphicon {{operationIconClass}}" title="{{operationDescription}}"></span>
+</a>
