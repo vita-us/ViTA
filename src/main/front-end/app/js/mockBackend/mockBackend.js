@@ -28,6 +28,8 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
                 TestData.singlePerson);
 
+	$httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person8Hugo$/).respond(TestData.wordcloudhugo);
+	$httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person10Bert$/).respond(TestData.wordcloudbert);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/wordcloud$')).respond(TestData.wordcloud);
 
       }]);
