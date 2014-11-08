@@ -756,7 +756,7 @@
           "isFailed": false,
           "progress": 1.0
         },
-        "status": "scheduled/running/success/cancelled/failed"
+        "status": "success"
       }
 
     };
