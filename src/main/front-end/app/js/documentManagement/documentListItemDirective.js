@@ -63,6 +63,9 @@
         scope.statusIconClass = 'glyphicon-ok-circle';
         scope.statusDescription = 'Analysis successed';
         break;
+      default:
+        scope.statusIconClass = 'glyphicon-question-sign';
+        break;
       }
     }
 
@@ -82,6 +85,9 @@
         break;
       case 'success':
         // no operation
+        break;
+      default:
+        // provide no operation by default
         break;
       }
     }
