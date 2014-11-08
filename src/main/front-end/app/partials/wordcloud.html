@@ -10,9 +10,11 @@
       <input type="search" ng-model="search" placeholder="Search..." class="form-control"
         style="margin-bottom: 5px">
       <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-	<a href="" class="list-group-item" ng-class="{'active': activeWordcloud == 'global'}" ng-click="global()">global</a>
-        <a href="" ng-repeat="person in persons | entityNameFilter:search" ng-click="update(person)"
-	  class="list-group-item" ng-class="{'active': activeWordcloud == person.id}">{{person.displayName}}</a>
+        <a href="" class="list-group-item" ng-class="{'active': activeWordcloud == 'global'}"
+          ng-click="loadGlobalWordcloud()">global</a>
+        <a href="" ng-repeat="person in persons | entityNameFilter:search"
+          ng-click="loadPersonWordcloud(person)" class="list-group-item"
+          ng-class="{'active': activeWordcloud == person.id}">{{person.displayName}}</a>
       </div>
     </div>
   </div>
