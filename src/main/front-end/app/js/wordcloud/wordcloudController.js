@@ -7,7 +7,9 @@
   vitaControllers.controller('WordcloudCtrl', ['$scope', 'Wordcloud', 'Page', '$routeParams',
       function($scope, Wordcloud, Page, $routeParams) {
 
+	$scope.activeWordcloud = 'global';
         $scope.update=  function(person) {
+	  $scope.activeWordcloud = person.id;
           Wordcloud.get({
             documentId: $routeParams.documentId,
 	    entityId: person.id
@@ -17,6 +19,7 @@
         };
 
 	$scope.global = function() {
+	  $scope.activeWordcloud = 'global';
           Wordcloud.get({
             documentId: $routeParams.documentId
           }, function(response) {
