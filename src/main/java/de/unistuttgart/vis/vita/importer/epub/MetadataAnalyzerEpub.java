@@ -14,7 +14,6 @@ import org.jsoup.select.Elements;
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Date;
-import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
@@ -54,7 +53,7 @@ public class MetadataAnalyzerEpub {
    */
   public DocumentMetadata extractMetadata() {
     // use the metadata builder for the correct format
-    MetadataBuilder metadataBuilder = new MetadataBuilder();
+    MetadataBuilderEpub metadataBuilder = new MetadataBuilderEpub();
     metadataBuilder.setAuthor(getAuthor());
     metadataBuilder.setEdition(getEdition());
     metadataBuilder.setGenre(getGenre());
@@ -90,7 +89,7 @@ public class MetadataAnalyzerEpub {
     List<Line> author = new ArrayList<Line>();
     if (!ebook.getMetadata().getAuthors().isEmpty()) {
       for (Author nameParts : ebook.getMetadata().getAuthors()) {
-        String authorName = nameParts.getFirstname() + " " + nameParts.getLastname() + ";";
+        String authorName = nameParts.getFirstname() + " " + nameParts.getLastname();
         author.add(new EpubModuleLine(authorName, false));
       }
     }
@@ -112,11 +111,13 @@ public class MetadataAnalyzerEpub {
         publisherList.add(new EpubModuleLine(ebook.getMetadata().getPublishers().get(i) + ";",
             false));
       }
+      // remove ; from last publisher
+      String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
+      publisherList.get(publisherList.size() - 1).setText(
+          lastPublisher.substring(0, lastPublisher.length()));
+    } else {
+      publisherList.add(new EpubModuleLine(""));
     }
-    // remove ; from last publisher
-    String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
-    publisherList.get(publisherList.size() - 1).setText(
-        lastPublisher.substring(0, lastPublisher.length()));
     return publisherList;
   }
 
