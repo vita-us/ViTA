@@ -12,16 +12,15 @@
       },
       link: function(scope, element, attrs) {
 
-        var progress = scope.document.progress;
+        setStatusIconAndDescription(scope);
 
-        setStatusIconAndDescription(progress.status, scope);
-        setOperationIconAndDescription(progress.status, scope);
+        setOperationIconAndDescription(scope);
       },
       templateUrl: 'templates/documentlistitem.html'
     };
 
-    function setStatusIconAndDescription(status, scope) {
-      switch (status) {
+    function setStatusIconAndDescription(scope) {
+      switch (scope.document.progress.status) {
       case 'cancelled':
         scope.statusIconClass = 'glyphicon-remove-circle';
         scope.statusDescription = 'Analysis was cancelled';
@@ -45,17 +44,17 @@
       }
     }
 
-    function setOperationIconAndDescription(status, scope) {
-      switch (status) {
+    function setOperationIconAndDescription(scope) {
+      switch (scope.document.progress.status) {
       case 'cancelled':
       case 'failed':
         scope.operationIconClass = 'glyphicon-repeat';
-        scope.operationDescription = 'Repeat analysis'
+        scope.operationDescription = 'Repeat analysis';
         break;
       case 'running':
       case 'scheduled':
         scope.operationIconClass = 'glyphicon-ban-circle';
-        scope.operationDescription = 'Stop analysis'
+        scope.operationDescription = 'Stop analysis';
         break;
       case 'success':
         // no operation
