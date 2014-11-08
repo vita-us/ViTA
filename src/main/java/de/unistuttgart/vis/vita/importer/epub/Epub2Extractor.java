@@ -140,7 +140,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
       addEpublinesToList(parts);
       for (List<List<Epubline>> part : parts) {
-        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book,0));
+        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book));
       }
 
       return chapterPositionsParts;
@@ -148,7 +148,8 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
       List<List<Epubline>> part = new ArrayList<List<Epubline>>();
       part = reviser.formatePartEpub2(chapters);
-      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part,book,2));
+      System.out.println("part"+ part.get(0).get(2).getMode());
+      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part,book));
 
       return chapterPositionsPart;
     }
