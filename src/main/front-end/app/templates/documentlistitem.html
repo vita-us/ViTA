@@ -3,8 +3,10 @@
   {{document.metadata.title}}
 </a>
 <a class="pull-right" href="">
-  <span class="glyphicon glyphicon-trash" title="Delete document"></span>
+  <span class="glyphicon glyphicon-trash" title="Delete document"
+  ng-click="deleteDocument()"></span>
 </a>
 <a class="pull-right" href="">
-  <span class="glyphicon {{operationIconClass}}" title="{{operationDescription}}"></span>
+  <span class="glyphicon {{operationIconClass}}" title="{{operationDescription}}"
+  ng-click="operation()"></span>
 </a>
