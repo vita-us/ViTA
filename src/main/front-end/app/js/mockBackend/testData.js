@@ -48,7 +48,7 @@
               "isFailed": false,
               "progress": 1.0
             },
-            status: "success"
+            "status": "success"
           }
         }, {
           "id": "doc14",
@@ -91,7 +91,7 @@
               "isFailed": false,
               "progress": 1.0
             },
-            status: "scheduled"
+            "status": "scheduled"
           }
         }]
       },
@@ -144,7 +144,7 @@
             "isFailed": false,
             "progress": 1.0
           },
-          status: "success"
+          "status": "success"
         },
         "content": {
           "parts": [{
@@ -627,7 +627,7 @@
           "isFailed": false,
           "progress": 1.0
         },
-        status: "scheduled/running/success/cancelled/failed"
+        "status": "scheduled/running/success/cancelled/failed"
       }
 
     };
