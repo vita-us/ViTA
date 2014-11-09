@@ -118,6 +118,7 @@ public class AnalysisController {
     em.getTransaction().begin();
     em.persist(document);
     em.getTransaction().commit();
+    em.close();
     return document;
   }
 
@@ -160,14 +161,15 @@ public class AnalysisController {
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    TypedQuery<Document> query =
-        model.getEntityManager().createNamedQuery("Document.findDocumentById", Document.class);
+    EntityManager em = model.getEntityManager();
+    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", documentId);
     List<Document> documents = query.getResultList();
     if (documents.isEmpty()) {
       throw new IllegalArgumentException("No such document found");
     }
     Document document = documents.get(0);
+    em.close();
 
     scheduleDocumentAnalyisis(document);
   }

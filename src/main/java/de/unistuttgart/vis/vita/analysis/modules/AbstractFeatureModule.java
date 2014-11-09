@@ -41,6 +41,7 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
         featureProgress.setProgress(progress);
     }
     em.getTransaction().commit();
+    em.close();
   }
 
   @Override
@@ -61,6 +62,7 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
       featureProgress.setReady(true);
     }
     em.getTransaction().commit();
+    em.close();
 
     return result;
   }
