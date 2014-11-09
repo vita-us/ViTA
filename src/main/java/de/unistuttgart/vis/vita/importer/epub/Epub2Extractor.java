@@ -14,6 +14,11 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
+/**
+ * Returns the output of Epub2 in terms of the abstract methods
+ * 
+ *
+ */
 public class Epub2Extractor extends AbstractEpubExtractor {
 
   private Document document;
@@ -25,7 +30,13 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   private Epub2TraitsExtractor epublineTraitsExtractor;
   private Epub2IdsAndTitlesExtractor epub2IdsExtractor;
 
-
+  /**
+   * The commited book will be used in the methods below. The instances of Epub2TraitsExtractor and
+   * Epub2IdsAndTitlesExtractor will be created. The method extractChaptersEpub2 will be called.
+   * 
+   * @param book
+   * @throws IOException
+   */
   public Epub2Extractor(Book book) throws IOException {
     super(book);
     this.book = book;
@@ -34,6 +45,11 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     extractChaptersEpub2();
   }
 
+  /**
+   * Extracts the chapters of the ebook and transforms them into a List<List<Epubline>>
+   * 
+   * @throws IOException
+   */
   private void extractChaptersEpub2() throws IOException {
     List<String> tocIds = new ArrayList<String>();
     tocIds = epub2IdsExtractor.getTocIds();
@@ -62,6 +78,12 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     }
   }
 
+  /**
+   * Checks if the currentElement is already in the chapters
+   * 
+   * @param currentElement
+   * @return
+   */
   private boolean epubLineExistent(Element currentElement) {
     for (List<Epubline> chapter : chapters) {
       for (Epubline epubline : chapter) {
@@ -73,6 +95,11 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     return false;
   }
 
+  /**
+   * Removes empty List<Epubline> or List<Epubline> size <= 2
+   * 
+   * @param chapters
+   */
   private void removeEmptyChapters(List<List<Epubline>> chapters) {
     List<List<Epubline>> chaptersToRemove = new ArrayList<List<Epubline>>();
     for (List<Epubline> chapter : chapters) {
@@ -84,6 +111,11 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     chaptersToRemove.clear();
   }
 
+  /**
+   * Transforms the formated chapters into a List<List<Line>>
+   * 
+   * @return
+   */
   private List<List<Line>> getPartLines() {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
@@ -98,6 +130,13 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   }
 
 
+  /**
+   * Transforms the formated chapters into parts and then transforms the parts into several
+   * List<List<Line>>
+   * 
+   * @return
+   * @throws IOException
+   */
   private List<List<Line>> getPartsLines() throws IOException {
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
 
@@ -114,6 +153,12 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     return partsLines;
   }
 
+  /**
+   * Adds each part to the List<List<List<Epubline>>>
+   * 
+   * @param parts
+   * @throws IOException
+   */
   private void addEpublinesToList(List<List<List<Epubline>>> parts) throws IOException {
     for (List<List<Epubline>> part : reviser.formatePartsEpub2(epublineTraitsExtractor
         .getPartsEpublines(chapters))) {
@@ -148,7 +193,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
       List<List<Epubline>> part = new ArrayList<List<Epubline>>();
       part = reviser.formatePartEpub2(chapters);
-      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part,book));
+      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book));
 
       return chapterPositionsPart;
     }
@@ -160,7 +205,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
     if (epub2IdsExtractor.existsPart()) {
       titleList = epub2IdsExtractor.getPartsTitles();
-      
+
       return titleList;
     } else {
       return titleList;

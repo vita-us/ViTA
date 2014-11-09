@@ -14,6 +14,11 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
+/**
+ * Returns the output of Epub3 in terms of the abstract methods
+ * 
+ *
+ */
 public class Epub3Extractor extends AbstractEpubExtractor {
 
   private org.jsoup.nodes.Document document;
@@ -24,10 +29,21 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private PartsAndChaptersReviser reviser;
   private Epub3TraitsExtractor epub3TraitsExtractor = new Epub3TraitsExtractor();
 
+  /**
+   * The commited book will be used in the methods below.
+   * 
+   * @param book
+   * @throws IOException
+   */
   public Epub3Extractor(Book book) throws IOException {
     super(book);
   }
 
+  /**
+   * Empty Strings will be removed in the String chapters and transforms them into a List<List<Line>>
+   * 
+   * @return
+   */
   private List<List<Line>> getPartLines() throws IOException {
     emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partLines = new ArrayList<List<Line>>();
@@ -47,6 +63,11 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     return partLines;
   }
 
+  /**
+   * Empty Strings will be removed in the String parts and transforms them into a List<List<Line>>
+   * 
+   * @return
+   */
   private List<List<Line>> getPartsLines() throws IOException {
     emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partsLines = new ArrayList<List<Line>>();

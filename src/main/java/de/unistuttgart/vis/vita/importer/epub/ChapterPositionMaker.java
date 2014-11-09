@@ -5,6 +5,11 @@ import java.util.List;
 import nl.siegmann.epublib.domain.Book;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 
+/**
+ * Calculates the ChapterPostion for part or parts regarding epub2 and epub3 
+ * 
+ *
+ */
 public class ChapterPositionMaker {
 
   private Epub2TraitsExtractor epublineTraitsExtractor;

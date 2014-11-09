@@ -18,7 +18,7 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**
- * Reads the metadata from the ePub-file and transforms it into a DocumentMetadata, which is the
+ * Reads the metadata from the ePub-file and transforms it per MetadataBuilder into a DocumentMetadata, which is the
  * standard type for metadata in the ViTA-Project. If something can't be read this class will behave
  * robust, and return default or empty values.
  */

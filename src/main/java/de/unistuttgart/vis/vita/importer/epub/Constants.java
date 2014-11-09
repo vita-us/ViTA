@@ -1,5 +1,10 @@
 package de.unistuttgart.vis.vita.importer.epub;
 
+/**
+ * Contains various constants which are used in various epub classes
+ * 
+ *
+ */
 public class Constants {
 
   public static final String PART = "part[\\s]+[\\dIXV]+.*";

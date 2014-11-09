@@ -17,6 +17,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * Extracts ids of chapter Elements regarding part/parts in Epub2 and also the parts titles
+ * 
+ * 
+ *
+ */
 public class Epub2IdsAndTitlesExtractor {
 
   private Book book = new Book();
@@ -26,12 +32,24 @@ public class Epub2IdsAndTitlesExtractor {
   private Matcher matcher;
   private Document document;
 
+  /**
+   * The commited book will be used in the methods below and the addIds() method will be called
+   * 
+   * @param newBook
+   * @throws IOException
+   */
   public Epub2IdsAndTitlesExtractor(Book newBook) throws IOException {
     this.book = newBook;
     addIds();
 
   }
 
+  /**
+   * Checks if the book contains a part
+   * 
+   * @return
+   * @throws IOException
+   */
   public boolean existsPart() throws IOException {
 
     for (Element id : getElementsIds()) {
@@ -43,6 +61,12 @@ public class Epub2IdsAndTitlesExtractor {
     return false;
   }
 
+  /**
+   * Returns jsoup Elements with the ids of the chapters
+   * 
+   * @return
+   * @throws IOException
+   */
   private List<Element> getElementsIds() throws IOException {
     List<Element> elementsIds = new ArrayList<Element>();
     Map<String, String> map = new HashMap<String, String>();
@@ -61,6 +85,11 @@ public class Epub2IdsAndTitlesExtractor {
     return elementsIds;
   }
 
+  /**
+   * Returns the List<List<String>> which contains the correct chapter ids for each part 
+   * @return List<List<String>>
+   * @throws IOException
+   */
   public List<List<String>> getPartsChaptersIds() throws IOException {
     List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
 
@@ -89,6 +118,10 @@ public class Epub2IdsAndTitlesExtractor {
     return partsWithChaptersIds;
   }
 
+  /**
+   * Extracts the chapter ids of the table of contents
+   * @throws IOException
+   */
   private void addIds() throws IOException {
 
     if (book.getNcxResource() != null) {
@@ -113,6 +146,11 @@ public class Epub2IdsAndTitlesExtractor {
     }
   }
 
+  /**
+   * Extracts the exact chapter id of the "src" element in the table of contents
+   * @param input
+   * @return
+   */
   private String extractId(String input) {
 
     StringTokenizer stringTokenizer = new StringTokenizer(input, "#");
@@ -123,6 +161,11 @@ public class Epub2IdsAndTitlesExtractor {
     return "";
   }
 
+  /**
+   * Returns the titles of the parts
+   * @return
+   * @throws IOException
+   */
   public List<String> getPartsTitles() throws IOException {
     List<String> partsTitles = new ArrayList<String>();
     List<Element> elementsIds = new ArrayList<Element>();
@@ -137,6 +180,10 @@ public class Epub2IdsAndTitlesExtractor {
     return partsTitles;
   }
 
+  /**
+   * Returns the chapters ids
+   * @return
+   */
   public List<String> getTocIds() {
     return tocIds;
   }

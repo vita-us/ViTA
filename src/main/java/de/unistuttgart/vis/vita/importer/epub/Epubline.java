@@ -1,5 +1,10 @@
 package de.unistuttgart.vis.vita.importer.epub;
 
+/**
+ * Utility class for Epub2Extraction which contains the mode, the text/line and the id if available
+ * 
+ *
+ */
 public class Epubline {
   private String mode;
   private String epubline;
