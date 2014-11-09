@@ -68,7 +68,7 @@ public class Epub2ExtractorTest {
 
     // begin of chapterpostion of the first chapter; regarding heading, textstart, textend
     assertEquals(0, chapterPositionsPart.get(0).getStartOfHeading(1));
-    assertEquals(2, chapterPositionsPart.get(0).getStartOfText(1));
+    assertEquals(4, chapterPositionsPart.get(0).getStartOfText(1));
 
     // end of chapterpostion of the last chapter; regarding textend
     assertEquals(5392, chapterPositionsPart.get(0).getEndOfText(29));
@@ -102,7 +102,7 @@ public class Epub2ExtractorTest {
   }
 
   @Test
-  public void testChapterPositionsPart() {
+  public void testChapterPositionsParts() {
     // PART I: begin of chapterpostion of the first chapter; regarding heading, textstart, textend
     assertEquals(0, chapterPositionsParts.get(0).getStartOfHeading(1));
     assertEquals(2, chapterPositionsParts.get(0).getStartOfText(1));

@@ -101,7 +101,7 @@ public class Epub2TraitsExtractor {
    */
   public Epubline getTextStart(List<Epubline> chapter) {
     for (Epubline epubline : chapter) {
-      if (epubline.getMode().equals(Constants.TEXTSTART)|| epubline.getMode().equals(Constants.SUBHEADING)) {
+      if (epubline.getMode().equals(Constants.TEXTSTART)) {
         return epubline;
       }
     }
