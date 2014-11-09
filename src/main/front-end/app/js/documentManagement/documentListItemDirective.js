@@ -15,7 +15,7 @@
       templateUrl: 'templates/documentlistitem.html'
     };
 
-    function link() {
+    function link(scope) {
       var document = scope.document;
 
       scope.deleteDocument = function() {
