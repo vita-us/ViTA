@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
+import javax.persistence.EntityManager;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -17,7 +19,8 @@ public class TestApplication extends ResourceConfig {
   public static class MyApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
-      bind(Model.createUnitTestModelWithoutDrop()).to(Model.class);
+      Model model = Model.createUnitTestModelWithoutDrop();
+      bindFactory(model).to(EntityManager.class);
       bind(AnalysisController.class).to(AnalysisController.class);
     }
   }

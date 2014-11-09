@@ -19,18 +19,9 @@ import de.unistuttgart.vis.vita.services.responses.DocumentPartsResponse;
 public class DocumentPartsService {
   
   private String documentId;
-  
-  private EntityManager em;
-  
-  /**
-   * Creates new DocumentPartsService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
+
   @Inject
-  public DocumentPartsService(Model model) {
-    this.em = model.getEntityManager();
-  }
+  private EntityManager em;
 
   /**
    * Sets the id of the document for which this service should provide the DocumentParts.

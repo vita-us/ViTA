@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.client.Entity;
@@ -13,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
@@ -31,7 +31,7 @@ public class AnalysisServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    em = Model.createUnitTestModel().getEntityManager();
+    em = getModel().getEntityManager();
     
     // need a document to stop its analysis
     Document testDocument = new DocumentTestData().createTestDocument(1);

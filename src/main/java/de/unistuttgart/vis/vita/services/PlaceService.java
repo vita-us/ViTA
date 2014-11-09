@@ -19,18 +19,9 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 public class PlaceService {
   
   private String placeId;
-  
-  private EntityManager em;
-  
-  /**
-   * Creates a new PlaceService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
+
   @Inject
-  public PlaceService (Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
 
   /**
    * Sets the id of the Place this resource should represent.

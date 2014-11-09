@@ -29,18 +29,9 @@ public class PlacesService {
   
   @Context
   private ResourceContext resourceContext;
-  
-  private EntityManager em;
-  
-  /**
-   * Creates a new instance of PlacesService
-   * 
-   * @param model - the model to be used in this service
-   */
+
   @Inject
-  public PlacesService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
   
   /**
    * Sets the id of the document for which this service should provide the mentioned places.

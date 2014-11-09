@@ -24,7 +24,7 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
  */
 @ManagedBean
 public class AttributeService {
-
+  @Inject
   private EntityManager em;
   
   private String documentId;
@@ -33,16 +33,6 @@ public class AttributeService {
   
   @Context
   private ResourceContext resourceContext;
-
-  /**
-   * Create new AttributeService and inject Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public AttributeService(Model model) {
-    em = model.getEntityManager();
-  }
   
   /**
    * Sets the id of the document this service refers to and returns itself.

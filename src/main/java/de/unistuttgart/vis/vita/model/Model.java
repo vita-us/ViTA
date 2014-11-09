@@ -14,15 +14,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.glassfish.hk2.api.Factory;
+
 import com.google.common.collect.ImmutableMap;
 
 /**
  * Represents the Model of the application.
  */
 @ApplicationScoped
-public class Model {
+public class Model implements Factory<EntityManager> {
   private TextRepository textRepository = new TextRepository();
   private EntityManagerFactory entityManagerFactory;
+  
+  private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
   
   private static final String RELATIVE_DATA_DIRECTORY_ROOT = ".vita";
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
@@ -42,9 +46,11 @@ public class Model {
     try {
       appName = new InitialContext().lookup("java:app/AppName").toString();
     } catch (NamingException e) {
-      throw new RuntimeException("Unable to determine application name", e);
+      LOGGER.log(Level.INFO, "Unable to determine application name, using 'default'", e);
+      appName = "default";
     }
-    return Paths.get(System.getProperty("user.home")).resolve(RELATIVE_DATA_DIRECTORY_ROOT).resolve(appName);
+    return Paths.get(System.getProperty("user.home")).resolve(RELATIVE_DATA_DIRECTORY_ROOT)
+        .resolve(appName);
   }
   
   /**
@@ -94,5 +100,15 @@ public class Model {
     } catch (ClassNotFoundException e) {
       Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load H2 driver", e);
     }
+
+  @Override
+  @RequestScoped
+  public EntityManager provide() {
+    return getEntityManager();
+  }
+
+  @Override
+  public void dispose(EntityManager instance) {
+    instance.close();
   }
 }

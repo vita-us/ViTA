@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -26,7 +27,6 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
@@ -36,11 +36,13 @@ import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
  */
 @Path("/documents")
 @ManagedBean
+@Stateless
 public class DocumentsService {
   
   private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator  
                                               + ".vita" + File.separator + "docs" + File.separator;
-  
+
+  @Inject
   private EntityManager em;
   
   @Inject
@@ -48,16 +50,6 @@ public class DocumentsService {
   
   @Context
   private ResourceContext resourceContext;
-  
-  /**
-   * Creates new DocumentsService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public DocumentsService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Returns a DocumentsResponse including a list of Documents with a given maximum length,

@@ -35,7 +35,7 @@ public class AttributeServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em  = Model.createUnitTestModel().getEntityManager();
+    EntityManager em  = getModel().getEntityManager();
     
     // set up test data
     testData = new AttributeTestData();

@@ -17,7 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.entity.*;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
@@ -30,20 +30,11 @@ public class AttributesService {
   private String documentId;
   private String entityId;
 
+  @Inject
   private EntityManager em;
 
   @Context
   private ResourceContext resourceContext;
-
-  /**
-   * Creates new AttributesService and inject Model.
-   * 
-   * @param model - the injected model
-   */
-  @Inject
-  public AttributesService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Sets the id of the document this service refers to and returns itself.

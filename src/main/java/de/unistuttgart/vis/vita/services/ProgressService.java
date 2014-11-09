@@ -20,17 +20,8 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 public class ProgressService {
   private String documentId;
 
-  private EntityManager em;
-  
-  /**
-   * Creates new ProgressService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
   @Inject
-  public ProgressService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
   
   /**
    * Sets the id of the document this should represent the progress of

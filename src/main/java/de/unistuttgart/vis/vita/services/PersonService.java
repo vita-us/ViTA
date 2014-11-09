@@ -19,18 +19,9 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 public class PersonService {
   
   private String personId;
-  
-  private EntityManager em;
-  
-  /**
-   * Creates new PersonService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
+
   @Inject
-  public PersonService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
   
   /**
    * Sets the id of the Person this resource should represent.

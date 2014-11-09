@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.ProgressTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -43,7 +42,7 @@ public class ProgressServiceTest extends ServiceTest {
     documentIdWithoutProgress = testDoc2.getId();
 
     // persist test document
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
      
     em.getTransaction().begin();
     em.persist(testDoc1);

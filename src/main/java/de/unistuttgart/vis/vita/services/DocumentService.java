@@ -20,7 +20,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 
@@ -32,20 +31,11 @@ public class DocumentService {
   
   private String id;
 
+  @Inject
   private EntityManager em;
 
   @Context
   private ResourceContext resourceContext;
-
-  /**
-   * Creates new DocumentService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public DocumentService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Sets the id of the document this resource should represent

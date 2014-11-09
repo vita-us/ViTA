@@ -98,7 +98,7 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     addId(targetPerson.getId());
     
     // persist test data
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(chapterRange);

@@ -21,17 +21,8 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 public class ChapterService {
   private String chapterId;
 
-  private EntityManager em;
-  
-  /**
-   * Create new ChapterService and inject Model.
-   * 
-   * @param model - the injected Model
-   */
   @Inject
-  public ChapterService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
   
   /**
    * Sets the id of the chapter this resource should represent

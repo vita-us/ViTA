@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,6 @@ import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.PlaceTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -87,7 +87,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     EntityRelation<Entity> testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(testPlaceRelation);
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     // persist persons and their relation
     em.getTransaction().begin();

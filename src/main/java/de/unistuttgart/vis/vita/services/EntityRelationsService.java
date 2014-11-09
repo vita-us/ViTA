@@ -32,7 +32,8 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 public class EntityRelationsService {
   
   private String documentId;
-  
+
+  @Inject
   private EntityManager em;
   
   @Context
@@ -40,7 +41,6 @@ public class EntityRelationsService {
   
   @Inject
   public EntityRelationsService(Model model) {
-    em = model.getEntityManager();
   }
   
   /**

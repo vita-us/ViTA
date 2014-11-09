@@ -30,17 +30,8 @@ public class PersonsService {
   @Context
   private ResourceContext resourceContext;
 
-  private EntityManager em;
-
-  /**
-   * Creates a new Instance of PersonsService.
-   * 
-   * @param model - the model to be used in this service
-   */
   @Inject
-  public PersonsService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
 
   /**
    * Sets the id of the document for which this service should provide the mentioned persons.

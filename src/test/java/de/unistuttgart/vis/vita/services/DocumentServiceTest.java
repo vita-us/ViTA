@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.client.Entity;
@@ -12,7 +14,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 
@@ -35,7 +36,7 @@ public class DocumentServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     testData = new DocumentTestData();
     Document testDoc1 = testData.createTestDocument(1);
@@ -141,6 +142,7 @@ public class DocumentServiceTest extends ServiceTest {
    * @return true if HTTP status is not 404, false otherwise
    */
   private boolean canBeCaught(String idToCheck) {
+    java.util.logging.Logger.getLogger("test").info("test");
     Response response = target("documents/" + idToCheck).request().get();
     return (response.getStatus() != 404);
   }
