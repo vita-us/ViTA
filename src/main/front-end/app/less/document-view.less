@@ -1,0 +1,46 @@
+@document-view-header-height: 60px;
+@document-view-footer-height: 60px;
+
+body#document-view {
+  padding: @document-view-header-height 0 @document-view-footer-height 0;
+}
+
+#document-view-header,
+#document-view-footer {
+  position: fixed;
+  height: 80px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#document-view-header {
+  height: @document-view-header-height;
+  border-bottom: 1px solid @border-color;
+  top: 0;
+}
+
+#document-view-footer {
+  height: @document-view-footer-height;
+  padding-top: 10px;
+  bottom: 0;
+  border-top: 1px solid @border-color;
+}
+
+#document-view-main {
+  overflow: auto;
+  height: 100%;
+  
+  .document-view-menu {
+    margin-bottom: 30px;
+    
+    &> div {
+      @media (min-width: 768px) { 
+        position: fixed;
+      }
+    }
+  }
+  
+  .document-view-text {
+    
+  }
+}
