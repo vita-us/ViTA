@@ -11,6 +11,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * Extracts various traits regarding Epub3
+ * 
+ *
+ */
 public class Epub3TraitsExtractor {
 
   private ContentBuilder contentBuilder = new ContentBuilder();
@@ -24,7 +29,12 @@ public class Epub3TraitsExtractor {
     return false;
   }
 
-  // Checks if ebook has parts
+  /**
+   * Checks if the book has part
+   * @param resources
+   * @return
+   * @throws IOException
+   */
   public boolean existsPartInEpub3(List<Resource> resources) throws IOException {
     if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
@@ -43,6 +53,12 @@ public class Epub3TraitsExtractor {
     return false;
   }
 
+  /**
+   * Extracts chapters of the book
+   * @param resources
+   * @return
+   * @throws IOException
+   */
   public List<List<String>> extractChapters(List<Resource> resources) throws IOException {
     List<List<String>> chapters = new ArrayList<List<String>>();
     if (!(resources == null) && !resources.isEmpty()) {
@@ -64,6 +80,11 @@ public class Epub3TraitsExtractor {
     return chapters;
   }
 
+  /** 
+   * Adds the text of the elements in section to List
+   * @param chapterParagraphs
+   * @return
+   */
   private List<String> getChapterLines(Elements chapterParagraphs) {
     List<String> chapterLines = new ArrayList<String>();
     for (Element chapterParagraph : chapterParagraphs) {
@@ -73,6 +94,12 @@ public class Epub3TraitsExtractor {
 
   }
 
+  /**
+   * Extracts the parts of the book
+   * @param resources
+   * @return
+   * @throws IOException
+   */
   public List<List<List<String>>> extractParts(List<Resource> resources) throws IOException {
     List<List<List<String>>> parts = new ArrayList<List<List<String>>>();
     if (!resources.isEmpty()) {
@@ -92,6 +119,15 @@ public class Epub3TraitsExtractor {
     return parts;
   }
 
+  /**
+   * Builds a part with commited parameters
+   * @param newResource
+   * @param newSection
+   * @param sections
+   * @param resources
+   * @return
+   * @throws IOException
+   */
   private List<List<String>> partBuilder(Resource newResource, Element newSection,
       Elements sections, List<Resource> resources) throws IOException {
     List<List<String>> partChapters = new ArrayList<List<String>>();
@@ -127,6 +163,11 @@ public class Epub3TraitsExtractor {
 
   }
 
+  /**
+   * Adds the chapter to a part
+   * @param partChapters
+   * @param section
+   */
   private void addChapterToPart(List<List<String>> partChapters, Element section) {
     Elements chapterParagraphs = section.getAllElements();
     List<String> chapter = getChapterLines(chapterParagraphs);

@@ -9,17 +9,30 @@ import java.util.zip.ZipInputStream;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubReader;
 
-
+/**
+ * Gets the book of the path and ZipInputStream
+ * 
+ *
+ */
 public class EpubFileImporter {
 
   private Path path;
   private ZipInputStream zipInputStream;
 
+  /**
+   * With the commited path the book will be fetched
+   * @param newPath
+   */
   public EpubFileImporter(Path newPath) {
 
     this.path = newPath;
   }
 
+  /**
+   * Returns the book of the path
+   * @return
+   * @throws IOException
+   */
   public Book getEbook() throws IOException {
     Book ebook;
     EpubReader epubReader = new EpubReader();

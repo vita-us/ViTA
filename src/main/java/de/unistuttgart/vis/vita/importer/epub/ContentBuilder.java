@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Reads the content of an Inpustream and transforms it into a string
+ * 
+ *
+ */
 public class ContentBuilder {
    
   public String getStringFromInputStream(InputStream is) {

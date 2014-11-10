@@ -11,6 +11,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+/**
+ * Extracts various traits regarding Epub2
+ * 
+ *
+ */
 public class Epub2TraitsExtractor {
 
   private ContentBuilder contentBuilder = new ContentBuilder();
@@ -21,6 +26,15 @@ public class Epub2TraitsExtractor {
 
   }
 
+  /**
+   * Extracts the lines of a chapter and transforms them into a List<Epubline>
+   * @param currentElement
+   * @param document
+   * @param currentResource
+   * @param ids
+   * @return
+   * @throws IOException
+   */
   public List<Epubline> extractChapterEpublines(Element currentElement, Document document,
       Resource currentResource, List<String> ids) throws IOException {
 
@@ -66,6 +80,11 @@ public class Epub2TraitsExtractor {
     return chapter;
   }
 
+  /**
+   * Returns the correct Epubline regarding the HEADING
+   * @param chapter
+   * @return
+   */
   public Epubline getHeading(List<Epubline> chapter) {
     for (Epubline epubline : chapter) {
       if (epubline.getMode().equals(Constants.HEADING)) {
@@ -75,6 +94,11 @@ public class Epub2TraitsExtractor {
     return null;
   }
 
+  /**
+   * Returns the correct Epubline regarding the TEXTSTART
+   * @param chapter
+   * @return
+   */
   public Epubline getTextStart(List<Epubline> chapter) {
     for (Epubline epubline : chapter) {
       if (epubline.getMode().equals(Constants.TEXTSTART)) {
@@ -84,6 +108,11 @@ public class Epub2TraitsExtractor {
     return null;
   }
 
+  /**
+   * Returns the correct Epubline regarding the TEXTEND
+   * @param chapter
+   * @return
+   */
   public Epubline getTextEnd(List<Epubline> chapter) {
     for (Epubline epubline : chapter) {
       if (epubline.getMode().equals(Constants.TEXTEND)) {
@@ -93,6 +122,14 @@ public class Epub2TraitsExtractor {
     return null;
   }
 
+  /**
+   * Returns the correct position of the Subheading and adds the text to the chapter
+   * @param currentElement
+   * @param document
+   * @param chapter
+   * @param ids
+   * @return
+   */
   private int getSubheadingPosition(Element currentElement, Document document,
       List<Epubline> chapter, List<String> ids) {
    
@@ -110,6 +147,12 @@ public class Epub2TraitsExtractor {
     return start;
   }
 
+  /**
+   * Returns a List<List<List<Epubline>>> which contains parts of a book
+   * @param chapters
+   * @return
+   * @throws IOException
+   */
   public List<List<List<Epubline>>> getPartsEpublines(List<List<Epubline>> chapters)
       throws IOException {
     

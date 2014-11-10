@@ -5,12 +5,17 @@ import java.util.List;
 import nl.siegmann.epublib.domain.Book;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 
+/**
+ * Calculates the ChapterPostion for part or parts regarding epub2 and epub3 
+ * 
+ *
+ */
 public class ChapterPositionMaker {
 
   private Epub2TraitsExtractor epublineTraitsExtractor;
 
   public ChapterPosition calculateChapterPositionsEpub2(List<List<Epubline>> newChapters,
-      Book newBook, int textStartOffset) {
+      Book newBook) {
 
     epublineTraitsExtractor = new Epub2TraitsExtractor(newBook);
     int currentSize = 0;
@@ -19,7 +24,7 @@ public class ChapterPositionMaker {
 
       chapterPosition
           .addChapter(chapter.indexOf(epublineTraitsExtractor.getHeading(chapter)) + currentSize,
-              chapter.indexOf(epublineTraitsExtractor.getTextStart(chapter))-textStartOffset + currentSize,
+              chapter.indexOf(epublineTraitsExtractor.getTextStart(chapter)) + currentSize,
               chapter.indexOf(epublineTraitsExtractor.getTextEnd(chapter)) + currentSize);
 
       currentSize = currentSize + chapter.size();
