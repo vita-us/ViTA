@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -22,7 +20,6 @@ import de.unistuttgart.vis.vita.importer.epub.EpubVersion;
 import de.unistuttgart.vis.vita.importer.epub.EpubVersionDetector;
 import de.unistuttgart.vis.vita.importer.epub.MetadataAnalyzerEpub;
 import de.unistuttgart.vis.vita.importer.epub.NoExtractorFoundException;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
