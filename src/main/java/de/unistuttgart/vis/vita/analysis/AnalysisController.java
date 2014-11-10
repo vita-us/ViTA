@@ -51,7 +51,8 @@ public class AnalysisController {
    * This constructor should not be used manually, only by the CDI framework
    */
   public AnalysisController() {
-    this(null); // Model will be set by CDI framework
+    // Model will be set by CDI framework
+    this(null);
   }
 
   /**

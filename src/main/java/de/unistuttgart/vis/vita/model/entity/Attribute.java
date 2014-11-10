@@ -1,7 +1,5 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
 

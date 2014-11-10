@@ -29,26 +29,27 @@ public final class ModuleClass {
     
     AnalysisModule annotation = moduleClass.getAnnotation(AnalysisModule.class);
     if (annotation == null) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " does not have the "
-          + "@AnalysisModule annotation.");
+      throw new InvalidModuleException(String.format(
+          "the class %s does not have the @AnalysisModule annotation.", moduleClass.getName()));
     }
 
     if (!Module.class.isAssignableFrom(moduleClass)) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " does not implement the "
-          + "Module interface.");
+      throw new InvalidModuleException(String.format(
+          "The class %s does not implement the Module interface.", moduleClass.getName()));
     }
     
     resultClass = getResultClass(moduleClass);
     if (resultClass == null) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " should specify the "
-          + "concrete type parameter for the Module interface.");
+      throw new InvalidModuleException(String.format(
+          "The class %s should specify the concrete type parameter for the Module interface.",
+          moduleClass.getName()));
     }
     
     dependencies = ImmutableSet.copyOf(annotation.dependencies());
     
     if (dependencies.contains(resultClass)) {
-      throw new InvalidModuleException("The class " + moduleClass.getName()
-          + " depends on its own result");
+      throw new InvalidModuleException(String.format("The class %s depends on its own result",
+          moduleClass.getName()));
     }
 
     try {

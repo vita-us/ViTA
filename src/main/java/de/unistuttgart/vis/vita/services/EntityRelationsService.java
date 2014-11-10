@@ -71,37 +71,38 @@ public class EntityRelationsService {
                                         @QueryParam("rangeEnd") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
-    // initialize lists
-    List<String> entityIds = null;
-    List<EntityRelation<Entity>> relations = null;
-    
     // check parameters
     if (steps <= 0) {
       throw new WebApplicationException("Illegal amount of steps!");
-    } else if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
+    }
+
+    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
       throw new WebApplicationException("Illegal range!");
-    } else if (eIds == null || "".equals(eIds)) {
+    }
+
+    if (eIds == null || "".equals(eIds)) {
       throw new WebApplicationException("No entities specified!");
-    } else {
-      // convert entity id string
-      entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
-      
-      // get relations from database how they are read depends on 'type'
-      switch (type.toLowerCase()) {
-        case "person":
-          relations = readRelationsFromDatabase(steps, entityIds, Person.class.getSimpleName());
-          break;
-        case "place":
-          relations = readRelationsFromDatabase(steps, entityIds, Place.class.getSimpleName());
-          break;
-        case "all":
-          relations = readRelationsFromDatabase(steps, entityIds); 
-          break;
-        default:
-          throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
-      }
     }
     
+    // convert entity id string
+    List<String> entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
+
+    // get relations from database how they are read depends on 'type'
+    List<EntityRelation<Entity>> relations;
+    switch (type.toLowerCase()) {
+      case "person":
+        relations = readRelationsFromDatabase(steps, entityIds, Person.class.getSimpleName());
+        break;
+      case "place":
+        relations = readRelationsFromDatabase(steps, entityIds, Place.class.getSimpleName());
+        break;
+      case "all":
+        relations = readRelationsFromDatabase(steps, entityIds);
+        break;
+      default:
+        throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
+    }
+
     // create the response and return it
     return new RelationsResponse(entityIds, createConfiguration(relations));
   }
