@@ -219,13 +219,9 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
    * @return The Textspan of the annotation.
    */
   private TextSpan getTextSpan(Annotation theAnnotation, Chapter chapter) {
-    TextPosition
-        posStart = new TextPosition(chapter, theAnnotation.getStartNode().getOffset().intValue());
-    TextPosition
-        posEnd =
-        new TextPosition(chapter, theAnnotation.getEndNode().getOffset().intValue());
-
-    return new TextSpan(posStart, posEnd);
+    return new TextSpan(chapter,
+        theAnnotation.getStartNode().getOffset().intValue(),
+        theAnnotation.getEndNode().getOffset().intValue());
   }
 
   /**
