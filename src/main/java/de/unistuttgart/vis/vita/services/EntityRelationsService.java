@@ -73,7 +73,7 @@ public class EntityRelationsService {
                                         @QueryParam("type") String type) {
     // initialize lists
     List<String> entityIds = null;
-    List<EntityRelation<Entity>> relations = null;
+    List<EntityRelation> relations = null;
     
     // check parameters
     if (steps <= 0) {
@@ -114,7 +114,7 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation<Entity>> readRelationsFromDatabase(int steps, List<String> ids) {
+  private List<EntityRelation> readRelationsFromDatabase(int steps, List<String> ids) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     query.setParameter("entityIds", ids);
     query.setMaxResults(steps);
@@ -130,7 +130,7 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation<Entity>> readRelationsFromDatabase(int steps, 
+  private List<EntityRelation> readRelationsFromDatabase(int steps, 
                                                                   List<String> ids, 
                                                                   String type) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
@@ -147,9 +147,9 @@ public class EntityRelationsService {
    * @param relations - the EntityRelations to be mapped
    * @return the configurations as a flat representation of the given relations
    */
-  private List<RelationConfiguration> createConfiguration(List<EntityRelation<Entity>> relations) {
+  private List<RelationConfiguration> createConfiguration(List<EntityRelation> relations) {
     List<RelationConfiguration> configurations = new ArrayList<>();
-    for (EntityRelation<Entity> entityRelation : relations) {
+    for (EntityRelation entityRelation : relations) {
       configurations.add(new RelationConfiguration(entityRelation));
     }
     return configurations;
