@@ -21,7 +21,7 @@ public class TestApplication extends ResourceConfig {
     protected void configure() {
       Model model = Model.createUnitTestModelWithoutDrop();
       bindFactory(model).to(EntityManager.class);
-      bind(AnalysisController.class).to(AnalysisController.class);
+      bind(new AnalysisController(model)).to(AnalysisController.class);
     }
   }
 }

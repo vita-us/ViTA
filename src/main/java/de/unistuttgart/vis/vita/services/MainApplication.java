@@ -22,7 +22,7 @@ public class MainApplication extends ResourceConfig {
       Model model = new Model();
       bind(model).to(Model.class);
       bindFactory(model).to(EntityManager.class);
-      bind(AnalysisController.class).to(AnalysisController.class);
+      bind(new AnalysisController(model)).to(AnalysisController.class);
     }
   }
 }
