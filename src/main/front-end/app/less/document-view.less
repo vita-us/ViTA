@@ -33,8 +33,18 @@ body#document-view {
   .document-view-menu {
     margin-bottom: 30px;
     
-    .dv-menu-fixed-wrap {
-      @media (min-width: 768px) { 
+    .chapter {
+      padding-left: 3px;
+      margin-bottom: 5px;
+    }
+    
+    @media (min-width: 768px) {
+      margin-bottom: 0;
+      height: 100%;
+      background-color: @light-grey-background-color;
+      border-right: 1px dashed @border-color;
+      
+      .dv-menu-fixed-wrap {
         position: fixed;
         width: inherit;
         padding-right: 20px;

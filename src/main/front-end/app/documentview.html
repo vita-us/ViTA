@@ -11,11 +11,13 @@
     <h2>{{document.metadata.title}}</h2>
   </div>
   <div class="container-fluid" id="document-view-main">
-    <div class="row">
+    <div class="row" style="height: 100%">
       <div class="col-sm-3 document-view-menu">
         <div class="dv-menu-fixed-wrap">
           <div class="part" data-ng-repeat="part in parts">
-            <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+            <h3>
+              <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+            </h3>
             <div class="chapter" data-ng-repeat="chapter in part.chapters">
               <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
             </div>
