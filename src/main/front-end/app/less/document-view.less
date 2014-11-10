@@ -33,9 +33,11 @@ body#document-view {
   .document-view-menu {
     margin-bottom: 30px;
     
-    &> div {
+    .dv-menu-fixed-wrap {
       @media (min-width: 768px) { 
         position: fixed;
+        width: inherit;
+        padding-right: 20px;
       }
     }
   }
