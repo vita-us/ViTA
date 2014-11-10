@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -54,8 +53,10 @@ public class AttributeOccurrencesServiceTest extends ServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
 
     // Set range
-    TextPosition rangeStartPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition rangeEndPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
+    TextPosition rangeStartPos =
+        TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
+    TextPosition rangeEndPos =
+        TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_END);
 
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
