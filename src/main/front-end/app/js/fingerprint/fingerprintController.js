@@ -7,6 +7,16 @@
   vitaControllers.controller('FingerprintCtrl', ['$scope', 'Fingerprint', 'Page', '$routeParams',
       'DocumentParts', function($scope, Fingerprint, Page, $routeParams, DocumentParts) {
 
+        $scope.activeFingerprints = [];
+        $scope.onclick = function(id) {
+      if( $scope.activeFingerprints.indexOf(id) > -1 ) {
+        $scope.activeFingerprints.splice($scope.activeFingerprints.indexOf(id),1);
+        } else {
+          $scope.activeFingerprints.push(id);
+          }
+          alert($scope.activeFingerprints);
+        };
+
         DocumentParts.get({
           documentId: $routeParams.documentId
         }, function(response) {

@@ -10,8 +10,8 @@
           <input type="search" ng-model="search" placeholder="Search..." class="form-control"
             style="margin-top: 5px; margin-bottom: 5px;">
           <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-            <a ng-repeat="person in persons | entityNameFilter:search" href="#"
-              class="list-group-item">{{person.displayName}}<input type="checkbox"
+            <a ng-repeat="person in persons | entityNameFilter:search"
+	       class="list-group-item" ng-click="onclick(person.id)" ng-class="{'active': activeFingerprints.indexOf(person.id) > -1}">{{person.displayName}}<input type="checkbox"
               class="pull-right"></a>
           </div>
         </div>
