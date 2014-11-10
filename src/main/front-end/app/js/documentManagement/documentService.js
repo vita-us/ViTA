@@ -10,6 +10,7 @@
       get: {
         method: 'GET'
       }
+      // delete method is implicitly declared
     });
   }]);
 

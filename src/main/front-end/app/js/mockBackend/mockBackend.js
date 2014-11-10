@@ -8,14 +8,13 @@
       'TestData',
       function($httpBackend, TestData) {
 
-        // fingerprint, occurrences of relations and attributes aren't working
-        // currently
-        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/[^/]+/fingerprints+$')).respond(
-                TestData.fingerprint);
-
         // implementation of the wordcloud is currently delayed
-        $httpBackend.whenGET(new RegExp('webapi/documents/[^/]+/wordcloud$')).respond(
-                TestData.wordcloud);
+        $httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person8Hugo$/).respond(
+                TestData.wordcloudhugo);
+        $httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person10Bert$/).respond(
+                TestData.wordcloudbert);
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/wordcloud$'))
+                .respond(TestData.wordcloud);
 
         $httpBackend.whenGET(new RegExp('.*')).passThrough();
         $httpBackend.whenPOST(new RegExp('.*')).passThrough();

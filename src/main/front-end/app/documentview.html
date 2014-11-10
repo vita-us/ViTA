@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="vita" ng-controller="DocumentViewCtrl">
+<head>
+<meta charset="utf-8">
+<title>ViTA - Document</title>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body id="document-view">
+  <div class="container-fluid" id="document-view-header">
+    <h2>{{document.metadata.title}}</h2>
+  </div>
+  <div class="container-fluid" id="document-view-main">
+    <div class="row">
+      <div class="col-sm-3 document-view-menu">
+        <div class="part" data-ng-repeat="part in parts">
+          <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+          <div class="chapter" data-ng-repeat="chapter in part.chapters">
+            <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-9 document-view-text">
+        <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
+          data-part-data="part" data-document-id="document.id"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" id="document-view-footer">
+    Search bar
+  </div>
+
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery.mousewheel.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/angular.js"></script>
+  <script src="js/angular-route.js"></script>
+  <script src="js/angular-resource.js"></script>
+  <script src="js/angular-mocks.js"></script>
+  <script src="js/vita.js"></script>
+</body>
+</html>

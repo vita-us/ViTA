@@ -22,11 +22,9 @@ describe('WordcloudCtrl', function() {
   }));
 
   it('should create "wordcloud" model', inject(function(TestData) {
-
     expect(scope.wordcloud).not.toBeDefined();
     $httpBackend.flush();
     expect(scope.wordcloud).toEqualData(TestData.wordcloud.items);
-
   }));
 
 });
