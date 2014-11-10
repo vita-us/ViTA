@@ -45,7 +45,7 @@
       controller: 'GraphNetworkCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
-      controller: ''
+      controller: 'WordcloudCtrl'
     }).when('/documents/:documentId/documentview', {
       templateUrl: 'partials/documentview.html',
       controller: ''
@@ -74,12 +74,26 @@
     };
   });
 
-  app.controller('PageCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.title = 'Default page title';
-    Page.breadcrumbs = null;
-    Page.showMenu = true;
-    Page.tab = 1;
-    $scope.Page = Page;
-  }]);
+  app.controller('PageCtrl', [
+      '$scope',
+      'Page',
+      'DocumentViewSender',
+      '$routeParams',
+      function($scope, Page, DocumentViewSender, $routeParams) {
+        Page.title = 'Default page title';
+        Page.breadcrumbs = null;
+        Page.showMenu = true;
+        Page.tab = 1;
+        $scope.Page = Page;
+
+        $scope.openDocumentView = function() {
+          window.open('documentview.html', 'documentView',
+                  'width=0,height=0,left=0,alwaysRaised=yes');
+        };
+
+        DocumentViewSender.onDocumentIdRequest(function() {
+          DocumentViewSender.sendDocumentId($routeParams.documentId);
+        });
+      }]);
 
 })(angular);

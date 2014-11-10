@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -33,6 +35,8 @@ public class AnalysisExecutor {
   private AnalysisStatus status = AnalysisStatus.READY;
 
   private List<AnalysisObserver> observers = new ArrayList<>();
+
+  private static final Logger logger = Logger.getLogger(AnalysisExecutor.class.getName());
 
   /**
    * Creates an executor for the scheduled modules
@@ -136,6 +140,8 @@ public class AnalysisExecutor {
     final ModuleResultProvider resultProvider = moduleState.getResultProvider();
     final Module<?> instance = moduleState.getInstance();
 
+    logger.info("Starting " + moduleState.getModuleClass());
+
     Thread thread = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -147,10 +153,15 @@ public class AnalysisExecutor {
               onModuleProgress(moduleState, progress);
             }
           });
+          if (result == null)
+            throw new RuntimeException("The module " + moduleState.getModuleClass()
+                + " returned null");
         } catch(Exception e) {
+          logger.log(Level.SEVERE, "Module " + moduleState.getModuleClass() + " failed", e);
           onModuleFailed(moduleState, e);
           return;
         }
+        logger.info("Module " + moduleState.getModuleClass() + " finished");
         onModuleFinished(moduleState, result);
       }
     });
@@ -211,16 +222,18 @@ public class AnalysisExecutor {
   }
 
   /**
-   * Recursively removes the module and all modules that depend on it
+   * Recursively removes the module and all modules that depend on it. Will notify the dependent
+   * modules that their dependency has failed
    * 
    * @param moduleToRemove the module to remove
    */
   private synchronized void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
     scheduledModules.remove(moduleToRemove);
     List<ModuleExecutionState> scheduledModulesCopy = ImmutableList.copyOf(scheduledModules);
-    for (ModuleExecutionState module : scheduledModulesCopy) {
-      if (module.getRemainingDependencies().contains(moduleToRemove.getModuleClass())) {
-        removeModuleAndDependencies(module);
+    for (ModuleExecutionState dependentModule : scheduledModulesCopy) {
+      if (dependentModule.getRemainingDependencies().contains(moduleToRemove.getModuleClass())) {
+        dependentModule.notifyModuleFailed(moduleToRemove.getModuleClass());
+        removeModuleAndDependencies(dependentModule);
       }
     }
   }

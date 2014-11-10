@@ -6,7 +6,13 @@
   background-color: @light-grey-background-color;
   border: 1px solid @border-color;
   padding: 10px;
-  margin-bottom: 15px;
+}
+
+/*
+ * Can be used to add horizontal margin to a row
+ */
+.top-buffer {
+  margin-top: 20px;
 }
 
 .filterable-list {
@@ -32,4 +38,29 @@
       }
     }
   }
+}
+
+.spin {
+    -webkit-animation: spin 2000ms infinite linear;
+    animation: spin 2000ms infinite linear;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    
+    100% {
+        -webkit-transform: rotate(359deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    
+    100% {
+        transform: rotate(359deg);
+    }
 }
