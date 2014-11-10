@@ -1,14 +1,14 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
+import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -27,15 +27,16 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * This depends on the text feature module because the chapters must have been stored for the
  * TextSpans to be persistable
  */
-@AnalysisModule(dependencies = {BasicEntityCollection.class, DocumentPersistenceContext.class,
+@AnalysisModule(dependencies = {EntityRanking.class, DocumentPersistenceContext.class,
     Model.class, TextFeatureModule.class})
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
       EntityManager em) throws Exception {
-    Collection<BasicEntity> basicEntities =
-        result.getResultFor(BasicEntityCollection.class).getEntities();
+    List<BasicEntity> basicEntities =
+        result.getResultFor(EntityRanking.class).getRankedEntities();
     
+    int currentRanking = 1;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -53,12 +54,15 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
           continue;
       }
      
+      entity.setRankingValue(currentRanking);
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());
-      // TODO: relations, rankings, more attributes
+      // TODO: relations, more attributes
       
       em.persist(entity);
+      
+      currentRanking++;
     }
     
     return this;
