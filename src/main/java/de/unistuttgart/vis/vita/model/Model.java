@@ -101,6 +101,13 @@ public class Model implements Factory<EntityManager> {
       Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load H2 driver", e);
     }
 
+    try {
+      Class.forName("com.mysql.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+      Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load mysql driver", e);
+    }
+  }
+
   @Override
   @RequestScoped
   public EntityManager provide() {
