@@ -28,6 +28,9 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/entities/fingerprints[^/]+$')).respond(
                 TestData.fingerprint);
 
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/entities/relations/occurrences[^/]+$')).respond(
+                TestData.relationOccurrences);
+
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons$')).respond(TestData.persons);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
                 TestData.singlePerson);
