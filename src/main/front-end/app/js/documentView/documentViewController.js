@@ -17,6 +17,10 @@
           });
         });
 
+        DocumentViewReceiver.onOccurrences(function(messageData) {
+          $scope.occurrences = messageData.message;
+        });
+
         DocumentViewReceiver.requestDocumentId();
 
         function requestParts(document) {

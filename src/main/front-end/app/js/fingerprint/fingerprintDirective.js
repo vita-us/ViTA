@@ -3,7 +3,10 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ["Fingerprint", function(Fingerprint) {
+  vitaDirectives.directive('fingerprint', ['Fingerprint',
+                                           'RelationOccurrences',
+                                           'DocumentViewSender',
+                          function(Fingerprint, RelationOccurrences, DocumentViewSender) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -52,7 +55,7 @@
             steps: occurrenceSteps
           }, function(response) {
             removeFingerPrint();
-            buildFingerPrint(response.occurrences);
+            buildFingerPrint(response.occurrences, scope);
           }, function() {
             removeFingerPrint();
           });
@@ -68,7 +71,7 @@
         }
       }, true);
 
-      function buildFingerPrint(occurrences) {
+      function buildFingerPrint(occurrences, scope) {
         occurrences = occurrences || [];
         var occurrenceCount = occurrences.length;
 
@@ -114,8 +117,15 @@
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function () {
-                // TODO: Show the occurrence in the document view
+              .on('click', function (clickedOccurrence) {
+                RelationOccurrences.get({
+                  documentId: scope.documentId,
+                  entityIds: scope.entityIds.join(','),
+                  rangeStart: clickedOccurrence.start.progress,
+                  rangeEnd: clickedOccurrence.end.progress
+                }, function (response) {
+                  DocumentViewSender.sendOccurrences(response.occurrences);
+                });
               });
         }
 
