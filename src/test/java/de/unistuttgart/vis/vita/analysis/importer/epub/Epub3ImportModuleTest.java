@@ -33,44 +33,38 @@ public class Epub3ImportModuleTest {
 
   @Test
   public void testMetadataTitle(){
-    // TODO: ADD DATA
-    String text = "todo";
+    String text = "Moby-Dick";
     assertEquals(text,epub3Result.getMetadata().getTitle());
   }
   
   @Test
   public void testMetadataAuthor(){
-    // TODO: ADD DATA
-    String text = "todo";
+    String text = "Herman Melville";
     assertEquals(text,epub3Result.getMetadata().getAuthor());
   }
 
   @Test
   public void testMetadataEdition(){
-    // TODO: ADD DATA
-    String text = "todo";
+    String text = "";
     assertEquals(text,epub3Result.getMetadata().getEdition());
   }
 
   @Test
   public void testMetadataGenre(){
-    // TODO: ADD DATA
-    String text = "todo";
+    String text = "";
     assertEquals(text,epub3Result.getMetadata().getGenre());
   }
   
   @Test
   public void testMetadataPublisher(){
-    // TODO: ADD DATA
-    String text = "todo";
+    String text = "Harper & Brothers, Publishers";
     assertEquals(text,epub3Result.getMetadata().getPublisher());
   }
   
 
   @Test
   public void testMetadataPublishYear(){
-    // TODO: ADD DATA
-    int text = -1;
+    int text = 0;
     assertEquals(text,epub3Result.getMetadata().getPublishYear());
   }
   
