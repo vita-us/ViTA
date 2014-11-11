@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ChapterPositionMakerTest.class, ContentBuilderTest.class,
     EmptyLinesRemoverTest.class, Epub2ExtractorTest.class, Epub2IdsAndExtractorTest.class,
-    Epub2TraitsExtractorTest.class, Epub3TraitsExtractorTest.class, EpubBookBuilderTest.class,
+    Epub2TraitsExtractorTest.class, Epub3ExtractorTest.class, Epub3TraitsExtractorTest.class, EpubBookBuilderTest.class,
     EpubFileImporterTest.class, Epub2ImportModuleTest.class, Epub3ImportModuleTest.class, EpubVersionDetectorTest.class,
     EpubVersionTest.class, PartsAndChaptersReviserTest.class, MetadataAnalyzerEpubTest.class})
 public class EpubImportTests {
