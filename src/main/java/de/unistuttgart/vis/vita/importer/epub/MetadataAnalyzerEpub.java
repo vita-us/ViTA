@@ -89,12 +89,12 @@ public class MetadataAnalyzerEpub {
     List<Line> author = new ArrayList<Line>();
     if (!ebook.getMetadata().getAuthors().isEmpty()) {
       for (Author nameParts : ebook.getMetadata().getAuthors()) {
-        String authorName = nameParts.getFirstname() + " " + nameParts.getLastname();
+        String authorName = nameParts.getFirstname() + " " + nameParts.getLastname() + ";";
         author.add(new EpubModuleLine(authorName, false));
       }
       // remove ; from last author
       String lastAuthor = author.get(author.size() - 1).getText();
-      author.get(author.size() - 1).setText(lastAuthor.substring(0, lastAuthor.length()));
+      author.get(author.size() - 1).setText(lastAuthor.substring(0, lastAuthor.length()-1));
     }
     return author;
   }
@@ -114,7 +114,7 @@ public class MetadataAnalyzerEpub {
       // remove ; from last publisher
       String lastPublisher = publisherList.get(publisherList.size() - 1).getText();
       publisherList.get(publisherList.size() - 1).setText(
-          lastPublisher.substring(0, lastPublisher.length()));
+          lastPublisher.substring(0, lastPublisher.length()-1));
     } else {
       publisherList.add(new EpubModuleLine(""));
     }
