@@ -29,4 +29,6 @@ public class Constants {
   public static final String EPUB_TYPE = "epub:type";
   public static final String CHAPTER = "chapter";
   public static final String DIV = "div";
+  public static final String SPAN = "span";
+
 }
