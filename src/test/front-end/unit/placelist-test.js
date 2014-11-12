@@ -14,6 +14,7 @@ describe('PlaceListCtrl', function() {
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('/documents/123/places').respond(TestData.places);
+    $httpBackend.expectGET('/documents/123').respond(TestData.singleDocument);
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('PlaceListCtrl', {
