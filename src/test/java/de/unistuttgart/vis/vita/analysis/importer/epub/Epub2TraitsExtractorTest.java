@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -15,14 +18,11 @@ import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
 import de.unistuttgart.vis.vita.importer.epub.Epub2IdsAndTitlesExtractor;
+import de.unistuttgart.vis.vita.importer.epub.Epub2TraitsExtractor;
 import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
 import de.unistuttgart.vis.vita.importer.epub.Epubline;
-import de.unistuttgart.vis.vita.importer.epub.Epub2TraitsExtractor;
 
 /**
  * JUnit test on Epub2TraitsExtractor
@@ -41,16 +41,20 @@ public class Epub2TraitsExtractorTest {
 
     Path testPath = Paths.get(getClass().getResource("pg244.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    epublineTraitsExtractor = new Epub2TraitsExtractor(epubFileImporter.getEbook());
+    epublineTraitsExtractor =
+        new Epub2TraitsExtractor(epubFileImporter.getEbook().getContents(), epubFileImporter
+            .getEbook().getNcxResource());
     Epub2IdsAndTitlesExtractor extractor =
-        new Epub2IdsAndTitlesExtractor(epubFileImporter.getEbook());
+        new Epub2IdsAndTitlesExtractor(epubFileImporter.getEbook().getContents(), epubFileImporter
+            .getEbook().getNcxResource());
     Resource resource = epubFileImporter.getEbook().getContents().get(3);
     Document document =
         Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
 
     Element currentElement = document.getElementById("pgepubid00015");
-    chapter = epublineTraitsExtractor.extractChapterEpublines(currentElement, document, resource,
-        extractor.getTocIds());
+    chapter =
+        epublineTraitsExtractor.extractChapterEpublines(currentElement, document, resource,
+            extractor.getTocIds());
     fillEpublines();
   }
 
@@ -82,16 +86,18 @@ public class Epub2TraitsExtractorTest {
     assertEquals("End text", epublines.get(2).getEpubline());
 
   }
-  
+
   @Test
-  public void testChapterContent(){
-    
-    //first line
+  public void testChapterContent() {
+
+    // first line
     assertTrue(chapter.get(0).getEpubline().startsWith("ALL night their course"));
     assertTrue(chapter.get(0).getEpubline().endsWith("startled the weary horses into a gallop."));
 
-    //last line
-    assertTrue(chapter.get(chapter.size()-1).getEpubline().startsWith("Again the avenger had been foiled,"));
-    assertTrue(chapter.get(chapter.size()-1).getEpubline().endsWith("to which we are already under such obligations."));
+    // last line
+    assertTrue(chapter.get(chapter.size() - 1).getEpubline()
+        .startsWith("Again the avenger had been foiled,"));
+    assertTrue(chapter.get(chapter.size() - 1).getEpubline()
+        .endsWith("to which we are already under such obligations."));
   }
 }

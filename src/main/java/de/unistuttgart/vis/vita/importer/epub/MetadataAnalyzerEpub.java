@@ -6,14 +6,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.siegmann.epublib.domain.Author;
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Date;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import nl.siegmann.epublib.domain.Author;
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Date;
+import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
@@ -53,7 +55,7 @@ public class MetadataAnalyzerEpub {
    */
   public DocumentMetadata extractMetadata() {
     // use the metadata builder for the correct format
-    MetadataBuilderEpub metadataBuilder = new MetadataBuilderEpub();
+    MetadataBuilder metadataBuilder = new MetadataBuilder();
     metadataBuilder.setAuthor(getAuthor());
     metadataBuilder.setEdition(getEdition());
     metadataBuilder.setGenre(getGenre());

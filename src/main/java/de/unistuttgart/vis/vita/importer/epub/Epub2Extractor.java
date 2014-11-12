@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import nl.siegmann.epublib.domain.Book;
-import nl.siegmann.epublib.domain.Resource;
 
 /**
  * Returns the output of Epub2 in terms of the abstract methods
@@ -23,7 +24,6 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
   private Document document;
   private ContentBuilder contentBuilder = new ContentBuilder();
-  private Book book = new Book();
   private List<List<Epubline>> chapters = new ArrayList<List<Epubline>>();
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
   private ChapterPositionMaker chapterPositionMaker = new ChapterPositionMaker();
@@ -39,9 +39,8 @@ public class Epub2Extractor extends AbstractEpubExtractor {
    */
   public Epub2Extractor(Book book) throws IOException {
     super(book);
-    this.book = book;
-    epublineTraitsExtractor = new Epub2TraitsExtractor(book);
-    epub2IdsExtractor = new Epub2IdsAndTitlesExtractor(book);
+    epublineTraitsExtractor = new Epub2TraitsExtractor(resources, tocResource);
+    epub2IdsExtractor = new Epub2IdsAndTitlesExtractor(resources, tocResource);
     extractChaptersEpub2();
   }
 
@@ -55,7 +54,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     tocIds = epub2IdsExtractor.getTocIds();
 
     if (!tocIds.isEmpty()) {
-      for (Resource resource : book.getContents()) {
+      for (Resource resource : resources) {
         document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
 
         for (String id : tocIds) {
@@ -185,7 +184,8 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
       addEpublinesToList(parts);
       for (List<List<Epubline>> part : parts) {
-        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book));
+        chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part,
+            resources, tocResource));
       }
 
       return chapterPositionsParts;
@@ -193,7 +193,8 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
       List<List<Epubline>> part = new ArrayList<List<Epubline>>();
       part = reviser.formatePartEpub2(chapters);
-      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, book));
+      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, resources,
+          tocResource));
 
       return chapterPositionsPart;
     }

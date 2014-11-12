@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
 import org.jsoup.Jsoup;
@@ -25,7 +24,8 @@ import org.jsoup.select.Elements;
  */
 public class Epub2IdsAndTitlesExtractor {
 
-  private Book book = new Book();
+  private final List<Resource> resources;
+  private final Resource tocResource;
   private List<String> tocIds = new ArrayList<String>();
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Pattern pattern = Pattern.compile(Constants.PART, Pattern.CASE_INSENSITIVE);
@@ -35,13 +35,15 @@ public class Epub2IdsAndTitlesExtractor {
   /**
    * The commited book will be used in the methods below and the addIds() method will be called
    * 
-   * @param newBook
+   * @param resources
+   * @param tocResource
    * @throws IOException
    */
-  public Epub2IdsAndTitlesExtractor(Book newBook) throws IOException {
-    this.book = newBook;
+  public Epub2IdsAndTitlesExtractor(List<Resource> resources, Resource tocResource)
+      throws IOException {
+    this.resources = resources;
+    this.tocResource = tocResource;
     addIds();
-
   }
 
   /**
@@ -71,7 +73,7 @@ public class Epub2IdsAndTitlesExtractor {
     List<Element> elementsIds = new ArrayList<Element>();
     Map<String, String> map = new HashMap<String, String>();
 
-    for (Resource resource : book.getContents()) {
+    for (Resource resource : resources) {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
       for (String id : tocIds) {
         if (document.getElementById(id) != null) {
@@ -86,7 +88,8 @@ public class Epub2IdsAndTitlesExtractor {
   }
 
   /**
-   * Returns the List<List<String>> which contains the correct chapter ids for each part 
+   * Returns the List<List<String>> which contains the correct chapter ids for each part
+   * 
    * @return List<List<String>>
    * @throws IOException
    */
@@ -120,14 +123,13 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Extracts the chapter ids of the table of contents
+   * 
    * @throws IOException
    */
   private void addIds() throws IOException {
 
-    if (book.getNcxResource() != null) {
-      document =
-          Jsoup.parse(contentBuilder.getStringFromInputStream(book.getNcxResource()
-              .getInputStream()));
+    if (tocResource != null) {
+      document = Jsoup.parse(contentBuilder.getStringFromInputStream(tocResource.getInputStream()));
       Elements navMaps = document.select(Constants.NAVMAP);
       if (!navMaps.isEmpty()) {
         Elements contents = navMaps.get(0).select(Constants.CONTENT);
@@ -148,6 +150,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Extracts the exact chapter id of the "src" element in the table of contents
+   * 
    * @param input
    * @return
    */
@@ -163,6 +166,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Returns the titles of the parts
+   * 
    * @return
    * @throws IOException
    */
@@ -182,6 +186,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Returns the chapters ids
+   * 
    * @return
    */
   public List<String> getTocIds() {

@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,6 @@ import nl.siegmann.epublib.domain.Book;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 import de.unistuttgart.vis.vita.importer.epub.ChapterPositionMaker;
 import de.unistuttgart.vis.vita.importer.epub.Epubline;
@@ -40,8 +41,10 @@ public class ChapterPositionMakerTest {
     chapterOneEpub2.add(new Epubline("", "", ""));
 
     partEpub2.add(chapterOneEpub2);
+    Book book = new Book();
     chapterPositionEpub2 =
-        chapterPostionMaker.calculateChapterPositionsEpub2(partEpub2, new Book());
+        chapterPostionMaker.calculateChapterPositionsEpub2(partEpub2, book.getContents(),
+            book.getNcxResource());
 
     List<List<String>> partEpub3 = new ArrayList<List<String>>();
     List<String> chapterOneEpub3 = new ArrayList<String>();
