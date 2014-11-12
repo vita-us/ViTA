@@ -1,15 +1,15 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,9 @@ public class Epub2IdsAndExtractorTest {
     
     Path testPath = Paths.get(getClass().getResource("pg244.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
-    epub2Extractor = new Epub2IdsAndTitlesExtractor(epubFileImporter.getEbook());
+    epub2Extractor =
+        new Epub2IdsAndTitlesExtractor(epubFileImporter.getEbook().getContents(), epubFileImporter
+            .getEbook().getNcxResource());
     partsTitles = epub2Extractor.getPartsTitles();
     existsPart = epub2Extractor.existsPart();
     partsChaptersIds = epub2Extractor.getPartsChaptersIds();

@@ -37,7 +37,7 @@ public class BookAttributeBuilder {
   private void setChapterLength() {
     for (DocumentPart part : this.parts) {
       for (Chapter chapter : part.getChapters()) {
-        int length = chapter.getText().length(); // TODO: unicode-chars vs char?
+        int length = chapter.getText().length();
         chapter.setLength(length);
       }
     }

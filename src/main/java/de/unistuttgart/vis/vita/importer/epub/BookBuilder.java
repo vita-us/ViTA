@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
@@ -14,6 +16,8 @@ import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 public class BookBuilder implements Callable<List<DocumentPart>> {
+
+  private static final Logger log = Logger.getLogger("Exception");
   private List<Future<DocumentPart>> futureDocumentParts = new ArrayList<>();
   private List<List<Line>> partLines;
   private List<ChapterPosition> chapterPositions;
@@ -107,7 +111,8 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
       try {
         parts.add(futurePart.get());
       } catch (InterruptedException | ExecutionException e) {
-        // try next one
+        // log and try next one
+        log.log(Level.SEVERE, "Failed getting a part of the book", e);
       }
     }
     return parts;

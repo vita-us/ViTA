@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
 import org.jsoup.Jsoup;
@@ -17,15 +16,14 @@ import org.jsoup.nodes.Element;
  *
  */
 public class Epub2TraitsExtractor {
-
+  private final List<Resource> resources;
+  private final Resource tocResource;
   private ContentBuilder contentBuilder = new ContentBuilder();
-  private Book book = new Book();
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
 
-
-  public Epub2TraitsExtractor(Book newBook) {
-    this.book = newBook;
-
+  public Epub2TraitsExtractor(List<Resource> resources, Resource tocResource) {
+    this.resources = resources;
+    this.tocResource = tocResource;
   }
 
   /**
@@ -58,9 +56,9 @@ public class Epub2TraitsExtractor {
     }
 
     // iterate through the remaining resources
-    for (int j = book.getContents().indexOf(currentResource) + 1; j < book.getContents().size(); j++) {
+    for (int j = resources.indexOf(currentResource) + 1; j < resources.size(); j++) {
       document =
-          Jsoup.parse(contentBuilder.getStringFromInputStream(book.getContents().get(j)
+          Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j)
               .getInputStream()));
       for (int k = 0; k < document.getAllElements().size(); k++) {
 
@@ -180,7 +178,8 @@ public class Epub2TraitsExtractor {
       throws IOException {
 
     List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
-    Epub2IdsAndTitlesExtractor epub2IdsExtracor = new Epub2IdsAndTitlesExtractor(book);
+    Epub2IdsAndTitlesExtractor epub2IdsExtracor =
+        new Epub2IdsAndTitlesExtractor(resources, tocResource);
     partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
 
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();

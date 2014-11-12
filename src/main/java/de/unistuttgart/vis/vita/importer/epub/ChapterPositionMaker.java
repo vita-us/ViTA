@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.importer.epub;
 
 import java.util.List;
 
-import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Resource;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 
 /**
@@ -15,9 +15,9 @@ public class ChapterPositionMaker {
   private Epub2TraitsExtractor epublineTraitsExtractor;
 
   public ChapterPosition calculateChapterPositionsEpub2(List<List<Epubline>> newChapters,
-      Book newBook) {
+      List<Resource> resources, Resource tocResource) {
 
-    epublineTraitsExtractor = new Epub2TraitsExtractor(newBook);
+    epublineTraitsExtractor = new Epub2TraitsExtractor(resources, tocResource);
     int currentSize = 0;
     ChapterPosition chapterPosition = new ChapterPosition();
     for (List<Epubline> chapter : newChapters) {

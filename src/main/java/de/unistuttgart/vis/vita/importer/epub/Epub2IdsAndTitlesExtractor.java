@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 
 import org.jsoup.Jsoup;
@@ -25,7 +24,8 @@ import org.jsoup.select.Elements;
  */
 public class Epub2IdsAndTitlesExtractor {
 
-  private Book book = new Book();
+  private final List<Resource> resources;
+  private final Resource tocResource;
   private List<String> tocIds = new ArrayList<String>();
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Pattern pattern = Pattern.compile(Constants.PART, Pattern.CASE_INSENSITIVE);
@@ -35,13 +35,15 @@ public class Epub2IdsAndTitlesExtractor {
   /**
    * The commited book will be used in the methods below and the addIds() method will be called
    * 
-   * @param newBook
+   * @param resources
+   * @param tocResource
    * @throws IOException
    */
-  public Epub2IdsAndTitlesExtractor(Book newBook) throws IOException {
-    this.book = newBook;
+  public Epub2IdsAndTitlesExtractor(List<Resource> resources, Resource tocResource)
+      throws IOException {
+    this.resources = resources;
+    this.tocResource = tocResource;
     addIds();
-
   }
 
   /**
@@ -71,15 +73,13 @@ public class Epub2IdsAndTitlesExtractor {
     List<Element> elementsIds = new ArrayList<Element>();
     Map<String, String> map = new HashMap<String, String>();
 
-    for (Resource resource : book.getContents()) {
+    for (Resource resource : resources) {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
       for (String id : tocIds) {
-        if (document.getElementById(id) != null) {
-          if (!map.containsKey(id)) {
+        if (document.getElementById(id) != null && !map.containsKey(id)) {
             elementsIds.add(document.getElementById(id));
             map.put(id, document.getElementById(id).text());
           }
-        }
       }
     }
     return elementsIds;
@@ -94,8 +94,7 @@ public class Epub2IdsAndTitlesExtractor {
   public List<List<String>> getPartsChaptersIds() throws IOException {
     List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
 
-    List<Element> elements = new ArrayList<Element>();
-    elements = getElementsIds();
+    List<Element> elements = getElementsIds();
 
     for (Element id : elements) {
       matcher = pattern.matcher(id.text());
@@ -126,10 +125,8 @@ public class Epub2IdsAndTitlesExtractor {
    */
   private void addIds() throws IOException {
 
-    if (book.getNcxResource() != null) {
-      document =
-          Jsoup.parse(contentBuilder.getStringFromInputStream(book.getNcxResource()
-              .getInputStream()));
+    if (tocResource != null) {
+      document = Jsoup.parse(contentBuilder.getStringFromInputStream(tocResource.getInputStream()));
       Elements navMaps = document.select(Constants.NAVMAP);
       if (!navMaps.isEmpty()) {
         Elements contents = navMaps.get(0).select(Constants.CONTENT);
@@ -173,8 +170,7 @@ public class Epub2IdsAndTitlesExtractor {
    */
   public List<String> getPartsTitles() throws IOException {
     List<String> partsTitles = new ArrayList<String>();
-    List<Element> elementsIds = new ArrayList<Element>();
-    elementsIds = getElementsIds();
+    List<Element> elementsIds = getElementsIds();
 
     for (Element id : elementsIds) {
       matcher = pattern.matcher(id.text());

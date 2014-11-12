@@ -1,0 +1,20 @@
+number 1: 0 2 88
+number 2: 90 92 194
+number 3: 196 198 278
+number 4: 280 282 414
+number 5: 416 418 570
+number 6: 572 574 740
+number 7: 742 744 946
+number 8: 948 950 1146
+number 9: 1148 1150 1366
+number 1: 0 2 120
+number 2: 122 124 254
+number 3: 256 258 348
+number 4: 350 352 530
+number 5: 532 534 782
+number 6: 784 786 950
+number 7: 952 954 1146
+number 8: 1148 1150 1372
+number 9: 1374 1376 1462
+TITLES0: PART I.
+1: PART II.
