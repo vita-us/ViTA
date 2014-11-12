@@ -18,7 +18,6 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.AttributesService;
 import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
