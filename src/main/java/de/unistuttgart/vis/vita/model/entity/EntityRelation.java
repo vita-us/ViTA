@@ -10,7 +10,7 @@ import org.hibernate.annotations.Target;
 /**
  * Represents a Relation between two Entities.
  *
- * @param <E> - the type of the other entity
+ * @param <Entity> - the type of the other entity
  */
 @javax.persistence.Entity
 @NamedQueries({
@@ -33,7 +33,7 @@ import org.hibernate.annotations.Target;
                 query = "SELECT er "
                       + "FROM EntityRelation er " 
                       + "WHERE er.id = :entityRelationId")})
-public class EntityRelation<E> extends AbstractEntityBase {
+public class EntityRelation extends AbstractEntityBase {
 
   // constants
   private static final int WEIGHT_MIN = 0;
@@ -41,30 +41,28 @@ public class EntityRelation<E> extends AbstractEntityBase {
 
   private double weight;
   
-  // only entity relations will be persisted
-  @Target(Entity.class)
   @ManyToOne
   @JoinTable(name="OriginId")
-  private E originEntity;
+  private Entity originEntity;
   
   // only entity relations will be persisted
   @Target(Entity.class)
   @ManyToOne
   @JoinTable(name="TargetId")
-  private E relatedEntity;
+  private Entity relatedEntity;
 
-  public E getOriginEntity() {
+  public Entity getOriginEntity() {
     return originEntity;
   }
 
-  public void setOriginEntity(E originEntity) {
+  public void setOriginEntity(Entity originEntity) {
     this.originEntity = originEntity;
   }
 
   /**
    * @return entity which is target of this relation
    */
-  public E getRelatedEntity() {
+  public Entity getRelatedEntity() {
     return relatedEntity;
   }
 
@@ -73,7 +71,7 @@ public class EntityRelation<E> extends AbstractEntityBase {
    *
    * @param relatedEntity - the related entity
    */
-  public void setRelatedEntity(E relatedEntity) {
+  public void setRelatedEntity(Entity relatedEntity) {
     this.relatedEntity = relatedEntity;
   }
 

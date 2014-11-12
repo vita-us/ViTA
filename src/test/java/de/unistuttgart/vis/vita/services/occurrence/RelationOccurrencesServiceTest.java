@@ -90,7 +90,7 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     targetPerson.getOccurrences().add(targetSeparateSpan);
     
     // set up relation between them
-    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
+    EntityRelation testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
     
     // save ids for query
     docId = testDoc.getId();

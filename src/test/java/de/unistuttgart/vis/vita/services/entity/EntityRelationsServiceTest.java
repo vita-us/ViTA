@@ -76,7 +76,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     originPersonId = testPerson.getId();
     Person relatedPerson = personTestData.createTestPerson(2);
     targetPersonId = relatedPerson.getId();
-    EntityRelation<Entity> testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
+    EntityRelation testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(testPersonRelation);
     
     // set up test place and relation
@@ -85,7 +85,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     originPlaceId = testPlace.getId();
     Place relatedPlace = placeTestData.createTestPlace(2);
     targetPlaceId = relatedPlace.getId();
-    EntityRelation<Entity> testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
+    EntityRelation testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(testPlaceRelation);
     
     EntityManager em = getModel().getEntityManager();
