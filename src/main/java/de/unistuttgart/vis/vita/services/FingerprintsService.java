@@ -47,7 +47,7 @@ public class FingerprintsService extends OccurrencesService {
   }
 
   @Override
-  protected int getNumberOfSpansInStep(int stepStart, int stepEnd) {
+  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
     // TODO not implemented yet!
     return 0;
   }

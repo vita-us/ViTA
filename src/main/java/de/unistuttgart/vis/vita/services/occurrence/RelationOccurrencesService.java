@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -83,10 +84,18 @@ public class RelationOccurrencesService extends OccurrencesService {
     query.setParameter("rangeEnd", endOffset);
     return query.getResultList();
   }
+  
+  private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
+    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForRelations");
+    numberOfTextSpansQuery.setParameter("entityIds", entityIds);
+    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
+    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
+    return (long) numberOfTextSpansQuery.getSingleResult();
+  }
 
   @Override
-  protected int getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return readTextSpansFromDatabase(stepStart, stepEnd).size();
+  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+    return getNumberOfSpansFromDatabase(stepStart, stepEnd);
   }
 
 }

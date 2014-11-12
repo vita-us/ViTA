@@ -21,6 +21,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
       query = "SELECT ts " 
             + "FROM TextSpan ts"),
   
+  // for returning the exact spans for an entity in a given range
   @NamedQuery(name = "TextSpan.findTextSpansForEntity", 
     query = "SELECT ts "
           + "FROM TextSpan ts, Entity e " 
@@ -29,7 +30,18 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           // range checks
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
           + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+          
+  // for checking the amount of spans for an entity in a given range
+  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForEntity", 
+  query = "SELECT COUNT(ts) "
+        + "FROM TextSpan ts, Entity e " 
+        + "WHERE e.id = :entityId "
+        + "AND ts MEMBER OF e.occurrences "
+        // range checks
+        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
   
+  // for returning the exact spans for an attribute in a given range
   @NamedQuery(name = "TextSpan.findTextSpansForAttribute", 
     query = "SELECT ts "
           + "FROM TextSpan ts, Entity e, Attribute a " 
@@ -40,7 +52,20 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           // range checks
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
           + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+          
+  // for checking the amount of spans for an attribute in a given range
+  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForAttribute", 
+  query = "SELECT COUNT(ts) "
+        + "FROM TextSpan ts, Entity e, Attribute a " 
+        + "WHERE e.id = :entityId "
+        + "AND a MEMBER OF e.attributes "
+        + "AND a.id = :attributeId " 
+        + "AND ts MEMBER OF a.occurrences "
+        // range checks
+        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
   
+  // for returning the exact spans for an relation in a given range
   @NamedQuery(name = "TextSpan.findTextSpansForRelations", 
     query = "SELECT ts1 "
           + "FROM TextSpan ts1, Entity e " 
@@ -58,9 +83,28 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
           + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
   
+  // for checking the amount of spans for a relation in a given range
+  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForRelations", 
+    query = "SELECT COUNT(ts1) "
+          + "FROM TextSpan ts1, Entity e " 
+          + "INNER JOIN e.occurrences ts2 "
+          + "WHERE e.id IN :entityIds "
+          // range checks
+          + "AND ts1.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts2.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          // intervals have an overlap
+          + "AND ((ts2.start.offset > ts1.start.offset " + "AND ts2.start.offset < ts1.end.offset) "
+            + "OR (ts1.start.offset > ts2.start.offset " + "AND ts1.start.offset < ts2.end.offset)) "
+          // Null checks
+          + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
+          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
+
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts " 
       + "FROM TextSpan ts "
-      + "WHERE ts.id = :textSpanId")})
+      + "WHERE ts.id = :textSpanId")
+  })
 public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
 
   // constants

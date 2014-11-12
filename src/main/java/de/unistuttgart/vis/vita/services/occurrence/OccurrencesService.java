@@ -146,6 +146,6 @@ public abstract class OccurrencesService {
     return convertSpansToOccurrences(stepSpans);
   }
 
-  protected abstract int getNumberOfSpansInStep(int stepStart, int stepEnd);
+  protected abstract long getNumberOfSpansInStep(int stepStart, int stepEnd);
 
 }
