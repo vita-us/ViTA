@@ -32,13 +32,12 @@ public class ChapterPositionMaker {
     return chapterPosition;
   }
 
-  public ChapterPosition calculateChapterPositionsEpub3(List<List<String>> newChapters) {
+  public ChapterPosition calculateChapterPositionsEpub3(List<List<Epubline>> newChapters) {
 
     int currentSize = 0;
     ChapterPosition chapterPosition = new ChapterPosition();
-    for (List<String> chapter : newChapters) {
+    for (List<Epubline> chapter : newChapters) {
      
-       
         chapterPosition.addChapter(chapter.indexOf(chapter.get(0)) + currentSize,
             chapter.indexOf(chapter.get(2)) + currentSize,
             chapter.indexOf(chapter.get(chapter.size() - 2)) + currentSize);
