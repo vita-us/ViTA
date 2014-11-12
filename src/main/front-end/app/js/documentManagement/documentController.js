@@ -45,6 +45,14 @@
           document.getElementById('document-input').value = '';
         }
 
+        $scope.isDocumentSelected = function(document) {
+          return angular.equals($scope.selectedDocument, document);
+        };
+
+        $scope.updateSelection = function(selectedDocument) {
+          $scope.selectedDocument = selectedDocument;
+        };
+
         $scope.$on('$destroy', function() {
           if (timerId) {
             $interval.cancel(timerId);
