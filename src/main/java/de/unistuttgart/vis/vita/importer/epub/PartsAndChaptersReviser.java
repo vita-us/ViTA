@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 /**
  * Revises the parts and chapters in terms of formatting, annotating the parts and chapters
  * 
@@ -72,13 +75,13 @@ public class PartsAndChaptersReviser {
    * @param currentPart
    * @return
    */
-  public List<List<String>> formatePartEpub3(List<List<String>> currentPart) {
-    List<List<String>> formatedPart = new ArrayList<List<String>>();
-    for (List<String> chapter : currentPart) {
-      List<String> newChapter = new ArrayList<String>();
-      for (String line : chapter) {
+  public List<List<Epubline>> formatePartEpub3(List<List<Epubline>> currentPart) {
+    List<List<Epubline>> formatedPart = new ArrayList<List<Epubline>>();
+    for (List<Epubline> chapter : currentPart) {
+      List<Epubline> newChapter = new ArrayList<Epubline>();
+      for (Epubline line : chapter) {
         newChapter.add(line);
-        newChapter.add("");
+        newChapter.add(new Epubline("", "", ""));
       }
       formatedPart.add(newChapter);
     }
@@ -90,11 +93,92 @@ public class PartsAndChaptersReviser {
    * @param currentParts
    * @return
    */
-  public List<List<List<String>>> formatePartsEpub3(List<List<List<String>>> currentParts) {
-    List<List<List<String>>> formatedParts = new ArrayList<List<List<String>>>();
-    for (List<List<String>> part : currentParts) {
+  public List<List<List<Epubline>>> formatePartsEpub3(List<List<List<Epubline>>> currentParts) {
+    List<List<List<Epubline>>> formatedParts = new ArrayList<List<List<Epubline>>>();
+    for (List<List<Epubline>> part : currentParts) {
       formatedParts.add(formatePartEpub3(part));
     }
     return formatedParts;
+  }
+  
+  public boolean elementEdited(List<Element> editedElements, Element currentElement) {
+    for (Element editedElement : editedElements) {
+      if (editedElement.equals(currentElement)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void addDivTexts(List<Epubline> chapter, Element chapterElement, List<Element> editedElements, String mode) {
+
+    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
+        if (!chapterElement.getAllElements().isEmpty()) {
+          Elements innerElements = chapterElement.getAllElements();
+          for (Element innerElement : innerElements) {
+            if (!elementEdited(innerElements, innerElement)) {
+              if (!innerElement.tagName().matches(Constants.SPAN) && !innerElement.tagName().matches(Constants.DIV)) {
+                boolean existsSpan = existsSpan(innerElement);
+                addText(chapter, innerElement, existsSpan, mode);
+              } else if (innerElement.tagName().matches(Constants.DIV)) {
+                addDivTexts(chapter, innerElement, editedElements, mode);
+              }
+              editedElements.add(innerElement);
+            }
+          }
+        }
+    } else {
+      if (!chapterElement.getAllElements().isEmpty()) {
+        Elements innerElements = chapterElement.getAllElements();
+        chapter.add(new Epubline(mode, chapterElement.text(), ""));
+        for (Element innerElement : innerElements) {
+          editedElements.add(innerElement);
+        }
+      }
+    }
+  }
+
+  public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists, String mode) {
+    if (elementExists) {
+      chapter.add(new Epubline(mode, chapterElement.text(), ""));
+    } else {
+      chapter.add(new Epubline(mode, chapterElement.ownText(), ""));
+    }
+  }
+  
+  public boolean existsSpan(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      Elements innerElements = currentElement.getAllElements();
+      for (Element innerElement : innerElements) {
+        if (innerElement.tagName().matches(Constants.SPAN)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean existsDiv(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      Elements innerElements = currentElement.getAllElements();
+      for (Element innerElement : innerElements) {
+        if (innerElement.tagName().matches(Constants.DIV)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public boolean allElementsNotSpans(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      Elements innerElements = currentElement.getAllElements();
+      for (Element innerElement : innerElements) {
+        if (!innerElement.tagName().matches(Constants.SPAN)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

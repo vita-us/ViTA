@@ -86,7 +86,8 @@ public class Epub2IdsAndTitlesExtractor {
   }
 
   /**
-   * Returns the List<List<String>> which contains the correct chapter ids for each part 
+   * Returns the List<List<String>> which contains the correct chapter ids for each part
+   * 
    * @return List<List<String>>
    * @throws IOException
    */
@@ -120,6 +121,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Extracts the chapter ids of the table of contents
+   * 
    * @throws IOException
    */
   private void addIds() throws IOException {
@@ -134,7 +136,8 @@ public class Epub2IdsAndTitlesExtractor {
         if (!contents.isEmpty()) {
           for (Element content : contents) {
             if (content.hasAttr(Constants.SOURCE)
-                && content.attr(Constants.SOURCE).contains(Constants.PGEPUBID)) {
+                && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
+                    Constants.SOURCE).contains(Constants.ID))) {
               String id = extractId(content.attr("src"));
               if (!tocIds.contains(id)) {
                 tocIds.add(id);
@@ -148,6 +151,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Extracts the exact chapter id of the "src" element in the table of contents
+   * 
    * @param input
    * @return
    */
@@ -163,6 +167,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Returns the titles of the parts
+   * 
    * @return
    * @throws IOException
    */
@@ -182,6 +187,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Returns the chapters ids
+   * 
    * @return
    */
   public List<String> getTocIds() {
