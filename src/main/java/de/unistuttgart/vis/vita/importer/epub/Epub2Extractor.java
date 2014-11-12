@@ -50,8 +50,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
    * @throws IOException
    */
   private void extractChaptersEpub2() throws IOException {
-    List<String> tocIds = new ArrayList<String>();
-    tocIds = epub2IdsExtractor.getTocIds();
+    List<String> tocIds = epub2IdsExtractor.getTocIds();
 
     if (!tocIds.isEmpty()) {
       for (Resource resource : resources) {
@@ -59,17 +58,15 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
         for (String id : tocIds) {
           Element currentElement = document.getElementById(id);
-          if (currentElement != null) {
-            List<Epubline> epublines = new ArrayList<Epubline>();
 
-            if (!epubLineExistent(currentElement)) {
-              epublines.addAll(epublineTraitsExtractor.extractChapterEpublines(currentElement,
-                  document, resource, tocIds));
-              epublines.add(0, new Epubline(Constants.HEADING, currentElement.text(),
-                  currentElement.id()));
-              reviser.annotateTextStartAndEndOfEpublines(epublines);
-              chapters.add(epublines);
-            }
+          if (currentElement != null && !epubLineExistent(currentElement)) {
+            List<Epubline> epublines = new ArrayList<Epubline>();
+            epublines.addAll(epublineTraitsExtractor.extractChapterEpublines(currentElement,
+                document, resource, tocIds));
+            epublines.add(0,
+                new Epubline(Constants.HEADING, currentElement.text(), currentElement.id()));
+            reviser.annotateTextStartAndEndOfEpublines(epublines);
+            chapters.add(epublines);
           }
         }
       }
@@ -191,8 +188,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       return chapterPositionsParts;
     } else {
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
-      List<List<Epubline>> part = new ArrayList<List<Epubline>>();
-      part = reviser.formatePartEpub2(chapters);
+      List<List<Epubline>> part = reviser.formatePartEpub2(chapters);
       chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, resources,
           tocResource));
 

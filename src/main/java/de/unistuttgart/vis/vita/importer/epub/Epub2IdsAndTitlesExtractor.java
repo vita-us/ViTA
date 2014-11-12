@@ -76,12 +76,10 @@ public class Epub2IdsAndTitlesExtractor {
     for (Resource resource : resources) {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
       for (String id : tocIds) {
-        if (document.getElementById(id) != null) {
-          if (!map.containsKey(id)) {
+        if (document.getElementById(id) != null && !map.containsKey(id)) {
             elementsIds.add(document.getElementById(id));
             map.put(id, document.getElementById(id).text());
           }
-        }
       }
     }
     return elementsIds;
@@ -96,8 +94,7 @@ public class Epub2IdsAndTitlesExtractor {
   public List<List<String>> getPartsChaptersIds() throws IOException {
     List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
 
-    List<Element> elements = new ArrayList<Element>();
-    elements = getElementsIds();
+    List<Element> elements = getElementsIds();
 
     for (Element id : elements) {
       matcher = pattern.matcher(id.text());
@@ -172,8 +169,7 @@ public class Epub2IdsAndTitlesExtractor {
    */
   public List<String> getPartsTitles() throws IOException {
     List<String> partsTitles = new ArrayList<String>();
-    List<Element> elementsIds = new ArrayList<Element>();
-    elementsIds = getElementsIds();
+    List<Element> elementsIds = getElementsIds();
 
     for (Element id : elementsIds) {
       matcher = pattern.matcher(id.text());
