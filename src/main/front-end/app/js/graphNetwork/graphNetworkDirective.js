@@ -21,7 +21,6 @@
       },
       link: function(scope, element) {
         buildGraph(element, scope);
-        fetchRelationsAndDrawElements(scope.entities, scope.rangeStart, scope.rangeEnd);
 
         scope.$watch('[entities,rangeStart,rangeEnd]', function() {
           fetchRelationsAndDrawElements(scope.entities, scope.rangeStart, scope.rangeEnd);
