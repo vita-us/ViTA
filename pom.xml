@@ -225,9 +225,8 @@
 
     <dependency>
       <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version>
-      <scope>provided</scope>
+      <artifactId>xercesImpl-noservices</artifactId>
+      <version>2.11.0.SP1</version>
     </dependency>
 
     <dependency>
@@ -300,4 +299,15 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <repositories>
+    <repository>
+      <id>xerces-mvn-repo</id>
+      <url>https://raw.github.com/Yogu/xerces/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
