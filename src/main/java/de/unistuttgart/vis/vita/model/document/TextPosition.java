@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -102,14 +103,16 @@ public class TextPosition implements Comparable<TextPosition> {
     }
     
     TextPosition other = (TextPosition)obj;
-    // TODO include chapter/document as soon as they have hashCode/equals implemented
-    return /*other.chapter.equals(chapter) && */other.offset == this.offset;
+    // do not compare chapters, because the position between to chapters may be attributed to two
+    // different chapters, and they are still the same TextPosition
+    return other.offset == this.offset;
   }
   
   @Override
   public int hashCode() {
-    // TODO include chapter/document as soon as they have hashCode/equals implemented
-    return new HashCodeBuilder().append(offset).append(chapter).hashCode();
+    // do not compare chapters, because the position between to chapters may be attributed to two
+    // different chapters, and they are still the same TextPosition
+    return new HashCodeBuilder().append(offset).hashCode();
   }
   
   @Override

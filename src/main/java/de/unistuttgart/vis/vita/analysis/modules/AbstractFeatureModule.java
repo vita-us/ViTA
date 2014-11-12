@@ -30,15 +30,18 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
 
   @Override
   public void observeProgress(double progress) {
-    if (documentId == null || model == null)
-      return; // cannot report progress yet
+    if (documentId == null || model == null) {
+      // cannot report progress yet
+      return;
+    }
 
     EntityManager em = model.getEntityManager();
     Document doc = getDocument(em);
     em.getTransaction().begin();
     for (FeatureProgress featureProgress : getProgresses(doc.getProgress())) {
-      if (!featureProgress.isReady())
+      if (!featureProgress.isReady()) {
         featureProgress.setProgress(progress);
+      }
     }
     em.getTransaction().commit();
     em.close();

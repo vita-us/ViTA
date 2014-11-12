@@ -63,7 +63,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     int currentPart = 0;
     int currentChapter = 0;
     int currentAnnotation = 0;
-    double partFactor = 1 / documentParts.size();
+    double partFactor = 1.0 / documentParts.size();
 
     for (DocumentPart part : documentParts) {
       List<Chapter> chapters = part.getChapters();
@@ -116,7 +116,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     Set<Annotation> extracted = new TreeSet<>();
 
     for (Annotation annotation : annotations) {
-      if (annotation.getType().equals("Person") || annotation.getType().equals("Location")) {
+      if ("Person".equals(annotation.getType()) || "Location".equals(annotation.getType())) {
         extracted.add(annotation);
       }
     }
@@ -140,7 +140,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       entity.setDisplayName(annotatedText);
       EntityType type;
 
-      if (theAnnotation.getType().equals("Person")) {
+      if ("Person".equals(theAnnotation.getType())) {
         type = EntityType.PERSON;
       } else {
         type = EntityType.PLACE;
@@ -155,8 +155,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     updateNameAttributes(entity, annotatedText, textSpan);
 
     entity.getOccurences().add(textSpan);
-
-    // TODO relations, ...
   }
 
   /**

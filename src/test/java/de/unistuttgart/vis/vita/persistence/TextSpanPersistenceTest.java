@@ -12,7 +12,6 @@ import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
@@ -138,6 +137,8 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     TypedQuery<TextSpan> personQ = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
                                                         TextSpan.class);
     personQ.setParameter("entityId", personId);
+    personQ.setParameter("rangeStart", 0);
+    personQ.setParameter("rangeEnd", 200000);
     
     List<TextSpan> actualPersonTextSpans = personQ.getResultList();
     

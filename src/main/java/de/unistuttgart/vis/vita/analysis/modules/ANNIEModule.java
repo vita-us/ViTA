@@ -43,14 +43,15 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
 
   private static final double GATE_LOAD_PROGRESS_FRACTION = 0.1;
   private static final double ANNIE_LOAD_PROGRESS_FRACTION = 0.2;
-  private static final int progressResetSpan = 20;
+  private static final int PROGRESS_RESET_SPAN = 20;
+
   private ImportResult importResult;
   private ProgressListener progressListener;
   private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
   private Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   private Corpus corpus;
-  private int old_progress = 0;
+  private int oldProgress = 0;
   private int documentsFinished = 0;
   private int maxDocuments;
   private double progressSteps;
@@ -83,7 +84,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
 
       @Override
       public void processFinished() {
-
+        // nothing to do
       }
     });
 
@@ -101,14 +102,14 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
   }
 
   private void calcProgress(int i) {
-    if (old_progress - progressResetSpan > i) {
+    if (oldProgress - PROGRESS_RESET_SPAN > i) {
       documentsFinished++;
     }
 
     double finishFactor = (double) documentsFinished / (double) maxDocuments;
     double progDocs = (1 - ANNIE_LOAD_PROGRESS_FRACTION) * finishFactor;
     double progChapt = progressSteps * ((double) i / 100);
-    old_progress = i;
+    oldProgress = i;
     double currentProgress = ANNIE_LOAD_PROGRESS_FRACTION + progDocs + progChapt;
 
     progressListener.observeProgress(currentProgress);
@@ -117,7 +118,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
   /**
    * Creates the Gate corpus out of the available chapters.
    */
-  private void createCorpus() throws ResourceInstantiationException, ExecutionException {
+  private void createCorpus() throws ResourceInstantiationException {
     corpus = Factory.newCorpus("ViTA Corpus");
 
     for (DocumentPart part : importResult.getParts()) {

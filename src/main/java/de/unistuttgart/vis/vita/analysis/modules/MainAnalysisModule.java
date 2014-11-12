@@ -13,6 +13,7 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 public class MainAnalysisModule extends Module<MainAnalysisModule> {
   @Override
   public MainAnalysisModule execute(ModuleResultProvider result, ProgressListener progressListener) {
-    return this; // do nothing
+    // do nothing
+    return this;
   }
 }
