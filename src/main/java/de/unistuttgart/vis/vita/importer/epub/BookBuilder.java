@@ -17,7 +17,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 public class BookBuilder implements Callable<List<DocumentPart>> {
 
-  private static final Logger log = Logger.getLogger("Exception");
+  private static final Logger LOG = Logger.getLogger("Exception");
   private List<Future<DocumentPart>> futureDocumentParts = new ArrayList<>();
   private List<List<Line>> partLines;
   private List<ChapterPosition> chapterPositions;
@@ -112,7 +112,7 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
         parts.add(futurePart.get());
       } catch (InterruptedException | ExecutionException e) {
         // log and try next one
-        log.log(Level.SEVERE, "Failed getting a part of the book", e);
+        LOG.log(Level.SEVERE, "Failed getting a part of the book", e);
       }
     }
     return parts;

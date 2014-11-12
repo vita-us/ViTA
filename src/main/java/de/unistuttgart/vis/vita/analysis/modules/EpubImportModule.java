@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -40,13 +39,12 @@ public class EpubImportModule implements Module<ImportResult> {
   /**
    * {@inheritDoc}
    * 
-   * @throws FileNotFoundException Thrown if the file at the given path can not be found.
    * @throws IOException Thrown if there is a problem while extracting data from the file.
    * @throws ParseException Thrown if metadata can not be parsed.
    * @throws NoExtractorFoundException Thrown of this epub-version can not be extracted.
    */
   public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
-      throws FileNotFoundException, IOException, ParseException, NoExtractorFoundException {
+      throws IOException, ParseException, NoExtractorFoundException {
     ImportResult importResult;
     EpubFileImporter importer = new EpubFileImporter(filePath);
     DocumentMetadata documentMetadata = extractMetadata(importer.getEbook(), filePath);

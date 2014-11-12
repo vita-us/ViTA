@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import nl.siegmann.epublib.domain.Author;
 import nl.siegmann.epublib.domain.Book;
@@ -26,6 +28,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
  */
 public class MetadataAnalyzerEpub {
 
+  private static final Logger LOG = Logger.getLogger("Exception");
   private static final String PUBLICATION = "publication";
   private static final String GENRE = "genre";
   private static final String EDITION = "edition";
@@ -161,7 +164,8 @@ public class MetadataAnalyzerEpub {
       }
       genreList.add(new EpubModuleLine(genre, false));
     } catch (IOException e) {
-      // Ignore and write empty data
+      // Log and write empty data
+      LOG.log(Level.WARNING, "Failed reading genre", e);
     }
     return genreList;
   }
@@ -185,7 +189,8 @@ public class MetadataAnalyzerEpub {
       }
       editionList.add(new EpubModuleLine(edition, false));
     } catch (IOException e) {
-      // Ignore and write empty data
+      // Log and write empty data
+      LOG.log(Level.WARNING, "Failed reading edition", e);
     }
     return editionList;
   }

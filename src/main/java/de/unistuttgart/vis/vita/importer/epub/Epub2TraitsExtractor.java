@@ -156,10 +156,9 @@ public class Epub2TraitsExtractor {
   public List<List<List<Epubline>>> getPartsEpublines(List<List<Epubline>> chapters)
       throws IOException {
     
-    List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
     Epub2IdsAndTitlesExtractor epub2IdsExtracor =
         new Epub2IdsAndTitlesExtractor(resources, tocResource);
-    partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
+    List<List<String>> partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
     
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
 
