@@ -21,6 +21,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
+import de.unistuttgart.vis.vita.services.analysis.ProgressService;
+import de.unistuttgart.vis.vita.services.entity.EntitiesService;
+import de.unistuttgart.vis.vita.services.entity.PersonsService;
+import de.unistuttgart.vis.vita.services.entity.PlacesService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 
 /**

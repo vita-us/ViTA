@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
+import static org.junit.Assert.*;
+
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
@@ -12,7 +14,6 @@ import de.unistuttgart.vis.vita.data.ProgressTestData;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 
 /**
  * Performs a test on the ProgressService, requesting the progress for a test document using GET.
