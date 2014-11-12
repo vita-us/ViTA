@@ -21,8 +21,6 @@
         }
 
         function previewFirstChapter(scope, parts) {
-          console.log('oo')
-
           if (parts.length === 0 || parts[0].chapters.length === 0) {
             scope.previewText = 'Currently no text available';
             return;
