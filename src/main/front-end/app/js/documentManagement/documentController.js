@@ -5,7 +5,8 @@
 
   // Controller responsible for the documents page
   vitaControllers.controller('DocumentsCtrl', ['$scope', 'Document', 'Page', 'FileUpload',
-      '$interval', function($scope, Document, Page, FileUpload, $interval) {
+      '$interval', 'ChapterText',
+      function($scope, Document, Page, FileUpload, $interval, ChapterText) {
         Page.setUp('Documents', 1);
 
         $scope.uploading = false;
