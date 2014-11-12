@@ -151,13 +151,13 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     // set absolute start position
     int startOffset = start.getOffset();
     String startChapterId = start.getChapter().getId();
-    double startProgress = (startOffset / (double) docLength);
+    double startProgress = startOffset / (double) docLength;
     occ.setStart(new AbsoluteTextPosition(startChapterId, startOffset, startProgress));
 
     // set absolute end position
     int endOffset = end.getOffset();
     String endChapterId = end.getChapter().getId();
-    double endProgress = (endOffset / (double) docLength);
+    double endProgress = endOffset / (double) docLength;
     occ.setEnd(new AbsoluteTextPosition(endChapterId, endOffset, endProgress));
 
     // set length

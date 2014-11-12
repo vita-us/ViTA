@@ -36,7 +36,7 @@ public class AnalysisExecutor {
 
   private List<AnalysisObserver> observers = new ArrayList<>();
 
-  private static final Logger logger = Logger.getLogger(AnalysisExecutor.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AnalysisExecutor.class.getName());
 
   /**
    * Creates an executor for the scheduled modules
@@ -140,7 +140,7 @@ public class AnalysisExecutor {
     final ModuleResultProvider resultProvider = moduleState.getResultProvider();
     final Module<?> instance = moduleState.getInstance();
 
-    logger.info("Starting " + moduleState.getModuleClass());
+    LOGGER.info("Starting " + moduleState.getModuleClass());
 
     Thread thread = new Thread(new Runnable() {
       @Override
@@ -153,18 +153,18 @@ public class AnalysisExecutor {
               onModuleProgress(moduleState, progress);
             }
           });
-          if (result == null)
-            throw new RuntimeException("The module " + moduleState.getModuleClass()
+          if (result == null) {
+            throw new ModuleExecutionException("The module " + moduleState.getModuleClass()
                 + " returned null");
+          }
         } catch(Exception e) {
-          logger.log(Level.SEVERE, "Module " + moduleState.getModuleClass() + " failed", e);
           onModuleFailed(moduleState, e);
           return;
         }
-        logger.info("Module " + moduleState.getModuleClass() + " finished");
         onModuleFinished(moduleState, result);
       }
     });
+    thread.setName("Analysis " + moduleState.getModuleClass());
     thread.start();
     moduleState.setThread(thread);
     runningModules.add(moduleState);
@@ -175,6 +175,8 @@ public class AnalysisExecutor {
     if (status != AnalysisStatus.RUNNING) {
       return;
     }
+
+    LOGGER.info("Module " + moduleState.getModuleClass() + " finished");
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);
@@ -196,6 +198,8 @@ public class AnalysisExecutor {
   }
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
+    LOGGER.log(Level.SEVERE, "Module " + moduleState.getModuleClass() + " failed", e);
+
     // Ignore results produced after failure / cancel
     if (status != AnalysisStatus.RUNNING) {
       return;
