@@ -28,7 +28,7 @@
 
           ChapterText.get({
             documentId: scope.document.id,
-            chapterId: parts[0].chapters[0]
+            chapterId: parts[0].chapters[0].id
           }, function(chapter) {
             scope.previewText = chapter.text;
           });
