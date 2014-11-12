@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -110,6 +111,7 @@ public class Model implements Factory<EntityManager> {
 
   @Override
   @RequestScoped
+  @Produces
   public EntityManager provide() {
     return getEntityManager();
   }
