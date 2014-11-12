@@ -19,18 +19,18 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
  */
 public class MetadataBuilder {
 
-  private final String TITLE_VERSION1 = "Title:";
-  private final String AUTHOR_VERSION1 = "Author:";
-  private final String RELEASE_DATE_VERSION1 = "Release Date:";
-  private final String PUBLISHER_VERSION1 = "Publisher:";
-  private final String GENRE_VERSION1 = "Genre:";
-  private final String EDITION_VERSION1 = "Edition:";
-  private final Set<String> TITLE_SET = new HashSet<String>();
-  private final Set<String> AUTHOR_SET = new HashSet<String>();
-  private final Set<String> RELEASE_DATE_SET = new HashSet<String>();
-  private final Set<String> PUBLISHER_SET = new HashSet<String>();
-  private final Set<String> GENRE_SET = new HashSet<String>();
-  private final Set<String> EDITION_SET = new HashSet<String>();
+  private static final String TITLE_VERSION1 = "Title:";
+  private static final String AUTHOR_VERSION1 = "Author:";
+  private static final String RELEASE_DATE_VERSION1 = "Release Date:";
+  private static final String PUBLISHER_VERSION1 = "Publisher:";
+  private static final String GENRE_VERSION1 = "Genre:";
+  private static final String EDITION_VERSION1 = "Edition:";
+  private final Set<String> titleSet = new HashSet<String>();
+  private final Set<String> authorSet = new HashSet<String>();
+  private final Set<String> releaseDateSet = new HashSet<String>();
+  private final Set<String> publisherSet = new HashSet<String>();
+  private final Set<String> genreSet = new HashSet<String>();
+  private final Set<String> editionSet = new HashSet<String>();
   private DocumentMetadata documentMetadata;
 
 
@@ -50,12 +50,12 @@ public class MetadataBuilder {
     documentMetadata.setPublishYear(0);
     documentMetadata.setTitle("");
 
-    TITLE_SET.add(TITLE_VERSION1);
-    AUTHOR_SET.add(AUTHOR_VERSION1);
-    RELEASE_DATE_SET.add(RELEASE_DATE_VERSION1);
-    PUBLISHER_SET.add(PUBLISHER_VERSION1);
-    GENRE_SET.add(GENRE_VERSION1);
-    EDITION_SET.add(EDITION_VERSION1);
+    titleSet.add(TITLE_VERSION1);
+    authorSet.add(AUTHOR_VERSION1);
+    releaseDateSet.add(RELEASE_DATE_VERSION1);
+    publisherSet.add(PUBLISHER_VERSION1);
+    genreSet.add(GENRE_VERSION1);
+    editionSet.add(EDITION_VERSION1);
   }
 
   /**
@@ -73,7 +73,7 @@ public class MetadataBuilder {
    * @param titleList List of Line - Contains all lines of the title.
    */
   public void setTitle(List<Line> titleList) {
-    documentMetadata.setTitle(filterMetadata(titleList, TITLE_SET));
+    documentMetadata.setTitle(filterMetadata(titleList, titleSet));
   }
 
   /**
@@ -82,7 +82,7 @@ public class MetadataBuilder {
    * @param authorList List of Line - Contains all lines of the author.
    */
   public void setAuthor(List<Line> authorList) {
-    documentMetadata.setAuthor(filterMetadata(authorList, AUTHOR_SET));
+    documentMetadata.setAuthor(filterMetadata(authorList, authorSet));
   }
 
   /**
@@ -91,7 +91,7 @@ public class MetadataBuilder {
    * @param publishYearList List of Line - Contains all lines of the publish year.
    */
   public void setPublishYear(List<Line> publishYearList) {
-    setPublishYear(filterMetadata(publishYearList, RELEASE_DATE_SET));
+    setPublishYear(filterMetadata(publishYearList, releaseDateSet));
 
   }
 
@@ -101,7 +101,7 @@ public class MetadataBuilder {
    * @param publisherList List of Line - Contains all lines of the publisher.
    */
   public void setPublisher(List<Line> publisherList) {
-    documentMetadata.setPublisher(filterMetadata(publisherList, PUBLISHER_SET));
+    documentMetadata.setPublisher(filterMetadata(publisherList, publisherSet));
   }
 
   /**
@@ -110,7 +110,7 @@ public class MetadataBuilder {
    * @param genreList List of Line - Contains all lines of the genre.
    */
   public void setGenre(List<Line> genreList) {
-    documentMetadata.setGenre(filterMetadata(genreList, GENRE_SET));
+    documentMetadata.setGenre(filterMetadata(genreList, genreSet));
   }
 
   /**
@@ -119,7 +119,7 @@ public class MetadataBuilder {
    * @param editionList List of Line - Contains all lines of the edition.
    */
   public void setEdition(List<Line> editionList) {
-    documentMetadata.setEdition(filterMetadata(editionList, EDITION_SET));
+    documentMetadata.setEdition(filterMetadata(editionList, editionSet));
   }
 
   /**
@@ -136,7 +136,7 @@ public class MetadataBuilder {
     String text = "";
     if (metadata != null) {
       String newMetadata = buildMetadataMultiline(metadata);
-      newMetadata.trim();
+      newMetadata = newMetadata.trim();
       // Search for text to reduce, not case sensitive
       for (String preText : preTexts) {
         if (newMetadata.toLowerCase().startsWith(preText.toLowerCase())) {
