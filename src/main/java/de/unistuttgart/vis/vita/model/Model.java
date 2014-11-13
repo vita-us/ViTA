@@ -82,8 +82,8 @@ public class Model implements Factory<EntityManager> {
 
   @Override
   @RequestScoped
-  @Produces
   public EntityManager provide() {
+    // hk2
     final EntityManager instance = getEntityManager();
 
     closeableService.add(new Closeable() {
@@ -93,6 +93,13 @@ public class Model implements Factory<EntityManager> {
       }
     });
     return instance;
+  }
+
+  @RequestScoped
+  @Produces
+  public EntityManager produce() {
+    // weld
+    return getEntityManager();
   }
 
   @Override
