@@ -19,6 +19,7 @@
 
         DocumentViewReceiver.onOccurrences(function(messageData) {
           $scope.occurrences = messageData.message;
+          $scope.$digest();
         });
 
         DocumentViewReceiver.requestDocumentId();

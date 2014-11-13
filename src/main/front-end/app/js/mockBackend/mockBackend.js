@@ -19,8 +19,12 @@
                 TestData.analysisProgress);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/parts$')).respond(TestData.parts);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/[^/]+')).respond(
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/1.1+')).respond(
                 TestData.singleChapter);
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/1.2+')).respond(
+                TestData.secondChapter);
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/1.3+')).respond(
+                TestData.thirdChapter);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
