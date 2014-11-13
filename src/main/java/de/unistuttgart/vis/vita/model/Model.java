@@ -75,11 +75,8 @@ public class Model implements Factory<EntityManager> {
    * Create a default Model instance
    */
   public Model() {
-    Path path = getDefaultDataDirectory().resolve("db");
-    Map<String, String> properties =
-        ImmutableMap.of("hibernate.connection.url", "jdbc:h2:" + path.toString());
     entityManagerFactory =
-        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
+        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
   }
 
   private Model(String persistenceUnitName) {
