@@ -59,7 +59,7 @@ public class AnalysisServiceTest extends ServiceTest {
   @Test
   public void testStopAnalysis() {
     // set up request
-    String path = "/documents/" + documentId + "/analysis";
+    String path = "/documents/" + documentId + "/analysis/stop";
     DocumentIdRequest request = new DocumentIdRequest(documentId);
     Entity<DocumentIdRequest> requestEntity = Entity.entity(request, MediaType.APPLICATION_JSON);
     
@@ -74,7 +74,7 @@ public class AnalysisServiceTest extends ServiceTest {
   @Test
   public void testAmbiguousStopRequest() {
     // set up request
-    String path = "/documents/" + documentId + "/analysis";
+    String path = "/documents/" + documentId + "/analysis/stop";
     DocumentIdRequest request = new DocumentIdRequest("I'm another id!");
     Entity<DocumentIdRequest> requestEntity = Entity.entity(request, MediaType.APPLICATION_JSON);
     

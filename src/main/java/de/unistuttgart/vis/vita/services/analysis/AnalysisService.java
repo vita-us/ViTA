@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.analysis;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,6 +37,7 @@ public class AnalysisService {
    */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/stop")
   public Response stopAnalysis(DocumentIdRequest idRequest) {
     Response response = null;
     
@@ -43,6 +45,26 @@ public class AnalysisService {
       analysisController.cancelAnalysis(idRequest.getId());
       response = Response.noContent().build();
     } else {
+      response = Response.serverError().build();
+    }
+    
+    return response;
+  }
+  
+  /**
+   * Restarts a previously canceled analysis.
+   * 
+   * @return Response with HTTP 204 status if analysis could be restarted
+   */
+  @PUT
+  @Path("/restart")
+  public Response restartAnalysis() {
+    Response response = null;
+    
+    try {
+      analysisController.restartAnalysis(documentId);
+      response = Response.noContent().build();
+    } catch (IllegalArgumentException iae) {
       response = Response.serverError().build();
     }
     
