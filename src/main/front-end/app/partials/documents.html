@@ -22,9 +22,11 @@
   </div>
 
   <div class="col-md-6" ng-show="selectedDocument">
-    <div data-document-preview class="row" data-document="selectedDocument"></div>
-    <div class="row">
-      <button type="button" class="btn btn-default" ng-click="renameDocument()">Rename</button>
+    <div data-document-preview data-document="selectedDocument"></div>
+    <div>
+      <button type="button" class="btn btn-default btn-sm" ng-click="renameDocument()">
+        <span class="glyphicon glyphicon-edit"></span> Rename
+      </button>
       <a class="btn btn-success pull-right" ng-href="#/documents/{{selectedDocument.id}}">Show
         document</a>
     </div>
