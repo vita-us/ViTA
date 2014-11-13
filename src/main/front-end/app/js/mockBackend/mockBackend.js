@@ -14,6 +14,7 @@
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
         $httpBackend.whenDELETE(new RegExp('/documents/[^/]+$')).respond(undefined);
+        $httpBackend.whenPUT(new RegExp('/documents/[^/]+$')).respond(undefined);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
                 TestData.analysisProgress);
