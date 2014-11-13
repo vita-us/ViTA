@@ -30,4 +30,14 @@ describe('DocumentService', function() {
     $httpBackend.flush();
   }));
 
+  it('should expect a put request', inject(function($httpBackend, Document) {
+    $httpBackend.expectPUT('/documents/doc13a').respond(undefined);
+
+    var result = Document.rename({
+      documentId: 'doc13a',
+      name: 'The New Name'
+    });
+    $httpBackend.flush();
+  }));
+
 });
