@@ -41,4 +41,19 @@ describe('documentHighlighter', function() {
     expect(element.find('span.occurrence').first().text()).toBe('Mr. Bilbo Baggins');
     expect(element.find('span.occurrence').last().text()).toBe('Gandalf the Wizard');
   }));
+
+  it('should highlight nothing if data is undefined', function() {
+    scope.occurrences = undefined;
+    scope.$digest();
+    expect(element.find('span.occurrence').length).toBe(0);
+  });
+
+  it('should change highlight when data changes', inject(function(TestData, _$httpBackend_) {
+    $httpBackend = _$httpBackend_;
+    $httpBackend.expectGET('/documents/doc13a/chapters/1.1').respond(TestData.singleChapter);
+    scope.occurrences = TestData.relationOccurrences.occurrences.slice(0, 3);
+    scope.$digest();
+    $httpBackend.flush();
+    expect(element.find('span.occurrence').length).toBe(3);
+  }));
 });

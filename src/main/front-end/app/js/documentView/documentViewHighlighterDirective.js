@@ -14,7 +14,8 @@
         function link(scope, element, attrs) {
           highlighterElement = element;
           scope.$watch('occurrences', function(newValue, oldValue) {
-            if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
+            if (!angular.equals(newValue, oldValue)) {
+              clearChapters();
               highlight(scope.occurrences, scope.documentId);
             }
           }, true);
@@ -151,6 +152,12 @@
           });
 
           return chapterOccurrences;
+        }
+
+        function clearChapters() {
+          $(highlighterElement[0]).find('[id^="chapter-"] p').each(function() {
+            $(this).html($(this).text());
+          });
         }
 
         return {
