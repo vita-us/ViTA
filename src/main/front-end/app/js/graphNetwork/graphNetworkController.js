@@ -3,8 +3,10 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('GraphNetworkCtrl',
-    ['$scope', '$routeParams', 'TestData',
+  vitaControllers.controller('GraphNetworkCtrl', [
+      '$scope',
+      '$routeParams',
+      'TestData',
       function($scope, $routeParams, TestData) {
         // TODO replace when implementing the graph network page
         $scope.entities = TestData.graphNetworkEntities;
@@ -16,13 +18,15 @@
             max: 100,
             values: [0, 100],
             slide: function(event, ui) {
-              $('#amount').val(ui.values[0] + ' - ' + ui.values[1]);
-              $scope.rangeStart = ui.values[0];
-              $scope.rangeEnd = ui.values[1];
+              $("#amount").val(ui.values[0] + ' - ' + ui.values[1]);
+              $scope.rangeStart = ui.values[0] / 100;
+              $scope.rangeEnd = ui.values[1] / 100;
+              $scope.$apply();
             }
           });
-          $('#amount').val($('#slider-range').slider('values', 0) +
-               ' - ' + $('#slider-range').slider('values', 1));
+          $('#amount').val(
+                  $('#slider-range').slider('values', 0) + ' - '
+                          + $('#slider-range').slider('values', 1));
         };
         test();
       }]);

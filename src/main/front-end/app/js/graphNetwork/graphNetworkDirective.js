@@ -9,6 +9,7 @@
       '$routeParams',
       function(CssClass, EntityRelation, $routeParams) {
 
+    // rangeBEGIN, because Start seems to be an angular keyword
     var directive = {
       replace: false,
       restrict: 'EA',
@@ -16,14 +17,14 @@
         entities: '=',
         width: '@',
         height: '@',
-        rangeStart: '=',
+        rangeBegin: '=',
         rangeEnd: '='
       },
       link: function(scope, element) {
         buildGraph(element, scope);
 
-        scope.$watch('[entities,rangeStart,rangeEnd]', function() {
-          fetchRelationsAndDrawElements(scope.entities, scope.rangeStart, scope.rangeEnd);
+        scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
+          fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd);
         }, true);
       }
     };

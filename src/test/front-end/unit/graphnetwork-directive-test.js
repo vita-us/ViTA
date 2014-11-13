@@ -25,8 +25,10 @@ describe('Graph-Network Directive', function() {
 
     $routeParams.documentId = 'doc-id';
     scope.entities = TestData.graphNetworkEntities;
+    scope.rangeStart = 0.0;
+    scope.rangeEnd = 1.0;
 
-    element = '<graph-network entities="entities"></graph-network>';
+    element = '<graph-network entities="entities" data-range-begin="rangeStart" data-range-end="rangeEnd"></graph-network>';
 
     element = $compile(element)(scope);
     $httpBackend.flush();
@@ -62,7 +64,7 @@ describe('Graph-Network Directive', function() {
   }));
 
   it('should display nothing if the data are undefined', function() {
-    $httpBackend.expectGET('/documents/doc-id/entities/relations?entityIds=&type=person').respond({
+    $httpBackend.expectGET('/documents/doc-id/entities/relations?entityIds=&rangeEnd=1&rangeStart=0&type=person').respond({
       entityIds: [],
       relations: []
     });
@@ -74,6 +76,18 @@ describe('Graph-Network Directive', function() {
 
     expect(element.find('.node').length).toBe(0);
     expect(element.find('.link').length).toBe(0);
+  });
+
+  it('should receive the range change', function() {
+    var newRangeStart = 13, newRangeEnd = 77;
+    expect(element.scope().rangeStart).not.toEqual(newRangeStart);
+    expect(element.scope().rangeEnd).not.toEqual(newRangeEnd);
+
+    scope.rangeStart = newRangeStart;
+    scope.rangeEnd = newRangeEnd;
+
+    expect(element.scope().rangeStart).toEqual(newRangeStart);
+    expect(element.scope().rangeEnd).toEqual(newRangeEnd);
   });
 
 });
