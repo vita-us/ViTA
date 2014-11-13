@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -16,7 +17,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  */
 public abstract class OccurrencesService {
 
+  @Inject
   protected EntityManager em;
+
   protected String documentId;
   private int documentLength;
 

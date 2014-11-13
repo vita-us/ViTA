@@ -9,7 +9,6 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
@@ -18,15 +17,11 @@ public class SearchEntityService extends OccurrencesService {
   private String documentId;
   private String entityId;
 
+  @Inject
   private EntityManager em;
 
   @Context
   private ResourceContext resourceContext;
-
-  @Inject
-  public SearchEntityService(Model model) {
-    em = model.getEntityManager();
-  }
 
   public SearchEntityService setDocumentId(String documentId) {
     this.documentId = documentId;

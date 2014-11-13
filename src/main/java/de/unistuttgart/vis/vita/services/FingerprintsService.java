@@ -9,21 +9,15 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
-
 public class FingerprintsService {
   
   private String documentId;
 
+  @Inject
   private EntityManager em;
 
   @Context
   private ResourceContext resourceContext;
-
-  @Inject
-  public FingerprintsService(Model model) {
-    em = model.getEntityManager();
-  }
 
   public FingerprintsService setDocumentId(String documentId) {
     this.documentId = documentId;

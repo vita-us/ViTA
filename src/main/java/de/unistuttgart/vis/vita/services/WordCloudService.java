@@ -9,22 +9,17 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 public class WordCloudService {
   
   private String documentId;
 
+  @Inject
   private EntityManager em;
 
   @Context
   private ResourceContext resourceContext;
-
-  @Inject
-  public WordCloudService(Model model) {
-    em = model.getEntityManager();
-  }
 
   public WordCloudService setDocumentId(String docId) {
     this.documentId = docId;

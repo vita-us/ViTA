@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -10,7 +9,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
@@ -21,16 +19,6 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 public class EntityOccurrencesService extends OccurrencesService {
   
   private String entityId;
-  
-  /**
-   * Creates new EntityOccurrencesService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public EntityOccurrencesService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Sets the id of the document in which the current entity occurs in.
