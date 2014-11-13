@@ -29,16 +29,37 @@ body#document-view {
   height: 100%;
   
   .document-view-menu {
+    z-index: 100;
     margin-bottom: 30px;
     
-    &> div {
-      @media (min-width: 768px) { 
-        position: fixed;
-      }
+    .chapter {
+      padding-left: 3px;
+      margin-bottom: 5px;
     }
   }
   
   .document-view-text {
+    min-height: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .document-view-menu {
+      margin-bottom: 0;
+      height: 100%;
+      
+      .dv-menu-fixed-wrap {
+        position: fixed;
+        width: inherit;
+        border-right: 20px solid transparent;
+        top: @document-view-header-height;
+        bottom: @document-view-footer-height;
+        overflow-y: auto;
+      }
+    }
     
+    .document-view-text {
+      background-color: @light-grey-background-color;
+      border-left: 1px dashed @border-color;
+    }
   }
 }
