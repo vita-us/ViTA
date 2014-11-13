@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services.entity;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -10,12 +11,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Place;
 
 /**
  * Provides methods to GET a place with the current id.
  */
+@ManagedBean
 public class PlaceService {
   
   private String placeId;

@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -15,6 +16,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  * Abstract base class of every service dealing with Occurrences. Offers methods to convert 
  * Lists of TextSpans into Lists of Occurrences and get the Document length.
  */
+@ManagedBean
 public abstract class OccurrencesService {
 
   @Inject

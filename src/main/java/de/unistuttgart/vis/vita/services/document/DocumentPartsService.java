@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.services.document;
 
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -9,13 +10,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.services.responses.DocumentPartsResponse;
 
 /**
  * Provides a method to GET all parts of the document this service refers to.
  */
+@ManagedBean
 public class DocumentPartsService {
   
   private String documentId;

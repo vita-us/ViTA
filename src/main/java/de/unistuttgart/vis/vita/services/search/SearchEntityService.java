@@ -1,17 +1,17 @@
 package de.unistuttgart.vis.vita.services.search;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
+@ManagedBean
 public class SearchEntityService extends OccurrencesService {
   
   private String documentId;
@@ -19,9 +19,6 @@ public class SearchEntityService extends OccurrencesService {
 
   @Inject
   private EntityManager em;
-
-  @Context
-  private ResourceContext resourceContext;
 
   public SearchEntityService setDocumentId(String documentId) {
     this.documentId = documentId;

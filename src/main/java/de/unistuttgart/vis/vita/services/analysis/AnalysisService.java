@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -12,6 +13,7 @@ import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 /**
  * Provides a method to tell the server to stop the analysis for the current Document.
  */
+@ManagedBean
 public class AnalysisService {
   
   private String documentId;

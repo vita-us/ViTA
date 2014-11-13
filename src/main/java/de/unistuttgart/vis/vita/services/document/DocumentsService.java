@@ -18,8 +18,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -46,8 +44,8 @@ public class DocumentsService {
   @Inject
   private AnalysisController analysisController;
   
-  @Context
-  private ResourceContext resourceContext;
+  @Inject
+  private DocumentService documentService;
 
   /**
    * Returns a DocumentsResponse including a list of Documents with a given maximum length,
@@ -146,7 +144,7 @@ public class DocumentsService {
    */
   @Path("{documentId}")
   public DocumentService  getDocument(@PathParam("documentId") String id) {
-    return resourceContext.getResource(DocumentService.class).setId(id);
+    return documentService.setId(id);
   }
 
 }

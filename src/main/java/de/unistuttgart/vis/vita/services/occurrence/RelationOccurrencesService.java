@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -17,6 +18,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Service providing a method to get the occurrences for relations in the current document via GET.
  */
+@ManagedBean
 public class RelationOccurrencesService extends OccurrencesService {
   /**
    * Sets the id of the document this service refers to.

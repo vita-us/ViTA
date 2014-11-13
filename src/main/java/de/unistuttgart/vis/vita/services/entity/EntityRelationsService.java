@@ -12,12 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -36,12 +32,8 @@ public class EntityRelationsService {
   @Inject
   private EntityManager em;
   
-  @Context
-  private ResourceContext resourceContext;
-  
   @Inject
-  public EntityRelationsService(Model model) {
-  }
+  private RelationOccurrencesService relationOccurrencesService;
   
   /**
    * Sets the id of the Document this service should refer to
@@ -172,7 +164,7 @@ public class EntityRelationsService {
    */
   @Path("/occurrences")
   public RelationOccurrencesService getOccurrences() {
-    return resourceContext.getResource(RelationOccurrencesService.class).setDocumentId(documentId);
+    return relationOccurrencesService.setDocumentId(documentId);
   }
 
 }

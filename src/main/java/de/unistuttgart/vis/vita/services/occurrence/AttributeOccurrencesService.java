@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -16,6 +17,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Provides a method to GET the occurrences of the current attribute and entity.
  */
+@ManagedBean
 public class AttributeOccurrencesService extends OccurrencesService {
 
   private String attributeId;
