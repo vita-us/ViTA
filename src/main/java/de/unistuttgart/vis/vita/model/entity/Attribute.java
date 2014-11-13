@@ -1,10 +1,9 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -43,7 +42,7 @@ public class Attribute extends AbstractEntityBase {
   
   private AttributeType type;
   private String content;
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
 
@@ -57,7 +56,6 @@ public class Attribute extends AbstractEntityBase {
   /**
    * Creates a new Attribute with given type and content.
    *
-   * @param pId - the id for the new attribute
    * @param pType - the type of the new attribute, for example 'Name'
    * @param pContent - the content of the new attribute, for example 'Bilbo Baggins'
    */

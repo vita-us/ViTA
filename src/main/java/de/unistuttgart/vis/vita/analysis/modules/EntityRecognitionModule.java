@@ -5,22 +5,7 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import de.unistuttgart.vis.vita.analysis.Module;
-import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
-import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
-import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
-import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.analysis.results.StanfordNLPResult;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.AttributeType;
-import de.unistuttgart.vis.vita.model.entity.BasicEntity;
-import de.unistuttgart.vis.vita.model.entity.EntityType;
+import gate.Annotation;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,31 +14,37 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import gate.Annotation;
+import de.unistuttgart.vis.vita.analysis.Module;
+import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
+import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.AttributeType;
+import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 /**
  *
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class, StanfordNLPResult.class})
-public class EntityRecognitionModule implements Module<BasicEntityCollection> {
+@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class})
+public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
-  private StanfordNLPResult stanfordNLPResult;
   private ProgressListener progressListener;
-
-  @Override
-  public void observeProgress(double progress) {
-    // TODO calculating the progress
-  }
 
   @Override
   public BasicEntityCollection execute(ModuleResultProvider result,
                                        ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
-    stanfordNLPResult = result.getResultFor(StanfordNLPResult.class);
     this.progressListener = progressListener;
 
     startAnalysis();
@@ -72,7 +63,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     int currentPart = 0;
     int currentChapter = 0;
     int currentAnnotation = 0;
-    double partFactor = 1 / documentParts.size();
+    double partFactor = 1.0 / documentParts.size();
 
     for (DocumentPart part : documentParts) {
       List<Chapter> chapters = part.getChapters();
@@ -125,7 +116,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     Set<Annotation> extracted = new TreeSet<>();
 
     for (Annotation annotation : annotations) {
-      if (annotation.getType().equals("Person") || annotation.getType().equals("Location")) {
+      if ("Person".equals(annotation.getType()) || "Location".equals(annotation.getType())) {
         extracted.add(annotation);
       }
     }
@@ -149,7 +140,7 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
       entity.setDisplayName(annotatedText);
       EntityType type;
 
-      if (theAnnotation.getType().equals("Person")) {
+      if ("Person".equals(theAnnotation.getType())) {
         type = EntityType.PERSON;
       } else {
         type = EntityType.PLACE;
@@ -164,8 +155,6 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
     updateNameAttributes(entity, annotatedText, textSpan);
 
     entity.getOccurences().add(textSpan);
-
-    // TODO relations, ...
   }
 
   /**
@@ -219,13 +208,9 @@ public class EntityRecognitionModule implements Module<BasicEntityCollection> {
    * @return The Textspan of the annotation.
    */
   private TextSpan getTextSpan(Annotation theAnnotation, Chapter chapter) {
-    TextPosition
-        posStart = new TextPosition(chapter, theAnnotation.getStartNode().getOffset().intValue());
-    TextPosition
-        posEnd =
-        new TextPosition(chapter, theAnnotation.getEndNode().getOffset().intValue());
-
-    return new TextSpan(posStart, posEnd);
+    return new TextSpan(chapter,
+        theAnnotation.getStartNode().getOffset().intValue(),
+        theAnnotation.getEndNode().getOffset().intValue());
   }
 
   /**

@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -29,7 +30,7 @@ public class Document extends AbstractEntityBase {
   private DocumentMetrics metrics;
   @Embedded
   private DocumentContent content;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
   /**
@@ -39,6 +40,7 @@ public class Document extends AbstractEntityBase {
     this.metrics = new DocumentMetrics();
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
+    this.progress = new AnalysisProgress();
   }
 
   /**

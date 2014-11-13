@@ -109,8 +109,9 @@ public class AnalysisScheduler {
     
     ModuleClass clazz = registry.getModuleClassFor(resultClass);
     if (clazz == null) {
-      throw new UnresolvedModuleDependencyException("The module " + dependentClass.getClass().getName() + 
-          "depends on the result " + resultClass.getName() + ", but there is no module available for that.");
+      throw new UnresolvedModuleDependencyException("The module " + dependentClass
+          + " depends on the result " + resultClass.getName()
+          + ", but there is no module available for that.");
     }
     
     modulesForResultClass.put(resultClass, clazz);

@@ -66,7 +66,7 @@ public class DocumentPart extends AbstractEntityBase {
   /**
    * Sets the readable number of this part in the context of the document
    *
-   * @param the number, starting from 1
+   * @param newNumber - the number, starting from 1
    */
   public void setNumber(int newNumber) {
     this.number = newNumber;

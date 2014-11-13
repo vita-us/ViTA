@@ -20,11 +20,11 @@ describe('DocumentsCtrl', function() {
     });
   }));
 
-  it('should create "document" model with 2 documents', inject(function(TestData) {
+  it('should create "document" model with all documents', inject(function(TestData) {
 
     expect(scope.documents).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.documents.length).toEqual(2);
+    expect(scope.documents.length).toEqual(TestData.documents.totalCount);
     expect(scope.documents).toEqualData(TestData.documents.documents);
 
   }));

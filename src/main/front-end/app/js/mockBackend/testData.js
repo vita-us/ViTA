@@ -6,7 +6,7 @@
   app.factory('TestData', function() {
     return {
       documents: {
-        "totalCount": 2,
+        "totalCount": 5,
         "documents": [{
           "id": "doc13a",
           "metadata": {
@@ -16,6 +16,39 @@
             "publishYear": 1957,
             "genre": "Fantasy",
             "edition": "Limited Edition"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "success"
           }
         }, {
           "id": "doc14",
@@ -26,6 +59,168 @@
             "publishYear": 1968,
             "genre": "Krimi",
             "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "scheduled"
+          }
+        }, {
+          "id": "doc16",
+          "metadata": {
+            "title": "Rapunzel",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1928,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "failed"
+          }
+        }, {
+          "id": "doc18",
+          "metadata": {
+            "title": "Schneewittchen",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1958,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "cancelled"
+          }
+        }, {
+          "id": "doc20",
+          "metadata": {
+            "title": "Rumpelstielzchen",
+            "author": "Grimm",
+            "publisher": "Der Verlag",
+            "publishYear": 1952,
+            "genre": "Maerchen",
+            "edition": "Standard"
+          },
+          "progress": {
+            "graphView": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.7123
+            },
+            "wordCloud": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "places": {
+              "isReady": false,
+              "isFailed": true,
+              "progress": 0.6123
+            },
+            "persons": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.001
+            },
+            "fingerPrints": {
+              "isReady": false,
+              "isFailed": false,
+              "progress": 0.81238
+            },
+            "text": {
+              "isReady": true,
+              "isFailed": false,
+              "progress": 1.0
+            },
+            "status": "running"
           }
         }]
       },
@@ -47,12 +242,45 @@
           "placeCount": 2,
           "wordCount": 1999
         },
+        "progress": {
+          "graphView": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.7123
+          },
+          "wordCloud": {
+            "isReady": true,
+            "isFailed": false,
+            "progress": 1.0
+          },
+          "places": {
+            "isReady": false,
+            "isFailed": true,
+            "progress": 0.6123
+          },
+          "persons": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.001
+          },
+          "fingerPrints": {
+            "isReady": false,
+            "isFailed": false,
+            "progress": 0.81238
+          },
+          "text": {
+            "isReady": true,
+            "isFailed": false,
+            "progress": 1.0
+          },
+          "status": "success"
+        },
         "content": {
-          "parts": {
+          "parts": [{
             "chapters": ["chapter1", "chapter2", "chapter3"],
             "number": 1,
             "title": "Der erste Teil"
-          },
+          }],
           "persons": ["person8Ben", "person10Bert"],
           "places": ["place2Paris", "place10Mordor"]
         }
@@ -100,7 +328,7 @@
         "totalCount": "15",
         "parts": [{
           "number": 1,
-          "title": "DerersteTeil",
+          "title": "Der erste Teil",
           "chapters": [{
             "id": "1.13",
             "title": "Seenot",
@@ -139,7 +367,7 @@
             }
           }, {
             "id": "1.15",
-            "title": "SeenotamEnde",
+            "title": "Seenot am Ende",
             "number": 15,
             "length": 8215,
             "range": {
@@ -157,6 +385,27 @@
             }
           }]
         }]
+      },
+
+      singleChapter: {
+        "id": "1.13",
+        "title": "Seenot",
+        "number": 13,
+        "length": 128438,
+        "text": "gaaaaanz ... viiiiieleeeee ... Woeerteeer, Saetze, etc.",
+        "range": {
+          "start": {
+            "chapter": "1.13",
+            "offset": 13,
+            "progress": 0.182381
+          },
+          "end": {
+            "chapter": "1.13",
+            "offset": 29,
+            "progress": 0.87261231
+          },
+          "length": 14123
+        }
       },
 
       fingerprint: {
@@ -497,32 +746,60 @@
         }]
       },
 
+      wordcloudhugo: {
+        "items": [{
+          "word": "Hugo",
+          "frequency": 42
+        }, {
+          "word": "Test",
+          "frequency": 23
+        }]
+      },
+
+      wordcloudbert: {
+        "items": [{
+          "word": "Bert",
+          "frequency": 42
+        }, {
+          "word": "Word",
+          "frequency": 23
+        }]
+      },
+
       analysisProgress: {
         "graphView": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.7123
         },
         "wordCloud": {
           "isReady": true,
+          "isFailed": false,
           "progress": 1.0
         },
         "places": {
           "isReady": false,
+          "isFailed": true,
           "progress": 0.6123
         },
         "persons": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.001
         },
         "fingerPrints": {
           "isReady": false,
+          "isFailed": false,
           "progress": 0.81238
         },
         "text": {
           "isReady": true,
+          "isFailed": false,
           "progress": 1.0
-        }
+        },
+        "status": "success"
       }
+
     };
 
   });

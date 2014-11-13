@@ -13,11 +13,26 @@
           Page.setUpForDocument(document);
         });
 
-        Wordcloud.get({
-          documentId: $routeParams.documentId
-        }, function(response) {
-          $scope.wordcloud = response.items;
-        });
-      }]);
+        $scope.loadPersonWordcloud = function(person) {
+          $scope.activeWordcloud = person.id;
+          loadWordcloud(person.id);
+        };
 
+        $scope.loadGlobalWordcloud = function() {
+          $scope.activeWordcloud = 'global';
+          loadWordcloud();
+        };
+
+        // initial setup
+        $scope.loadGlobalWordcloud();
+
+        function loadWordcloud(entityId) {
+          Wordcloud.get({
+            documentId: $routeParams.documentId,
+            entityId: entityId
+          }, function(response) {
+            $scope.wordcloud = response.items;
+          });
+        }
+      }]);
 })(angular);
