@@ -5,11 +5,41 @@
     </div>
     <div class="col-md-10">
       <div class="row">
-        <div class="col-md-11 highlight">
-          <p>Author: {{document.metadata.author}}</p>
-          <p>Published: {{document.metadata.publishYear}} {{document.metadata.publisher}}</p>
-          <p>Number of chapters: {{document.metrics.chapterCount}}</p>
-          <p>Number of words: {{document.metrics.wordCount}}</p>
+        <div class="col-md-11">
+          <div class="col-md-6">
+            <dl>
+              <dt>Author:</dt>
+              <dd>{{document.metadata.author}}</dd>
+            </dl>
+            <dl>
+              <dt>Published:</dt>
+              <dd>{{document.metadata.publishYear}}</dd>
+            </dl>
+          </div>
+          <div class="col-md-6">
+            <dl>
+              <dt>Number of chapters:</dt>
+              <dd>{{document.metrics.chapterCount}}</dd>
+            </dl>
+            <dl>
+              <dt>Number of words:</dt>
+              <dd>{{document.metrics.wordCount}}</dd>
+            </dl>
+          </div>
+          <div class="col-md-12">
+            <dl>
+              <dt>Main characters:</dt>
+              <dd>
+                <ul ng-controller="PersonListCtrl" class="list-inline">
+                  <li ng-repeat="person in persons | orderBy: 'rankingValue' | limitTo: 5">
+                    <a href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
+                      class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
+                        {{person.displayName}}</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
         </div>
       </div>
       <div class="row overview-preview-images top-buffer">
