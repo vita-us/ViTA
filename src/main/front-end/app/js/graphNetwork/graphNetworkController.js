@@ -29,11 +29,15 @@
           }
         });
 
-        setSliderLabel(sliderMin, sliderMax)
+        setSliderLabel(sliderMin, sliderMax);
 
         function setSliderLabel(start, end) {
           $('#amount').val(start + ' - ' + end);
         }
+
+        $scope.loadGraphNetwork = function(person) {
+          alert(person.id);
+        };
       }]);
 
 })(angular);

@@ -23,7 +23,9 @@
       <div class="row">
         <input type="search" ng-model="search" placeholder="Search..." class="form-control" style="margin-top:5px; margin-bottom:5px;">
         <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-          <a ng-repeat="person in persons | entityNameFilter:search" href="#" class="list-group-item">{{person.displayName}}<input type="checkbox" class="pull-right"></a>
+          <a ng-repeat="person in persons | entityNameFilter:search"
+	    ng-click="loadGraphNetwork(person)" class="list-group-item"
+            ng-class="{'active': false}">{{person.displayName}}</a>
         </div>
       </div>
     </div>
