@@ -798,8 +798,35 @@
           "progress": 1.0
         },
         "status": "success"
-      }
+      },
 
+      search: {
+        "occurrences": [{
+          "start": {
+            "chapter": "1.18",
+            "offset": 13,
+            "progress": 0.182381
+          },
+          "end": {
+            "chapter": "1.18",
+            "offset": 29,
+            "progress": 0.87261231
+          },
+          "length": 14123
+        }, {
+          "start": {
+            "chapter": "2.23",
+            "offset": 12,
+            "progress": 0.7351
+          },
+          "end": {
+            "chapter": "2.24",
+            "offset": 18,
+            "progress": 0.812231
+          },
+          "length": 989
+        }]
+      }
     };
 
   });

@@ -1,5 +1,5 @@
 @document-view-header-height: 60px;
-@document-view-footer-height: 60px;
+@document-view-footer-height: 50px;
 
 body#document-view {
   padding: @document-view-header-height 0 @document-view-footer-height 0;
@@ -8,7 +8,6 @@ body#document-view {
 #document-view-header,
 #document-view-footer {
   position: fixed;
-  height: 80px;
   box-sizing: border-box;
   width: 100%;
 }
@@ -21,7 +20,6 @@ body#document-view {
 
 #document-view-footer {
   height: @document-view-footer-height;
-  padding-top: 10px;
   bottom: 0;
   border-top: 1px solid @border-color;
 }
