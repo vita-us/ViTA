@@ -18,6 +18,8 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
                 TestData.analysisProgress);
 
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/search')).respond(TestData.search);
+
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/parts$')).respond(TestData.parts);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/[^/]+')).respond(
                 TestData.singleChapter);

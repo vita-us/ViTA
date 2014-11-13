@@ -4,7 +4,8 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('DocumentViewCtrl', ['$scope', 'DocumentViewReceiver', 'Document',
-      'DocumentParts', function($scope, DocumentViewReceiver, Document, DocumentParts) {
+      'DocumentParts', 'DocumentSearch',
+      function($scope, DocumentViewReceiver, Document, DocumentParts, DocumentSearch) {
 
         DocumentViewReceiver.onDocumentId(function(messageData) {
           var documentId = messageData.message;
@@ -24,6 +25,16 @@
             documentId: document.id
           }, function(partData) {
             $scope.parts = partData.parts;
+          });
+        }
+
+        $scope.search = function() {
+          DocumentSearch.search({
+            documentId: $scope.document.id,
+             query: $scope.query
+          }, function(response) {
+            // TODO highlight occurrences
+            // highlightOccurrences(response.occurrences);
           });
         }
       }]);
