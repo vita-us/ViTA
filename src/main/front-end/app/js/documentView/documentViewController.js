@@ -33,8 +33,10 @@
             documentId: $scope.document.id,
              query: $scope.query
           }, function(response) {
+            var occurrences = response.occurrences;
+            $scope.resultCount = occurrences.length;
             // TODO highlight occurrences
-            // highlightOccurrences(response.occurrences);
+            // highlightOccurrences(occurrences);
           });
         }
       }]);
