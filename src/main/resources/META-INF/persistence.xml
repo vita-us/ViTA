@@ -32,7 +32,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
     <properties>
-      <property name="hibernate.connection.datasource" value="java:/wedding_db" />
+      <property name="hibernate.connection.datasource" value="java:comp/env/jdbc/wedding_db" />
       <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
