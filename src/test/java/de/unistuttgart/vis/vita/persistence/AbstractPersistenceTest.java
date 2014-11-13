@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 
 /**
  * A test framework that provides an entity manager
@@ -19,7 +20,8 @@ public abstract class AbstractPersistenceTest {
    */
   @Before
   public void setUp() {
-    model = Model.createUnitTestModel();
+    UnitTestModel.startNewSession();
+    model = new UnitTestModel();
     em = model.getEntityManager();
     em.getTransaction().begin();
   }

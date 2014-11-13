@@ -20,10 +20,9 @@ public class MainApplication extends ResourceConfig {
   private static class MainApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
-      Model model = new Model();
-      bind(model).to(Model.class);
-      bindFactory(model).to(EntityManager.class);
-      bind(new AnalysisController(model)).to(AnalysisController.class);
+      bind(Model.class).to(Model.class);
+      bindFactory(Model.class).to(EntityManager.class);
+      bind(AnalysisController.class).to(AnalysisController.class);
     }
   }
 }

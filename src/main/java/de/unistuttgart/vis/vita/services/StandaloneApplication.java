@@ -8,21 +8,21 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.StandaloneModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
-public class TestApplication extends ResourceConfig {
-  public TestApplication() {
+public class StandaloneApplication extends ResourceConfig {
+  public StandaloneApplication() {
     super(MultiPartFeature.class, DocumentsService.class);
     packages(true, "de.unistuttgart.vis.vita.services");
-    register(new MyApplicationBinder());
+    register(new MainApplicationBinder());
   }
-
-  private static class MyApplicationBinder extends AbstractBinder {
+  
+  private static class MainApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
-      bind(UnitTestModel.class).to(Model.class);
-      bindFactory(UnitTestModel.class).to(EntityManager.class);
+      bind(StandaloneModel.class).to(Model.class);
+      bindFactory(StandaloneModel.class).to(EntityManager.class);
       bind(AnalysisController.class).to(AnalysisController.class);
     }
   }

@@ -36,4 +36,17 @@
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
     </properties>
   </persistence-unit>
+  
+  <persistence-unit name="de.unistuttgart.vis.vita.standalone">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <properties>
+      <property name="connection.driver_class" value="org.h2.Driver" />
+      <property name="hibernate.connection.url" value="jdbc:h2:~/.vita/db" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+    </properties>
+  </persistence-unit>
 </persistence>

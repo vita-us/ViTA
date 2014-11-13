@@ -3,9 +3,6 @@ package de.unistuttgart.vis.vita;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -21,8 +18,7 @@ public class Main {
   private static HttpServer startServer() throws IOException {
     HttpServer server =
         GrizzlyWebContainerFactory.create(getBaseURI(), Collections.singletonMap(
-        "javax.ws.rs.Application",
-        "de.unistuttgart.vis.vita.services.MainApplication"));
+            "javax.ws.rs.Application", "de.unistuttgart.vis.vita.services.StandaloneApplication"));
 
     server.getServerConfiguration().addHttpHandler(
         new CLStaticHttpHandler(Main.class.getClassLoader(), "/"));

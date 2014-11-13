@@ -1,40 +1,36 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.ManagedBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.glassfish.hk2.api.Factory;
-
-import com.google.common.collect.ImmutableMap;
+import org.glassfish.jersey.server.CloseableService;
 
 /**
  * Represents the Model of the application.
  */
+@ManagedBean
 @ApplicationScoped
 public class Model implements Factory<EntityManager> {
   private TextRepository textRepository = new TextRepository();
-  private EntityManagerFactory entityManagerFactory;
+  protected EntityManagerFactory entityManagerFactory;
   
-  private static final Logger LOGGER = Logger.getLogger(Model.class.getName());
+  @Inject
+  CloseableService closeableService;
 
-  private static final String RELATIVE_DATA_DIRECTORY_ROOT = ".vita";
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
-  private static final String UNITTEST_PERSISTENCE_UNIT_NAME =
-      "de.unistuttgart.vis.vita.unittest.drop";
-  private static final String UNITTEST_PERSISTENCE_UNIT_NAME_NODROP =
-      "de.unistuttgart.vis.vita.unittest";
 
   static {
     /*
@@ -42,33 +38,6 @@ public class Model implements Factory<EntityManager> {
      * https://java.net/jira/browse/GLASSFISH-19451
      */
     loadDriver();
-  }
-
-  private static Path getDefaultDataDirectory() {
-    String appName;
-    try {
-      appName = new InitialContext().lookup("java:app/AppName").toString();
-    } catch (NamingException e) {
-      LOGGER.log(Level.INFO, "Unable to determine application name, using 'default'", e);
-      appName = "default";
-    }
-    return Paths.get(System.getProperty("user.home")).resolve(RELATIVE_DATA_DIRECTORY_ROOT)
-        .resolve(appName);
-  }
-
-  /**
-   * Create a Model to be used in unit tests
-   * <p>
-   * The database will be automatically dropped and recreated for each call.
-   * 
-   * @return the model
-   */
-  public static Model createUnitTestModel() {
-    return new Model(UNITTEST_PERSISTENCE_UNIT_NAME);
-  }
-
-  public static Model createUnitTestModelWithoutDrop() {
-    return new Model(UNITTEST_PERSISTENCE_UNIT_NAME_NODROP);
   }
 
   /**
@@ -79,8 +48,8 @@ public class Model implements Factory<EntityManager> {
         Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
   }
 
-  private Model(String persistenceUnitName) {
-    entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+  protected Model(EntityManagerFactory emf) {
+    entityManagerFactory = emf;
   }
 
   /**
@@ -115,11 +84,26 @@ public class Model implements Factory<EntityManager> {
   @RequestScoped
   @Produces
   public EntityManager provide() {
-    return getEntityManager();
+    final EntityManager instance = getEntityManager();
+
+    closeableService.add(new Closeable() {
+      @Override
+      public void close() throws IOException {
+        dispose(instance);
+      }
+    });
+    return instance;
   }
 
   @Override
-  public void dispose(EntityManager instance) {
+  public void dispose(@Disposes EntityManager instance) {
+    if (!instance.isOpen())
+      return;
+
     instance.close();
+  }
+  
+  public void closeAllEntityManagers() {
+    entityManagerFactory.close();
   }
 }

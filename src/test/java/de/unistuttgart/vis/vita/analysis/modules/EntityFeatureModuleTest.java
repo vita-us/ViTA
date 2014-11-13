@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -47,7 +48,8 @@ public class EntityFeatureModuleTest {
   
   @Before
   public void setUp() throws Exception {
-    Model model = Model.createUnitTestModel();
+    UnitTestModel.startNewSession();
+    Model model = new UnitTestModel();
     em = model.getEntityManager();
     prepareDatabase();
     BasicEntityCollection entities = createBasicEntityCollection();

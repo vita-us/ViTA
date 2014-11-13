@@ -14,8 +14,10 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.spi.TestContainer;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.junit.Before;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 
 /**
  * Configures the Jersey Test to use the GrizzlyWebContainer, overriding the method
@@ -23,14 +25,6 @@ import de.unistuttgart.vis.vita.model.Model;
  */
 public class ServiceTest extends JerseyTest {
   private Model model;
-  
-  public ServiceTest() {
-    model = Model.createUnitTestModel();
-    
-    // Make sure the entity manager factory is initialized
-    // so that it will drop the data base now instead of in the middle of the test
-    model.getEntityManager().close();
-  }
   
   @Override
   protected TestContainerFactory getTestContainerFactory() throws TestContainerException {
@@ -67,13 +61,21 @@ public class ServiceTest extends JerseyTest {
 
           @Override
           public void stop() {
-            this.server.stop();
+            this.server.shutdownNow();
           }
         };
       }
     };
   }
   
+  @Before
+  @Override
+  public void setUp() throws Exception {
+    UnitTestModel.startNewSession();
+    model = new UnitTestModel();
+    super.setUp();
+  }
+
   /**
    * Returns the model service tests should use
    * @return always the same model
