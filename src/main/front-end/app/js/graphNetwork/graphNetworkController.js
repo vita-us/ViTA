@@ -8,8 +8,7 @@
       '$routeParams',
       'TestData',
       function($scope, $routeParams, TestData) {
-        // TODO replace when implementing the graph network page
-        $scope.entities = TestData.graphNetworkEntities;
+        $scope.entities = [];
 
         var sliderMin = 0, sliderMax = 100;
 
@@ -36,7 +35,20 @@
         }
 
         $scope.loadGraphNetwork = function(person) {
-          alert(person.id);
+          var position = $scope.entities.indexOf(person);
+          if (position > -1) {
+            $scope.entities.splice(position, 1);
+          } else {
+            $scope.entities.push(person);
+          }
+        };
+
+        $scope.deselectAll = function() {
+          $scope.entities = [];
+        };
+
+        $scope.isActive = function(person) {
+          return ($scope.entities.indexOf(person) > -1);
         };
       }]);
 

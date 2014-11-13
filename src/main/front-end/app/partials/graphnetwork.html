@@ -18,14 +18,15 @@
     <div class="col-md-2">
       <div class="row">
         <button type="button" class="btn btn-default btn-block">Reset</button>
-        <button type="button" class="btn btn-default btn-block">Deselect all</button>
+        <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect all</button>
       </div>
       <div class="row">
-        <input type="search" ng-model="search" placeholder="Search..." class="form-control" style="margin-top:5px; margin-bottom:5px;">
+        <input type="search" ng-model="search" placeholder="Search..." 
+          class="form-control" style="margin-top:5px; margin-bottom:5px;">
         <div ng-controller="PersonListCtrl" class="list-group" id="list1">
-          <a ng-repeat="person in persons | entityNameFilter:search"
-	    ng-click="loadGraphNetwork(person)" class="list-group-item"
-            ng-class="{'active': false}">{{person.displayName}}</a>
+          <a href="" ng-repeat="person in persons | entityNameFilter:search"
+            ng-click="loadGraphNetwork(person)" class="list-group-item"
+            ng-class="{'active': isActive(person)}">{{person.displayName}}</a>
         </div>
       </div>
     </div>
