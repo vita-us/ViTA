@@ -31,11 +31,10 @@
 
   <div id="page" class="container">
     <div class="page-header">
-      <h1 class="page-title">{{ Page.title }}</h1>
+      <h1 class="page-title">{{ Page.title }} > <small>{{Page.breadcrumbs}}</small></h1>
     </div>
     <div class="row">
       <div class="col-md-12">
-        <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs }}</h2>
         <div ng-view></div>
       </div>
     </div>
