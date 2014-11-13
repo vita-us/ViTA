@@ -16,19 +16,14 @@
             values: [ 0, 100 ],
             slide: function( event, ui ) {
               $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+              $scope.rangeStart = ui.values[ 0 ];
+              $scope.rangeEnd = ui.values[ 1 ];
             }
           });
           $( "#amount" ).val( $( "#slider-range" ).slider( "values", 0 ) +
                " - " + $( "#slider-range" ).slider( "values", 1 ) );
         };
-	test();
-
-        function onSliderChange(rangeStart, rangeEnd) {
-          // TODO connect with the slider
-          $scope.rangeStart = rangeStart;
-          $scope.rangeEnd = rangeEnd;
-        }
-
+        test();
       }]);
 
 })(angular);
