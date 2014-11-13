@@ -4,8 +4,14 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the documents page
-  vitaControllers.controller('DocumentsCtrl', ['$scope', 'Document', 'Page', 'FileUpload',
-      '$interval', function($scope, Document, Page, FileUpload, $interval) {
+  vitaControllers.controller('DocumentsCtrl', [
+      '$scope',
+      'Document',
+      'Page',
+      'FileUpload',
+      '$interval',
+      'ChapterText',
+      function($scope, Document, Page, FileUpload, $interval, ChapterText) {
         Page.setUp('Documents', 1);
 
         $scope.uploading = false;
@@ -43,6 +49,26 @@
 
         function resetUploadField() {
           document.getElementById('document-input').value = '';
+        }
+
+        $scope.isDocumentSelected = function(document) {
+          return angular.equals($scope.selectedDocument, document);
+        };
+
+        $scope.updateSelection = function(selectedDocument) {
+          $scope.selectedDocument = selectedDocument;
+        };
+
+        $scope.renameDocument = function() {
+          var document = $scope.selectedDocument;
+          var newName = prompt('Please enter a new name for document "' + document.metadata.title
+                  + '".');
+          if (newName) {
+            Document.rename({
+              documentId: document.id,
+              name: newName
+            });
+          }
         }
 
         $scope.$on('$destroy', function() {
