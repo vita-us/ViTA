@@ -1,7 +1,7 @@
 <span class="document-status-icon glyphicon {{statusIconClass}}" title="{{statusDescription}}"></span>
   {{document.metadata.title}}
 <span class="pull-right document-delete-icon glyphicon glyphicon-trash" title="Delete document"
-  ng-click="deleteDocument()"></span>
+  ng-click="deleteDocument(); $event.preventDefault(); $event.stopPropagation()"></span>
 
-<span class="pull-right glyphicon {{operationIconClass}}" title="{{operationDescription}}"
-  ng-click="operation()"></span>
+<span class="pull-right glyphicon  {{operationIconClass}}" title="{{operationDescription}}"
+  ng-click="operation(); $event.preventDefault(); $event.stopPropagation()"></span>
