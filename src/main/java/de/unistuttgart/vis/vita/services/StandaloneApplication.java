@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
 import javax.annotation.ManagedBean;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -23,7 +24,7 @@ public class StandaloneApplication extends ResourceConfig {
     register(new MainApplicationBinder());
     ServiceLocatorUtilities.createAndPopulateServiceLocator();
   }
-  
+
   private static class MainApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
@@ -33,9 +34,10 @@ public class StandaloneApplication extends ResourceConfig {
         bind(service).to(service);
       }
 
-      bind(StandaloneModel.class).to(Model.class);
-      bindFactory(StandaloneModel.class).to(EntityManager.class);
-      bind(AnalysisController.class).to(AnalysisController.class);
+      Model model = new StandaloneModel();
+      bind(model).to(Model.class);
+      bindFactory(model).to(EntityManager.class);
+      bind(AnalysisController.class).in(Singleton.class).to(AnalysisController.class);
     }
   }
 }

@@ -26,7 +26,7 @@ import org.glassfish.jersey.server.CloseableService;
 public class Model implements Factory<EntityManager> {
   private TextRepository textRepository = new TextRepository();
   protected EntityManagerFactory entityManagerFactory;
-  
+
   @Inject
   CloseableService closeableService;
 
@@ -86,12 +86,14 @@ public class Model implements Factory<EntityManager> {
     // hk2
     final EntityManager instance = getEntityManager();
 
-    closeableService.add(new Closeable() {
-      @Override
-      public void close() throws IOException {
-        dispose(instance);
-      }
-    });
+    if (closeableService != null) {
+      closeableService.add(new Closeable() {
+        @Override
+        public void close() throws IOException {
+          dispose(instance);
+        }
+      });
+    }
     return instance;
   }
 
@@ -109,7 +111,7 @@ public class Model implements Factory<EntityManager> {
 
     instance.close();
   }
-  
+
   public void closeAllEntityManagers() {
     entityManagerFactory.close();
   }
