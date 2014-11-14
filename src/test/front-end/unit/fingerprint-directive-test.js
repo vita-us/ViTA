@@ -3,7 +3,7 @@ describe('Fingerprint Directive', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function($rootScope, $compile, _$httpBackend_, TestData) {
+  beforeEach(inject(function($rootScope, $compile, _$httpBackend_, TestData, $routeParams) {
 
     scope = $rootScope.$new();
 
@@ -12,11 +12,11 @@ describe('Fingerprint Directive', function() {
             .respond(TestData.fingerprint);
 
     scope.entityIds = ['456', '789'];
-    scope.documentId = '123';
     scope.parts = TestData.parts.parts;
+    $routeParams.documentId = '123';
 
-    element = '<div data-fingerprint class="fingerprint-container" data-document-id="documentId"'
-            + 'data-entity-ids="entityIds" data-parts="parts"></div>';
+    element = '<div data-fingerprint class="fingerprint-container" data-entity-ids="entityIds" ' +
+              'data-parts="parts"></div>';
 
     element = $compile(element)(scope);
     scope.$digest();
