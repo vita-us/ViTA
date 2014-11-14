@@ -31,7 +31,7 @@
 
     var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
-    var graph, force, nodes, links;
+    var graph, force, nodes, links, entityIdNodeMap = d3.map();
 
     function buildGraph(element, scope) {
       var container = d3.select(element[0]);
@@ -82,7 +82,7 @@
     }
 
     function parseEntitiesToGraphData(entities, relationData) {
-      var entityIdNodeMap = mapEntitiesToNodes(entities, relationData.entityIds);
+      updateEntityNodeMap(entities, relationData.entityIds);
 
       var links = [];
       var relations = relationData.relations;
@@ -90,7 +90,7 @@
       for (var i = 0, l = relations.length; i < l; i++) {
         var relation = relations[i];
 
-        links.push(createLinkFromRelation(relation, entityIdNodeMap));
+        links.push(createLinkFromRelation(relation));
       }
 
       return {
@@ -99,35 +99,30 @@
       };
     }
 
-    function mapEntitiesToNodes(entities, idsOfDisplayedEntities) {
-      var nodeMap = d3.map();
+    function updateEntityNodeMap(newEntities, idsOfDisplayedEntities) {
+      // Delete removed nodes also from entity map
+      var currentIds = entityIdNodeMap.keys();
 
-      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
-        var entityId = idsOfDisplayedEntities[i];
-
-        // Create nodes for displayed entities
-        nodeMap.set(entityId, {
-          id: entityId
-        });
-      }
-
-      // Add additional data of the entities
-      for (var i = 0, l = entities.length; i < l; i++) {
-        var entity = entities[i];
-
-        if (nodeMap.has(entity.id)) {
-          var entityNode = nodeMap.get(entity.id);
-
-          entityNode.displayName = entity.displayName;
-          entityNode.rankingValue = entity.rankingValue;
-          entityNode.type = entity.type;
+      for (var i = 0, l = currentIds.length; i < l; i++) {
+        var id = currentIds[i];
+        if (idsOfDisplayedEntities.indexOf(id) < 0) {
+          entityIdNodeMap.remove(id);
         }
       }
 
-      return nodeMap;
+      // Create nodes for all new entities
+      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
+        var newId = idsOfDisplayedEntities[i];
+
+        if (!entityIdNodeMap.has(newId)) {
+          entityIdNodeMap.set(newId, {
+            id: newId
+          });
+        }
+      }
     }
 
-    function createLinkFromRelation(relation, entityIdNodeMap) {
+    function createLinkFromRelation(relation) {
       return {
         source: entityIdNodeMap.get(relation.personAId),
         target: entityIdNodeMap.get(relation.personBId),
@@ -159,14 +154,6 @@
     }
 
     function redrawElements(graphData) {
-      /*
-       * Remove all elements because they are redrawn. This is the only solution
-       * currently because it isn't guaranteed, that the controller is passing
-       * the same objects for the same displayed entities. For example one
-       * entity might disappear, but this directive receives completely new
-       * objects - even for unchanged entities.
-       */
-
       links = graph.select('#linkGroup').selectAll('.link')
           .data(graphData.links);
 
