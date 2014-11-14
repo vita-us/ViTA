@@ -122,6 +122,19 @@
           });
         }
       }
+
+      // Add additional data of the entities
+      for (var i = 0, l = newEntities.length; i < l; i++) {
+        var entity = newEntities[i];
+
+        // entity might be selected but doesn't occur in the selected range -> not displayed
+        if (entityIdNodeMap.has(entity.id)) {
+          var entityNode = entityIdNodeMap.get(entity.id);
+          entityNode.displayName = entity.displayName;
+          entityNode.rankingValue = entity.rankingValue;
+          entityNode.type = entity.type;
+        }
+      }
     }
 
     function createLinkFromRelation(relation) {
