@@ -28,8 +28,8 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
                 TestData.singlePlace);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/entities/fingerprints[^/]+$')).respond(
-                TestData.fingerprint);
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/entities/relations/occurrences[^/]+$'))
+                .respond(TestData.fingerprint);
 
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons$')).respond(TestData.persons);
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
