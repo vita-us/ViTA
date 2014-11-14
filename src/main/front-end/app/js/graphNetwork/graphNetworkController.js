@@ -40,6 +40,11 @@
           }
         };
 
+        $scope.showFingerprint = function(ids) {
+          $scope.fingerprintEntityIds = ids;
+          $scope.$apply();
+        }
+
         $scope.deselectAll = function() {
           $scope.entities = [];
         };

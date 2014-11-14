@@ -18,13 +18,15 @@
         width: '@',
         height: '@',
         rangeBegin: '=',
-        rangeEnd: '='
+        rangeEnd: '=',
+        showFingerprint: '&'
       },
       link: function(scope, element) {
         buildGraph(element, scope);
 
         scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
-          fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd);
+          fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
+                  scope.showFingerprint);
         }, true);
       }
     };
@@ -56,7 +58,7 @@
           .on('tick', setNewPositions);
     }
 
-    function fetchRelationsAndDrawElements(entities, rangeStart, rangeEnd) {
+    function fetchRelationsAndDrawElements(entities, rangeStart, rangeEnd, showFingerprint) {
       // Handle undefined data as empty dataset
       entities = entities || [];
 
@@ -73,7 +75,7 @@
       }, function(relationData) {
         var graphData = parseEntitiesToGraphData(entities, relationData);
 
-        redrawElements(graphData);
+        redrawElements(graphData, showFingerprint);
 
         force.nodes(graphData.nodes)
             .links(graphData.links)
@@ -153,12 +155,18 @@
       });
     }
 
-    function redrawElements(graphData) {
+    function redrawElements(graphData, showFingerprint) {
       links = graph.select('#linkGroup').selectAll('.link')
           .data(graphData.links);
 
       links.exit().remove();
-      links.enter().append('line').classed('link', true);
+      links.enter().append('line')
+          .classed('link', true)
+          .on('click', function(link) {
+            if (showFingerprint instanceof Function) {
+              showFingerprint({ids: [link.source.id, link.target.id]});
+            }
+          });
 
       nodes = graph.select('#nodeGroup').selectAll('.node')
           .data(graphData.nodes);

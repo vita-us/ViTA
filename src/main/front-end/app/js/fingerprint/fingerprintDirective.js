@@ -41,8 +41,8 @@
 
       var occurrenceSteps = Math.floor(width / minBarWidth);
 
-      scope.$watch('entityIds', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
+      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
+        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
           if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
             removeFingerPrint();
             return;
@@ -50,7 +50,9 @@
           Fingerprint.get({
             documentId: $routeParams.documentId,
             entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps
+            steps: occurrenceSteps,
+            rangeStart: scope.rangeBegin,
+            rangeEnd: scope.rangeEnd
           }, function(response) {
             removeFingerPrint();
             buildFingerPrint(response.occurrences);
@@ -239,7 +241,9 @@
       scope: {
         entityIds: '=',
         parts: '=',
-        height: '@'
+        height: '@',
+        rangeBegin: '=', // rangeStart parameter is not working with angular
+        rangeEnd: '='
       },
       link: link
     };
