@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -16,10 +17,14 @@ public class TextPosition implements Comparable<TextPosition> {
   private int offset;
   
   /**
-   * Creates a new TextPosition setting all fields to default values.
+   * Creates a new instance of TextPosition. 
+   * <p>Use factory methods 
+   * {@link TextPosition#fromGlobalOffset(Chapter, int)} and 
+   * {@link TextPosition#fromLocalOffset(Chapter, int)} instead to avoid misunderstandings 
+   * concerning the offsets. </p>
    */
-  public TextPosition() {
-    this.chapter = new Chapter();
+  protected TextPosition() {
+    // no-argument constructor needed for JPA
   }
 
   /**
@@ -28,13 +33,40 @@ public class TextPosition implements Comparable<TextPosition> {
    * @param pChapter - the chapter this TextPosition lies in
    * @param pOffset - the global offset of this TextPosition within the document
    */
-  public TextPosition(Chapter pChapter, int pOffset) {
+  private TextPosition(Chapter pChapter, int pOffset) {
+    // This constructor is private to prevent confusion about global/local offsets
+    // The factory methods should be used instead.
+    
     if (pOffset < 0) {
       throw new IllegalArgumentException("offset must not be negative!");
     }
 
     this.chapter = pChapter;
     this.offset = pOffset;
+  }
+
+  /**
+   * Creates a new TextPosition by specifying the chapter and the chapter-local character offset
+   *
+   * @param pChapter - the chapter this TextPosition lies in
+   * @param pOffset - the offset of this TextPosition within the chapter
+   */
+  public static TextPosition fromLocalOffset(Chapter pChapter, int localOffset) {
+    return new TextPosition(
+        pChapter,
+        pChapter.getRange().getStart().getOffset() + localOffset);
+  }
+
+  /**
+   * Creates a new TextPosition by specifying the chapter and the document-wide character offset
+   *
+   * @param pChapter - the chapter this TextPosition lies in
+   * @param globalOffset - the global offset of this TextPosition within the document
+   */
+  public static TextPosition fromGlobalOffset(Chapter pChapter, int globalOffset) {
+    return new TextPosition(
+        pChapter,
+        globalOffset);
   }
 
   /**
@@ -71,14 +103,16 @@ public class TextPosition implements Comparable<TextPosition> {
     }
     
     TextPosition other = (TextPosition)obj;
-    // TODO include chapter/document as soon as they have hashCode/equals implemented
-    return /*other.chapter.equals(chapter) && */other.offset == this.offset;
+    // do not compare chapters, because the position between to chapters may be attributed to two
+    // different chapters, and they are still the same TextPosition
+    return other.offset == this.offset;
   }
   
   @Override
   public int hashCode() {
-    // TODO include chapter/document as soon as they have hashCode/equals implemented
-    return new HashCodeBuilder().append(offset).append(chapter).hashCode();
+    // do not compare chapters, because the position between to chapters may be attributed to two
+    // different chapters, and they are still the same TextPosition
+    return new HashCodeBuilder().append(offset).hashCode();
   }
   
   @Override

@@ -23,8 +23,8 @@ public class TextSpanTestData {
    * @return a test TextSpan laying in the given chapter
    */
   public TextSpan createTestTextSpan(Chapter chapter) {
-    TextPosition testStartPosition = new TextPosition(chapter, TEST_TEXT_SPAN_START);
-    TextPosition testEndPosition = new TextPosition(chapter, TEST_TEXT_SPAN_END);
+    TextPosition testStartPosition = TextPosition.fromGlobalOffset(chapter, TEST_TEXT_SPAN_START);
+    TextPosition testEndPosition = TextPosition.fromGlobalOffset(chapter, TEST_TEXT_SPAN_END);
     TextSpan testTextSpan = new TextSpan(testStartPosition, testEndPosition);
     return testTextSpan;
   }
