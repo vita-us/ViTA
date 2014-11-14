@@ -20,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.WordCloudService;
@@ -38,6 +39,9 @@ import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
 public class DocumentService {
   
   private String id;
+  
+  @Inject
+  private AnalysisController analysisController;
 
   private EntityManager em;
 
@@ -130,16 +134,24 @@ public class DocumentService {
   @DELETE
   public Response deleteDocument() {
     Response response = null;
+    
     try {
+      // first cancel a running analysis
+      analysisController.cancelAnalysis(id);
+      
+      // then remove it from the database
       em.getTransaction().begin();
       Document docToDelete = readDocumentFromDatabase();
       em.remove(docToDelete);
       em.getTransaction().commit();
 
+      // create the response
       response = Response.noContent().build();
     } catch (NoResultException nre) {
       throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
     }
+    
+    // send response
     return response;
   }
 
