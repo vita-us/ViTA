@@ -3,11 +3,17 @@
     <div class="col-md-2">
       <div ng-include="'partials/menu.html'"></div>
     </div>
-    <div class="col-md-10 highlight">
-      <p ng-repeat="attribute in place.attributes">{{attribute.type}}: {{attribute.content}}</p>
-    </div>
-    <div class="col-md-10 highlight">
-      <div data-fingerprint class="fingerprint-container" data-occurrences="occurrences"data-parts="parts"></div>
+    <div class="col-md-10">
+      <div class="row">
+        <h1><small><span class="glyphicon glyphicon-map-marker"></span></small> {{place.displayName}}</h1>
+        <dl class="dl-horizontal" ng-repeat="attribute in place.attributes">
+          <dt>{{attribute.type}}</dt>
+          <dd>{{attribute.content}}</dd>
+        </dl>
+      </div>
+      <div class="row">
+        <div data-fingerprint class="fingerprint-container" data-occurrences="occurrences"data-parts="parts"></div>
+      </div>
     </div>
   </div>
 </div>
