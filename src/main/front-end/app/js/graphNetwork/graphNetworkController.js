@@ -47,6 +47,10 @@
           $scope.entities = [];
         };
 
+        $scope.reset = function(persons) {
+          $scope.entities = persons.slice(0, 5);
+        };
+
         $scope.isActive = function(person) {
           return ($scope.entities.indexOf(person) > -1);
         };

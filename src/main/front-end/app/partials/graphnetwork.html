@@ -15,15 +15,16 @@
           data-range-end="rangeEnd"></graph-network>
       </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2" ng-controller="PersonListCtrl">
       <div class="row">
-        <button type="button" class="btn btn-default btn-block">Reset</button>
+        <button type="button" class="btn btn-default btn-block" 
+          ng-click="reset(persons)">Reset</button>
         <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect all</button>
       </div>
       <div class="row">
         <input type="search" ng-model="search" placeholder="Search..." 
           class="form-control" style="margin-top:5px; margin-bottom:5px;">
-        <div ng-controller="PersonListCtrl" class="list-group" id="list1">
+        <div class="list-group" id="list1">
           <a href="" ng-repeat="person in persons | entityNameFilter:search"
             ng-click="loadGraphNetwork(person)" class="list-group-item"
             ng-class="{'active': isActive(person)}">{{person.displayName}}</a>
