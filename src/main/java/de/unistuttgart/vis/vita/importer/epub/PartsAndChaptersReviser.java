@@ -101,6 +101,12 @@ public class PartsAndChaptersReviser {
     return formatedParts;
   }
   
+  /**
+   * Checks if the currentElement exists in the editedElements
+   * @param editedElements
+   * @param currentElement
+   * @return
+   */
   public boolean elementEdited(List<Element> editedElements, Element currentElement) {
     for (Element editedElement : editedElements) {
       if (editedElement.equals(currentElement)) {
@@ -110,6 +116,13 @@ public class PartsAndChaptersReviser {
     return false;
   }
 
+  /**
+   * Adds the text of a div respectively the text of the intricate divs to the chapter
+   * @param chapter
+   * @param chapterElement
+   * @param editedElements
+   * @param mode
+   */
   public void addDivTexts(List<Epubline> chapter, Element chapterElement, List<Element> editedElements, String mode) {
 
     if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
@@ -138,6 +151,13 @@ public class PartsAndChaptersReviser {
     }
   }
 
+  /**
+   * Adds the text of a element(e.g. paragraph) to the chapter
+   * @param chapter
+   * @param chapterElement
+   * @param elementExists
+   * @param mode
+   */
   public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists, String mode) {
     if (elementExists) {
       chapter.add(new Epubline(mode, chapterElement.text(), ""));
@@ -146,6 +166,11 @@ public class PartsAndChaptersReviser {
     }
   }
   
+  /**
+   * Checks if a span element exists in the elements of the current element
+   * @param currentElement
+   * @return
+   */
   public boolean existsSpan(Element currentElement) {
     if (!currentElement.getAllElements().isEmpty()) {
       Elements innerElements = currentElement.getAllElements();
@@ -158,6 +183,11 @@ public class PartsAndChaptersReviser {
     return false;
   }
 
+  /**
+   * Checks if a div element exists in the elements of the current element
+   * @param currentElement
+   * @return
+   */
   public boolean existsDiv(Element currentElement) {
     if (!currentElement.getAllElements().isEmpty()) {
       Elements innerElements = currentElement.getAllElements();
@@ -170,6 +200,11 @@ public class PartsAndChaptersReviser {
     return false;
   }
 
+  /**
+   * Checks if all elements are span elements
+   * @param currentElement
+   * @return
+   */
   public boolean allElementsNotSpans(Element currentElement) {
     if (!currentElement.getAllElements().isEmpty()) {
       Elements innerElements = currentElement.getAllElements();

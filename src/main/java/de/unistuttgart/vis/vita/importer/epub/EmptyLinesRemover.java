@@ -11,7 +11,7 @@ import java.util.List;
 public class EmptyLinesRemover {
 
   /**
-   * Removes empty Strings in the current part
+   * Removes Epublines with empty lines in the current part
    * 
    * @param currentPart
    */
@@ -28,7 +28,7 @@ public class EmptyLinesRemover {
   }
 
   /**
-   * Removes empty Strings in the current parts
+   * Removes Epublines with empty lines in the current parts
    * 
    * @param currentPart
    */
