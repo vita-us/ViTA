@@ -89,51 +89,6 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     return partsLines;
   }
 
-  // TODO
-  public List<String> test() throws IOException {
-    List<String> chapter = new ArrayList<String>();
-    String span = "";
-    document =
-        Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(6).getInputStream()));
-    sections = document.select(Constants.SECTION);
-    Elements elements = sections.get(0).getAllElements();
-    for (int i = 1; i < elements.size(); i++) {
-      if (!elements.get(i).tagName().matches("span")) {
-        if (!elements.get(i).getAllElements().isEmpty()) {
-          Elements innerElements = elements.get(i).getAllElements();
-
-          if (existsSpan(innerElements)) {
-            if (elements.get(i).ownText().isEmpty()) {
-              for (Element innerElement : innerElements) {
-                if (innerElement.tagName().matches("span")) {
-                  span += innerElement.ownText() + " ";
-                }
-              }
-              chapter.add(span);
-              span = "";
-            }else{
-              chapter.add(elements.get(i).text());
-            }
-          } else {
-            chapter.add(elements.get(i).ownText());
-          }
-        } else {
-          chapter.add(elements.get(i).ownText());
-        }
-      }
-    }
-    return chapter;
-  }
-
-  public boolean existsSpan(Elements innerElements) {
-    for (Element innerElement : innerElements) {
-      if (innerElement.tagName().matches("span")) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
   public List<List<Line>> getPartList() throws IOException {
     if (epub3TraitsExtractor.existsPartInEpub3(resources)) {
