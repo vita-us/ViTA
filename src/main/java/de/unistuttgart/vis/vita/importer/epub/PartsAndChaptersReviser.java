@@ -16,6 +16,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * In the commited part after every line a empty line will be added
+   * 
    * @param part
    * @return
    */
@@ -35,6 +36,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * In the commited parts after every line a empty line will be added
+   * 
    * @param parts
    * @return
    */
@@ -51,6 +53,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * Annotates the correct epublines with TEXTSTART and TEXTEND
+   * 
    * @param epublines
    */
   public void annotateTextStartAndEndOfEpublines(List<Epubline> epublines) {
@@ -72,6 +75,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * In the commited part after every line a empty line will be added
+   * 
    * @param currentPart
    * @return
    */
@@ -90,6 +94,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * In the commited parts after every line a empty line will be added
+   * 
    * @param currentParts
    * @return
    */
@@ -100,9 +105,10 @@ public class PartsAndChaptersReviser {
     }
     return formatedParts;
   }
-  
+
   /**
    * Checks if the currentElement exists in the editedElements
+   * 
    * @param editedElements
    * @param currentElement
    * @return
@@ -118,56 +124,64 @@ public class PartsAndChaptersReviser {
 
   /**
    * Adds the text of a div respectively the text of the intricate divs to the chapter
+   * 
    * @param chapter
    * @param chapterElement
    * @param editedElements
    * @param mode
    */
-  public void addDivTexts(List<Epubline> chapter, Element chapterElement, List<Element> editedElements, String mode) {
-
+  public void addDivTexts(List<Epubline> chapter, Element chapterElement,
+      List<Element> editedElements, String mode) {
     if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
-        if (!chapterElement.getAllElements().isEmpty()) {
-          Elements innerElements = chapterElement.getAllElements();
-          for (Element innerElement : innerElements) {
-            if (!elementEdited(innerElements, innerElement)) {
-              if (!innerElement.tagName().matches(Constants.SPAN) && !innerElement.tagName().matches(Constants.DIV)) {
-                boolean existsSpan = existsSpan(innerElement);
-                addText(chapter, innerElement, existsSpan, mode);
-              } else if (innerElement.tagName().matches(Constants.DIV)) {
-                addDivTexts(chapter, innerElement, editedElements, mode);
-              }
-              editedElements.add(innerElement);
+      
+      if (!chapterElement.getAllElements().isEmpty()) {
+        
+        Elements innerElements = chapterElement.getAllElements();
+        innerElements.remove(0);
+        for (Element innerElement : innerElements) {
+          if (!elementEdited(editedElements, innerElement)) {
+            if (!innerElement.tagName().matches(Constants.SPAN)
+                && !innerElement.tagName().matches(Constants.DIV)) {
+             
+              addText(chapter, innerElement, existsSpan(innerElement), mode);
+            } else if (innerElement.tagName().matches(Constants.DIV)) {
+              addDivTexts(chapter, innerElement, editedElements, mode);
             }
+            editedElements.add(innerElement);
           }
         }
+      }
     } else {
       if (!chapterElement.getAllElements().isEmpty()) {
         Elements innerElements = chapterElement.getAllElements();
-        chapter.add(new Epubline(mode, chapterElement.text(), ""));
         for (Element innerElement : innerElements) {
           editedElements.add(innerElement);
         }
+        chapter.add(new Epubline(mode, chapterElement.text(), ""));
       }
     }
   }
 
   /**
    * Adds the text of a element(e.g. paragraph) to the chapter
+   * 
    * @param chapter
    * @param chapterElement
    * @param elementExists
    * @param mode
    */
-  public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists, String mode) {
+  public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists,
+      String mode) {
     if (elementExists) {
       chapter.add(new Epubline(mode, chapterElement.text(), ""));
     } else {
       chapter.add(new Epubline(mode, chapterElement.ownText(), ""));
     }
   }
-  
+
   /**
    * Checks if a span element exists in the elements of the current element
+   * 
    * @param currentElement
    * @return
    */
@@ -185,6 +199,7 @@ public class PartsAndChaptersReviser {
 
   /**
    * Checks if a div element exists in the elements of the current element
+   * 
    * @param currentElement
    * @return
    */
@@ -202,12 +217,17 @@ public class PartsAndChaptersReviser {
 
   /**
    * Checks if all elements are span elements
+   * 
    * @param currentElement
    * @return
    */
   public boolean allElementsNotSpans(Element currentElement) {
     if (!currentElement.getAllElements().isEmpty()) {
+      
       Elements innerElements = currentElement.getAllElements();
+      if (innerElements.get(0).tagName().matches(Constants.DIV)) {
+        innerElements.remove(0);
+      }
       for (Element innerElement : innerElements) {
         if (!innerElement.tagName().matches(Constants.SPAN)) {
           return true;
