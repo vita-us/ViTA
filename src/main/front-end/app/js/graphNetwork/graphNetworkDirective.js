@@ -154,14 +154,6 @@
     }
 
     function redrawElements(graphData) {
-      /*
-       * Remove all elements because they are redrawn. This is the only solution
-       * currently because it isn't guaranteed, that the controller is passing
-       * the same objects for the same displayed entities. For example one
-       * entity might disappear, but this directive receives completely new
-       * objects - even for unchanged entities.
-       */
-
       links = graph.select('#linkGroup').selectAll('.link')
           .data(graphData.links);
 
