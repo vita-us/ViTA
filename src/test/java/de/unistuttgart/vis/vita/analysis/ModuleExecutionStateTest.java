@@ -145,6 +145,24 @@ public class ModuleExecutionStateTest {
     // All dependencies and the target module are finished
     verify(targetInstance).observeProgress(1.0);
   }
+
+  @Test
+  public void testCallsDependencyFinished() {
+    setUpWithMockedTargetInstance();
+
+    moduleState.notifyModuleFinished(dependencyModule, IntProvidingModule.RESULT);
+
+    verify(targetInstance).dependencyFinished(Integer.class, IntProvidingModule.RESULT);
+  }
+
+  @Test
+  public void testCallsDependencyFailed() {
+    setUpWithMockedTargetInstance();
+
+    moduleState.notifyModuleFailed(dependencyModule);
+
+    verify(targetInstance).dependencyFailed(Integer.class);
+  }
   
   private void setUpWithMockedTargetInstance() {
     targetInstance = mock(MockModule.class);

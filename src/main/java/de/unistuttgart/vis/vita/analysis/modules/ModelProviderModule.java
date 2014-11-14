@@ -11,16 +11,11 @@ import de.unistuttgart.vis.vita.model.Model;
  * should depend on this module to store persist the final results and to store the feature progress.
  */
 @AnalysisModule
-public class ModelProviderModule implements Module<Model> {
+public class ModelProviderModule extends Module<Model> {
   private Model model;
 
   public ModelProviderModule(Model model) {
     this.model = model;
-  }
-
-  @Override
-  public void observeProgress(double progress) {
-    // Ignore progress reports
   }
 
   @Override

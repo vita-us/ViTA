@@ -3,11 +3,8 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('GraphNetworkCtrl', [
-      '$scope',
-      '$routeParams',
-      'TestData',
-      function($scope, $routeParams, TestData) {
+  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
+      function($scope, $routeParams, DocumentParts) {
         $scope.entities = [];
 
         var sliderMin = 0, sliderMax = 100;
@@ -50,6 +47,12 @@
         $scope.reset = function(persons) {
           $scope.entities = persons.slice(0, 5);
         };
+
+        DocumentParts.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.parts = response.parts;
+        });
 
         $scope.isActive = function(person) {
           return ($scope.entities.indexOf(person) > -1);

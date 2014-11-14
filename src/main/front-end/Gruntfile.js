@@ -114,13 +114,18 @@ module.exports = function(grunt) {
           cwd: '<%= bowerrc.directory %>/jquery-ui/themes/smoothness/',
           src: ['jquery-ui.css'],
           dest: '<%= cssPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/d3-cloud/',
+          src: ['d3.layout.cloud.js'],
+          dest: '<%= javascriptPath %>'
         }]
       },
       statics: {
         files: [{
           expand: true,
           cwd: 'app/',
-          src: ['index.html'],
+          src: ['*.html'],
           dest: '<%= appPath %>'
         }, {
           expand: true,
@@ -137,6 +142,11 @@ module.exports = function(grunt) {
           cwd: 'app/templates',
           src: ['**'],
           dest: '<%= templatePath %>'
+        }, {
+          expand: true,
+          cwd: 'app/js/',
+          src: ['shared-worker.js'],
+          dest: '<%= javascriptPath %>'
         }]
       }
     },
@@ -191,7 +201,7 @@ module.exports = function(grunt) {
       },
       scripts: {
         files: ['app/js/**/*.js'],
-        tasks: ['concat']
+        tasks: ['concat', 'copy:statics']
       },
       dependencies: {
         files: ['<%= bowerrc.directory %>/**'],

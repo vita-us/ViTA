@@ -4,6 +4,8 @@
 
 .overview-preview-images {
     @preview-image-width: 152px;
+    @smaller-preview-image-width: 120px;
+    @smaller-preview-image-breakpoint: 370px;
     
     .link-to-visualization {
       display: block;
@@ -36,5 +38,12 @@
       text-align: center;
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
+    }
+    
+    img, h4, .status {
+      @media (max-width: @smaller-preview-image-breakpoint) {
+        width: @smaller-preview-image-width;
+        max-width: @smaller-preview-image-width;
+      }
     }
 }

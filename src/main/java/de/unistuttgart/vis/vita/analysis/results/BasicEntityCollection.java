@@ -11,7 +11,7 @@ import java.util.Collection;
  * names to one entity; the names will be available via getNameAttributes(). No other attributes
  * will be detected. The basic relations between the entities is analyzed.
  */
-public interface BasicEntityCollection extends Collection<BasicEntity> {
+public interface BasicEntityCollection {
 
   /**
    * Gets the detected entities
