@@ -40,15 +40,15 @@
       var width = scope.width || 800;
       var height = scope.height || 400;
 
-      graph = container.append("svg")
-          .classed("graph-network", true)
-          .attr("width", width)
-          .attr("height", height)
+      graph = container.append('svg')
+          .classed('graph-network', true)
+          .attr('width', width)
+          .attr('height', height)
           .append('g'); // an extra group for zooming
 
       // Order matters - elements of last group are drawn on top
-      graph.append('g').attr('id', "linkGroup");
-      graph.append('g').attr('id', "nodeGroup");
+      graph.append('g').attr('id', 'linkGroup');
+      graph.append('g').attr('id', 'nodeGroup');
 
       force = d3.layout.force()
           .size([width, height])
@@ -142,7 +142,7 @@
         source: entityIdNodeMap.get(relation.personAId),
         target: entityIdNodeMap.get(relation.personBId),
         weight: relation.weight
-      }
+      };
     }
 
     function calculateLinkDistance(link) {
@@ -186,7 +186,7 @@
 
       nodes.exit().remove();
       nodes.enter().append('circle')
-          .attr("class", function(d) {
+          .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
