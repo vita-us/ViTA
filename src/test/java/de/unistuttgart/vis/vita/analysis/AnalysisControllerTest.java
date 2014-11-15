@@ -1,15 +1,19 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,8 +26,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 
 public class AnalysisControllerTest {
   private Model model;
-  private EntityManager entityManager;
-  private EntityTransaction entityTransaction;
   private AnalysisController controller;
   private AnalysisExecutorFactory executorFactory;
   private AnalysisExecutor executor;
@@ -31,11 +33,8 @@ public class AnalysisControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    entityManager = mock(EntityManager.class);
-    entityTransaction = mock(EntityTransaction.class);
-    when(entityManager.getTransaction()).thenReturn(entityTransaction);
-    model = mock(Model.class);
-    when(model.getEntityManager()).thenReturn(entityManager);
+    UnitTestModel.startNewSession();
+    model = new UnitTestModel();
     executorFactory = mock(AnalysisExecutorFactory.class);
     controller = new AnalysisController(model, executorFactory);
   }
@@ -45,8 +44,6 @@ public class AnalysisControllerTest {
   
   @Test
   public void testScheduleDocumentAnalysis() {
-    ArgumentCaptor<Document> documentCaptor = ArgumentCaptor.forClass(Document.class);
-    
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
     String id = controller.scheduleDocumentAnalysis(path);
@@ -54,9 +51,8 @@ public class AnalysisControllerTest {
 
     assertThat(controller.documentsInQueue(), is(0)); // nothing queued, just one working
     assertThat(controller.isWorking(), is(true));
-    verify(entityManager).persist(documentCaptor.capture());
-    verify(entityTransaction).commit();
-    Document document = documentCaptor.getValue();
+    
+    Document document = getSingleDocument();
     assertThat(document.getId(), is(id));
     assertThat(document.getMetadata().getTitle(), is("file.name"));
 
@@ -64,6 +60,15 @@ public class AnalysisControllerTest {
 
     assertThat(controller.documentsInQueue(), is(0));
     assertThat(controller.isWorking(), is(false));
+  }
+  
+  private Document getSingleDocument() {
+    EntityManager em = model.getEntityManager();
+    List<Document> documents =
+        em.createQuery("from Document", Document.class).getResultList();
+    assertThat(documents, hasSize(1));
+    em.close();
+    return documents.get(0);
   }
   
   @Test
@@ -169,8 +174,6 @@ public class AnalysisControllerTest {
   @Test
   public void testRestartDocumentAnalysis() {
     // We need a realy database backend here
-    UnitTestModel.startNewSession();
-    model = new UnitTestModel();
     controller = new AnalysisController(model, executorFactory);
 
     Path path = Paths.get("path/to/file.name");
