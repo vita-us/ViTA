@@ -32,7 +32,7 @@ public class AnalysisExecutorTest {
   @Before
   public void setUp() {
     targetModule = ModuleClass.get(MockModule.class);
-    targetModuleInstance = new MockModule();
+    targetModuleInstance = spy(new MockModule());
     dependencyModule = ModuleClass.get(IntProvidingModule.class);
     dependencyModuleInstance = new IntProvidingModule();
     targetModuleState =
@@ -63,6 +63,7 @@ public class AnalysisExecutorTest {
     await().until(moduleProgressIs(targetModuleInstance, 0.25));
     await().until(moduleExecuted(dependencyModuleInstance));
 
+    verify(targetModuleInstance).dependencyFinished(Integer.class, IntProvidingModule.RESULT);
     assertThat(targetModuleState.getResultProvider().getResultFor(Integer.class),
         is(IntProvidingModule.RESULT));
     assertThat(targetModuleState.isExecutable(), is(true));
@@ -148,6 +149,7 @@ public class AnalysisExecutorTest {
     Thread.sleep(100); // avoid race condition
     verify(observer).onFail(executor);
     verifyNoMoreInteractions(observer);
+    verify(targetModuleInstance).dependencyFailed(Integer.class);
 
     // Make sure that the dependent module has not been called (the sleep above is important)
     assertThat(targetModuleInstance.hasBeenCalled(), is(false));

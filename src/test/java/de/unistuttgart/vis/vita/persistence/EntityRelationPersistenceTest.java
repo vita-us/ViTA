@@ -55,7 +55,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // first set up a entity relation
     Person testPerson = personTestData.createTestPerson(1);
     Person relatedPerson = personTestData.createTestPerson(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPerson, relatedPerson);
+    EntityRelation rel = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(rel);
 
     // persist this entity relation
@@ -65,12 +65,12 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
 
     // read persisted entity relations
-    List<EntityRelation<Person>> relations =
-        (List<EntityRelation<Person>>) readEntityRelationsFromDb();
+    List<EntityRelation> relations =
+        (List<EntityRelation>) readEntityRelationsFromDb();
 
     // check whether data is correct
     assertEquals(1, relations.size());
-    EntityRelation<Person> readRelation = relations.get(0);
+    EntityRelation readRelation = relations.get(0);
     relationTestData.checkData(readRelation);
   }
 
@@ -80,7 +80,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // first set up a entity relation
     Place testPlace = placeTestData.createTestPlace(1);
     Place relatedPlace = placeTestData.createTestPlace(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPlace, relatedPlace);
+    EntityRelation rel = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(rel);
 
     // persist entities and their relation
@@ -90,12 +90,12 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
 
     // read persisted entity relations
-    List<EntityRelation<Place>> relations =
-        (List<EntityRelation<Place>>) readEntityRelationsFromDb();
+    List<EntityRelation> relations =
+        (List<EntityRelation>) readEntityRelationsFromDb();
 
     // check whether data is correct
     assertEquals(1, relations.size());
-    EntityRelation<Place> readRelation = relations.get(0);
+    EntityRelation readRelation = relations.get(0);
     relationTestData.checkData(readRelation);
   }
 
@@ -107,7 +107,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
   public void testNamedQueries() {
     Person testPerson = personTestData.createTestPerson(1);
     Person relatedPerson = personTestData.createTestPerson(2);
-    EntityRelation<Entity> rel = relationTestData.createTestRelation(testPerson, relatedPerson);
+    EntityRelation rel = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(rel);
     
     // persist entities and their relation
@@ -118,10 +118,10 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     
     // check Named Query finding all entity relations
     Query allQ = em.createNamedQuery("EntityRelation.findAllEntityRelations");
-    List<EntityRelation<Person>> allEntityRelations = allQ.getResultList();
+    List<EntityRelation> allEntityRelations = allQ.getResultList();
     
     assertTrue(allEntityRelations.size() > 0);
-    EntityRelation<Person> readRelation = allEntityRelations.get(0);
+    EntityRelation readRelation = allEntityRelations.get(0);
     relationTestData.checkData(readRelation);
     
     String id = readRelation.getId();
@@ -132,7 +132,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     
     Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     entQ.setParameter("entityIds", entityIdList);
-    List<EntityRelation<Person>> relations = entQ.getResultList();
+    List<EntityRelation> relations = entQ.getResultList();
     assertEquals(1, relations.size());
     relationTestData.checkData(relations.get(0));
 
@@ -140,14 +140,14 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     Query entityTypeQ = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
     entityTypeQ.setParameter("entityIds", entityIdList);
     entityTypeQ.setParameter("type", "Person");
-    List<EntityRelation<Person>> entTypeRelations = entityTypeQ.getResultList();
+    List<EntityRelation> entTypeRelations = entityTypeQ.getResultList();
     assertEquals(1, entTypeRelations.size());
     relationTestData.checkData(entTypeRelations.get(0));
     
     // check Named Query finding entity relation by id
     Query idQ = em.createNamedQuery("EntityRelation.findEntityRelationById");
     idQ.setParameter("entityRelationId", id);
-    EntityRelation<Person> idRelation = (EntityRelation<Person>) idQ.getSingleResult();
+    EntityRelation idRelation = (EntityRelation) idQ.getSingleResult();
     
     relationTestData.checkData(idRelation);
   }

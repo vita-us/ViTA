@@ -1,9 +1,8 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
 import de.unistuttgart.vis.vita.services.search.SearchEntityService;
@@ -17,8 +16,14 @@ public class EntityService {
   private String documentId;
   private String entityId;
   
-  @Context
-  private ResourceContext resourceContext;
+  @Inject
+  private AttributesService attributesService;
+
+  @Inject
+  private EntityOccurrencesService entityOccurrencesService;
+
+  @Inject
+  SearchEntityService searchEntityService;
 
   /**
    * Sets the id of the Document the referring entity occurs in
@@ -47,8 +52,7 @@ public class EntityService {
    */
   @Path("/attributes")
   public AttributesService getAttributes() {
-    return resourceContext.getResource(AttributesService.class).setDocumentId(documentId)
-                                                                .setEntityId(entityId);
+    return attributesService.setDocumentId(documentId).setEntityId(entityId);
   }
   
   /**
@@ -58,12 +62,11 @@ public class EntityService {
    */
   @Path("/occurrences")
   public EntityOccurrencesService getOccurrences() {
-    return resourceContext.getResource(EntityOccurrencesService.class).setEntityId(entityId)
-                                                                      .setDocumentId(documentId);
+    return entityOccurrencesService.setEntityId(entityId).setDocumentId(documentId);
   }
   
   public SearchEntityService getSearch() {
-    return resourceContext.getResource(SearchEntityService.class).setDocumentId(documentId).setEntityId(entityId);
+    return searchEntityService.setDocumentId(documentId).setEntityId(entityId);
   }
 
 }

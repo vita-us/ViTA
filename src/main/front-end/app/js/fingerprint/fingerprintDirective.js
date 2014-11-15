@@ -3,12 +3,14 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', [function() {
+  vitaDirectives.directive('fingerprint', ["Fingerprint", function(Fingerprint) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
       var SVG_WIDTH = $(element).width();
       var SVG_HEIGHT = attrs.height || MINIMUM_SVG_HEIGHT;
+
+      var minBarWidth = 5;
 
       var width = SVG_WIDTH, height = SVG_HEIGHT;
 
@@ -36,13 +38,24 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
 
-      scope.$watch('occurrences', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue)) {
-          removeFingerPrint();
-          buildFingerPrint(scope);
-        } else if (!angular.isUndefined(newValue)) {
-          // can only happen during initialization
-          buildFingerPrint(scope);
+      var occurrenceSteps = Math.floor(width / minBarWidth);
+
+      scope.$watch('entityIds', function(newValue, oldValue) {
+        if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
+          if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+            removeFingerPrint();
+            return;
+          }
+          Fingerprint.get({
+            documentId: scope.documentId,
+            entityIds: scope.entityIds.join(','),
+            steps: occurrenceSteps
+          }, function(response) {
+            removeFingerPrint();
+            buildFingerPrint(response.occurrences);
+          }, function() {
+            removeFingerPrint();
+          });
         }
       }, true);
 
@@ -55,9 +68,8 @@
         }
       }, true);
 
-      function buildFingerPrint(scope) {
-        // work with a copy to avoid updating the fingerprint
-        var occurrences = angular.copy(scope.occurrences) || [];
+      function buildFingerPrint(occurrences) {
+        occurrences = occurrences || [];
         var occurrenceCount = occurrences.length;
 
         occurrences.map(function(occurrence, index) {
@@ -65,8 +77,6 @@
           occurrence.width = occurrence.end.progress - occurrence.start.progress;
         });
 
-        // we need to define this because otherwise small rectangles become unclickable/invisible
-        var minBarWidth = 1.5;
 
         buildOccurrenceRects();
 
@@ -226,7 +236,8 @@
     return {
       restrict: 'A',
       scope: {
-        occurrences: '=',
+        documentId: '=',
+        entityIds: '=',
         parts: '=',
         height: '@'
       },

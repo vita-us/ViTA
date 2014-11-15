@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
@@ -33,7 +32,7 @@ public class AnalysisServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    em = Model.createUnitTestModel().getEntityManager();
+    em = getModel().getEntityManager();
     
     // need a document to stop its analysis
     Document testDocument = new DocumentTestData().createTestDocument(1);

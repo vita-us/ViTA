@@ -104,6 +104,17 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     this.end = pEnd;
     this.length = diff;
   }
+  
+  /**
+   * Creates a text span from two offsets within a common chapter
+   * @param chapter
+   * @param startOffset the start of the span, relative to the chapter beginning
+   * @param endOffset the end of the span, relative to the chapter end
+   */
+  public TextSpan(Chapter chapter, int startOffset, int endOffset) {
+    this(TextPosition.fromLocalOffset(chapter, startOffset),
+        TextPosition.fromLocalOffset(chapter, endOffset));
+  }
 
   /**
    * @return the start of the TextSpan
@@ -140,13 +151,13 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     // set absolute start position
     int startOffset = start.getOffset();
     String startChapterId = start.getChapter().getId();
-    double startProgress = (startOffset / (double) docLength);
+    double startProgress = startOffset / (double) docLength;
     occ.setStart(new AbsoluteTextPosition(startChapterId, startOffset, startProgress));
 
     // set absolute end position
     int endOffset = end.getOffset();
     String endChapterId = end.getChapter().getId();
-    double endProgress = (endOffset / (double) docLength);
+    double endProgress = endOffset / (double) docLength;
     occ.setEnd(new AbsoluteTextPosition(endChapterId, endOffset, endProgress));
 
     // set length

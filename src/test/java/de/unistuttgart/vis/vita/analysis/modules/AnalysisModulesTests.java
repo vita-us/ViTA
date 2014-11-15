@@ -11,7 +11,8 @@ import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class,
-    LuceneModuleTest.class})
+    LuceneModuleTest.class, EntityRecognitionModuleRealTest.class, TextFeatureModuleTest.class,
+    EntityFeatureModuleTest.class, MainAnalysisModuleTest.class, EntityRecognitionModuleTest.class})
 public class AnalysisModulesTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisModulesTests() {

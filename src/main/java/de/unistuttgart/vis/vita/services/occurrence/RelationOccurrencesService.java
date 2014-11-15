@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -10,7 +10,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
@@ -19,19 +18,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Service providing a method to get the occurrences for relations in the current document via GET.
  */
+@ManagedBean
 public class RelationOccurrencesService extends OccurrencesService {
-
   private List<String> entityIds;
-
-  /**
-   * Creates new RelationOccurrencesService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public RelationOccurrencesService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Sets the id of the document this service refers to.

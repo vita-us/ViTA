@@ -12,7 +12,6 @@ import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
@@ -25,9 +24,12 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
   private static final int TEST_TEXT_SPAN_END = 11000;
   private static final int TEST_TEXT_SPAN_DIFF = 1000;
 
+  private Chapter chapter = new Chapter();
+  
   @Test
   public void testPersistOneTextSpan() {
     // first set up a TextSpan
+    em.persist(chapter);
     TextSpan ts = createTestTextSpan();
     
     // persist this TextSpan
@@ -35,11 +37,9 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
     
     // read persisted TextSpans from database
-    List<TextSpan> spans = readTextSpansFromDb();
+    TextSpan readTextSpan = readTextSpanFromDb(ts.getId());
     
     // check whether data is correct
-    assertEquals(1, spans.size());
-    TextSpan readTextSpan = spans.get(0);
     checkData(readTextSpan);
   }
 
@@ -49,20 +49,18 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * @return test text span
    */
   private TextSpan createTestTextSpan() {
-    TextPosition start = new TextPosition(null, TEST_TEXT_SPAN_START);
-    TextPosition end = new TextPosition(null, TEST_TEXT_SPAN_END);
-    return new TextSpan(start, end);
+    return new TextSpan(chapter, TEST_TEXT_SPAN_START, TEST_TEXT_SPAN_END);
   }
   
   /**
-   * Reads TextSpans from database and returns them.
+   * Read a specific TextSpans from database and returns it.
    * 
-   * @return list of text spans
+   * @return the text span
    */
-  private List<TextSpan> readTextSpansFromDb() {
-    TypedQuery<TextSpan> query = em.createQuery("from TextSpan", TextSpan.class);
-    List<TextSpan> spans = query.getResultList();
-    return spans;
+  private TextSpan readTextSpanFromDb(String id) {
+    return em.createNamedQuery("TextSpan.findTextSpanById", TextSpan.class)
+        .setParameter("textSpanId", id)
+        .getSingleResult();
   }
   
   /**
@@ -91,6 +89,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
   public void testFindingAllAndSpecificTextSpans() {
     TextSpan testTextSpan = createTestTextSpan();
     
+    em.persist(chapter);
     em.persist(testTextSpan);
     startNewTransaction();
     

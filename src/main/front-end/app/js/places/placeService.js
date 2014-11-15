@@ -5,7 +5,7 @@
 
   // Service that is responsible for dealing with places
   vitaServices.factory('Place', ['$resource', function($resource) {
-    return $resource('/documents/:documentId/places/:placeId', {}, {
+    return $resource('webapi/documents/:documentId/places/:placeId', {}, {
       get: {
         method: 'GET'
       }
