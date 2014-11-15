@@ -109,7 +109,7 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
    * Checks whether stepwise occurrences for attribute of an entity can be caught via GET.
    */
   @Test
-  public void testGetOccurencesInSteps() {
+  public void testGetStepwiseOccurences() {
     OccurrencesResponse actualResponse = target(getPath()).queryParam("steps", DEFAULT_STEP_AMOUNT)
                                                       .queryParam("rangeStart", DEFAULT_RANGE_START)
                                                       .queryParam("rangeEnd", DEFAULT_RANGE_END)

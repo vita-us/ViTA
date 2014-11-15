@@ -73,7 +73,8 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     // set up test chapter
     Chapter testChapter = new ChapterTestData().createTestChapter();
     TextPosition chapterStart = new TextPosition(null, 0);
-    TextPosition chapterEnd = new TextPosition(null, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition chapterEnd = new TextPosition(null, 
+                                                DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextSpan chapterRange = new TextSpan(chapterStart, chapterEnd);
     testChapter.setRange(chapterRange);
     
@@ -110,7 +111,8 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     targetPerson.getOccurrences().add(targetSeparateSpan);
     
     // set up relation between them
-    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
+    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(originPerson, 
+                                                                              targetPerson);
     
     // save ids for query
     docId = testDoc.getId();
@@ -171,14 +173,37 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
    */
   @Test
   public void testGetOccurrences() {
-    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT, DEFAULT_RANGE_START,
+
+  }
+
+  @Override
+  public void testGetExactOccurrences() {
+    OccurrencesResponse actualResponse = target(getPath())
+                                          .queryParam("rangeStart", DEFAULT_RANGE_START)
+                                          .queryParam("rangeEnd", DEFAULT_RANGE_END)
+                                          .queryParam("entityIds", entityIds)
+                                          .request().get(OccurrencesResponse.class);
+    assertNotNull(actualResponse);
+    List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
+
+    assertEquals(1, receivedOccurrences.size());
+
+    // check content of response
+    Occurrence receivedOccurrence = receivedOccurrences.get(0);
+    assertEquals(OL_LENGTH, receivedOccurrence.getLength());
+  }
+
+  @Override
+  public void testGetStepwiseOccurences() {
+    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT, 
+                                                            DEFAULT_RANGE_START, 
                                                             DEFAULT_RANGE_END).request()
                                                             .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
-    
+
     assertEquals(1, receivedOccurrences.size());
-    
+
     // check content of response
     Occurrence receivedOccurrence = receivedOccurrences.get(0);
     assertTrue(OL_LENGTH <= receivedOccurrence.getLength());

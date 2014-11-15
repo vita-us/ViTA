@@ -169,6 +169,40 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
   public int getLength() {
     return length;
   }
+  
+  /**
+   * Indicates whether this TextSpan has an overlap with another TextSpan.
+   * 
+   * @param other - the other TextSpan
+   * @return true if there is an overlap, false otherwise
+   */
+  public boolean overlapsWith(TextSpan other) {
+    // this starts before the other one ends and this ends after the other one starts
+    return getStart().compareTo(other.getEnd()) <= 0  && getEnd().compareTo(other.getStart()) >= 0;
+  }
+  
+  public TextSpan getOverlappingSpan(TextSpan other) {
+    TextSpan result = null;
+    
+    if (overlapsWith(other)) {
+      TextPosition latestStart, earliestEnd;
+      if (start.compareTo(other.getStart()) > 0) {
+        latestStart = this.getStart();
+      } else {
+        latestStart = other.getStart();
+      }
+      
+      if (getEnd().compareTo(other.getEnd()) < 0) {
+        earliestEnd = this.getEnd();
+      } else {
+        earliestEnd = other.getEnd();
+      }
+      
+      result = new TextSpan(latestStart, earliestEnd);
+    }
+    
+    return result;
+  }
 
   /**
    * Converts this TextSpan into an Occurrence.

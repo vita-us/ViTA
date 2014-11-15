@@ -9,8 +9,6 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
-import org.junit.Test;
-
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
@@ -83,43 +81,58 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     return "/documents/" + docId + "/entities/" + personId + "/occurrences";
   }
 
+  @Override
+  public void testGetExactOccurrences() {
+    // make request without steps
+    OccurrencesResponse actualResponse = target(getPath()).queryParam("rangeStart", DEFAULT_RANGE_START)
+                                                          .queryParam("rangeEnd", DEFAULT_RANGE_END)
+                                                          .request().get(OccurrencesResponse.class);
+    
+    // check response and amount of occurrences
+    assertNotNull(actualResponse);
+    checkOccurrences(actualResponse.getOccurrences(), true);
+  }
+
   /**
    * Checks whether occurrences for an entity can be caught using the REST interface.
    */
-  @Test
-  public void testGetOccurrences() {   
+  @Override
+  public void testGetStepwiseOccurences() {
     OccurrencesResponse actualResponse = target(getPath()).queryParam("steps", DEFAULT_STEP_AMOUNT)
-                                                      .queryParam("rangeStart", DEFAULT_RANGE_START)
-                                                      .queryParam("rangeEnd", DEFAULT_RANGE_END)
-                                                      .request().get(OccurrencesResponse.class);
+        .queryParam("rangeStart", DEFAULT_RANGE_START)
+        .queryParam("rangeEnd", DEFAULT_RANGE_END)
+        .request().get(OccurrencesResponse.class);
+    
     // check response and amount of occurrences
     assertNotNull(actualResponse);
-    checkOccurrences(actualResponse.getOccurrences());
+    checkOccurrences(actualResponse.getOccurrences(), false);
   }
-
 
   /**
    * Check whether the occurrences list contains the expected data.
    * 
    * @param occurrences - the list of occurrences to be checked
    */
-  private void checkOccurrences(List<Occurrence> occurrences) {
+  private void checkOccurrences(List<Occurrence> occurrences, boolean exact) {
     assertEquals(1, occurrences.size());
     
     Occurrence receivedOccurence = occurrences.get(0);
-    
-    // check start position, should be lower or equals
+  
     AbsoluteTextPosition absoluteStart = receivedOccurence.getStart();
-    assertEquals(chapterId, absoluteStart.getChapter());
-    assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
-    
-    // check start position, should be greater or equals
     AbsoluteTextPosition absoluteEnd = receivedOccurence.getEnd();
-    assertEquals(chapterId, absoluteEnd.getChapter());
-    assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
     
-    // check the length, should be greater or equals
-    assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength());
+    assertEquals(chapterId, absoluteStart.getChapter());
+    assertEquals(chapterId, absoluteEnd.getChapter());
+    
+    if (exact) {
+      assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
+      assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
+      assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+    } else {
+      assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
+      assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
+      assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength()); 
+    }
   }
 
 }

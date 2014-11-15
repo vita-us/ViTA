@@ -27,6 +27,26 @@ public abstract class OccurrencesServiceTest extends ServiceTest {
   public static final double ILLEGAL_RANGE_END = 1.1;
 
   /**
+   * @return the path of the service under test
+   */
+  protected abstract String getPath();
+
+  /**
+   * Returns a prepared WebTarget, if additional parameters should be added for each test, this 
+   * method must be overridden!
+   * 
+   * @param steps - the amount of steps
+   * @param rangeStart - the relative position of the range start
+   * @param rangeEnd - the relative position of the range end 
+   * @return the prepared WebTarget for the request
+   */
+  protected WebTarget prepareWebTarget(int steps, double rangeStart, double rangeEnd) {
+    return target(getPath()).queryParam("steps", steps)
+                            .queryParam("rangeStart", rangeStart)
+                            .queryParam("rangeEnd", rangeEnd);
+  }
+
+  /**
    * Checks whether the service returns a HTTP 500 response if the amount of steps is negative.
    */
   @Test
@@ -84,24 +104,10 @@ public abstract class OccurrencesServiceTest extends ServiceTest {
     assertEquals(500, actualResponse.getStatus());
   }
   
-  /**
-   * @return the path of the service under test
-   */
-  protected abstract String getPath();
+  @Test
+  public abstract void testGetExactOccurrences();
   
-  /**
-   * Returns a prepared WebTarget, if additional parameters should be added for each test, this 
-   * method must be overridden!
-   * 
-   * @param steps - the amount of steps
-   * @param rangeStart - the relative position of the range start
-   * @param rangeEnd - the relative position of the range end 
-   * @return the prepared WebTarget for the request
-   */
-  protected WebTarget prepareWebTarget(int steps, double rangeStart, double rangeEnd) {
-    return target(getPath()).queryParam("steps", steps)
-                            .queryParam("rangeStart", rangeStart)
-                            .queryParam("rangeEnd", rangeEnd);
-  }
+  @Test
+  public abstract void testGetStepwiseOccurences();
 
 }

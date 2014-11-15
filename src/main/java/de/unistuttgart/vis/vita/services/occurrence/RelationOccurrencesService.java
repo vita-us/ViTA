@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import javax.inject.Inject;
 import javax.persistence.Query;
@@ -13,6 +15,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
@@ -89,9 +92,46 @@ public class RelationOccurrencesService extends OccurrencesService {
   private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
     List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
-
+    
+    List<TextSpan> intersectSpans = computeIntersection(readTextSpans);
+    
     // convert TextSpans into Occurrences and return them
-    return convertSpansToOccurrences(readTextSpans);
+    return convertSpansToOccurrences(intersectSpans);
+  }
+
+  private List<TextSpan> computeIntersection(List<TextSpan> readTextSpans) {
+    // Test if the given set has at least one interval
+    if (readTextSpans.size() <= 0)
+        return readTextSpans;
+ 
+    // Create an empty stack of intervals
+    Stack<TextSpan> s = new Stack<>();
+ 
+    // push the first interval to stack
+    s.push(readTextSpans.get(0));
+ 
+    // Start from the next interval and merge if necessary
+    for (int i = 1 ; i < readTextSpans.size(); i++) {
+        // get interval from stack top
+        TextSpan top = s.peek();
+        TextSpan currentSpan = readTextSpans.get(i);
+        // if current interval is not overlapping with stack top,
+        // push it to the stack
+        if (!top.overlapsWith(currentSpan)) {
+            s.push(readTextSpans.get(i));
+        } else if (top.getEnd().getOffset() < currentSpan.getEnd().getOffset()) {
+            TextPosition start = top.getStart();
+            TextPosition end = readTextSpans.get(i).getEnd();
+            s.pop();
+            s.push(new TextSpan(start, end));
+        }
+    }
+    
+    List<TextSpan> resultList = new ArrayList<>();
+    while (!s.isEmpty()) {
+      resultList.add(s.pop());
+    }
+    return resultList;
   }
 
   private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
