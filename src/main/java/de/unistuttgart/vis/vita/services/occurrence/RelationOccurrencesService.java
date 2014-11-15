@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -47,18 +48,24 @@ public class RelationOccurrencesService extends OccurrencesService {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
+  public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart, 
                                             @QueryParam("rangeEnd") double rangeEnd,
                                             @QueryParam("entityIds") String eIds) {
-    
-    // first check steps
-    if (steps <= 0) {
+    // first check amount of steps
+    if (steps < 0 || steps > 1000) {
       throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
     }
-        
-    // then check range and calculate offsets
-    int startOffset, endOffset;
+    
+    // check range
+    if (rangeEnd < rangeStart) {
+      throw new WebApplicationException("Illegal range!");
+    }
+    
+    int startOffset;
+    int endOffset;
+    
+    // calculate offsets
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
@@ -68,12 +75,23 @@ public class RelationOccurrencesService extends OccurrencesService {
     
     entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
     
-    // get occurrences in the given granularity
-    List<Occurrence> occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
-    
+    List<Occurrence> occs = null;
+    if (steps == 0) {
+      occs = getExactEntityOccurrences(startOffset, endOffset);
+    } else {
+      occs = getGranularEntityOccurrences(steps, startOffset, endOffset); 
+    }
+
     // create response and return it
     return new OccurrencesResponse(occs);
-    
+  }
+
+  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+    // fetch the data
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
+
+    // convert TextSpans into Occurrences and return them
+    return convertSpansToOccurrences(readTextSpans);
   }
 
   private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {

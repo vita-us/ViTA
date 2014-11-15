@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -59,23 +60,31 @@ public class EntityOccurrencesService extends OccurrencesService {
   /**
    * Reads occurrences of the specific entity from database and returns them in JSON.
    * 
-   * @param steps - amount of steps the given range should be devided into
+   * @param steps - amount of steps the given range should be divided into (default value 0 means 
+   * exact)
    * @param rangeStart - start of range to be searched in
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
+  public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") double rangeEnd) {
-    // first check steps
-    if (steps <= 0) {
+    // first check amount of steps
+    if (steps < 0 || steps > 1000) {
       throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
     }
-        
-    // then check range and calculate offsets
-    int startOffset, endOffset;
+    
+    // check range
+    if (rangeEnd < rangeStart) {
+      throw new WebApplicationException("Illegal range!");
+    }
+       
+    int startOffset;
+    int endOffset;
+    
+    // calculate offsets
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
@@ -83,11 +92,23 @@ public class EntityOccurrencesService extends OccurrencesService {
       throw new WebApplicationException(ire);
     }
     
-    // convert TextSpans into Occurrences
-    List<Occurrence> occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
+    List<Occurrence> occs = null;
+    if (steps == 0) {
+      occs = getExactEntityOccurrences(startOffset, endOffset);
+    } else {
+      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
+    }
     
     // put occurrences into a response and send it
     return new OccurrencesResponse(occs);
+  }
+
+  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+    // fetch the data
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
+    
+    // convert TextSpans into Occurrences and return them
+    return convertSpansToOccurrences(readTextSpans);
   }
 
   private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
