@@ -38,7 +38,7 @@ public abstract class Entity extends AbstractEntityBase {
   private SortedSet<TextSpan> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
-  private Set<EntityRelation<Entity>> entityRelations;
+  private Set<EntityRelation> entityRelations;
 
   /**
    * Creates a new entity with default values.
@@ -127,7 +127,7 @@ public abstract class Entity extends AbstractEntityBase {
   /**
    * @return a Set of all relations to other entities
    */
-  public Set<EntityRelation<Entity>> getEntityRelations() {
+  public Set<EntityRelation> getEntityRelations() {
     return entityRelations;
   }
 

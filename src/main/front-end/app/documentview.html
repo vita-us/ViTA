@@ -11,12 +11,16 @@
     <h2>{{document.metadata.title}}</h2>
   </div>
   <div class="container-fluid" id="document-view-main">
-    <div class="row">
+    <div class="row" style="height: 100%">
       <div class="col-sm-3 document-view-menu">
-        <div class="part" data-ng-repeat="part in parts">
-          <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
-          <div class="chapter" data-ng-repeat="chapter in part.chapters">
-            <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
+        <div class="dv-menu-fixed-wrap">
+          <div class="part" data-ng-repeat="part in parts">
+            <h3>
+              <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+            </h3>
+            <div class="chapter" data-ng-repeat="chapter in part.chapters">
+              <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
+            </div>
           </div>
         </div>
       </div>
@@ -27,7 +31,15 @@
     </div>
   </div>
   <div class="container-fluid" id="document-view-footer">
-    Search bar
+    <form role="search">
+      <input type="text" class="form-control query-input" ng-model="query" placeholder="Search the text for...">
+      <button type="submit" class="btn btn-default" ng-click="search()">
+        <span class="glyphicon glyphicon-search"></span> <span class="search-button-label">Search</span>
+      </button>
+      <span class="result-count" ng-show="resultCount >= 0">
+        {{resultCount}} results found.
+      </span>
+    </form>
   </div>
 
   <script src="js/jquery.js"></script>

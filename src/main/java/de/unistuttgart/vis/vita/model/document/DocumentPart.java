@@ -43,8 +43,7 @@ public class DocumentPart extends AbstractEntityBase {
   private String title;
 
   @OneToMany
-  @XmlElementWrapper(name = "chapters")
-  @XmlElement(name = "chapter")
+  @XmlElement(name = "chapters")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
