@@ -92,8 +92,9 @@ public class AnalysisController {
       startAnalysis(document);
     }
   }
-  
-  private synchronized void startAnalysis(Document document) {
+
+  private synchronized void startAnalysis(final Document document) {
+    setStatus(document.getId(),  AnalysisStatus.RUNNING);
     Path path = documentPaths.get(document.getId());
     currentExecuter = executorFactory.createExecutor(document.getId(), path);
     currentExecuter.start();
@@ -102,19 +103,22 @@ public class AnalysisController {
     currentExecuter.addObserver(new AnalysisObserver() {
       @Override
       public void onFinish(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FINISHED);
         startNextAnalysis();
       }
 
       @Override
       public void onFail(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FAILED);
         startNextAnalysis();
       }
     });
   }
-  
+
   private Document createDocument(Path filePath) {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
+    document.getProgress().setStatus(AnalysisStatus.READY);
     EntityManager em = model.getEntityManager();
     em.getTransaction().begin();
     em.persist(document);
@@ -192,5 +196,23 @@ public class AnalysisController {
    */
   public synchronized boolean isWorking() {
     return isAnalysisRunning;
+  }
+
+  private void setStatus(String documentId, AnalysisStatus status) {
+    EntityManager em = model.getEntityManager();
+    em.getTransaction().begin();
+    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+    query.setParameter("documentId", documentId);
+    List<Document> documents = query.getResultList();
+    if (documents.isEmpty()) {
+      throw new IllegalArgumentException("No such document found");
+    }
+    Document document = documents.get(0);
+
+    document.getProgress().setStatus(status);
+
+    em.merge(document);
+    em.getTransaction().commit();
+    em.close();
   }
 }
