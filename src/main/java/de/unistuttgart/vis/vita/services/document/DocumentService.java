@@ -166,7 +166,7 @@ public class DocumentService {
    */
   @Path("/chapters/{chapterId}")
   public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
-    return chapterService.setId(chapterId);
+    return chapterService.setId(chapterId).setDocumentId(id);
   }
 
   /**
