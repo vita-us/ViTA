@@ -53,15 +53,15 @@
           $scope.entities = persons.slice(0, 5);
         };
 
+        $scope.isActive = function(person) {
+          return ($scope.entities.indexOf(person) > -1);
+        };
+
         DocumentParts.get({
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.parts = response.parts;
         });
-
-        $scope.isActive = function(person) {
-          return ($scope.entities.indexOf(person) > -1);
-        };
       }]);
 
 })(angular);
