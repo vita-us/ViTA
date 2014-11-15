@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AnalysisModule {
   Class<?>[] dependencies() default {};
+  double weight() default 0.1;
 }
