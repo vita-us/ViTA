@@ -16,7 +16,7 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-@AnalysisModule(dependencies=BasicEntityCollection.class)
+@AnalysisModule(dependencies = BasicEntityCollection.class, weight = 0.1)
 public class EntityRelationModule extends Module<EntityRelations> {
   private SortedSet<RelationEvent> events = new TreeSet<>();
   private Map<BasicEntity, Integer> presentEntities = new HashMap<>();

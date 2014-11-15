@@ -38,7 +38,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
-@AnalysisModule(dependencies = {ImportResult.class})
+@AnalysisModule(dependencies = {ImportResult.class}, weight = 500)
 public class ANNIEModule extends Module<AnnieNLPResult> {
 
   private static final double GATE_LOAD_PROGRESS_FRACTION = 0.1;
