@@ -132,32 +132,39 @@ public class PartsAndChaptersReviser {
    */
   public void addDivTexts(List<Epubline> chapter, Element chapterElement,
       List<Element> editedElements, String mode) {
-    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
-      
-      if (!chapterElement.getAllElements().isEmpty()) {
-        
+    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) { 
+      if (!chapterElement.getAllElements().isEmpty()) {  
         Elements innerElements = chapterElement.getAllElements();
         innerElements.remove(0);
-        for (Element innerElement : innerElements) {
-          if (!elementEdited(editedElements, innerElement)) {
-            if (!innerElement.tagName().matches(Constants.SPAN)
-                && !innerElement.tagName().matches(Constants.DIV)) {
-             
-              addText(chapter, innerElement, existsSpan(innerElement), mode);
-            } else if (innerElement.tagName().matches(Constants.DIV)) {
-              addDivTexts(chapter, innerElement, editedElements, mode);
-            }
-            editedElements.add(innerElement);
-          }
-        }
+        addInnerElementText(chapter, editedElements, mode, innerElements);
       }
     } else {
       if (!chapterElement.getAllElements().isEmpty()) {
         Elements innerElements = chapterElement.getAllElements();
-        for (Element innerElement : innerElements) {
-          editedElements.add(innerElement);
-        }
+        fillEditedElements(editedElements, innerElements);
         chapter.add(new Epubline(mode, chapterElement.text(), ""));
+      }
+    }
+  }
+
+  private void fillEditedElements(List<Element> editedElements, Elements innerElements) {
+    for (Element innerElement : innerElements) {
+      editedElements.add(innerElement);
+    }
+  }
+
+  private void addInnerElementText(List<Epubline> chapter, List<Element> editedElements,
+      String mode, Elements innerElements) {
+    for (Element innerElement : innerElements) {
+      if (!elementEdited(editedElements, innerElement)) {
+        if (!innerElement.tagName().matches(Constants.SPAN)
+            && !innerElement.tagName().matches(Constants.DIV)) {
+         
+          addText(chapter, innerElement, existsSpan(innerElement), mode);
+        } else if (innerElement.tagName().matches(Constants.DIV)) {
+          addDivTexts(chapter, innerElement, editedElements, mode);
+        }
+        editedElements.add(innerElement);
       }
     }
   }

@@ -155,8 +155,8 @@ public class Epub3TraitsExtractor {
     for (int j = resources.indexOf(newResource) + 1; j < resources.size(); j++) {
       Document document =
           Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j).getInputStream()));
-      sections = document.select(Constants.SECTION);
-      for (Element sectionItem : sections) {
+      Elements nextSections = document.select(Constants.SECTION);
+      for (Element sectionItem : nextSections) {
         if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)
             && !sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
           addChapterToPart(partChapters, sectionItem);

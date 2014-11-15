@@ -49,8 +49,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
 
-    List<List<Epubline>> currentPart = new ArrayList<List<Epubline>>();
-    currentPart = epub3TraitsExtractor.extractChapters(resources);
+    List<List<Epubline>> currentPart = epub3TraitsExtractor.extractChapters(resources);
     emptyLinesRemover.removeEmptyLinesPart(currentPart);
 
     for (List<Epubline> chapter : currentPart) {
@@ -71,8 +70,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private List<List<Line>> getPartsLines() throws IOException {
     emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
-    List<List<List<Epubline>>> currentParts = new ArrayList<List<List<Epubline>>>();
-    currentParts = epub3TraitsExtractor.extractParts(resources);
+    
+    List<List<List<Epubline>>>  currentParts = epub3TraitsExtractor.extractParts(resources);
     emptyLinesRemover.removeEmptyLinesParts(currentParts);
 
     for (List<List<Epubline>> part : currentParts) {

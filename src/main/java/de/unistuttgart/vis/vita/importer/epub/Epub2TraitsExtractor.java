@@ -58,11 +58,11 @@ public class Epub2TraitsExtractor {
 
     // iterate through the remaining resources
     for (int j = resources.indexOf(currentResource) + 1; j < resources.size(); j++) {
-      document =
+      Document nextDocument =
           Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j).getInputStream()));
-      for (int k = 0; k < document.getAllElements().size(); k++) {
+      for (int k = 0; k < nextDocument.getAllElements().size(); k++) {
 
-        Element innerElement = document.getAllElements().get(k);
+        Element innerElement = nextDocument.getAllElements().get(k);
         if (!ids.contains(innerElement.id())) {
           addElementTexts(chapter, editedElements, innerElement);
         } else {
@@ -79,7 +79,7 @@ public class Epub2TraitsExtractor {
         && !innerElement.attr(Constants.CLASS).matches(Constants.TOC + "|" + Constants.FOOT)
         && !reviser.elementEdited(editedElements, innerElement)) {
 
-      if ((innerElement.tagName().equals(Constants.PARAGRAPH_TAGNAME))) {
+      if (innerElement.tagName().equals(Constants.PARAGRAPH_TAGNAME)) {
         reviser.addText(chapter, innerElement, reviser.existsSpan(innerElement), Constants.TEXT);
 
       } else if (innerElement.tagName().matches(Constants.DIV)
@@ -174,10 +174,9 @@ public class Epub2TraitsExtractor {
   public List<List<List<Epubline>>> getPartsEpublines(List<List<Epubline>> chapters)
       throws IOException {
 
-    List<List<String>> partsWithChaptersIds = new ArrayList<List<String>>();
     Epub2IdsAndTitlesExtractor epub2IdsExtracor =
         new Epub2IdsAndTitlesExtractor(resources, tocResource);
-    partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
+    List<List<String>> partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
 
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
 
