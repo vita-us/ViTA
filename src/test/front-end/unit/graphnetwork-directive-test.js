@@ -20,7 +20,7 @@ describe('Graph-Network Directive', function() {
 
     scope = $rootScope.$new();
 
-    $httpBackend.expectGET(new RegExp('/documents/[^/]+/entities/relations[^/]+$')).respond(
+    $httpBackend.expectGET(new RegExp('webapi/documents/[^/]+/entities/relations[^/]+$')).respond(
             TestData.entityRelations);
 
     $routeParams.documentId = 'doc-id';
@@ -64,7 +64,8 @@ describe('Graph-Network Directive', function() {
   }));
 
   it('should display nothing if the data are undefined', function() {
-    $httpBackend.expectGET('/documents/doc-id/entities/relations?entityIds=&rangeEnd=1&rangeStart=0&type=person').respond({
+    $httpBackend.expectGET('webapi/documents/doc-id/entities/relations?' +
+        'entityIds=&rangeEnd=1&rangeStart=0&type=person').respond({
       entityIds: [],
       relations: []
     });

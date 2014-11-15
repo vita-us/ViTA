@@ -17,7 +17,6 @@ import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.PlaceTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -77,7 +76,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     originPersonId = testPerson.getId();
     Person relatedPerson = personTestData.createTestPerson(2);
     targetPersonId = relatedPerson.getId();
-    EntityRelation<Entity> testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
+    EntityRelation testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(testPersonRelation);
     
     // set up test place and relation
@@ -86,10 +85,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
     originPlaceId = testPlace.getId();
     Place relatedPlace = placeTestData.createTestPlace(2);
     targetPlaceId = relatedPlace.getId();
-    EntityRelation<Entity> testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
+    EntityRelation testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(testPlaceRelation);
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     // persist persons and their relation
     em.getTransaction().begin();

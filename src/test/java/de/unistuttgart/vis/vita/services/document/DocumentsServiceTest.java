@@ -43,7 +43,7 @@ public class DocumentsServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     testData = new DocumentTestData();
     
@@ -96,6 +96,10 @@ public class DocumentsServiceTest extends ServiceTest {
                                           .post(multiPartEntity, DocumentIdResponse.class);
 
     assertNotNull(actualResponse);
+
+    // TODO The analyis is not stopped, so it will try to continue until
+    // the next test empties the database and it fails. It would be better
+    // to stop the analysis here
   }
   
 }

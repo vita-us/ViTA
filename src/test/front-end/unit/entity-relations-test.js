@@ -11,7 +11,7 @@ describe('EntityRelationService', function() {
   beforeEach(module('vita'));
 
   it('should return the entity relations', inject(function($httpBackend, EntityRelation, TestData) {
-    $httpBackend.expectGET('/documents/doc13a/entities/relations?entityIds=pers1,pers2,pers3'
+    $httpBackend.expectGET('webapi/documents/doc13a/entities/relations?entityIds=pers1,pers2,pers3'
                     + '&rangeEnd=0.456&rangeStart=0.123&type=person')
                     .respond(TestData.entityRelations);
 

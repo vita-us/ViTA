@@ -9,6 +9,7 @@ import gate.Annotation;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import de.unistuttgart.vis.vita.model.entity.EntityType;
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
+  private Set<BasicEntity> entities = new HashSet<>();
   private ImportResult importResult;
   private AnnieNLPResult annieNLPResult;
   private ProgressListener progressListener;
@@ -86,6 +88,9 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
         currentAnnotation = 1;
         currentChapter++;
+
+        // Do not confuse annotation ids of different chapters
+        idMap.clear();
       }
 
       currentChapter = 1;
@@ -102,7 +107,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     return new BasicEntityCollection() {
       @Override
       public Collection<BasicEntity> getEntities() {
-        return idMap.values();
+        return entities;
       }
     };
   }
@@ -134,27 +139,39 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     BasicEntity entity = getExistingEntityForAnnotation(theAnnotation);
     String annotatedText = getAnnotatedText(chapter.getText(), theAnnotation);
 
+    EntityType type = getEntityType(theAnnotation);
+
+    // The entity may exist in a previous chapter
+    if (entity == null) {
+      entity = getEntityByName(type, annotatedText);
+      if (entity != null) {
+        idMap.put(theAnnotation.getId(), entity);
+      }
+    }
+
     if (entity == null) {
       entity = new BasicEntity();
 
       entity.setDisplayName(annotatedText);
-      EntityType type;
-
-      if ("Person".equals(theAnnotation.getType())) {
-        type = EntityType.PERSON;
-      } else {
-        type = EntityType.PLACE;
-      }
 
       entity.setType(type);
 
       idMap.put(theAnnotation.getId(), entity);
+      entities.add(entity);
     }
     TextSpan textSpan = getTextSpan(theAnnotation, chapter);
 
     updateNameAttributes(entity, annotatedText, textSpan);
 
     entity.getOccurences().add(textSpan);
+  }
+
+  private EntityType getEntityType(Annotation annotation) {
+    if ("Person".equals(annotation.getType())) {
+      return EntityType.PERSON;
+    } else {
+      return EntityType.PLACE;
+    }
   }
 
   /**
@@ -198,6 +215,9 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       }
     }
 
+    // TODO relations, ...
+
+
     return null;
   }
 
@@ -223,5 +243,20 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     int start = theAnnotation.getStartNode().getOffset().intValue();
     int end = theAnnotation.getEndNode().getOffset().intValue();
     return text.substring(start, end);
+  }
+
+  private BasicEntity getEntityByName(EntityType type, String name) {
+    for(BasicEntity entity : entities) {
+      if (entity.getType() != type)
+        continue;
+
+      for(Attribute attribute : entity.getNameAttributes()) {
+          if(attribute.getContent().equals(name)) {
+            return entity;
+          }
+      }
+    }
+
+    return null;
   }
 }

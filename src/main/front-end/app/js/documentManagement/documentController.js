@@ -28,7 +28,7 @@
           if ($scope.file) {
             $scope.uploading = true;
 
-            FileUpload.uploadFileToUrl($scope.file, '/documents', function() {
+            FileUpload.uploadFileToUrl($scope.file, 'webapi/documents', function() {
               // nothing to do: we poll the documents every X seconds
               resetUploadField();
               $scope.uploading = false;
