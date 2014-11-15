@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
@@ -23,7 +24,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Performs test on RelationOccurrencesService, persisting persons with overlapping occurrences and
  * fetch their relation using REST.
  */
-public class RelationOccurrencesServiceTest extends ServiceTest {
+public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
   
   /*
    * SP for the separate TextSpans without an overlap
@@ -156,17 +156,24 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     return new ResourceConfig(RelationOccurrencesService.class);
   }
   
+  @Override
+  protected String getPath() {
+    return "/documents/"+ docId +"/entities/relations/occurrences";
+  }
+  
+  @Override
+  protected WebTarget prepareWebTarget(int steps, double rangeStart, double rangeEnd) {
+    return super.prepareWebTarget(steps, rangeStart, rangeEnd).queryParam("entityIds", entityIds);
+  }
+  
   /**
    * Tests whether the right occurrences can be caught using REST.
    */
   @Test
   public void testGetOccurrences() {
-    String path = "/documents/"+ docId +"/entities/relations/occurrences";
-    OccurrencesResponse actualResponse = target(path).queryParam("steps", 200)
-                                                      .queryParam("rangeStart", 0.0)
-                                                      .queryParam("rangeEnd", 1.0)
-                                                      .queryParam("entityIds", entityIds)
-                                                      .request().get(OccurrencesResponse.class);
+    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT, DEFAULT_RANGE_START,
+                                                            DEFAULT_RANGE_END).request()
+                                                            .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
     

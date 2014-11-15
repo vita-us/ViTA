@@ -21,7 +21,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
@@ -29,7 +28,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 /**
  * Performs test on the EntityOccurrencesService.
  */
-public class EntityOccurrencesServiceTest extends ServiceTest {
+public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
 
   private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
   private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
@@ -78,17 +77,20 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
   protected Application configure() {
     return new ResourceConfig(EntityOccurrencesService.class);
   }
+  
+  @Override
+  protected String getPath() {
+    return "/documents/" + docId + "/entities/" + personId + "/occurrences";
+  }
 
   /**
    * Checks whether occurrences for an entity can be caught using the REST interface.
    */
   @Test
-  public void testGetOccurrences() {
-    String path = "/documents/" + docId + "/entities/" + personId + "/occurrences";
-    
-    OccurrencesResponse actualResponse = target(path).queryParam("steps", 100)
-                                                      .queryParam("rangeStart", 0.0)
-                                                      .queryParam("rangeEnd", 1.0)
+  public void testGetOccurrences() {   
+    OccurrencesResponse actualResponse = target(getPath()).queryParam("steps", DEFAULT_STEP_AMOUNT)
+                                                      .queryParam("rangeStart", DEFAULT_RANGE_START)
+                                                      .queryParam("rangeEnd", DEFAULT_RANGE_END)
                                                       .request().get(OccurrencesResponse.class);
     // check response and amount of occurrences
     assertNotNull(actualResponse);
