@@ -5,9 +5,10 @@
 
   vitaDirectives.directive('graphNetwork', ['CssClass', function(CssClass) {
 
+    var MINIMUM_GRAPH_WIDTH = 300, MINIMUM_GRAPH_HEIGHT = 300;
+
     var directive = {
-      replace: false,
-      restrict: 'EA',
+      restrict: 'A',
       scope: {
         entities: '=',
         width: '@',
@@ -21,23 +22,64 @@
             updateGraph(scope.entities);
           }
         }, true);
+
+        scope.$watch('width', function(newValue, oldValue) {
+          if(!angular.equals(newValue, oldValue)) {
+            var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
+            updateWidth(newWidth);
+          }
+        });
+
+        scope.$watch('height', function(newValue, oldValue) {
+          if (!angular.equals(newValue, oldValue)) {
+            // Fallback on the default value on an invalid parameter
+            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT;
+            updateHeight(newHeight);
+          }
+        });
       }
     };
 
     var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
-    var graph, force, nodes, links;
+    var graph, force, nodes, links, drag, svgContainer;
 
     function buildGraph(element, entities, width, height) {
       var container = d3.select(element[0]);
-      width = width || 800;
-      height = height || 400;
+      width = width || MINIMUM_GRAPH_WIDTH;
+      height = height || MINIMUM_GRAPH_HEIGHT;
 
-      graph = container.append("svg")
-          .classed("graph-network", true)
-          .attr("width", width)
-          .attr("height", height)
-          .append('g'); // an extra group for zooming
+      // Set the zoom with its min and max magnifications
+      var zoom = d3.behavior.zoom()
+          .scaleExtent([0.25, 2])
+          .on('zoom', zoomed);
+
+      drag = d3.behavior.drag()
+          .origin(function(d) {
+            return d;
+          })
+          .on('dragstart', function(d) {
+            // Prevent panning when dragging a node
+            d3.event.sourceEvent.stopPropagation();
+            d.fixed = true;
+          })
+          .on('drag', function(d) {
+            d.px = d3.event.x;
+            d.py = d3.event.y;
+            force.resume();
+          })
+          .on('dragend', function(d) {
+            d.fixed = false;
+          });
+
+      svgContainer = container.append('svg')
+          .classed('graph-network', true)
+          .attr('width', width)
+          .attr('height', height)
+          .call(zoom);
+
+      // Encapsulate the graph in a group for easier zooming and dragging
+      graph = svgContainer.append('g');
 
       var graphData = parseEntitiesToGraphData(entities);
 
@@ -53,6 +95,10 @@
       redrawElements(graphData);
 
       force.start();
+    }
+
+    function zoomed() {
+      graph.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
     }
 
     function parseEntitiesToGraphData(entities) {
@@ -172,12 +218,12 @@
       nodes = graph.selectAll('.node')
           .data(graphData.nodes)
           .enter().append('circle')
-          .attr("class", function(d) {
+          .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
           .attr('r', 20)
-          .call(force.drag);
+          .call(drag);
     }
 
     function updateGraph(entities) {
@@ -188,6 +234,24 @@
           .start();
 
       redrawElements(graphData);
+    }
+
+    function updateWidth(width) {
+      // Get the current graph height
+      var height = svgContainer.attr('height');
+
+      // Set the new attributes
+      svgContainer.attr('width', width);
+      force.size([width, height]).resume();
+    }
+
+    function updateHeight(height) {
+      // Get the current graph width
+      var width = svgContainer.attr('width');
+
+      // Set the new attributes
+      svgContainer.attr('height', height);
+      force.size([width, height]).resume();
     }
 
     return directive;
