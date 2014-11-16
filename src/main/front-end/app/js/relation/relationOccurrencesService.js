@@ -3,13 +3,12 @@
 
   var vitaServices = angular.module('vitaServices');
 
-  // Service that is responsible for dealing with fingerprints
-  vitaServices.factory('Fingerprint', ['$resource', function($resource) {
+  // Service that is responsible for dealing with relation occurrences
+  vitaServices.factory('RelationOccurrences', ['$resource', function($resource) {
     return $resource('/documents/:documentId/entities/relations/occurrences', {}, {
       get: {
         method: 'GET'
       }
     });
   }]);
-
 })(angular);
