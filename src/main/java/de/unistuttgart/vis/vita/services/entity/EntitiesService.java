@@ -6,8 +6,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 
-import de.unistuttgart.vis.vita.services.FingerprintsService;
-
 /**
  * Redirects entity and relations requests for the current Document to the right sub service.
  */
@@ -49,16 +47,6 @@ public class EntitiesService {
   @Path("/relations")
   public EntityRelationsService getRelations() {
     return resourceContext.getResource(EntityRelationsService.class).setDocumentId(documentId);
-  }
-  
-  /**
-   * Returns the FingerprintsService for the current document.
-   * 
-   * @return the FingerprintsService which answers the request
-   */
-  @Path("/fingerprints")
-  public FingerprintsService getFingerprints() {
-    return resourceContext.getResource(FingerprintsService.class).setDocumentId(documentId);
   }
 
 }
