@@ -11,11 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.PlacesResponse;
 
@@ -26,22 +23,13 @@ import de.unistuttgart.vis.vita.services.responses.PlacesResponse;
 public class PlacesService {
   
   private String documentId;
-  
-  @Context
-  private ResourceContext resourceContext;
-  
+
+  @Inject
   private EntityManager em;
   
-  /**
-   * Creates a new instance of PlacesService
-   * 
-   * @param model - the model to be used in this service
-   */
   @Inject
-  public PlacesService(Model model) {
-    em = model.getEntityManager();
-  }
-  
+  private PlaceService placeService;
+
   /**
    * Sets the id of the document for which this service should provide the mentioned places.
    * 
@@ -88,7 +76,7 @@ public class PlacesService {
    */
   @Path("{placeId}")
   public PlaceService getPlace(@PathParam("placeId") String id) {
-    return resourceContext.getResource(PlaceService.class).setPlaceId(id);
+    return placeService.setPlaceId(id);
   }
   
 }

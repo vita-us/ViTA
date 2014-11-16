@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
@@ -22,7 +21,7 @@ public class EntityRelationTest {
 
   // attributes
   private Person testPerson;
-  private EntityRelation<Entity> relation;
+  private EntityRelation relation;
 
   /**
    * Sets up the testPerson and its relations.
@@ -30,7 +29,7 @@ public class EntityRelationTest {
   @Before
   public void setUp() {
     testPerson = new Person();
-    relation = new EntityRelation<Entity>();
+    relation = new EntityRelation();
     testPerson.getEntityRelations().add(relation);
   }
 

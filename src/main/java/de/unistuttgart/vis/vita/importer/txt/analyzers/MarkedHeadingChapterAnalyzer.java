@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
+import java.util.List;
+
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
-import java.util.List;
 
 /**
  * Chapters will be built every time a MarkedHeading is found. The following MarkedHeadings will be
@@ -20,8 +20,7 @@ public class MarkedHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
    * @throws IllegalArgumentException If input is null.
    */
-  public MarkedHeadingChapterAnalyzer(List<Line> chapterArea)
-      throws IllegalArgumentException {
+  public MarkedHeadingChapterAnalyzer(List<Line> chapterArea) {
     super(chapterArea);
   }
 

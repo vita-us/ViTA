@@ -1,13 +1,10 @@
 package de.unistuttgart.vis.vita.services.document;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
+import de.unistuttgart.vis.vita.data.DocumentTestData;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.ServiceTest;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -17,21 +14,24 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.document.DocumentsService;
-import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
-import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
+import java.io.File;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Application;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Performs tests on DocumentsService.
  */
 public class DocumentsServiceTest extends ServiceTest {
   
-  private static final String TEST_FILE_PATH = "src/main/resources/test_document.txt";
-  
+  private static final String TEST_FILE_PATH =
+      DocumentsServiceTest.class.getResource("test_document.txt").getFile();
+      
   private static final int TEST_DOCUMENT_COUNT = 10;
   private static final int TEST_OFFSET = 0;
   
@@ -42,7 +42,7 @@ public class DocumentsServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     testData = new DocumentTestData();
     
@@ -95,6 +95,10 @@ public class DocumentsServiceTest extends ServiceTest {
                                           .post(multiPartEntity, DocumentIdResponse.class);
 
     assertNotNull(actualResponse);
+
+    // TODO The analyis is not stopped, so it will try to continue until
+    // the next test empties the database and it fails. It would be better
+    // to stop the analysis here
   }
   
 }

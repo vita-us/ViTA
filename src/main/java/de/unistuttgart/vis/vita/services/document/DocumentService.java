@@ -15,13 +15,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
@@ -39,24 +36,39 @@ import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
 public class DocumentService {
   
   private String id;
+
+  @Inject
+  private EntityManager em;
   
   @Inject
   private AnalysisController analysisController;
 
-  private EntityManager em;
-
-  @Context
-  private ResourceContext resourceContext;
-
-  /**
-   * Creates new DocumentService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
   @Inject
-  public DocumentService(Model model) {
-    em = model.getEntityManager();
-  }
+  ProgressService progressService;
+
+  @Inject
+  ChapterService chapterService;
+
+  @Inject
+  EntitiesService entitiesService;
+
+  @Inject
+  PersonsService personsService;
+
+  @Inject
+  PlacesService placesService;
+
+  @Inject
+  DocumentPartsService partsService;
+
+  @Inject
+  AnalysisService analysisService;
+
+  @Inject
+  SearchInDocumentService searchInDocumentService;
+
+  @Inject
+  WordCloudService wordCloudService;
 
   /**
    * Sets the id of the document this resource should represent
@@ -162,7 +174,7 @@ public class DocumentService {
    */
   @Path("/progress")
   public ProgressService getProgress() {
-    return resourceContext.getResource(ProgressService.class).setDocumentId(id);
+    return progressService.setDocumentId(id);
   }
 
   /**
@@ -173,7 +185,7 @@ public class DocumentService {
    */
   @Path("/chapters/{chapterId}")
   public ChapterService getChapters(@PathParam("chapterId") String chapterId) {
-    return resourceContext.getResource(ChapterService.class).setId(chapterId);
+    return chapterService.setId(chapterId).setDocumentId(id);
   }
 
   /**
@@ -183,7 +195,7 @@ public class DocumentService {
    */
   @Path("/persons")
   public PersonsService getPersons() {
-    return resourceContext.getResource(PersonsService.class).setDocumentId(id);
+    return personsService.setDocumentId(id);
   }
 
   /**
@@ -193,7 +205,7 @@ public class DocumentService {
    */
   @Path("/places")
   public PlacesService getPlaces() {
-    return resourceContext.getResource(PlacesService.class).setDocumentId(id);
+    return placesService.setDocumentId(id);
   }
 
   /**
@@ -203,7 +215,7 @@ public class DocumentService {
    */
   @Path("/entities")
   public EntitiesService getEntity() {
-    return resourceContext.getResource(EntitiesService.class).setDocumentId(id);
+    return entitiesService.setDocumentId(id);
   }
 
   /**
@@ -213,7 +225,7 @@ public class DocumentService {
    */
   @Path("/parts")
   public DocumentPartsService getParts() {
-    return resourceContext.getResource(DocumentPartsService.class).setDocumentId(id);
+    return partsService.setDocumentId(id);
   }
 
   /**
@@ -223,7 +235,7 @@ public class DocumentService {
    */
   @Path("/analysis")
   public AnalysisService stopAnalysis() {
-    return resourceContext.getResource(AnalysisService.class).setDocumentId(id);
+    return analysisService.setDocumentId(id);
   }
   
   /**
@@ -233,7 +245,7 @@ public class DocumentService {
    */
   @Path("/search")
   public SearchInDocumentService getSearch() {
-    return resourceContext.getResource(SearchInDocumentService.class).setDocumentId(id);
+    return searchInDocumentService.setDocumentId(id);
   }
   
   /**
@@ -243,7 +255,7 @@ public class DocumentService {
    */
   @Path("/wordcloud")
   public WordCloudService getWordcloud() {
-    return resourceContext.getResource(WordCloudService.class).setDocumentId(id);
+    return wordCloudService.setDocumentId(id);
   }
 
 }

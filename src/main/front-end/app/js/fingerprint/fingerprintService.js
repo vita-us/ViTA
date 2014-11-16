@@ -5,7 +5,7 @@
 
   // Service that is responsible for dealing with fingerprints
   vitaServices.factory('Fingerprint', ['$resource', function($resource) {
-    return $resource('/documents/:documentId/:entityIds/fingerprints', {}, {
+    return $resource('webapi/documents/:documentId/entities/fingerprints', {}, {
       get: {
         method: 'GET'
       }

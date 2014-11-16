@@ -125,10 +125,10 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
     Chapter chapter = new Chapter();
-    TextPosition pos1 = new TextPosition(chapter, 10);
-    TextPosition pos2 = new TextPosition(chapter, 20);
-    TextPosition pos3 = new TextPosition(chapter, 30);
-    TextPosition pos4 = new TextPosition(chapter, 40);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, 10);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, 20);
+    TextPosition pos3 = TextPosition.fromGlobalOffset(chapter, 30);
+    TextPosition pos4 = TextPosition.fromGlobalOffset(chapter, 40);
     TextSpan span1 = new TextSpan(pos1, pos4);
     TextSpan span2 = new TextSpan(pos2, pos4);
     TextSpan span3 = new TextSpan(pos3, pos4);

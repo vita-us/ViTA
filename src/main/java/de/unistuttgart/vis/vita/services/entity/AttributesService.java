@@ -12,12 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.entity.*;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
@@ -30,20 +27,11 @@ public class AttributesService {
   private String documentId;
   private String entityId;
 
+  @Inject
   private EntityManager em;
 
-  @Context
-  private ResourceContext resourceContext;
-
-  /**
-   * Creates new AttributesService and inject Model.
-   * 
-   * @param model - the injected model
-   */
   @Inject
-  public AttributesService(Model model) {
-    em = model.getEntityManager();
-  }
+  private AttributeService attributeService;
 
   /**
    * Sets the id of the document this service refers to and returns itself.
@@ -111,9 +99,10 @@ public class AttributesService {
    */
   @Path("{attributeId}")
   public AttributeService getAttribute(@PathParam("attributeId") String id) {
-    return resourceContext.getResource(AttributeService.class).setDocumentId(documentId)
-                                                              .setEntityId(entityId)
-                                                              .setAttributeId(id);
+    return attributeService
+        .setDocumentId(documentId)
+        .setEntityId(entityId)
+        .setAttributeId(id);
   }
 
 }

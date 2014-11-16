@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javax.inject.Inject;
+import javax.annotation.ManagedBean;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.DefaultValue;
@@ -14,7 +14,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
@@ -22,21 +21,13 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
+/**
  * Service providing a method to get the occurrences for relations in the current document via GET.
  */
+@ManagedBean
 public class RelationOccurrencesService extends OccurrencesService {
 
   private List<String> entityIds;
-
-  /**
-   * Creates new RelationOccurrencesService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
-  @Inject
-  public RelationOccurrencesService(Model model) {
-    em = model.getEntityManager();
-  }
 
   /**
    * Sets the id of the document this service refers to.
@@ -119,11 +110,22 @@ public class RelationOccurrencesService extends OccurrencesService {
         // push it to the stack
         if (!top.overlapsWith(currentSpan)) {
             s.push(readTextSpans.get(i));
-        } else if (top.getEnd().getOffset() < currentSpan.getEnd().getOffset()) {
-            TextPosition start = top.getStart();
-            TextPosition end = readTextSpans.get(i).getEnd();
-            s.pop();
-            s.push(new TextSpan(start, end));
+        } else {
+          TextPosition start = top.getStart();
+          TextPosition end = top.getEnd();
+          
+          TextPosition currentStart = currentSpan.getStart();
+          if (top.getStart().getOffset() < currentStart.getOffset() 
+              && currentStart.getOffset() <= end.getOffset()) {
+            start = currentStart;
+          }
+          
+          if (top.getEnd().getOffset() > currentSpan.getEnd().getOffset()) {
+            end = currentSpan.getEnd();
+          }
+          
+          s.pop();
+          s.push(new TextSpan(start, end));
         }
     }
     

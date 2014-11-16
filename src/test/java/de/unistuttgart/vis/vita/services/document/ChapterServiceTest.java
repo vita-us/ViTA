@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.ServiceTest;
@@ -39,7 +38,7 @@ public class ChapterServiceTest extends ServiceTest {
     chapterId = testChapter.getId();
     
     // persist test data
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     em.getTransaction().begin();
     em.persist(testDoc);

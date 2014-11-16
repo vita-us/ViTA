@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.services.responses;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 
 /**
@@ -28,7 +27,7 @@ public class RelationConfiguration {
    * 
    * @param rel - the EntityRelation this RelationConfiguration should represent
    */
-  public RelationConfiguration(EntityRelation<Entity> rel) {
+  public RelationConfiguration(EntityRelation rel) {
     if (rel == null) {
       throw new IllegalArgumentException("EntityRelation must not be null!");
     }

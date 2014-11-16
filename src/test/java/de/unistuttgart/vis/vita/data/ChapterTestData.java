@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Holds test data for chapters and methods to create test chapters and check whether given data
@@ -16,11 +18,11 @@ public class ChapterTestData {
   public static final int TEST_CHAPTER_NUMBER = 11;
   public static final String TEST_CHAPTER_TEXT = "This is a very short Chapter.";
   public static final String TEST_CHAPTER_TITLE = "A Knife in the Dark";
-  
+
   /**
-   * Creates a new Chapter belonging to the given Document and sets attributes to test values and 
+   * Creates a new Chapter belonging to the given Document and sets attributes to test values and
    * returns it.
-   * 
+   *
    * @return
    */
   public Chapter createTestChapter() {
@@ -30,13 +32,16 @@ public class ChapterTestData {
     chapter.setNumber(TEST_CHAPTER_NUMBER);
     chapter.setText(TEST_CHAPTER_TEXT);
     chapter.setTitle(TEST_CHAPTER_TITLE);
+    chapter.setRange(new TextSpan(
+        TextPosition.fromGlobalOffset(chapter, 0),
+        TextPosition.fromGlobalOffset(chapter, TEST_CHAPTER_LENGTH)));
 
     return chapter;
   }
-  
+
   /**
    * Checks whether the given chapter is not <code>null</code> and includes the correct test data.
-   * 
+   *
    * @param chapterToCheck - the chapter which should be checked
    */
   public void checkData(Chapter chapterToCheck) {

@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services.responses;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -12,12 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RelationsResponse {
   
-  @XmlElementWrapper(name = "entityIds")
-  @XmlElement(name = "entityId")
+  @XmlElement(name = "entityIds")
   private List<String> entityIds;
   
-  @XmlElementWrapper(name = "relations")
-  @XmlElement(name = "relation")
+  @XmlElement(name = "relations")
   private List<RelationConfiguration> relations;
 
   /**

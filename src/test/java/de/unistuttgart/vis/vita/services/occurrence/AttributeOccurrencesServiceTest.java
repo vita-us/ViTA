@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -16,7 +18,6 @@ import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -37,6 +38,7 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
   private String chapterId;
   private String attributeId;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
@@ -47,8 +49,10 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
 
     // Set range
-    TextPosition rangeStartPos = new TextPosition(null, 0);
-    TextPosition rangeEndPos = new TextPosition(null, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition rangeStartPos =
+        TextPosition.fromGlobalOffset(testChapter, 0);
+    TextPosition rangeEndPos =
+        TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
 
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
@@ -66,7 +70,7 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     attributeId = testAttribute.getId();
 
     // persist it
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(chapterRangeSpan);

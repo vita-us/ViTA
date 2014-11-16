@@ -13,7 +13,6 @@ import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -35,32 +34,33 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
   private String chapterId;
   private String personId;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    
+
     // first set up test data
     TextSpanTestData testData = new TextSpanTestData();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     Chapter testChapter = new ChapterTestData().createTestChapter();
-    
+
     // Set range of the chapter
-    TextPosition rangeStartPos = new TextPosition(null, 0);
-    TextPosition rangeEndPos = new TextPosition(null, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition rangeStartPos = TextPosition.fromGlobalOffset(testChapter, 0);
+    TextPosition rangeEndPos = TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
-    
+
     TextSpan personTextSpan = testData.createTestTextSpan(testChapter);
     Person testPerson = new PersonTestData().createTestPerson(1);
     testPerson.getOccurrences().add(personTextSpan);
-    
+
     // save ids for query
     docId = testDoc.getId();
     chapterId = testChapter.getId();
     personId = testPerson.getId();
-    
+
     // persist it
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(chapterRangeSpan);
@@ -70,7 +70,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     em.getTransaction().commit();
     em.close();
   }
-  
+
   @Override
   protected Application configure() {
     return new ResourceConfig(EntityOccurrencesService.class);
@@ -102,7 +102,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
         .queryParam("rangeStart", DEFAULT_RANGE_START)
         .queryParam("rangeEnd", DEFAULT_RANGE_END)
         .request().get(OccurrencesResponse.class);
-    
+
     // check response and amount of occurrences
     assertNotNull(actualResponse);
     checkOccurrences(actualResponse.getOccurrences(), false);
@@ -110,12 +110,12 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
 
   /**
    * Check whether the occurrences list contains the expected data.
-   * 
+   *
    * @param occurrences - the list of occurrences to be checked
    */
   private void checkOccurrences(List<Occurrence> occurrences, boolean exact) {
     assertEquals(1, occurrences.size());
-    
+
     Occurrence receivedOccurence = occurrences.get(0);
   
     AbsoluteTextPosition absoluteStart = receivedOccurence.getStart();
