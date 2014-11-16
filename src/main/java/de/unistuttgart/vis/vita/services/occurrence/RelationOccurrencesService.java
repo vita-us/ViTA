@@ -1,9 +1,9 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
-
 import javax.annotation.ManagedBean;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -91,23 +91,24 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   private List<TextSpan> computeIntersection(List<TextSpan> readTextSpans) {
-    // Test if the given set has at least one interval
-    if (readTextSpans.size() <= 0)
-        return readTextSpans;
+    // if List is empty or there is only one element, there is nothing to do
+    if (readTextSpans.size() < 2) {
+      return readTextSpans;
+    }
  
     // Create an empty stack of intervals
-    Stack<TextSpan> s = new Stack<>();
+    Deque<TextSpan> s = new ArrayDeque<>();
  
     // push the first interval to stack
     s.push(readTextSpans.get(0));
  
-    // Start from the next interval and merge if necessary
+    // Start from the next TextSpan and merge if necessary
     for (int i = 1 ; i < readTextSpans.size(); i++) {
         // get interval from stack top
         TextSpan top = s.peek();
         TextSpan currentSpan = readTextSpans.get(i);
-        // if current interval is not overlapping with stack top,
-        // push it to the stack
+        
+        // if current TextSpan is not overlapping with stack top, push it to the stack
         if (!top.overlapsWith(currentSpan)) {
             s.push(readTextSpans.get(i));
         } else {
