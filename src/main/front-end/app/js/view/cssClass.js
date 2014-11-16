@@ -5,7 +5,7 @@
 
   vitaServices.service('CssClass', function() {
     this.forRankingValue = function(ranking) {
-      return "ranking-" + ranking;
+      return 'ranking-' + ranking;
     };
   });
 

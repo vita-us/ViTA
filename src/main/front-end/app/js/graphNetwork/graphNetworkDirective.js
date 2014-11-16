@@ -31,7 +31,7 @@
         }, true);
 
         scope.$watch('width', function(newValue, oldValue) {
-          if(!angular.equals(newValue, oldValue)) {
+          if (!angular.equals(newValue, oldValue)) {
             var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
             updateWidth(newWidth);
           }

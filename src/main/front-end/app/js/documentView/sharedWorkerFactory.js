@@ -5,7 +5,7 @@
 
   vitaServices.service('SharedWorkerFactory', [function() {
     this.create = function() {
-      return new SharedWorker("js/shared-worker.js");
+      return new SharedWorker('js/shared-worker.js');
     };
   }]);
 
