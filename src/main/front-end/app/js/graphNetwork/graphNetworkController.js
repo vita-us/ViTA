@@ -4,7 +4,21 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      function($scope, $routeParams, DocumentParts) {
+      'Document', 'Page', function($scope, $routeParams, DocumentParts, Document, Page) {
+
+        Document.get({
+          documentId: $routeParams.documentId
+        }, function(document) {
+          Page.breadcrumbs = 'Graph-Network';
+          Page.setUpForDocument(document);
+        });
+
+        // Set a custom graph width
+        $scope.graphWidth = $("#graph-network-wrapper").width();
+
+        // Set a custom graph height like this
+        $scope.graphHeight = $(window).height() * 0.7;
+
         $scope.entities = [];
 
         var sliderMin = 0, sliderMax = 100;

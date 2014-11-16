@@ -28,7 +28,8 @@ describe('Graph-Network Directive', function() {
     scope.rangeStart = 0.0;
     scope.rangeEnd = 1.0;
 
-    element = '<graph-network entities="entities" data-range-begin="rangeStart" data-range-end="rangeEnd"></graph-network>';
+    element = '<div data-graph-network entities="entities" ' +
+        'data-range-begin="rangeStart" data-range-end="rangeEnd"></div>';
 
     element = $compile(element)(scope);
     $httpBackend.flush();
@@ -50,7 +51,7 @@ describe('Graph-Network Directive', function() {
 
     TestData.entityRelations.entityIds.push(additionalPerson.id);
     TestData.entityRelations.relations.push(additionalRelation);
-    $httpBackend.expectGET(new RegExp('/documents/[^/]+/entities/relations[^/]+$')).respond(
+    $httpBackend.expectGET(new RegExp('webapi/documents/[^/]+/entities/relations[^/]+$')).respond(
             TestData.entityRelations);
     TestData.graphNetworkEntities.push(additionalPerson);
 

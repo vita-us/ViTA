@@ -9,10 +9,11 @@
       '$routeParams',
       function(CssClass, EntityRelation, $routeParams) {
 
+    var MINIMUM_GRAPH_WIDTH = 300, MINIMUM_GRAPH_HEIGHT = 300;
+
     // rangeBEGIN, because Start seems to be an angular keyword
     var directive = {
-      replace: false,
-      restrict: 'EA',
+      restrict: 'A',
       scope: {
         entities: '=',
         width: '@',
@@ -22,29 +23,70 @@
         showFingerprint: '&'
       },
       link: function(scope, element) {
-        buildGraph(element, scope);
+        buildGraph(element, scope.entities, scope.width, scope.height);
 
         scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
           fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
                   scope.showFingerprint);
         }, true);
+
+        scope.$watch('width', function(newValue, oldValue) {
+          if(!angular.equals(newValue, oldValue)) {
+            var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
+            updateWidth(newWidth);
+          }
+        });
+
+        scope.$watch('height', function(newValue, oldValue) {
+          if (!angular.equals(newValue, oldValue)) {
+            // Fallback on the default value on an invalid parameter
+            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT;
+            updateHeight(newHeight);
+          }
+        });
       }
     };
 
     var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
 
-    var graph, force, nodes, links, entityIdNodeMap = d3.map();
+    var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
-    function buildGraph(element, scope) {
+    function buildGraph(element, entities, width, height) {
       var container = d3.select(element[0]);
-      var width = scope.width || 800;
-      var height = scope.height || 400;
+      width = width || MINIMUM_GRAPH_WIDTH;
+      height = height || MINIMUM_GRAPH_HEIGHT;
 
-      graph = container.append('svg')
+      // Set the zoom with its min and max magnifications
+      var zoom = d3.behavior.zoom()
+          .scaleExtent([0.25, 2])
+          .on('zoom', zoomed);
+
+      drag = d3.behavior.drag()
+          .origin(function(d) {
+            return d;
+          })
+          .on('dragstart', function(d) {
+            // Prevent panning when dragging a node
+            d3.event.sourceEvent.stopPropagation();
+            d.fixed = true;
+          })
+          .on('drag', function(d) {
+            d.px = d3.event.x;
+            d.py = d3.event.y;
+            force.resume();
+          })
+          .on('dragend', function(d) {
+            d.fixed = false;
+          });
+
+      svgContainer = container.append('svg')
           .classed('graph-network', true)
           .attr('width', width)
           .attr('height', height)
-          .append('g'); // an extra group for zooming
+          .call(zoom);
+
+      // Encapsulate the graph in a group for easier zooming and dragging
+      graph = svgContainer.append('g');
 
       // Order matters - elements of last group are drawn on top
       graph.append('g').attr('id', 'linkGroup');
@@ -56,6 +98,10 @@
           .gravity(0.025)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
+    }
+
+    function zoomed() {
+      graph.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
     }
 
     function fetchRelationsAndDrawElements(entities, rangeStart, rangeEnd, showFingerprint) {
@@ -191,7 +237,7 @@
           })
           .classed('node', true)
           .attr('r', 20)
-          .call(force.drag);
+          .call(drag);
     }
 
     return directive;
