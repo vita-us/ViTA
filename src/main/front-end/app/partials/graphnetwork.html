@@ -3,20 +3,35 @@
     <div class="col-md-2">
       <div ng-include="'partials/menu.html'"></div>
     </div>
-    <div id="graph-network-wrapper" class="col-md-8">
-      <div data-graph-network class="graph-network-container" data-entities="entities" data-height="{{graphHeight}}" data-width="{{graphWidth}}"></div>
-      <div id="navigation-wrapper">Navigation</div>
-      <div id="fingerprint-wrapper">Fingerprint</div>
+    <div class="col-md-8">
+      <div class="row">
+        <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
+          data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
+        <p>
+          <label for="amount">Percentage:</label> <input type="text" id="amount" readonly
+            style="border: 0; color: #f6931f; font-weight: bold;">
+        </p>
+        <div id="slider-range"></div>
+        <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
+          data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
+          data-height="{{graphHeight}}" data-width="{{graphWidth}}""></div>
+      </div>
     </div>
-    <div class="col-md-2">
-        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
+    <div class="col-md-2" ng-controller="PersonListCtrl">
+      <div class="row">
+        <button type="button" class="btn btn-default btn-block" ng-click="reset(persons)">Reset</button>
+        <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect
+          all</button>
+      </div>
+      <div class="row">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control"
+          style="margin-top: 5px; margin-bottom: 5px;">
         <div class="list-group" id="list1">
-          <a href="#" class="list-group-item active">Characters <input title="toggle all" type="checkbox" class="all pull-right"></a>
-          <a href="#" class="list-group-item">Second item <input type="checkbox" class="pull-right"></a>
-          <a href="#" class="list-group-item">Third item <input type="checkbox" class="pull-right"></a>
-          <a href="#" class="list-group-item">More item <input type="checkbox" class="pull-right"></a>
-          <a href="#" class="list-group-item">Another <input type="checkbox" class="pull-right"></a>
+          <a href="" ng-repeat="person in persons | entityNameFilter:search"
+            ng-click="loadGraphNetwork(person)" class="list-group-item"
+            ng-class="{'active': isActive(person)}">{{person.displayName}}</a>
         </div>
+      </div>
     </div>
   </div>
 </div>

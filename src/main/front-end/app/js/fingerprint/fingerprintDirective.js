@@ -3,7 +3,8 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ["Fingerprint", function(Fingerprint) {
+  vitaDirectives.directive('fingerprint', ['Fingerprint', '$routeParams',
+    function(Fingerprint, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -40,16 +41,18 @@
 
       var occurrenceSteps = Math.floor(width / minBarWidth);
 
-      scope.$watch('entityIds', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
+      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
+        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
           if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
             removeFingerPrint();
             return;
           }
           Fingerprint.get({
-            documentId: scope.documentId,
+            documentId: $routeParams.documentId,
             entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps
+            steps: occurrenceSteps,
+            rangeStart: scope.rangeBegin,
+            rangeEnd: scope.rangeEnd
           }, function(response) {
             removeFingerPrint();
             buildFingerPrint(response.occurrences);
@@ -236,10 +239,11 @@
     return {
       restrict: 'A',
       scope: {
-        documentId: '=',
         entityIds: '=',
         parts: '=',
-        height: '@'
+        height: '@',
+        rangeBegin: '=', // rangeStart parameter is not working with angular
+        rangeEnd: '='
       },
       link: link
     };
