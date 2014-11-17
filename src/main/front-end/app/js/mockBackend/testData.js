@@ -532,6 +532,70 @@
         }]
       },
 
+      relationOccurrences: {
+        "occurrences": [{
+          "start": {
+            "chapter": 1.1,
+            "offset": 10,
+            "progress": 0
+          },
+          "end": {
+            "chapter": 1.1,
+            "offset": 35,
+            "progress": 0.05
+          },
+          "length": 25
+        }, {
+          "start": {
+            "chapter": 1.1,
+            "offset": 45,
+            "progress": 0.05
+          },
+          "end": {
+            "chapter": 1.1,
+            "offset": 60,
+            "progress": 0.1
+          },
+          "length": 15
+        }, {
+          "start": {
+            "chapter": 1.2,
+            "offset": 200,
+            "progress": 0.2
+          },
+          "end": {
+            "chapter": 1.2,
+            "offset": 230,
+            "progress": 0.25
+          },
+          "length": 30
+        }, {
+          "start": {
+            "chapter": 1.3,
+            "offset": 500,
+            "progress": 0.3
+          },
+          "end": {
+            "chapter": 1.3,
+            "offset": 520,
+            "progress": 0.35
+          },
+          "length": 20
+        }, {
+          "start": {
+            "chapter": 1.3,
+            "offset": 600,
+            "progress": 0.3
+          },
+          "end": {
+            "chapter": 1.3,
+            "offset": 650,
+            "progress": 0.35
+          },
+          "length": 50
+        }]
+      },
+
       singlePerson: {
         'id': 'person8Hugo',
         'displayName': 'Hugo',

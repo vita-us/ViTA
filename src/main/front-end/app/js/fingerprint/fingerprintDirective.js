@@ -3,8 +3,8 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ['Fingerprint', '$routeParams',
-    function(Fingerprint, $routeParams) {
+  vitaDirectives.directive('fingerprint', ['RelationOccurrences', '$routeParams',
+    function(RelationOccurrences, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -47,7 +47,7 @@
             removeFingerPrint();
             return;
           }
-          Fingerprint.get({
+          RelationOccurrences.get({
             documentId: $routeParams.documentId,
             entityIds: scope.entityIds.join(','),
             steps: occurrenceSteps,

@@ -1,11 +1,10 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-
-import de.unistuttgart.vis.vita.services.FingerprintsService;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 
 /**
  * Redirects entity and relations requests for the current Document to the right sub service.
@@ -15,15 +14,9 @@ public class EntitiesService {
   
   private String documentId;
   
-  @Inject
-  private EntityService entityService;
-
-  @Inject
-  private EntityRelationsService entityRelationsService;
-
-  @Inject
-  private FingerprintsService fingerprintsService;
-
+  @Context
+  private ResourceContext resourceContext;
+  
   /**
    * Sets the id of the Document this service should refer to
    * 
@@ -42,7 +35,7 @@ public class EntitiesService {
    */
   @Path("{entityId}")
   public EntityService getEntity(@PathParam("entityId") String id) {
-    return entityService.setEntityId(id)
+    return resourceContext.getResource(EntityService.class).setEntityId(id)
                                                             .setDocumentId(documentId);
   }
   
@@ -53,17 +46,7 @@ public class EntitiesService {
    */
   @Path("/relations")
   public EntityRelationsService getRelations() {
-    return entityRelationsService.setDocumentId(documentId);
-  }
-  
-  /**
-   * Returns the FingerprintsService for the current document.
-   * 
-   * @return the FingerprintsService which answers the request
-   */
-  @Path("/fingerprints")
-  public FingerprintsService getFingerprints() {
-    return fingerprintsService.setDocumentId(documentId);
+    return resourceContext.getResource(EntityRelationsService.class).setDocumentId(documentId);
   }
 
 }
