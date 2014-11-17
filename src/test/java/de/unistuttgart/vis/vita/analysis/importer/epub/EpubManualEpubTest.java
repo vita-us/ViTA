@@ -24,7 +24,7 @@ public class EpubManualEpubTest {
   private final String SOURCE_PATH =
       "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\pg78.epub";
   private final String TARGET_FOLDER =
-      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\output\\";
+      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\pg78\\";
 
   @Test
   public void test() throws URISyntaxException, FileNotFoundException, IOException, ParseException,

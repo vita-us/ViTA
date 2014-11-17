@@ -49,13 +49,13 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
 
-    List<List<String>> currentPart = new ArrayList<List<String>>();
+    List<List<Epubline>> currentPart = new ArrayList<List<Epubline>>();
     currentPart = epub3TraitsExtractor.extractChapters(resources);
     emptyLinesRemover.removeEmptyLinesPart(currentPart);
 
-    for (List<String> chapter : currentPart) {
-      for (String chapterLine : chapter) {
-        chaptersLines.add(new EpubModuleLine(chapterLine));
+    for (List<Epubline> chapter : currentPart) {
+      for (Epubline chapterLine : chapter) {
+        chaptersLines.add(new EpubModuleLine(chapterLine.getEpubline()));
         chaptersLines.add(new EpubModuleLine(""));
       }
     }
@@ -71,16 +71,16 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private List<List<Line>> getPartsLines() throws IOException {
     emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
-    List<List<List<String>>> currentParts = new ArrayList<List<List<String>>>();
+    List<List<List<Epubline>>> currentParts = new ArrayList<List<List<Epubline>>>();
     currentParts = epub3TraitsExtractor.extractParts(resources);
     emptyLinesRemover.removeEmptyLinesParts(currentParts);
 
-    for (List<List<String>> part : currentParts) {
+    for (List<List<Epubline>> part : currentParts) {
       List<Line> chaptersLines = new ArrayList<Line>();
-      for (List<String> chapter : part) {
-        for (String chapterLine : chapter) {
+      for (List<Epubline> chapter : part) {
+        for (Epubline chapterLine : chapter) {
 
-          chaptersLines.add(new EpubModuleLine(chapterLine));
+          chaptersLines.add(new EpubModuleLine(chapterLine.getEpubline()));
           chaptersLines.add(new EpubModuleLine(""));
         }
       }
@@ -151,17 +151,17 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     reviser = new PartsAndChaptersReviser();
     
     if (epub3TraitsExtractor.existsPartInEpub3(resources)) {
-      List<List<List<String>>> currentParts = new ArrayList<List<List<String>>>();
+      List<List<List<Epubline>>> currentParts = new ArrayList<List<List<Epubline>>>();
       currentParts = epub3TraitsExtractor.extractParts(resources);
       emptyLinesRemover.removeEmptyLinesParts(currentParts);
       List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
-      for (List<List<String>> part : reviser.formatePartsEpub3(currentParts)) {
+      for (List<List<Epubline>> part : reviser.formatePartsEpub3(currentParts)) {
         chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub3(part));
       }
       return chapterPositionsParts;
 
     } else {
-      List<List<String>> currentPart = new ArrayList<List<String>>();
+      List<List<Epubline>> currentPart = new ArrayList<List<Epubline>>();
       currentPart = epub3TraitsExtractor.extractChapters(resources);
       emptyLinesRemover.removeEmptyLinesPart(currentPart);
       List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();

@@ -133,7 +133,8 @@ public class Epub2IdsAndTitlesExtractor {
         if (!contents.isEmpty()) {
           for (Element content : contents) {
             if (content.hasAttr(Constants.SOURCE)
-                && content.attr(Constants.SOURCE).contains(Constants.PGEPUBID)) {
+                && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
+                    Constants.SOURCE).contains(Constants.ID))) {
               String id = extractId(content.attr("src"));
               if (!tocIds.contains(id)) {
                 tocIds.add(id);

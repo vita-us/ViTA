@@ -23,9 +23,12 @@ public class Constants {
   public static final String NAVMAP = "navMap";
   public static final String CONTENT = "content";
   public static final String SOURCE = "src";
-  public static final String PGEPUBID = "pgepubid";
+  public static final String PGEPUBID = "[pgepub]id";
   public static final String SECTION = "section";
   public static final String EPUB3_PART = "part";
   public static final String EPUB_TYPE = "epub:type";
   public static final String CHAPTER = "chapter";
+  public static final String DIV = "div";
+  public static final String SPAN = "span";
+
 }

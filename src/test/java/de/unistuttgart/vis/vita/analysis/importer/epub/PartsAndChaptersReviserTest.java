@@ -24,8 +24,8 @@ public class PartsAndChaptersReviserTest {
   private List<List<Epubline>> formatedPartEpub2 = new ArrayList<List<Epubline>>();
   private List<List<List<Epubline>>> formatedPartsEpub2 = new ArrayList<List<List<Epubline>>>();
 
-  private List<List<String>> formatedPartEpub3 = new ArrayList<List<String>>();
-  private List<List<List<String>>> formatedPartsEpub3 = new ArrayList<List<List<String>>>();
+  private List<List<Epubline>> formatedPartEpub3 = new ArrayList<List<Epubline>>();
+  private List<List<List<Epubline>>> formatedPartsEpub3 = new ArrayList<List<List<Epubline>>>();
 
   private List<Epubline> linesToAnnotate = new ArrayList<Epubline>();
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
@@ -38,19 +38,21 @@ public class PartsAndChaptersReviserTest {
   }
 
   private void fillEpub2Parts() {
-    List<List<String>> partOne = new ArrayList<List<String>>();
-    List<String> chapterOne = new ArrayList<String>();
-    chapterOne.add("Text");
-    chapterOne.add("Text");
+    
+    List<List<Epubline>> partOne = new ArrayList<List<Epubline>>();
+    List<Epubline> chapterOne = new ArrayList<Epubline>();
+    chapterOne.add(new Epubline("", "Text", ""));
+    chapterOne.add(new Epubline("", "Text", ""));
     partOne.add(chapterOne);
     formatedPartEpub3 = reviser.formatePartEpub3(partOne);
 
 
-    List<List<String>> partTwo = new ArrayList<List<String>>();
-    List<String> chapterTwo = new ArrayList<String>();
-    chapterTwo.add("Text a");
+    List<List<Epubline>> partTwo = new ArrayList<List<Epubline>>();
+    List<Epubline> chapterTwo = new ArrayList<Epubline>();
+    chapterTwo.add(new Epubline("", "Text a", ""));
     partTwo.add(chapterTwo);
-    List<List<List<String>>> parts = new ArrayList<List<List<String>>>();
+    
+    List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
     parts.add(partOne);
     parts.add(partTwo);
     formatedPartsEpub3 = reviser.formatePartsEpub3(parts);
@@ -100,21 +102,21 @@ public class PartsAndChaptersReviserTest {
 
   @Test
   public void formatedPartChapterEpub3Content() {
-    assertEquals("Text", formatedPartEpub3.get(0).get(0));
-    assertEquals("", formatedPartEpub3.get(0).get(1));
-    assertEquals("Text", formatedPartEpub3.get(0).get(2));
-    assertEquals("", formatedPartEpub3.get(0).get(3));
+    assertEquals("Text", formatedPartEpub3.get(0).get(0).getEpubline());
+    assertEquals("", formatedPartEpub3.get(0).get(1).getEpubline());
+    assertEquals("Text", formatedPartEpub3.get(0).get(2).getEpubline());
+    assertEquals("", formatedPartEpub3.get(0).get(3).getEpubline());
   }
 
   @Test
   public void formatedPartsChapterEpub3Content() {
-    assertEquals("Text", formatedPartsEpub3.get(0).get(0).get(0));
-    assertEquals("", formatedPartsEpub3.get(0).get(0).get(1));
-    assertEquals("Text", formatedPartsEpub3.get(0).get(0).get(2));
-    assertEquals("", formatedPartsEpub3.get(0).get(0).get(3));
+    assertEquals("Text", formatedPartsEpub3.get(0).get(0).get(0).getEpubline());
+    assertEquals("", formatedPartsEpub3.get(0).get(0).get(1).getEpubline());
+    assertEquals("Text", formatedPartsEpub3.get(0).get(0).get(2).getEpubline());
+    assertEquals("", formatedPartsEpub3.get(0).get(0).get(3).getEpubline());
 
-    assertEquals("Text a", formatedPartsEpub3.get(1).get(0).get(0));
-    assertEquals("", formatedPartsEpub3.get(1).get(0).get(1));
+    assertEquals("Text a", formatedPartsEpub3.get(1).get(0).get(0).getEpubline());
+    assertEquals("", formatedPartsEpub3.get(1).get(0).get(1).getEpubline());
 
   }
 

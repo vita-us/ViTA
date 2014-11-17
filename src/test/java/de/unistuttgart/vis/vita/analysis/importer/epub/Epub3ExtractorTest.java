@@ -59,7 +59,7 @@ public class Epub3ExtractorTest {
     assertEquals("Chapter 1. Loomings.", part.get(0).get(0).getText());
     assertEquals("", part.get(0).get(1).getText());
     assertTrue(part.get(0).get(2).getText().startsWith("Call"));
-    assertTrue(part.get(0).get(4).getText().startsWith("me"));
+    assertTrue(part.get(0).get(4).getText().startsWith("There now is your insular"));
 
     // end of part
     assertTrue(part.get(0).get(part.get(0).size() - 2).getText()

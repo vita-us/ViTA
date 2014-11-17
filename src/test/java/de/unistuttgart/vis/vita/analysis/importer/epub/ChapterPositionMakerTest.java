@@ -29,34 +29,26 @@ public class ChapterPositionMakerTest {
   @Before
   public void setUp() {
 
-    List<List<Epubline>> partEpub2 = new ArrayList<List<Epubline>>();
-    List<Epubline> chapterOneEpub2 = new ArrayList<Epubline>();
-    chapterOneEpub2.add(new Epubline("Heading", "Chapter I.", ""));
-    chapterOneEpub2.add(new Epubline("", "", ""));
-    chapterOneEpub2.add(new Epubline("SubHeading", "Out to See", ""));
-    chapterOneEpub2.add(new Epubline("", "", ""));
-    chapterOneEpub2.add(new Epubline("Text", "Text a", ""));
-    chapterOneEpub2.add(new Epubline("", "", ""));
-    chapterOneEpub2.add(new Epubline("Textend", "End Text", ""));
-    chapterOneEpub2.add(new Epubline("", "", ""));
+    List<List<Epubline>> partEpub = new ArrayList<List<Epubline>>();
+    List<Epubline> chapterOneEpub = new ArrayList<Epubline>();
+    chapterOneEpub.add(new Epubline("Heading", "Chapter I.", ""));
+    chapterOneEpub.add(new Epubline("", "", ""));
+    chapterOneEpub.add(new Epubline("SubHeading", "Out to See", ""));
+    chapterOneEpub.add(new Epubline("", "", ""));
+    chapterOneEpub.add(new Epubline("Textstart", "Start Text", ""));
+    chapterOneEpub.add(new Epubline("", "", ""));
+    chapterOneEpub.add(new Epubline("Text", "Text a", ""));
+    chapterOneEpub.add(new Epubline("", "", ""));
+    chapterOneEpub.add(new Epubline("Textend", "End Text", ""));
+    chapterOneEpub.add(new Epubline("", "", ""));
 
-    partEpub2.add(chapterOneEpub2);
+    partEpub.add(chapterOneEpub);
+
     Book book = new Book();
     chapterPositionEpub2 =
-        chapterPostionMaker.calculateChapterPositionsEpub2(partEpub2, book.getContents(),
+        chapterPostionMaker.calculateChapterPositionsEpub2(partEpub, book.getContents(),
             book.getNcxResource());
-
-    List<List<String>> partEpub3 = new ArrayList<List<String>>();
-    List<String> chapterOneEpub3 = new ArrayList<String>();
-    chapterOneEpub3.add("Chapter I.");
-    chapterOneEpub3.add("");
-    chapterOneEpub3.add("Text a");
-    chapterOneEpub3.add("");
-    chapterOneEpub3.add("End Text");
-    chapterOneEpub3.add("");
-
-    partEpub3.add(chapterOneEpub3);
-    chapterPositionEpub3 = chapterPostionMaker.calculateChapterPositionsEpub3(partEpub3);
+    chapterPositionEpub3 = chapterPostionMaker.calculateChapterPositionsEpub3(partEpub);
 
   }
 
@@ -64,8 +56,8 @@ public class ChapterPositionMakerTest {
   public void testChapterPositionEpub2() {
 
     assertEquals(0, chapterPositionEpub2.getStartOfHeading(1));
-    assertEquals(2, chapterPositionEpub2.getStartOfText(1));
-    assertEquals(6, chapterPositionEpub2.getEndOfText(1));
+    assertEquals(4, chapterPositionEpub2.getStartOfText(1));
+    assertEquals(8, chapterPositionEpub2.getEndOfText(1));
   }
 
   @Test
@@ -73,6 +65,6 @@ public class ChapterPositionMakerTest {
 
     assertEquals(0, chapterPositionEpub3.getStartOfHeading(1));
     assertEquals(2, chapterPositionEpub3.getStartOfText(1));
-    assertEquals(4, chapterPositionEpub3.getEndOfText(1));
+    assertEquals(8, chapterPositionEpub3.getEndOfText(1));
   }
 }

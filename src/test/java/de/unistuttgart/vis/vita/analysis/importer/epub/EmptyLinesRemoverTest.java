@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import de.unistuttgart.vis.vita.importer.epub.EmptyLinesRemover;
+import de.unistuttgart.vis.vita.importer.epub.Epubline;
 
 /**
  * JUnit test on EmptyLinesRemover
@@ -17,33 +18,32 @@ import de.unistuttgart.vis.vita.importer.epub.EmptyLinesRemover;
 public class EmptyLinesRemoverTest {
 
   private EmptyLinesRemover emptyLinesRemover = new EmptyLinesRemover();
-  private List<List<String>> partOne = new ArrayList<List<String>>();
-  private List<List<List<String>>> parts = new ArrayList<List<List<String>>>();
+  private List<List<Epubline>> partOne = new ArrayList<List<Epubline>>();
+  private List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
   
   @Before
   public void setUp(){
-    List<String> chapterOne = new ArrayList<String>();
-    chapterOne.add("Text");
-    chapterOne.add("Text");
-    chapterOne.add("");
-    chapterOne.add("Text");
-    chapterOne.add("");
+    List<Epubline> chapterOne = new ArrayList<Epubline>();
+    chapterOne.add(new Epubline("", "Text", ""));
+    chapterOne.add(new Epubline("", "Text", ""));
+    chapterOne.add(new Epubline("", "", ""));
+    chapterOne.add(new Epubline("", "Text", ""));
+    chapterOne.add(new Epubline("", "", ""));
     
     partOne.add(chapterOne);
     emptyLinesRemover.removeEmptyLinesPart(partOne);
     
-    List<List<String>> partTwo = new ArrayList<List<String>>();
+    List<List<Epubline>> partTwo = new ArrayList<List<Epubline>>();
 
-    List<String> chapterTwo = new ArrayList<String>();
-    chapterTwo.add("Text a");
-    chapterTwo.add("Text a");
-    chapterTwo.add("Text a");
-    chapterTwo.add("");
-    chapterTwo.add("");
-    chapterTwo.add("");
-    chapterTwo.add("Text a");
+    List<Epubline> chapterTwo = new ArrayList<Epubline>();
+    chapterTwo.add(new Epubline("", "Text a", ""));
+    chapterTwo.add(new Epubline("", "Text a", ""));
+    chapterTwo.add(new Epubline("", "", ""));
+    chapterTwo.add(new Epubline("", "", ""));
+    chapterTwo.add(new Epubline("", "", ""));
+    chapterTwo.add(new Epubline("", "Text a", ""));
+    chapterTwo.add(new Epubline("", "Text a", ""));
 
-    
     partTwo.add(chapterTwo);
     parts.add(partOne);
     parts.add(partTwo);
@@ -59,7 +59,7 @@ public class EmptyLinesRemoverTest {
   @Test
   public void testPartChapterContent(){
     for(int i = 0; i < 3; i++){
-      assertEquals("Text", partOne.get(0).get(i));
+      assertEquals("Text", partOne.get(0).get(i).getEpubline());
     }
   }
   
@@ -74,11 +74,11 @@ public class EmptyLinesRemoverTest {
   public void testPartsContent(){
     
     for(int i = 0; i < 3; i++){
-      assertEquals("Text", parts.get(0).get(0).get(i));
+      assertEquals("Text", parts.get(0).get(0).get(i).getEpubline());
     }
     
     for(int i = 0; i < 4; i++){
-      assertEquals("Text a", parts.get(1).get(0).get(i));
+      assertEquals("Text a", parts.get(1).get(0).get(i).getEpubline());
     }
   }
 }

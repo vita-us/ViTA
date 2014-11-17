@@ -18,8 +18,8 @@ import org.jsoup.nodes.Element;
 public class Epub2TraitsExtractor {
   private final List<Resource> resources;
   private final Resource tocResource;
-
   private ContentBuilder contentBuilder = new ContentBuilder();
+  private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
 
   public Epub2TraitsExtractor(List<Resource> resources, Resource tocResource) {
     this.resources = resources;
@@ -28,6 +28,7 @@ public class Epub2TraitsExtractor {
 
   /**
    * Extracts the lines of a chapter and transforms them into a List<Epubline>
+   * 
    * @param currentElement
    * @param document
    * @param currentResource
@@ -39,20 +40,16 @@ public class Epub2TraitsExtractor {
       Resource currentResource, List<String> ids) throws IOException {
 
     List<Epubline> chapter = new ArrayList<Epubline>();
+
     int start = getSubheadingPosition(currentElement, document, chapter, ids);
 
     // iterate through the current resource
     for (int i = document.getAllElements().indexOf(currentElement) + start; i < document
         .getAllElements().size(); i++) {
-
-      if (!ids.contains(document.getAllElements().get(i).id())) {
-        if (!document.getAllElements().get(i).text().isEmpty()
-            && !document.getAllElements().get(i).attr(Constants.CLASS).matches(Constants.TOC+"|"+Constants.FOOT)
-            && (document.getAllElements().get(i).tagName().equals(Constants.PARAGRAPH_TAGNAME) || document.getAllElements()
-                .get(i).attr(Constants.CLASS).matches(Constants.PGMONOSPACED))) {
-
-          chapter.add(new Epubline(Constants.TEXT, document.getAllElements().get(i).text(), ""));
-        }
+      List<Element> editedElements = new ArrayList<Element>();
+      Element innerElement = document.getAllElements().get(i);
+      if (!ids.contains(innerElement.id())) {
+        addElementTexts(chapter, editedElements, innerElement);
       } else {
         return chapter;
       }
@@ -65,13 +62,11 @@ public class Epub2TraitsExtractor {
               .getInputStream()));
       for (int k = 0; k < document.getAllElements().size(); k++) {
 
-        if (!ids.contains(document.getAllElements().get(k).id())) {
-          if (!document.getAllElements().get(k).text().isEmpty()
-              && !document.getAllElements().get(k).attr(Constants.CLASS).matches(Constants.TOC+"|"+Constants.FOOT)
-              && (document.getAllElements().get(k).tagName().equals(Constants.PARAGRAPH_TAGNAME) || document
-                  .getAllElements().get(k).attr(Constants.CLASS).matches(Constants.PGMONOSPACED))) {
-            chapter.add(new Epubline(Constants.TEXT, document.getAllElements().get(k).text(), ""));
-          }
+        List<Element> editedElements = new ArrayList<Element>();
+
+        Element innerElement = document.getAllElements().get(k);
+        if (!ids.contains(innerElement.id())) {
+          addElementTexts(chapter, editedElements, innerElement);
         } else {
           return chapter;
         }
@@ -80,8 +75,26 @@ public class Epub2TraitsExtractor {
     return chapter;
   }
 
+  private void addElementTexts(List<Epubline> chapter, List<Element> editedElements,
+      Element innerElement) {
+    if (!innerElement.text().isEmpty()
+        && !innerElement.attr(Constants.CLASS).matches(Constants.TOC + "|" + Constants.FOOT)
+        && !reviser.elementEdited(editedElements, innerElement)) {
+
+      if ((innerElement.tagName().equals(Constants.PARAGRAPH_TAGNAME))) {
+        reviser
+            .addText(chapter, innerElement, reviser.existsSpan(innerElement), Constants.TEXT);
+
+      } else if (innerElement.tagName().matches(Constants.DIV)
+          && innerElement.attr(Constants.CLASS).matches(Constants.PGMONOSPACED)) {
+        reviser.addDivTexts(chapter, innerElement, editedElements, Constants.TEXT);
+      }
+    }
+  }
+
   /**
    * Returns the correct Epubline regarding the HEADING
+   * 
    * @param chapter
    * @return
    */
@@ -96,6 +109,7 @@ public class Epub2TraitsExtractor {
 
   /**
    * Returns the correct Epubline regarding the TEXTSTART
+   * 
    * @param chapter
    * @return
    */
@@ -110,6 +124,7 @@ public class Epub2TraitsExtractor {
 
   /**
    * Returns the correct Epubline regarding the TEXTEND
+   * 
    * @param chapter
    * @return
    */
@@ -124,6 +139,7 @@ public class Epub2TraitsExtractor {
 
   /**
    * Returns the correct position of the Subheading and adds the text to the chapter
+   * 
    * @param currentElement
    * @param document
    * @param chapter
@@ -132,34 +148,37 @@ public class Epub2TraitsExtractor {
    */
   private int getSubheadingPosition(Element currentElement, Document document,
       List<Epubline> chapter, List<String> ids) {
-   
-    int start = 1;
-    if (ids.contains(document.getAllElements()
-        .get(document.getAllElements().indexOf(currentElement) + 1).id())
-        || document.getAllElements().get(document.getAllElements().indexOf(currentElement) + 1)
-            .attr(Constants.CLASS).matches(Constants.CHAPTER_TITLE)) {
 
-      chapter.add(new Epubline(Constants.SUBHEADING, document.getAllElements()
-          .get(document.getAllElements().indexOf(currentElement) + 1).text(), document
-          .getAllElements().get(document.getAllElements().indexOf(currentElement) + 1).id()));
-      start = 2;
+    int start = 1;
+    if (!currentElement.equals(document.getAllElements().get(document.getAllElements().size() - 1))) {
+      if (ids.contains(document.getAllElements()
+          .get(document.getAllElements().indexOf(currentElement) + 1).id())
+          || document.getAllElements().get(document.getAllElements().indexOf(currentElement) + 1)
+              .attr(Constants.CLASS).matches(Constants.CHAPTER_TITLE)
+          || document.getAllElements().get(document.getAllElements().indexOf(currentElement) + 1)
+              .attr(Constants.ID).toLowerCase().contains(Constants.CHAPTER)) {
+
+        chapter.add(new Epubline(Constants.SUBHEADING, document.getAllElements()
+            .get(document.getAllElements().indexOf(currentElement) + 1).text(), document
+            .getAllElements().get(document.getAllElements().indexOf(currentElement) + 1).id()));
+        start = 2;
+      }
     }
     return start;
   }
 
   /**
    * Returns a List<List<List<Epubline>>> which contains parts of a book
+   * 
    * @param chapters
    * @return
    * @throws IOException
    */
   public List<List<List<Epubline>>> getPartsEpublines(List<List<Epubline>> chapters)
       throws IOException {
-    
     Epub2IdsAndTitlesExtractor epub2IdsExtracor =
         new Epub2IdsAndTitlesExtractor(resources, tocResource);
     List<List<String>> partsWithChaptersIds = epub2IdsExtracor.getPartsChaptersIds();
-    
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
 
     for (List<String> part : partsWithChaptersIds) {

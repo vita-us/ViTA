@@ -19,18 +19,12 @@ import org.jsoup.select.Elements;
 public class Epub3TraitsExtractor {
 
   private ContentBuilder contentBuilder = new ContentBuilder();
+  private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
 
-  public boolean existsSpan(Elements innerElements) {
-    for (Element innerElement : innerElements) {
-      if (innerElement.tagName().matches("span")) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   /**
    * Checks if the book has part
+   * 
    * @param resources
    * @return
    * @throws IOException
@@ -55,12 +49,13 @@ public class Epub3TraitsExtractor {
 
   /**
    * Extracts chapters of the book
+   * 
    * @param resources
    * @return
    * @throws IOException
    */
-  public List<List<String>> extractChapters(List<Resource> resources) throws IOException {
-    List<List<String>> chapters = new ArrayList<List<String>>();
+  public List<List<Epubline>> extractChapters(List<Resource> resources) throws IOException {
+    List<List<Epubline>> chapters = new ArrayList<List<Epubline>>();
     if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
@@ -69,8 +64,9 @@ public class Epub3TraitsExtractor {
           Elements sections = document.select(Constants.SECTION);
           for (Element sectionItem : sections) {
             if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)) {
-              Elements chapterParagraphs = sectionItem.getAllElements();
-              chapters.add(getChapterLines(chapterParagraphs));
+              Elements chapterElements = sectionItem.getAllElements();
+              chapterElements.remove(0);
+              chapters.add(getChapterLines(chapterElements));
             }
           }
 
@@ -80,28 +76,38 @@ public class Epub3TraitsExtractor {
     return chapters;
   }
 
-  /** 
+  /**
    * Adds the text of the elements in section to List
-   * @param chapterParagraphs
+   * 
+   * @param chapterElements
    * @return
+   * @throws IOException
    */
-  private List<String> getChapterLines(Elements chapterParagraphs) {
-    List<String> chapterLines = new ArrayList<String>();
-    for (Element chapterParagraph : chapterParagraphs) {
-      chapterLines.add(chapterParagraph.ownText());
+  public List<Epubline> getChapterLines(Elements chapterElements) throws IOException {
+    List<Epubline> chapter = new ArrayList<Epubline>();
+    List<Element> editedElements = new ArrayList<Element>();
+    for (Element chapterElement : chapterElements) {
+      if (!reviser.elementEdited(editedElements, chapterElement)) {
+        if (!chapterElement.tagName().matches(Constants.SPAN) && !chapterElement.tagName().matches(Constants.DIV)) {
+          boolean existsSpan = reviser.existsSpan(chapterElement);
+          reviser.addText(chapter, chapterElement, existsSpan, "");
+        } else if (chapterElement.tagName().matches(Constants.DIV)) {
+          reviser.addDivTexts(chapter, chapterElement, editedElements, "");
+        }
+      }
     }
-    return chapterLines;
-
+    return chapter;
   }
 
   /**
    * Extracts the parts of the book
+   * 
    * @param resources
    * @return
    * @throws IOException
    */
-  public List<List<List<String>>> extractParts(List<Resource> resources) throws IOException {
-    List<List<List<String>>> parts = new ArrayList<List<List<String>>>();
+  public List<List<List<Epubline>>> extractParts(List<Resource> resources) throws IOException {
+    List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
     if (!resources.isEmpty()) {
       for (Resource resourceItem : resources) {
         if (resourceItem != null) {
@@ -121,6 +127,7 @@ public class Epub3TraitsExtractor {
 
   /**
    * Builds a part with commited parameters
+   * 
    * @param newResource
    * @param newSection
    * @param sections
@@ -128,9 +135,9 @@ public class Epub3TraitsExtractor {
    * @return
    * @throws IOException
    */
-  private List<List<String>> partBuilder(Resource newResource, Element newSection,
+  private List<List<Epubline>> partBuilder(Resource newResource, Element newSection,
       Elements sections, List<Resource> resources) throws IOException {
-    List<List<String>> partChapters = new ArrayList<List<String>>();
+    List<List<Epubline>> partChapters = new ArrayList<List<Epubline>>();
 
     // iterate through the current resource
     for (int i = sections.indexOf(newSection) + 1; i < sections.size(); i++) {
@@ -165,12 +172,16 @@ public class Epub3TraitsExtractor {
 
   /**
    * Adds the chapter to a part
+   * 
    * @param partChapters
    * @param section
+   * @throws IOException
    */
-  private void addChapterToPart(List<List<String>> partChapters, Element section) {
+  private void addChapterToPart(List<List<Epubline>> partChapters, Element section)
+      throws IOException {
     Elements chapterParagraphs = section.getAllElements();
-    List<String> chapter = getChapterLines(chapterParagraphs);
+    chapterParagraphs.remove(0);
+    List<Epubline> chapter = getChapterLines(chapterParagraphs);
     partChapters.add(chapter);
   }
 }
