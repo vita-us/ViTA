@@ -51,6 +51,9 @@
           <includes>
             <include>**/AllTests.java</include>
           </includes>
+          <systemPropertyVariables>
+            <jersey.config.test.container.port>${env.jersey_port}</jersey.config.test.container.port>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 
