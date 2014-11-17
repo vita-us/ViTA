@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services.responses;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -14,8 +13,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 @XmlRootElement
 public class DocumentPartsResponse extends AbstractListResponse {
   
-  @XmlElementWrapper(name = "parts")
-  @XmlElement(name = "part")
+  @XmlElement(name = "parts")
   private List<DocumentPart> parts;
   
   /**

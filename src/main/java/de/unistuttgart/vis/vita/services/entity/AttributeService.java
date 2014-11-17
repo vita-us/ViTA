@@ -9,12 +9,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
@@ -24,26 +21,16 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
  */
 @ManagedBean
 public class AttributeService {
-
+  @Inject
   private EntityManager em;
   
   private String documentId;
   private String entityId;
   private String attributeId;
   
-  @Context
-  private ResourceContext resourceContext;
-
-  /**
-   * Create new AttributeService and inject Model.
-   * 
-   * @param model - the injected Model
-   */
   @Inject
-  public AttributeService(Model model) {
-    em = model.getEntityManager();
-  }
-  
+  private AttributeOccurrencesService attributeOccurrencesService;
+
   /**
    * Sets the id of the document this service refers to and returns itself.
    * 
@@ -110,7 +97,7 @@ public class AttributeService {
    */
   @Path("/occurrences")
   public AttributeOccurrencesService getOccurrences() {
-    return resourceContext.getResource(AttributeOccurrencesService.class)
+    return attributeOccurrencesService
                                         .setDocumentId(documentId)
                                         .setAttributeId(attributeId)
                                         .setEntityId(entityId);

@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.data;
 
 import static org.junit.Assert.*;
-
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
 
@@ -73,6 +72,33 @@ public class ProgressTestData {
     
     assertEquals(TEXT_PROGRESS, actualProgress.getTextProgress().getProgress(), DELTA);
     assertEquals(TEXT_READY, actualProgress.getTextProgress().isReady());
+  }
+
+  /**
+   * Checks whether given analysis progress is the default progess with all values set to zero
+   * 
+   * @param actualProgress - the analysis progress data to be checked
+   */
+  public void assertIsZeroProgress(AnalysisProgress actualProgress) {
+    assertNotNull(actualProgress);
+
+    assertEquals(0, actualProgress.getGraphViewProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getGraphViewProgress().isReady());
+
+    assertEquals(0, actualProgress.getWordCloudProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getWordCloudProgress().isReady());
+
+    assertEquals(0, actualProgress.getPlacesProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getPlacesProgress().isReady());
+
+    assertEquals(0, actualProgress.getPersonsProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getPersonsProgress().isReady());
+
+    assertEquals(0, actualProgress.getFingerPrintProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getFingerPrintProgress().isReady());
+
+    assertEquals(0, actualProgress.getTextProgress().getProgress(), DELTA);
+    assertEquals(false, actualProgress.getTextProgress().isReady());
   }
 
 }

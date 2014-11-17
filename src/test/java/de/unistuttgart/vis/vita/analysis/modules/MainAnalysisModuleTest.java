@@ -24,6 +24,7 @@ import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.analysis.DefaultAnalysisExecutorFactory;
 import de.unistuttgart.vis.vita.analysis.ModuleRegistry;
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
@@ -40,7 +41,8 @@ public class MainAnalysisModuleTest {
   
   @Before
   public void setUp() throws URISyntaxException {
-    model = Model.createUnitTestModel();
+    UnitTestModel.startNewSession();
+    model = new UnitTestModel();
     document = new Document();
     em = model.getEntityManager();
     

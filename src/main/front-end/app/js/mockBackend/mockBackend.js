@@ -8,33 +8,7 @@
       'TestData',
       function($httpBackend, TestData) {
 
-        $httpBackend.whenGET(new RegExp('\.html$')).passThrough();
-        $httpBackend.whenGET(new RegExp('/documents$')).respond(TestData.documents);
-        $httpBackend.whenPOST(new RegExp('/documents$')).respond({documentId: 'testDocId'});
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+$')).respond(TestData.singleDocument);
-        $httpBackend.whenDELETE(new RegExp('/documents/[^/]+$')).respond(undefined);
-        $httpBackend.whenPUT(new RegExp('/documents/[^/]+$')).respond(undefined);
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/progress$')).respond(
-                TestData.analysisProgress);
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/search')).respond(TestData.search);
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/parts$')).respond(TestData.parts);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/chapters/[^/]+')).respond(
-                TestData.singleChapter);
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/places$')).respond(TestData.places);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/places/[^/]+$')).respond(
-                TestData.singlePlace);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/entities/fingerprints[^/]+$')).respond(
-                TestData.fingerprint);
-
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons$')).respond(TestData.persons);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/persons/[^/]+$')).respond(
-                TestData.singlePerson);
-
+        // implementation of the wordcloud is currently delayed
         $httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person8Hugo$/).respond(
                 TestData.wordcloudhugo);
         $httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person10Bert$/).respond(
@@ -42,5 +16,9 @@
         $httpBackend.whenGET(new RegExp('/documents/[^/]+/wordcloud$'))
                 .respond(TestData.wordcloud);
 
+        $httpBackend.whenGET(new RegExp('.*')).passThrough();
+        $httpBackend.whenPOST(new RegExp('.*')).passThrough();
+        $httpBackend.whenPUT(new RegExp('.*')).passThrough();
+        $httpBackend.whenDELETE(new RegExp('.*')).passThrough();
       }]);
 })(angular);

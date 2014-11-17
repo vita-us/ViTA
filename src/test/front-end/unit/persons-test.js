@@ -13,8 +13,8 @@ describe('PersonListCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/doc13a/persons').respond(TestData.persons);
-    $httpBackend.expectGET('/documents/doc13a').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/doc13a/persons').respond(TestData.persons);
+    $httpBackend.expectGET('webapi/documents/doc13a').respond(TestData.singleDocument);
 
     $routeParams.documentId = 'doc13a';
 

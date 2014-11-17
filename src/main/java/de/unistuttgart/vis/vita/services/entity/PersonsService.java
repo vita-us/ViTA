@@ -11,11 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
@@ -26,21 +23,12 @@ import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 public class PersonsService {
 
   private String documentId;
-  
-  @Context
-  private ResourceContext resourceContext;
 
+  @Inject
   private EntityManager em;
 
-  /**
-   * Creates a new Instance of PersonsService.
-   * 
-   * @param model - the model to be used in this service
-   */
   @Inject
-  public PersonsService(Model model) {
-    em = model.getEntityManager();
-  }
+  private PersonService personService;
 
   /**
    * Sets the id of the document for which this service should provide the mentioned persons.
@@ -88,7 +76,7 @@ public class PersonsService {
    */
   @Path("{personId}")
   public PersonService getPerson(@PathParam("personId") String id) {
-    return resourceContext.getResource(PersonService.class).setPersonId(id);
+    return personService.setPersonId(id);
   }
 
 }
