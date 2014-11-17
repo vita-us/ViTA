@@ -119,11 +119,16 @@ public class AnalysisController {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
     document.getProgress().setStatus(AnalysisStatus.READY);
-    EntityManager em = model.getEntityManager();
-    em.getTransaction().begin();
-    em.persist(document);
-    em.getTransaction().commit();
-    em.close();
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      em.persist(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null)
+        em.close();
+    }
     return document;
   }
 
@@ -166,15 +171,21 @@ public class AnalysisController {
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    EntityManager em = model.getEntityManager();
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    List<Document> documents = query.getResultList();
-    if (documents.isEmpty()) {
-      throw new IllegalArgumentException("No such document found");
+    EntityManager em = null;
+    Document document;
+    try {
+      em = model.getEntityManager();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      document = documents.get(0);
+    } finally {
+      if (em != null)
+        em.close();
     }
-    Document document = documents.get(0);
-    em.close();
 
     scheduleDocumentAnalyisis(document);
   }
@@ -199,20 +210,25 @@ public class AnalysisController {
   }
 
   private void setStatus(String documentId, AnalysisStatus status) {
-    EntityManager em = model.getEntityManager();
-    em.getTransaction().begin();
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    List<Document> documents = query.getResultList();
-    if (documents.isEmpty()) {
-      throw new IllegalArgumentException("No such document found");
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      Document document = documents.get(0);
+  
+      document.getProgress().setStatus(status);
+  
+      em.merge(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null)
+        em.close();
     }
-    Document document = documents.get(0);
-
-    document.getProgress().setStatus(status);
-
-    em.merge(document);
-    em.getTransaction().commit();
-    em.close();
   }
 }
