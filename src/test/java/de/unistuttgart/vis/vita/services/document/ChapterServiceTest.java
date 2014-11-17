@@ -39,7 +39,7 @@ public class ChapterServiceTest extends ServiceTest {
     chapterId = testChapter.getId();
     
     // persist test data
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     em.getTransaction().begin();
     em.persist(testDoc);

@@ -11,7 +11,7 @@ describe('DocumentService', function() {
   beforeEach(module('vita'));
 
   it('should return the document on get', inject(function($httpBackend, Document, TestData) {
-    $httpBackend.expectGET('/documents/doc13a').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/doc13a').respond(TestData.singleDocument);
 
     var result = Document.get({
       documentId: 'doc13a'
@@ -22,7 +22,7 @@ describe('DocumentService', function() {
   }));
 
   it('should expect a delete request', inject(function($httpBackend, Document) {
-    $httpBackend.expectDELETE('/documents/doc13a').respond(undefined);
+    $httpBackend.expectDELETE('webapi/documents/doc13a').respond(undefined);
 
     var result = Document.remove({
       documentId: 'doc13a'
@@ -31,7 +31,7 @@ describe('DocumentService', function() {
   }));
 
   it('should expect a put request', inject(function($httpBackend, Document) {
-    $httpBackend.expectPUT('/documents/doc13a').respond(undefined);
+    $httpBackend.expectPUT('webapi/documents/doc13a').respond(undefined);
 
     var result = Document.rename({
       documentId: 'doc13a',

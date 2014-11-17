@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.IndexSearcher;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -45,7 +46,12 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
       }
     }
     
+    String oldTitle = document.getMetadata().getTitle();
     document.setMetadata(importResult.getMetadata());
+    
+    // Restore the old title which is the file name if no title has been found
+    if (StringUtils.isEmpty(document.getMetadata().getTitle()))
+        document.getMetadata().setTitle(oldTitle);
 
     return this;
   }

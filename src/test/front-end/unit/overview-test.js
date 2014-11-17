@@ -13,8 +13,8 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123').respond(TestData.singleDocument);
-    $httpBackend.expectGET('/documents/123/progress').respond(TestData.analysisProgress);
+    $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/123/progress').respond(TestData.analysisProgress);
 
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
@@ -41,7 +41,7 @@ describe('OverviewCtrl', function() {
     expect(scope.progress.graphView.isReady).toBe(false);
 
     // Respond with the changed data
-    $httpBackend.expectGET('/documents/123/progress').respond({
+    $httpBackend.expectGET('webapi/documents/123/progress').respond({
       graphView: {
         isReady: true
       }

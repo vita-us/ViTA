@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services.responses;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -14,8 +13,7 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 @XmlRootElement
 public class PlacesResponse extends AbstractListResponse {
 
-  @XmlElementWrapper(name = "places")
-  @XmlElement(name = "place")
+  @XmlElement(name = "places")
   private List<Place> places;
   
   /**

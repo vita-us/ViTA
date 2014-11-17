@@ -18,15 +18,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
@@ -40,24 +37,15 @@ public class DocumentsService {
   
   private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator  
                                               + ".vita" + File.separator + "docs" + File.separator;
-  
+
+  @Inject
   private EntityManager em;
   
   @Inject
   private AnalysisController analysisController;
   
-  @Context
-  private ResourceContext resourceContext;
-  
-  /**
-   * Creates new DocumentsService and injects Model.
-   * 
-   * @param model - the injected Model
-   */
   @Inject
-  public DocumentsService(Model model) {
-    em = model.getEntityManager();
-  }
+  private DocumentService documentService;
 
   /**
    * Returns a DocumentsResponse including a list of Documents with a given maximum length,
@@ -156,7 +144,7 @@ public class DocumentsService {
    */
   @Path("{documentId}")
   public DocumentService  getDocument(@PathParam("documentId") String id) {
-    return resourceContext.getResource(DocumentService.class).setId(id);
+    return documentService.setId(id);
   }
 
 }

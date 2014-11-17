@@ -5,7 +5,7 @@
 
   vitaServices.service('Analysis', ['$resource', function($resource) {
 
-    var resource = $resource('/documents/:documentId/analysis/:method', {
+    var resource = $resource('webapi/documents/:documentId/analysis/:method', {
       documentId: '@documentId',
       method: '@method'
     }, {

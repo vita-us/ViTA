@@ -1,32 +1,24 @@
 package de.unistuttgart.vis.vita.services.search;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
+@ManagedBean
 public class SearchEntityService extends OccurrencesService {
   
   private String documentId;
   private String entityId;
 
-  private EntityManager em;
-
-  @Context
-  private ResourceContext resourceContext;
-
   @Inject
-  public SearchEntityService(Model model) {
-    em = model.getEntityManager();
-  }
+  private EntityManager em;
 
   public SearchEntityService setDocumentId(String documentId) {
     this.documentId = documentId;

@@ -5,18 +5,23 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
+
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
+import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
+import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -47,17 +52,20 @@ public class EntityFeatureModuleTest {
   
   @Before
   public void setUp() throws Exception {
-    Model model = Model.createUnitTestModel();
+    UnitTestModel.startNewSession();
+    Model model = new UnitTestModel();
     em = model.getEntityManager();
     prepareDatabase();
-    BasicEntityCollection entities = createBasicEntityCollection();
+    EntityRanking entities = createBasicEntities();
+    EntityRelations relations = createEntityRelations();
     DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
     when(context.getDocumentId()).thenReturn(document.getId());
     
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
-    when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(entities);
+    when(resultProvider.getResultFor(EntityRanking.class)).thenReturn(entities);
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
+    when(resultProvider.getResultFor(EntityRelations.class)).thenReturn(relations);
     
     listener = mock(ProgressListener.class);
     
@@ -138,8 +146,8 @@ public class EntityFeatureModuleTest {
     em.getTransaction().commit();
   }
   
-  private BasicEntityCollection createBasicEntityCollection() {
-    final Collection<BasicEntity> list = new ArrayList<>();
+  private EntityRanking createBasicEntities() {
+    final List<BasicEntity> list = new ArrayList<>();
     
     BasicEntity entity1 = new BasicEntity();
     entity1.setDisplayName(NAME1_1);
@@ -157,10 +165,19 @@ public class EntityFeatureModuleTest {
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
     
-    return new BasicEntityCollection() {
+    return new EntityRanking() {
       @Override
-      public Collection<BasicEntity> getEntities() {
+      public List<BasicEntity> getRankedEntities() {
         return list;
+      }
+    };
+  }
+
+  private EntityRelations createEntityRelations() {
+    return new EntityRelations() {
+      @Override
+      public Map<BasicEntity, Double> getRelatedEntities(BasicEntity entity) {
+        return ImmutableMap.of();
       }
     };
   }

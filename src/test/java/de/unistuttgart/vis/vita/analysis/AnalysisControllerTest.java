@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 public class AnalysisControllerTest {
@@ -168,7 +169,8 @@ public class AnalysisControllerTest {
   @Test
   public void testRestartDocumentAnalysis() {
     // We need a realy database backend here
-    model = Model.createUnitTestModel();
+    UnitTestModel.startNewSession();
+    model = new UnitTestModel();
     controller = new AnalysisController(model, executorFactory);
 
     Path path = Paths.get("path/to/file.name");

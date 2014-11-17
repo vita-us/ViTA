@@ -13,7 +13,6 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentPartTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -33,7 +32,7 @@ public class DocumentPartsServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     // set up document parts test data
     Document testDoc = new DocumentTestData().createTestDocument(1);
