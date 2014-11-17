@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The information about an entity that can be collected in the first pass
  * <p>
@@ -18,12 +20,10 @@ public class BasicEntity {
   
   private Set<Attribute> nameAttributes;
   private SortedSet<TextSpan> occurrences;
-  private Set<EntityRelation<BasicEntity>> entityRelations;
   
   public BasicEntity() {
     nameAttributes = new HashSet<>();
     occurrences = new TreeSet<>();
-    entityRelations = new HashSet<>();
   }
 
   /**
@@ -98,21 +98,13 @@ public class BasicEntity {
     this.type = type;
   }
 
-  /**
-   * Gets relations with other entities
-   * 
-   * @return the set of relations
-   */
-  public Set<EntityRelation<BasicEntity>> getEntityRelations() {
-    return entityRelations;
-  }
-
-  /**
-   * Sets the relations with other entities
-   * 
-   * @param entityRelations the set of relations
-   */
-  public void setEntityRelations(Set<EntityRelation<BasicEntity>> entityRelations) {
-    this.entityRelations = entityRelations;
+  @Override
+  public String toString() {
+    return "BasicEntity{" +
+           "type=" + type +
+           ", displayName='" + displayName + '\'' +
+           ", occurrences=" + StringUtils.join(occurrences, ", ") +
+           ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
+           '}';
   }
 }

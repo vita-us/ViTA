@@ -50,10 +50,9 @@ public class BookAttributeBuilder {
     int currentPosition = 0;
     for (DocumentPart part : this.parts) {
       for (Chapter chapter : part.getChapters()) {
-        // TODO: use when available: TextPosition.fromGlobalOffset(chapter, currentPosition)
-        TextPosition startPosition = new TextPosition(chapter, currentPosition);
+        TextPosition startPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
         currentPosition += chapter.getLength();
-        TextPosition endPosition = new TextPosition(chapter, currentPosition);
+        TextPosition endPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
         chapter.setRange(new TextSpan(startPosition, endPosition));
       }
     }

@@ -23,7 +23,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 @AnalysisModule
-public class EpubImportModule implements Module<ImportResult> {
+public class EpubImportModule extends Module<ImportResult> {
 
   Path filePath;
 

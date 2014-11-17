@@ -49,8 +49,7 @@ public class Epub3Extractor extends AbstractEpubExtractor {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
 
-    List<List<Epubline>> currentPart = new ArrayList<List<Epubline>>();
-    currentPart = epub3TraitsExtractor.extractChapters(resources);
+    List<List<Epubline>> currentPart = epub3TraitsExtractor.extractChapters(resources);
     emptyLinesRemover.removeEmptyLinesPart(currentPart);
 
     for (List<Epubline> chapter : currentPart) {
@@ -71,8 +70,8 @@ public class Epub3Extractor extends AbstractEpubExtractor {
   private List<List<Line>> getPartsLines() throws IOException {
     emptyLinesRemover = new EmptyLinesRemover();
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
-    List<List<List<Epubline>>> currentParts = new ArrayList<List<List<Epubline>>>();
-    currentParts = epub3TraitsExtractor.extractParts(resources);
+    
+    List<List<List<Epubline>>>  currentParts = epub3TraitsExtractor.extractParts(resources);
     emptyLinesRemover.removeEmptyLinesParts(currentParts);
 
     for (List<List<Epubline>> part : currentParts) {
@@ -87,51 +86,6 @@ public class Epub3Extractor extends AbstractEpubExtractor {
       partsLines.add(chaptersLines);
     }
     return partsLines;
-  }
-
-  // TODO
-  public List<String> test() throws IOException {
-    List<String> chapter = new ArrayList<String>();
-    String span = "";
-    document =
-        Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(6).getInputStream()));
-    sections = document.select(Constants.SECTION);
-    Elements elements = sections.get(0).getAllElements();
-    for (int i = 1; i < elements.size(); i++) {
-      if (!elements.get(i).tagName().matches("span")) {
-        if (!elements.get(i).getAllElements().isEmpty()) {
-          Elements innerElements = elements.get(i).getAllElements();
-
-          if (existsSpan(innerElements)) {
-            if (elements.get(i).ownText().isEmpty()) {
-              for (Element innerElement : innerElements) {
-                if (innerElement.tagName().matches("span")) {
-                  span += innerElement.ownText() + " ";
-                }
-              }
-              chapter.add(span);
-              span = "";
-            }else{
-              chapter.add(elements.get(i).text());
-            }
-          } else {
-            chapter.add(elements.get(i).ownText());
-          }
-        } else {
-          chapter.add(elements.get(i).ownText());
-        }
-      }
-    }
-    return chapter;
-  }
-
-  public boolean existsSpan(Elements innerElements) {
-    for (Element innerElement : innerElements) {
-      if (innerElement.tagName().matches("span")) {
-        return true;
-      }
-    }
-    return false;
   }
 
   @Override

@@ -1,13 +1,19 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,24 +35,44 @@ public class PartsAndChaptersReviserTest {
 
   private List<Epubline> linesToAnnotate = new ArrayList<Epubline>();
   private PartsAndChaptersReviser reviser = new PartsAndChaptersReviser();
+  private Document document;
+  private Element currentElement;
+  private List<Element> editedElements = new ArrayList<Element>();
+  private List<Epubline> epublines = new ArrayList<Epubline>();
 
   @Before
-  public void setUp() throws IOException {
-    fillEpub2Parts();
-    fillEpub3Parts();
+  public void setUp() throws IOException, URISyntaxException {
+    
+    fillEpubParts();
     fillEpublinesToAnnotate();
+    fillSpanElements();
+    Path testPath = Paths.get(getClass().getResource("text.html").toURI());
+    Document document = Jsoup.parse(testPath.toFile(), "Cp437");
+    reviser.addText(epublines, document.getAllElements().get(9), false, "");
+    reviser.addDivTexts(epublines, document.getAllElements().get(4), new ArrayList<Element>(), "");
+  }
+  
+  private void fillSpanElements(){
+    document = new Document("http://example.com/");
+    Element element = document.appendElement("p");
+    for(int i = 0; i < 2; i++){
+      element.appendElement("span");
+    } 
+    currentElement = element;
+    editedElements.add(element);
   }
 
-  private void fillEpub2Parts() {
+  private void fillEpubParts() throws IOException {
     
     List<List<Epubline>> partOne = new ArrayList<List<Epubline>>();
     List<Epubline> chapterOne = new ArrayList<Epubline>();
     chapterOne.add(new Epubline("", "Text", ""));
     chapterOne.add(new Epubline("", "Text", ""));
     partOne.add(chapterOne);
+    
+    formatedPartEpub2 = reviser.formatePartEpub2(partOne);
     formatedPartEpub3 = reviser.formatePartEpub3(partOne);
-
-
+ 
     List<List<Epubline>> partTwo = new ArrayList<List<Epubline>>();
     List<Epubline> chapterTwo = new ArrayList<Epubline>();
     chapterTwo.add(new Epubline("", "Text a", ""));
@@ -55,29 +81,13 @@ public class PartsAndChaptersReviserTest {
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
     parts.add(partOne);
     parts.add(partTwo);
+    
+    formatedPartsEpub2 = reviser.formatePartsEpub2(parts);
     formatedPartsEpub3 = reviser.formatePartsEpub3(parts);
   }
 
-  private void fillEpub3Parts() throws IOException {
-    List<List<Epubline>> partOne = new ArrayList<List<Epubline>>();
-    List<Epubline> chapterOne = new ArrayList<Epubline>();
-    chapterOne.add(new Epubline("", "Text", ""));
-    chapterOne.add(new Epubline("", "Text", ""));
-    partOne.add(chapterOne);
-    formatedPartEpub2 = reviser.formatePartEpub2(partOne);
 
-
-    List<List<Epubline>> partTwo = new ArrayList<List<Epubline>>();
-    List<Epubline> chapterTwo = new ArrayList<Epubline>();
-    chapterTwo.add(new Epubline("", "Text b", ""));
-    partTwo.add(chapterTwo);
-    List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
-    parts.add(partOne);
-    parts.add(partTwo);
-    formatedPartsEpub2 = reviser.formatePartsEpub2(parts);
-  }
-
-  public void fillEpublinesToAnnotate() {
+  private void fillEpublinesToAnnotate() {
 
     linesToAnnotate.add(new Epubline("Heading", "Chapter I.", ""));
     linesToAnnotate.add(new Epubline("Text", "Text a", ""));
@@ -135,7 +145,7 @@ public class PartsAndChaptersReviserTest {
     assertEquals("Text", formatedPartsEpub2.get(0).get(0).get(2).getEpubline());
     assertEquals("", formatedPartsEpub2.get(0).get(0).get(3).getEpubline());
 
-    assertEquals("Text b", formatedPartsEpub2.get(1).get(0).get(0).getEpubline());
+    assertEquals("Text a", formatedPartsEpub2.get(1).get(0).get(0).getEpubline());
     assertEquals("", formatedPartsEpub2.get(1).get(0).get(1).getEpubline());
 
   }
@@ -147,6 +157,24 @@ public class PartsAndChaptersReviserTest {
     assertTrue(linesToAnnotate.get(1).getMode().matches("Textstart"));
     assertTrue(linesToAnnotate.get(2).getMode().matches("Text"));
     assertTrue(linesToAnnotate.get(3).getMode().matches("Textend"));
+
+  }
+  
+  @Test
+  public void testExistenceOfElements(){
+    assertTrue(reviser.existsSpan(document.select("span").first()));
+    assertFalse(reviser.existsDiv(document.select("span").first()));
+    assertFalse(reviser.allElementsNotSpans((document.select("span").first())));
+    assertTrue(reviser.elementEdited(editedElements, currentElement));
+  }
+  
+  @Test
+  public void testContentAndSize(){
+    assertEquals(3, epublines.size());
+    assertTrue(epublines.get(0).getEpubline().startsWith("s that venerable and learned poet"));
+    System.out.println(epublines.get(1).getEpubline());
+    assertEquals("Paragraph 1", epublines.get(1).getEpubline().trim());
+    assertEquals("Paragraph 2", epublines.get(2).getEpubline().trim());
 
   }
 }

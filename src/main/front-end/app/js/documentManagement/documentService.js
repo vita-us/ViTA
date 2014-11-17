@@ -5,11 +5,17 @@
 
   // Service that is responsible for dealing with documents
   vitaServices.factory('Document', ['$resource', function($resource) {
-    return $resource('/documents/:documentId', {}, {
+    return $resource('webapi/documents/:documentId', {
+      documentId: '@documentId'
+    }, {
       // method for retrieving a single document
       get: {
         method: 'GET'
+      },
+      rename: {
+        method: 'PUT'
       }
+      // delete method is implicitly declared
     });
   }]);
 

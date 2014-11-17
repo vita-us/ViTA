@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class TextSpanTest {
   private static final int OFFSET_1 = 10000;
   private static final int OFFSET_2 = 70000;
   private static final int OFFSET_3 = 95000;
+  private static final int OFFSET_4 = 100000;
   private static final int DIFF = 25000;
 
   // attributes
@@ -29,6 +31,7 @@ public class TextSpanTest {
   private TextPosition pos1;
   private TextPosition pos2;
   private TextPosition pos3;
+  private TextPosition pos4;
 
   /**
    * Create positions and chapter.
@@ -40,9 +43,10 @@ public class TextSpanTest {
     metrics.setCharacterCount(DOCUMENT_LENGTH);
     chapter = new Chapter();
 
-    pos1 = new TextPosition(chapter, OFFSET_1);
-    pos2 = new TextPosition(chapter, OFFSET_2);
-    pos3 = new TextPosition(chapter, OFFSET_3);
+    pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_1);
+    pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_2);
+    pos3 = TextPosition.fromGlobalOffset(chapter, OFFSET_3);
+    pos4 = TextPosition.fromGlobalOffset(chapter, OFFSET_4);
   }
 
   @Test
@@ -50,6 +54,17 @@ public class TextSpanTest {
     TextSpan span = new TextSpan(pos1, pos2);
     assertEquals(pos1, span.getStart());
     assertEquals(pos2, span.getEnd());
+  }
+
+  @Test
+  public void testUtilityConstructor() {
+    chapter.setRange(new TextSpan(pos1, pos4));
+    
+    TextSpan span = new TextSpan(chapter, OFFSET_2, OFFSET_3);
+    assertThat(span.getStart().getOffset(), is(OFFSET_1 + OFFSET_2));
+    assertThat(span.getEnd().getOffset(), is(OFFSET_1 + OFFSET_3));
+    assertThat(span.getStart().getChapter(), is(chapter));
+    assertThat(span.getEnd().getChapter(), is(chapter));
   }
 
   /**

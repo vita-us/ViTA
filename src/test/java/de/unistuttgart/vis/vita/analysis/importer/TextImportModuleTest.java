@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -171,6 +172,19 @@ public class TextImportModuleTest {
 .endsWith("The conquest of Rome, by Matilde Serao"));
     assertFalse(text.contains("*       *       *       *       *"));
     assertFalse(text.contains("\n\n\n"));
+  }
+  
+  @Test
+  public void testChapterRangeAndLength() throws InvalidPathException, FileNotFoundException,
+      UnsupportedEncodingException, SecurityException, URISyntaxException {
+    Path testPath = Paths.get(getClass().getResource("ModuleTestBook2.txt").toURI());
+    TextImportModule module = new TextImportModule(testPath);
+    ImportResult result = module.execute(null, null);
+    
+    Chapter chapter = result.getParts().get(0).getChapters().get(1);
+    assertThat(chapter.getRange().getStart().getOffset(), is(1052));
+    assertThat(chapter.getRange().getEnd().getOffset(), is(1889));
+    assertThat(chapter.getLength(), is(837));
   }
 
   private void testPart1Chapter1(String heading, String text) {

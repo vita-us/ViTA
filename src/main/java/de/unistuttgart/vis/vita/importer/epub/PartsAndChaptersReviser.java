@@ -108,6 +108,13 @@ public class PartsAndChaptersReviser {
     return formatedParts;
   }
 
+  /**
+   * Checks if the currentElement exists in the editedElements
+   * 
+   * @param editedElements
+   * @param currentElement
+   * @return
+   */
   public boolean elementEdited(List<Element> editedElements, Element currentElement) {
     for (Element editedElement : editedElements) {
       if (editedElement.equals(currentElement)) {
@@ -117,45 +124,139 @@ public class PartsAndChaptersReviser {
     return false;
   }
 
+  /**
+   * Adds the text of a div respectively the text of the intricate divs to the chapter
+   * 
+   * @param chapter
+   * @param chapterElement
+   * @param editedElements
+   * @param mode
+   */
   public void addDivTexts(List<Epubline> chapter, Element chapterElement,
       List<Element> editedElements, String mode) {
-
-    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
-      if (!chapterElement.getAllElements().isEmpty()) {
+    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) { 
+      if (!chapterElement.getAllElements().isEmpty()) {  
         Elements innerElements = chapterElement.getAllElements();
-        for (Element innerElement : innerElements) {
-          if (!elementEdited(innerElements, innerElement)) {
-            if (!innerElement.tagName().matches(Constants.SPAN)
-                && !innerElement.tagName().matches(Constants.DIV)) {
-              boolean existsSpan = existsSpan(innerElement);
-              addText(chapter, innerElement, existsSpan, mode);
-            } else if (innerElement.tagName().matches(Constants.DIV)) {
-              addDivTexts(chapter, innerElement, editedElements, mode);
-            }
-            editedElements.add(innerElement);
-          }
-        }
+        innerElements.remove(0);
+        addInnerElementText(chapter, editedElements, mode, innerElements);
       }
     } else {
       if (!chapterElement.getAllElements().isEmpty()) {
         Elements innerElements = chapterElement.getAllElements();
+        fillEditedElements(editedElements, innerElements);
         addEpubline(chapter, chapterElement, mode);
-        // chapter.add(new Epubline(mode, chapterElement.text(), ""));
-        for (Element innerElement : innerElements) {
-          editedElements.add(innerElement);
-        }
       }
     }
   }
 
+
   /**
-   * TODO: Creates new Epublines and detects HTML-Linebreaks in the text.
+   * Adds the text of a element(e.g. paragraph) to the chapter
+   * 
+   * @param chapter
+   * @param chapterElement
+   * @param elementExists
+   * @param mode
+   */
+  public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists,
+      String mode) {
+    if (elementExists) {
+      // No br analysis with spans
+      chapter.add(new Epubline(mode, chapterElement.text(), ""));
+    } else {
+      addEpubline(chapter, chapterElement, mode);
+    }
+  }
+
+  /**
+   * Checks if a span element exists in the elements of the current element
+   * 
+   * @param currentElement
+   * @return
+   */
+  public boolean existsSpan(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      Elements innerElements = currentElement.getAllElements();
+      for (Element innerElement : innerElements) {
+        if (innerElement.tagName().matches(Constants.SPAN)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if a div element exists in the elements of the current element
+   * 
+   * @param currentElement
+   * @return
+   */
+  public boolean existsDiv(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      Elements innerElements = currentElement.getAllElements();
+      for (Element innerElement : innerElements) {
+        if (innerElement.tagName().matches(Constants.DIV)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks if all elements are span elements
+   * 
+   * @param currentElement
+   * @return
+   */
+  public boolean allElementsNotSpans(Element currentElement) {
+    if (!currentElement.getAllElements().isEmpty()) {
+      
+      Elements innerElements = currentElement.getAllElements();
+      if (innerElements.get(0).tagName().matches(Constants.DIV)) {
+        innerElements.remove(0);
+      }
+      for (Element innerElement : innerElements) {
+        if (!innerElement.tagName().matches(Constants.SPAN)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private void fillEditedElements(List<Element> editedElements, Elements innerElements) {
+    for (Element innerElement : innerElements) {
+      editedElements.add(innerElement);
+    }
+  }
+
+  private void addInnerElementText(List<Epubline> chapter, List<Element> editedElements,
+      String mode, Elements innerElements) {
+    for (Element innerElement : innerElements) {
+      if (!elementEdited(editedElements, innerElement)) {
+        if (!innerElement.tagName().matches(Constants.SPAN)
+            && !innerElement.tagName().matches(Constants.DIV)) {
+
+          addText(chapter, innerElement, existsSpan(innerElement), mode);
+        } else if (innerElement.tagName().matches(Constants.DIV)) {
+          addDivTexts(chapter, innerElement, editedElements, mode);
+        }
+        editedElements.add(innerElement);
+      }
+    }
+  }
+
+
+  /**
+   * Creates new Epublines and detects HTML-Linebreaks in the text.
    * 
    * @param chapter
    * @param chapterElement
    * @param mode
    */
-  public void addEpubline(List<Epubline> chapter, Element chapterElement, String mode) {
+  private void addEpubline(List<Epubline> chapter, Element chapterElement, String mode) {
     String writeNext = "";
     List<TextNode> textNodes = chapterElement.textNodes();
     int textIndex = 0;
@@ -175,50 +276,5 @@ public class PartsAndChaptersReviser {
     }
   }
 
-  public void addText(List<Epubline> chapter, Element chapterElement, boolean elementExists,
-      String mode) {
-    if (elementExists) {
-      // No br analysis with spans
-      chapter.add(new Epubline(mode, chapterElement.text(), ""));
-    } else {
-      addEpubline(chapter, chapterElement, mode);
-    }
-  }
-
-  public boolean existsSpan(Element currentElement) {
-    if (!currentElement.getAllElements().isEmpty()) {
-      Elements innerElements = currentElement.getAllElements();
-      for (Element innerElement : innerElements) {
-        if (innerElement.tagName().matches(Constants.SPAN)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public boolean existsDiv(Element currentElement) {
-    if (!currentElement.getAllElements().isEmpty()) {
-      Elements innerElements = currentElement.getAllElements();
-      for (Element innerElement : innerElements) {
-        if (innerElement.tagName().matches(Constants.DIV)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  public boolean allElementsNotSpans(Element currentElement) {
-    if (!currentElement.getAllElements().isEmpty()) {
-      Elements innerElements = currentElement.getAllElements();
-      for (Element innerElement : innerElements) {
-        if (!innerElement.tagName().matches(Constants.SPAN)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
 
 }

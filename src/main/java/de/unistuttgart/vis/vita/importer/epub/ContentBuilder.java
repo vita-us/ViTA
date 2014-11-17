@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Reads the content of an Inpustream and transforms it into a string
+ * Reads the content of an Inputstream and transforms it into a string
  * 
  *
  */

@@ -40,13 +40,14 @@ public class Epub2TraitsExtractor {
       Resource currentResource, List<String> ids) throws IOException {
 
     List<Epubline> chapter = new ArrayList<Epubline>();
+    List<Element> editedElements = new ArrayList<Element>();
 
     int start = getSubheadingPosition(currentElement, document, chapter, ids);
 
     // iterate through the current resource
     for (int i = document.getAllElements().indexOf(currentElement) + start; i < document
         .getAllElements().size(); i++) {
-      List<Element> editedElements = new ArrayList<Element>();
+
       Element innerElement = document.getAllElements().get(i);
       if (!ids.contains(innerElement.id())) {
         addElementTexts(chapter, editedElements, innerElement);
@@ -57,14 +58,11 @@ public class Epub2TraitsExtractor {
 
     // iterate through the remaining resources
     for (int j = resources.indexOf(currentResource) + 1; j < resources.size(); j++) {
-      document =
-          Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j)
-              .getInputStream()));
-      for (int k = 0; k < document.getAllElements().size(); k++) {
+      Document nextDocument =
+          Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j).getInputStream()));
+      for (int k = 0; k < nextDocument.getAllElements().size(); k++) {
 
-        List<Element> editedElements = new ArrayList<Element>();
-
-        Element innerElement = document.getAllElements().get(k);
+        Element innerElement = nextDocument.getAllElements().get(k);
         if (!ids.contains(innerElement.id())) {
           addElementTexts(chapter, editedElements, innerElement);
         } else {
@@ -81,9 +79,8 @@ public class Epub2TraitsExtractor {
         && !innerElement.attr(Constants.CLASS).matches(Constants.TOC + "|" + Constants.FOOT)
         && !reviser.elementEdited(editedElements, innerElement)) {
 
-      if ((innerElement.tagName().equals(Constants.PARAGRAPH_TAGNAME))) {
-        reviser
-            .addText(chapter, innerElement, reviser.existsSpan(innerElement), Constants.TEXT);
+      if (innerElement.tagName().equals(Constants.PARAGRAPH_TAGNAME)) {
+        reviser.addText(chapter, innerElement, reviser.existsSpan(innerElement), Constants.TEXT);
 
       } else if (innerElement.tagName().matches(Constants.DIV)
           && innerElement.attr(Constants.CLASS).matches(Constants.PGMONOSPACED)) {
