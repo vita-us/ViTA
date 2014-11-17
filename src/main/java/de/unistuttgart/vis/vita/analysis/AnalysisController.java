@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,9 +15,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
@@ -126,8 +126,9 @@ public class AnalysisController {
       em.persist(document);
       em.getTransaction().commit();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
     return document;
   }
@@ -183,8 +184,9 @@ public class AnalysisController {
       }
       document = documents.get(0);
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
 
     scheduleDocumentAnalyisis(document);
@@ -227,8 +229,9 @@ public class AnalysisController {
       em.merge(document);
       em.getTransaction().commit();
     } finally {
-      if (em != null)
+      if (em != null) {
         em.close();
+      }
     }
   }
 }

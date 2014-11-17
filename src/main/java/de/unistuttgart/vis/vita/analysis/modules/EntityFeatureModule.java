@@ -1,12 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -21,6 +14,13 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
 
 /**
  * The feature module that stores entities.
@@ -74,8 +74,11 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     for (BasicEntity basicEntity : basicEntities) {
       Entity source = realEntities.get(basicEntity);
       Map<BasicEntity, Double> weights = relations.getRelatedEntities(basicEntity);
-      if (weights == null)
+
+      if (weights == null) {
         continue;
+      }
+
       for (Map.Entry<BasicEntity, Double> entry : weights.entrySet()) {
         Entity target = realEntities.get(entry.getKey());
         EntityRelation relation = new EntityRelation();

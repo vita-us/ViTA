@@ -1,12 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.Arrays;
-
-import javax.persistence.EntityManager;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.IndexSearcher;
-
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -17,6 +10,13 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.search.IndexSearcher;
+
+import java.util.Arrays;
+
+import javax.persistence.EntityManager;
 
 /**
  * The feature module that stores document outline and document metadata
@@ -50,8 +50,9 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
     document.setMetadata(importResult.getMetadata());
     
     // Restore the old title which is the file name if no title has been found
-    if (StringUtils.isEmpty(document.getMetadata().getTitle()))
-        document.getMetadata().setTitle(oldTitle);
+    if (StringUtils.isEmpty(document.getMetadata().getTitle())) {
+      document.getMetadata().setTitle(oldTitle);
+    }
 
     return this;
   }

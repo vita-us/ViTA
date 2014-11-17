@@ -1,11 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -16,19 +10,24 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 @AnalysisModule(dependencies=BasicEntityCollection.class)
 public class EntityRelationModule extends Module<EntityRelations> {
+
+  /**
+   * The maximum distance in characters two entities my occur at to be considered in a relation
+   */
+  private static final int MAX_DISTANCE = 50;
   private SortedSet<RelationEvent> events = new TreeSet<>();
   private Map<BasicEntity, Integer> presentEntities = new HashMap<>();
   private Map<BasicEntity, Map<BasicEntity, Integer>> weights = new HashMap<>();
   private Map<BasicEntity, Map<BasicEntity, Double>> normalizedWeights = new HashMap<>();
   private int maxWeight = 0;
-  
-  
-  /**
-   * The maximum distance in characters two entities my occur at to be considered in a relation
-   */
-  private static final int MAX_DISTANCE = 50;
   
   @Override
   public EntityRelations execute(ModuleResultProvider results, ProgressListener progressListener)
@@ -64,16 +63,18 @@ public class EntityRelationModule extends Module<EntityRelations> {
     for (RelationEvent event : events) {
       switch (event.type) {
         case ENTER:
-          if (presentEntities.containsKey(event.entity))
+          if (presentEntities.containsKey(event.entity)) {
             presentEntities.put(event.entity, presentEntities.get(event.entity) + 1);
-          else
+          } else {
             presentEntities.put(event.entity, 1);
+          }
           handleEntityEnter(event.entity);
           break;
 
         case LEAVE:
           if (presentEntities.containsKey(event.entity)) {
             int newValue = presentEntities.get(event.entity) - 1;
+
             if (newValue <= 0) {
               presentEntities.remove(event.entity);
             } else {
@@ -86,14 +87,17 @@ public class EntityRelationModule extends Module<EntityRelations> {
   }
   
   private void handleEntityEnter(BasicEntity entity) {
-    if (presentEntities.isEmpty())
+    if (presentEntities.isEmpty()) {
       return;
-    
+    }
+
     for (Map.Entry<BasicEntity, Integer> entry : presentEntities.entrySet()) {
       BasicEntity other = entry.getKey();
-      if (other == entity)
+
+      if (other == entity) {
         continue;
-      
+      }
+
       increaseWeights(entity, other, entry.getValue());
       increaseWeights(other, entity, entry.getValue());
     }
@@ -103,25 +107,29 @@ public class EntityRelationModule extends Module<EntityRelations> {
    * Increases the weighting factor of the source towards the target
    */
   private void increaseWeights(BasicEntity source, BasicEntity target, int increment) {
-
     Map<BasicEntity, Integer> relationMap;
+
     if (!weights.containsKey(source)) {
-      relationMap = new HashMap<BasicEntity, Integer>();
+      relationMap = new HashMap<>();
       weights.put(source, relationMap);
     } else {
       relationMap = weights.get(source);
     }
-    
+
     int currentValue;
-    if (relationMap.containsKey(target))
+
+    if (relationMap.containsKey(target)) {
       currentValue = relationMap.get(target);
-    else
+    } else {
       currentValue = 0;
-    
+    }
+
     int newValue = currentValue + increment;
-    if (newValue > maxWeight)
+
+    if (newValue > maxWeight) {
       maxWeight = newValue;
-    
+    }
+
     relationMap.put(target, newValue);
   }
   
@@ -129,6 +137,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
     for (Map.Entry<BasicEntity, Map<BasicEntity, Integer>> entry : weights.entrySet()) {
       Map<BasicEntity, Double> newMap = new HashMap<>();
       normalizedWeights.put(entry.getKey(), newMap);
+
       for (Map.Entry<BasicEntity, Integer> innerEntry : entry.getValue().entrySet()) {
         newMap.put(innerEntry.getKey(), (double)innerEntry.getValue() / maxWeight);
       }
@@ -144,24 +153,32 @@ public class EntityRelationModule extends Module<EntityRelations> {
   private TextSpan widenOccurrence(TextSpan occurrence) {
     int chapterStart = occurrence.getStart().getChapter().getRange().getStart().getOffset();
     int start = occurrence.getStart().getOffset() - MAX_DISTANCE / 2;
-    if (start < chapterStart)
+
+    if (start < chapterStart) {
       start = chapterStart;
-    
+    }
+
     int chapterEnd = occurrence.getEnd().getChapter().getRange().getEnd().getOffset();
     int end = occurrence.getEnd().getOffset() + MAX_DISTANCE / 2;
-    if (end > chapterEnd)
+
+    if (end > chapterEnd) {
       end = chapterEnd;
-    
+    }
+
     return new TextSpan(TextPosition.fromGlobalOffset(occurrence.getStart().getChapter(), start),
         TextPosition.fromGlobalOffset(occurrence.getEnd().getChapter(), end));
     
   }
-  
+
+  private static enum EventType {
+    ENTER, LEAVE
+  }
+
   private static class RelationEvent implements Comparable<RelationEvent> {
     public BasicEntity entity;
     public EventType type;
     public TextPosition position;
-    
+
     public RelationEvent(BasicEntity entity, EventType type, TextPosition position) {
       this.entity = entity;
       this.type = type;
@@ -169,15 +186,18 @@ public class EntityRelationModule extends Module<EntityRelations> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+      return super.equals(obj);
+    }
+
+    @Override
     public int compareTo(RelationEvent o) {
-      if (o == null)
+      if (o == null) {
         return 1;
+      }
+
       return position.compareTo(o.position);
     }
-  }
-  
-  private static enum EventType {
-    ENTER, LEAVE
   }
 
 }

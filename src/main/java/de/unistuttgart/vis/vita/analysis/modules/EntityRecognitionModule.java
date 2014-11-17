@@ -5,16 +5,6 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import gate.Annotation;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -29,6 +19,16 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import gate.Annotation;
 
 /**
  *
@@ -69,7 +69,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
     for (DocumentPart part : documentParts) {
       List<Chapter> chapters = part.getChapters();
-      double chapterFactor = 1 / chapters.size();
+      double chapterFactor = 1. / chapters.size();
 
       for (Chapter chapter : chapters) {
         Set<Annotation> annotations = filterEntityAnnotations(
@@ -247,8 +247,9 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private BasicEntity getEntityByName(EntityType type, String name) {
     for(BasicEntity entity : entities) {
-      if (entity.getType() != type)
+      if (entity.getType() != type) {
         continue;
+      }
 
       for(Attribute attribute : entity.getNameAttributes()) {
           if(attribute.getContent().equals(name)) {
