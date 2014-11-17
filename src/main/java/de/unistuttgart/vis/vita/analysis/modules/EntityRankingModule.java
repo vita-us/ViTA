@@ -18,7 +18,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-@AnalysisModule(dependencies = { BasicEntityCollection.class })
+@AnalysisModule(dependencies = {BasicEntityCollection.class}, weight = 0.1)
 public class EntityRankingModule extends Module<EntityRanking> {
   @Override
   public EntityRanking execute(ModuleResultProvider results, ProgressListener progressListener)

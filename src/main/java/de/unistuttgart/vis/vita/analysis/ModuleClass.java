@@ -1,14 +1,14 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
+import com.google.common.collect.ImmutableSet;
+
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 import net.jodah.typetools.TypeResolver;
 import net.jodah.typetools.TypeResolver.Unknown;
 
-import com.google.common.collect.ImmutableSet;
-
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * Describes a class for an analysis module
@@ -17,6 +17,7 @@ public final class ModuleClass {
   private final Class<?> clazz;
   private final Collection<Class<?>> dependencies;
   private final Class<?> resultClass;
+  private final double weight;
   private boolean hasZeroArgumentConstructor;
 
   /**
@@ -58,6 +59,8 @@ public final class ModuleClass {
     } catch (NoSuchMethodException e) {
       hasZeroArgumentConstructor = false;
     }
+
+    weight = annotation.weight();
   }
   
   private static Class<?> getResultClass(Class<?> moduleClass) {
@@ -137,5 +140,9 @@ public final class ModuleClass {
   @Override
   public String toString() {
     return clazz.toString();
+  }
+
+  public double getWeight() {
+    return weight;
   }
 }
