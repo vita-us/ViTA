@@ -1,11 +1,5 @@
 package de.unistuttgart.vis.vita.importer.txt.output;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,6 +7,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 /**
  * Implements Callable - returning a DocumentPart. <br>
@@ -136,7 +135,8 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
       try {
         chapters.add(futureChapter.get());
       } catch (InterruptedException | ExecutionException e) {
-        // try next one
+        // TODO propagate InterruptedException for analysis to be interruptable,
+        // and do not suppress other exceptions
       }
     }
     return chapters;

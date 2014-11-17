@@ -5,6 +5,7 @@
 <title>ViTA - {{ Page.title }}</title>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
 </head>
 <body>
   <div id="header" class="navbar navbar-default">
@@ -34,7 +35,7 @@
       <h1 class="page-title">{{ Page.title }}</h1>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <h2 ng-show="Page.breadcrumbs">{{ Page.breadcrumbs }}</h2>
         <div ng-view></div>
       </div>
@@ -43,8 +44,10 @@
 
   <script src="js/jquery.js"></script>
   <script src="js/jquery.mousewheel.js"></script>
+  <script src="js/jquery-ui.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="js/d3.js"></script>
+  <script src="js/d3.layout.cloud.js"></script>
   <script src="js/angular.js"></script>
   <script src="js/angular-route.js"></script>
   <script src="js/angular-resource.js"></script>

@@ -1,11 +1,14 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
@@ -27,6 +30,8 @@ public class Document extends AbstractEntityBase {
   private DocumentMetrics metrics;
   @Embedded
   private DocumentContent content;
+  @OneToOne(cascade = CascadeType.ALL)
+  private AnalysisProgress progress;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -35,6 +40,7 @@ public class Document extends AbstractEntityBase {
     this.metrics = new DocumentMetrics();
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
+    this.progress = new AnalysisProgress();
   }
 
   /**
@@ -83,6 +89,22 @@ public class Document extends AbstractEntityBase {
    */
   public void setContent(DocumentContent content) {
     this.content = content;
+  }
+
+  /**
+   * @return progress of the analysis of this document
+   */
+  public AnalysisProgress getProgress() {
+    return progress;
+  }
+
+  /**
+   * Sets the new progress of the analysis of this document.
+   * 
+   * @param newProgress - the new progress of the analysis of this document
+   */
+  public void setProgress(AnalysisProgress newProgress) {
+    this.progress = newProgress;
   }
 
 }

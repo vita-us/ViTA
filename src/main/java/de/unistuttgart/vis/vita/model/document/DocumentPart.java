@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
@@ -15,18 +18,32 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "DocumentPart.findAllParts", query = "SELECT dp " + "FROM DocumentPart dp"),
+    @NamedQuery(name = "DocumentPart.findAllParts", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp"),
+    
+    @NamedQuery(name = "DocumentPart.findPartsInDocument", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp, Document d "
+                      + "WHERE d.id = :documentId "
+                      + "AND dp MEMBER OF d.content.parts"),
 
-    @NamedQuery(name = "DocumentPart.findPartById", query = "SELECT dp " + "FROM DocumentPart dp "
-        + "WHERE dp.id = :partId"),
+    @NamedQuery(name = "DocumentPart.findPartById", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp "
+                      + "WHERE dp.id = :partId"),
 
-    @NamedQuery(name = "DocumentPart.findPartByTitle", query = "SELECT dp "
-        + "FROM DocumentPart dp " + "WHERE dp.title = :partTitle")})
+    @NamedQuery(name = "DocumentPart.findPartByTitle", 
+                query = "SELECT dp "
+                      + "FROM DocumentPart dp " 
+                      + "WHERE dp.title = :partTitle")})
+@XmlRootElement
 public class DocumentPart extends AbstractEntityBase {
   private int number;
   private String title;
 
   @OneToMany
+  @XmlElement(name = "chapters")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**
@@ -48,7 +65,7 @@ public class DocumentPart extends AbstractEntityBase {
   /**
    * Sets the readable number of this part in the context of the document
    *
-   * @param the number, starting from 1
+   * @param newNumber - the number, starting from 1
    */
   public void setNumber(int newNumber) {
     this.number = newNumber;

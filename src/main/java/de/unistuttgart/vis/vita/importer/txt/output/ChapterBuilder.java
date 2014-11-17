@@ -75,6 +75,7 @@ public class ChapterBuilder implements Callable<Chapter> {
     chapter.setNumber(chapterNumber);
     chapter.setTitle(heading);
     chapter.setText(text);
+    chapter.setLength(text.length());
     return chapter;
   }
 

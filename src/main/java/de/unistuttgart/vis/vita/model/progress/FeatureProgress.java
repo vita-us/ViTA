@@ -1,8 +1,12 @@
 package de.unistuttgart.vis.vita.model.progress;
 
+import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Represents the progress of the analysis for a specific feature of the software.
  */
+@Embeddable
 public class FeatureProgress {
 
   // attributes
@@ -54,6 +58,7 @@ public class FeatureProgress {
    * 
    * @return true, if this feature is ready, false otherwise
    */
+  @XmlElement(name = "isReady")
   public boolean isReady() {
     return isReady;
   }

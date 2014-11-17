@@ -1,8 +1,5 @@
 package de.unistuttgart.vis.vita.importer.txt.input;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,8 +13,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 
 /**
  * Simple Class to import txt-files and output an ArrayList of Lines. The Encoding should be ASCII
@@ -34,6 +35,7 @@ import java.util.regex.Pattern;
  * automated encoding detection.
  */
 public class TextFileImporter {
+  private static final Logger LOGGER = Logger.getLogger(TextFileImporter.class.toString());
 
   private Path path;
   private List<Line> importedLines;
@@ -54,7 +56,7 @@ public class TextFileImporter {
    *                                      method denies read access to the file or directory
    */
   public TextFileImporter(Path path) throws InvalidPathException, UnsupportedEncodingException,
-                                            FileNotFoundException, SecurityException {
+      FileNotFoundException {
     super();
     this.path = path;
     initializeCharsets();
@@ -118,7 +120,7 @@ public class TextFileImporter {
    *
    * @throws InvalidPathException if the ending is not ".txt"
    */
-  private void checkFileName() throws InvalidPathException {
+  private void checkFileName() {
     String nameOfFile = path.getFileName().toString();
     if (!(nameOfFile.length() > 4) || !(nameOfFile.endsWith(".txt"))) {
       throw new InvalidPathException(path.toString(), "No txt-file-ending or missing name");
@@ -132,7 +134,7 @@ public class TextFileImporter {
    * @throws SecurityException     If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
    *                               method denies read access to the file or directory
    */
-  private void checkFileExists(File file) throws FileNotFoundException, SecurityException {
+  private void checkFileExists(File file) throws FileNotFoundException {
     if (!file.exists()) {
       throw new FileNotFoundException("File not found: " + path.toString());
     }
@@ -145,7 +147,7 @@ public class TextFileImporter {
    * @throws SecurityException     If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
    *                               method denies read access to the file
    */
-  private void checkIsFile(File file) throws FileNotFoundException, SecurityException {
+  private void checkIsFile(File file) throws FileNotFoundException {
     if (!file.isFile()) {
       throw new FileNotFoundException("Is not a file: " + path.toString());
     }
@@ -158,7 +160,7 @@ public class TextFileImporter {
    * @throws SecurityException     If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
    *                               method denies read access to the file
    */
-  private void checkFileIsReadable(File file) throws FileNotFoundException, SecurityException {
+  private void checkFileIsReadable(File file) throws FileNotFoundException {
     if (!file.canRead()) {
       boolean succesfullyChangedToReadable = file.setReadable(true);
       if (!succesfullyChangedToReadable) {
@@ -258,7 +260,7 @@ public class TextFileImporter {
         closed = true;
       }
     } catch (IOException e) {
-      // do nothing; log?
+      LOGGER.log(Level.WARNING, "Error closing file reader for " + path, e);
     }
     return closed;
   }
