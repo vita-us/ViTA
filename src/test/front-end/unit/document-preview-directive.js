@@ -8,8 +8,8 @@ describe('Document Preview Directive', function() {
     document = TestData.singleDocument;
     chapter = TestData.singleChapter;
 
-    $httpBackend.expectGET('/documents/' + document.id + '/parts').respond(TestData.parts);
-    $httpBackend.expectGET('/documents/' + document.id + '/chapters/' + chapter.id)
+    $httpBackend.expectGET('webapi/documents/' + document.id + '/parts').respond(TestData.parts);
+    $httpBackend.expectGET('webapi/documents/' + document.id + '/chapters/' + chapter.id)
             .respond(chapter);
 
     scope = $rootScope.$new();
