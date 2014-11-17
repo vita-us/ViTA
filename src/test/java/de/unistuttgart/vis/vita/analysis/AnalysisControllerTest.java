@@ -18,12 +18,15 @@ import javax.persistence.EntityManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
+import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Document;
 
+@RunWith(RandomBlockJUnit4ClassRunner.class)
 public class AnalysisControllerTest {
   private Model model;
   private AnalysisController controller;
