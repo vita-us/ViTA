@@ -14,7 +14,7 @@
         });
 
         // Set a custom graph width
-        $scope.graphWidth = $("#graph-network-wrapper").width();
+        $scope.graphWidth = $('#graph-network-wrapper').width();
 
         // Set a custom graph height like this
         $scope.graphHeight = $(window).height() * 0.7;

@@ -38,7 +38,7 @@
             // TODO highlight occurrences
             // highlightOccurrences(occurrences);
           });
-        }
+        };
       }]);
 
 })(angular);

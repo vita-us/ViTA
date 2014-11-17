@@ -43,7 +43,7 @@
 
       scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
         if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
-          if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+          if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
             removeFingerPrint();
             return;
           }
@@ -94,30 +94,30 @@
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
 	        rectGroupEnter.append('rect')
-             .attr('x', function (occurrence) {
+             .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
               })
               .attr('y', heightScale(0))
-              .attr('width', function (occurrence) {
+              .attr('width', function(occurrence) {
                 var computedWidth = widthScale(occurrence.width);
                 // return at least the minimum bar width
                 return Math.max(computedWidth, minBarWidth);
               })
               .attr('height', heightScale(1))
-              .on('mouseover', function () {
+              .on('mouseover', function() {
                 // Toggle selection to the hovered element
                 deselectOccurrence(getSelectedOccurrence());
                 selectOccurrence(d3.select(this));
               })
-              .on('mouseout', function () {
+              .on('mouseout', function() {
                 // we need to check this because the user might have scrolled and
                 // selected a different occurrence
                 if (isOccurrenceSelected(d3.select(this))) {
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function () {
+              .on('click', function() {
                 // TODO: Show the occurrence in the document view
               });
         }

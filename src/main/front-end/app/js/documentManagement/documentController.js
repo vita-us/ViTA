@@ -69,7 +69,7 @@
               name: newName
             });
           }
-        }
+        };
 
         $scope.$on('$destroy', function() {
           if (timerId) {

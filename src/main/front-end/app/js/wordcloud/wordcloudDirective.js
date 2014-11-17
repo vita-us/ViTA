@@ -39,7 +39,7 @@
           .rotate(0)
           .text(getText)
           .fontSize(getSize)
-          .on("end", draw);
+          .on('end', draw);
 
       scope.$watch('items', function() {
         buildWordCloud(scope);
@@ -60,13 +60,13 @@
       }
 
       function draw(words) {
-        var updateSelection = svgContainer.selectAll("text").data(words, getText);
+        var updateSelection = svgContainer.selectAll('text').data(words, getText);
 
         // deal with words that remain
         styleWords(updateSelection);
 
         // deal with words that are new
-        styleWords(updateSelection.enter().append("text"));
+        styleWords(updateSelection.enter().append('text'));
 
         // deal with words to be removed
         updateSelection.exit().remove();
@@ -74,9 +74,9 @@
       }
 
       function styleWords(words) {
-        words.style("font-size", getFontSize)
-            .style("fill", getFill)
-            .attr("transform", getTransform)
+        words.style('font-size', getFontSize)
+            .style('fill', getFill)
+            .attr('transform', getTransform)
             .text(getText);
       }
 
@@ -103,11 +103,11 @@
       }
 
       function getFontSize(d) {
-        return d.size + "px";
+        return d.size + 'px';
       }
 
       function getTransform(d) {
-        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
       }
 
       function getFill(d, i) {
