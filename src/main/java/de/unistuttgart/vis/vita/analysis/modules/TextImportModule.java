@@ -1,5 +1,12 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -15,18 +22,14 @@ import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.output.TextImportResult;
 import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-@AnalysisModule
-public class TextImportModule implements Module<ImportResult> {
+@AnalysisModule(weight = 0.1)
+public class TextImportModule extends Module<ImportResult> {
 
   private Path filePath;
   private Boolean detectChapters;
@@ -38,11 +41,6 @@ public class TextImportModule implements Module<ImportResult> {
   public TextImportModule(Path filePath, Boolean detectChapters) {
     this.filePath = filePath;
     this.detectChapters = detectChapters;
-  }
-
-  @Override
-  public void observeProgress(double progress) {
-    // do nothing
   }
 
   /**
@@ -57,14 +55,30 @@ public class TextImportModule implements Module<ImportResult> {
    *                                      method denies read access to the file or directory
    */
   public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
-      throws InvalidPathException, FileNotFoundException, UnsupportedEncodingException,
-             SecurityException {
+      throws FileNotFoundException, UnsupportedEncodingException {
     ImportResult importResult;
     TextSplitter textSplitter = new TextSplitter(importLines(filePath));
     DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
     DocumentPart documentPart = extractChapters(textSplitter.getTextList());
+    setChapterRanges(documentPart);
     importResult = buildImportResult(documentMetadata, documentPart);
     return importResult;
+  }
+  
+  /**
+   * Sets the {@link Chapter#getRange()} property of all the chapters in the part, assuming the
+   * document consists only of the one given part.
+   * 
+   * @param part the parts whose chapters to modify
+   */
+  private void setChapterRanges(DocumentPart part) {
+    int currentPosition = 0;
+    for (Chapter chapter : part.getChapters()) {
+      chapter.setRange(new TextSpan(
+          TextPosition.fromGlobalOffset(chapter, currentPosition),
+          TextPosition.fromGlobalOffset(chapter, currentPosition + chapter.getLength())));
+      currentPosition += chapter.getLength();
+    }
   }
 
   /**
@@ -80,10 +94,8 @@ public class TextImportModule implements Module<ImportResult> {
    * @throws SecurityException            If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
    *                                      method denies read access to the file or directory
    */
-  private List<Line> importLines(Path filePath) throws InvalidPathException,
-                                                       FileNotFoundException,
-                                                       UnsupportedEncodingException,
-                                                       SecurityException {
+  private List<Line> importLines(Path filePath) throws FileNotFoundException,
+      UnsupportedEncodingException {
     TextFileImporter importer = new TextFileImporter(filePath);
     Filter filter = new Filter(importer.getLines());
     return filter.filterEbookText();

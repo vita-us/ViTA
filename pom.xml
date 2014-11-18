@@ -47,11 +47,20 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-          <argLine>-Xms2048m -Xmx2048m -XX:MaxPermSize=512m</argLine>
           <includes>
             <include>**/AllTests.java</include>
           </includes>
+          <systemPropertyVariables>
+            <jersey.config.test.container.port>${env.JERSEY_PORT}</jersey.config.test.container.port>
+          </systemPropertyVariables>
         </configuration>
+        <executions>
+          <execution>
+            <configuration>
+              <argLine>${argLine} -Xms2048m -Xmx2048m -XX:MaxPermSize=512m</argLine>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -104,6 +113,45 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+    	<plugins>
+    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+    		<plugin>
+    			<groupId>org.eclipse.m2e</groupId>
+    			<artifactId>lifecycle-mapping</artifactId>
+    			<version>1.0.0</version>
+    			<configuration>
+    				<lifecycleMappingMetadata>
+    					<pluginExecutions>
+    						<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>
+    									com.github.eirslett
+    								</groupId>
+    								<artifactId>
+    									frontend-maven-plugin
+    								</artifactId>
+    								<versionRange>
+    									[0.0.15,)
+    								</versionRange>
+    								<goals>
+    									<goal>
+    										install-node-and-npm
+    									</goal>
+    									<goal>grunt</goal>
+    									<goal>npm</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore></ignore>
+    							</action>
+    						</pluginExecution>
+    					</pluginExecutions>
+    				</lifecycleMappingMetadata>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </pluginManagement>
   </build>
 
   <dependencyManagement>
@@ -225,9 +273,8 @@
 
     <dependency>
       <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version>
-      <scope>provided</scope>
+      <artifactId>xercesImpl-noservices</artifactId>
+      <version>2.11.0.SP1</version>
     </dependency>
 
     <dependency>
@@ -246,6 +293,12 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>1.4.180</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.6</version>
     </dependency>
 
     <dependency>
@@ -294,4 +347,15 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <repositories>
+    <repository>
+      <id>xerces-mvn-repo</id>
+      <url>https://raw.github.com/Yogu/xerces/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>

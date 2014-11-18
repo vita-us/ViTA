@@ -5,19 +5,19 @@
 
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.nio.file.Path;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 
-import java.nio.file.Path;
-
 /**
  * @author Vincent Link, Eduard Marbach
  */
-@AnalysisModule()
-public class ImportModule implements Module<ImportResult> {
+@AnalysisModule(weight = 0.1)
+public class ImportModule extends Module<ImportResult> {
 
   private Path filePath;
 
@@ -26,12 +26,8 @@ public class ImportModule implements Module<ImportResult> {
   }
 
   @Override
-  public void observeProgress(double progress) {
-    // Ignore progress reports
-  }
-
-  @Override
-  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener) {
-    return null;
+  public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
+      throws Exception {
+    return new TextImportModule(filePath).execute(result, progressListener);
   }
 }

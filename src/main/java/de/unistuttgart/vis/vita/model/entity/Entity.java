@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Inheritance;
@@ -29,15 +30,15 @@ public abstract class Entity extends AbstractEntityBase {
   private boolean[] fingerprint;
   private int rankingValue;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   private Set<Attribute> attributes;
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
 
-  @OneToMany(mappedBy = "originEntity")
-  private Set<EntityRelation<Entity>> entityRelations;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
+  private Set<EntityRelation> entityRelations;
 
   /**
    * Creates a new entity with default values.
@@ -126,7 +127,7 @@ public abstract class Entity extends AbstractEntityBase {
   /**
    * @return a Set of all relations to other entities
    */
-  public Set<EntityRelation<Entity>> getEntityRelations() {
+  public Set<EntityRelation> getEntityRelations() {
     return entityRelations;
   }
 

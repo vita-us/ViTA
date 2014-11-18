@@ -1,13 +1,13 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 
 /**
  * Implements Callable returning ChapterPosition.<br> <br>
@@ -32,7 +32,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
    * @param chapterArea ArrayList of Line - The lines in which the Chapters are.
    * @throws IllegalArgumentException If input is null.
    */
-  public AbstractChapterAnalyzer(List<Line> chapterArea) throws IllegalArgumentException {
+  public AbstractChapterAnalyzer(List<Line> chapterArea) {
     if (chapterArea == null) {
       throw new IllegalArgumentException("chapterArea must not be null");
     }

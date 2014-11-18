@@ -3,12 +3,15 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', [function() {
+  vitaDirectives.directive('fingerprint', ['RelationOccurrences', '$routeParams',
+    function(RelationOccurrences, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
       var SVG_WIDTH = $(element).width();
       var SVG_HEIGHT = attrs.height || MINIMUM_SVG_HEIGHT;
+
+      var minBarWidth = 5;
 
       var width = SVG_WIDTH, height = SVG_HEIGHT;
 
@@ -36,13 +39,26 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
 
-      scope.$watch('occurrences', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue)) {
-          removeFingerPrint();
-          buildFingerPrint(scope);
-        } else if (!angular.isUndefined(newValue)) {
-          // can only happen during initialization
-          buildFingerPrint(scope);
+      var occurrenceSteps = Math.floor(width / minBarWidth);
+
+      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
+        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
+          if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+            removeFingerPrint();
+            return;
+          }
+          RelationOccurrences.get({
+            documentId: $routeParams.documentId,
+            entityIds: scope.entityIds.join(','),
+            steps: occurrenceSteps,
+            rangeStart: scope.rangeBegin,
+            rangeEnd: scope.rangeEnd
+          }, function(response) {
+            removeFingerPrint();
+            buildFingerPrint(response.occurrences);
+          }, function() {
+            removeFingerPrint();
+          });
         }
       }, true);
 
@@ -55,9 +71,8 @@
         }
       }, true);
 
-      function buildFingerPrint(scope) {
-        // work with a copy to avoid updating the fingerprint
-        var occurrences = angular.copy(scope.occurrences) || [];
+      function buildFingerPrint(occurrences) {
+        occurrences = occurrences || [];
         var occurrenceCount = occurrences.length;
 
         occurrences.map(function(occurrence, index) {
@@ -65,8 +80,6 @@
           occurrence.width = occurrence.end.progress - occurrence.start.progress;
         });
 
-        // we need to define this because otherwise small rectangles become unclickable/invisible
-        var minBarWidth = 1.5;
 
         buildOccurrenceRects();
 
@@ -81,30 +94,30 @@
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
 	        rectGroupEnter.append('rect')
-             .attr('x', function (occurrence) {
+             .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
               })
               .attr('y', heightScale(0))
-              .attr('width', function (occurrence) {
+              .attr('width', function(occurrence) {
                 var computedWidth = widthScale(occurrence.width);
                 // return at least the minimum bar width
                 return Math.max(computedWidth, minBarWidth);
               })
               .attr('height', heightScale(1))
-              .on('mouseover', function () {
+              .on('mouseover', function() {
                 // Toggle selection to the hovered element
                 deselectOccurrence(getSelectedOccurrence());
                 selectOccurrence(d3.select(this));
               })
-              .on('mouseout', function () {
+              .on('mouseout', function() {
                 // we need to check this because the user might have scrolled and
                 // selected a different occurrence
                 if (isOccurrenceSelected(d3.select(this))) {
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function () {
+              .on('click', function() {
                 // TODO: Show the occurrence in the document view
               });
         }
@@ -226,9 +239,11 @@
     return {
       restrict: 'A',
       scope: {
-        occurrences: '=',
+        entityIds: '=',
         parts: '=',
-        height: '@'
+        height: '@',
+        rangeBegin: '=', // rangeStart parameter is not working with angular
+        rangeEnd: '='
       },
       link: link
     };

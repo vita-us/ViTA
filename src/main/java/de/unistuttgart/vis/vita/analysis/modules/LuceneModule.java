@@ -1,5 +1,10 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.lucene.search.IndexSearcher;
+
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
@@ -10,28 +15,17 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
-import org.apache.lucene.search.IndexSearcher;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * LuceneModule class with its result IndexSearcher
  */
-@AnalysisModule(dependencies = {ImportResult.class, Model.class, DocumentPersistenceContext.class})
-public class LuceneModule implements Module<IndexSearcher> {
+@AnalysisModule(dependencies = {ImportResult.class, Model.class,
+                                DocumentPersistenceContext.class}, weight = 0.1)
+public class LuceneModule extends Module<IndexSearcher> {
 
   private ImportResult importResult;
   private List<DocumentPart> documentParts = new ArrayList<DocumentPart>();
   private TextRepository textRepository;
   private DocumentPersistenceContext documentPersistenceContext;
-
-
-  @Override
-  public void observeProgress(double progress) {
-    // TODO Auto-generated method stub
-
-  }
 
   /**
    * Stores the chapters of DocumentParts from ImportResult in the lucene textRepository of model

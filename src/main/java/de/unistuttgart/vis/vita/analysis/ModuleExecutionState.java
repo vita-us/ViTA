@@ -1,12 +1,12 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The state maintained by the AnalyisController for the execution of a module
@@ -117,6 +117,8 @@ public class ModuleExecutionState {
         isExecutable = true;
       }
     }
+
+    getInstance().dependencyFinished(module.getResultClass(), result);
   }
 
   /**
@@ -127,6 +129,15 @@ public class ModuleExecutionState {
    */
   public void notifyModuleProgress(ModuleClass module, double progress) {
     putProgress(module, progress);
+  }
+
+  /**
+   * Should be called when a dependency module has failed
+   * 
+   * @param module the module that has failed
+   */
+  public void notifyModuleFailed(ModuleClass module) {
+    getInstance().dependencyFailed(module.getResultClass());
   }
 
   public void startExecution() {
@@ -187,7 +198,7 @@ public class ModuleExecutionState {
       progressMap.put(module, progress);
       currentProgress = calculateProgress();
     }
-    
+
     getInstance().observeProgress(currentProgress);
   }
   
@@ -202,10 +213,14 @@ public class ModuleExecutionState {
   
   private double calculateProgress() {
     double sum = 0;
-    for (double value : progressMap.values()) {
-      sum += value;
+    double sumWeights = 0;
+
+    for (Map.Entry<ModuleClass, Double> clazzEntry : progressMap.entrySet()) {
+      sum += clazzEntry.getKey().getWeight() * clazzEntry.getValue();
+      sumWeights += clazzEntry.getKey().getWeight();
     }
-    return sum / progressMap.size();
+
+    return sum / sumWeights;
   }
 
   @Override

@@ -56,8 +56,8 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
     
     // Set range of the chapter
-    TextPosition rangeStartPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_START);
-    TextPosition rangeEndPos = new TextPosition(null, ChapterTestData.TEST_CHAPTER_RANGE_END);
+    TextPosition rangeStartPos = TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
+    TextPosition rangeEndPos = TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_END);
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
     
@@ -71,7 +71,7 @@ public class EntityOccurrencesServiceTest extends ServiceTest {
     personId = testPerson.getId();
     
     // persist it
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(chapterRangeSpan);

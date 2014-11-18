@@ -17,8 +17,8 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.Function;
 
-@AnalysisModule(dependencies = {ImportResult.class})
-public class StanfordNLPModule implements Module<StanfordNLPResult> {
+@AnalysisModule(dependencies = {ImportResult.class}, weight = 0.1)
+public class StanfordNLPModule extends Module<StanfordNLPResult> {
   private StanfordCoreNLP pipeline;
   private int totalLength;
   private int progressInChars;
@@ -33,9 +33,6 @@ public class StanfordNLPModule implements Module<StanfordNLPResult> {
   private static final double MODEL_LOAD_PROGRESS_FRACTION = 0.1;
 
   private static final String ANNOTATORS = "tokenize, ssplit, pos, lemma, ner, parse, dcoref";
-
-  @Override
-  public void observeProgress(double progress) {}
 
   @Override
   public StanfordNLPResult execute(ModuleResultProvider results, ProgressListener progressListener)

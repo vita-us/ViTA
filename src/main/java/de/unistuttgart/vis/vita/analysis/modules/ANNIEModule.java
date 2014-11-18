@@ -38,27 +38,20 @@ import gate.util.persistence.PersistenceManager;
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
-@AnalysisModule(dependencies = {ImportResult.class})
-public class ANNIEModule implements Module<AnnieNLPResult> {
+@AnalysisModule(dependencies = {ImportResult.class}, weight = 500)
+public class ANNIEModule extends Module<AnnieNLPResult> {
+  private static final int PROGRESS_RESET_SPAN = 20;
 
-  private static final double GATE_LOAD_PROGRESS_FRACTION = 0.1;
-  private static final double ANNIE_LOAD_PROGRESS_FRACTION = 0.2;
-  private static final int progressResetSpan = 20;
   private ImportResult importResult;
   private ProgressListener progressListener;
   private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
   private Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   private Corpus corpus;
-  private int old_progress = 0;
+  private int oldProgress = 0;
   private int documentsFinished = 0;
   private int maxDocuments;
   private double progressSteps;
-
-  @Override
-  public void observeProgress(double progress) {
-
-  }
 
   @Override
   public AnnieNLPResult execute(ModuleResultProvider result, ProgressListener progressListener)
@@ -88,7 +81,7 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
 
       @Override
       public void processFinished() {
-
+        // nothing to do
       }
     });
 
@@ -106,15 +99,14 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
   }
 
   private void calcProgress(int i) {
-    if (old_progress - progressResetSpan > i) {
+    if (oldProgress - PROGRESS_RESET_SPAN > i) {
       documentsFinished++;
     }
 
     double finishFactor = (double) documentsFinished / (double) maxDocuments;
-    double progDocs = (1 - ANNIE_LOAD_PROGRESS_FRACTION) * finishFactor;
     double progChapt = progressSteps * ((double) i / 100);
-    old_progress = i;
-    double currentProgress = ANNIE_LOAD_PROGRESS_FRACTION + progDocs + progChapt;
+    oldProgress = i;
+    double currentProgress = finishFactor + progChapt;
 
     progressListener.observeProgress(currentProgress);
   }
@@ -122,7 +114,7 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
   /**
    * Creates the Gate corpus out of the available chapters.
    */
-  private void createCorpus() throws ResourceInstantiationException, ExecutionException {
+  private void createCorpus() throws ResourceInstantiationException {
     corpus = Factory.newCorpus("ViTA Corpus");
 
     for (DocumentPart part : importResult.getParts()) {
@@ -133,7 +125,7 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
       }
     }
     maxDocuments = corpus.size();
-    progressSteps = (1 - ANNIE_LOAD_PROGRESS_FRACTION) / maxDocuments;
+    progressSteps = 1 / maxDocuments;
   }
 
   /**
@@ -141,7 +133,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
    */
   private void initializeGate() throws GateException {
     if (Gate.isInitialised()) {
-      progressListener.observeProgress(GATE_LOAD_PROGRESS_FRACTION);
       return;
     }
 
@@ -161,7 +152,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
     Gate.setPluginsHome(pluginsHome);
     Gate.setSiteConfigFile(siteConfig);
     Gate.init();
-    progressListener.observeProgress(GATE_LOAD_PROGRESS_FRACTION);
   }
 
   /**
@@ -169,7 +159,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
    */
   private void loadAnnie() throws GateException, IOException {
     if (controller != null) {
-      progressListener.observeProgress(ANNIE_LOAD_PROGRESS_FRACTION);
       return;
     }
 
@@ -179,8 +168,6 @@ public class ANNIEModule implements Module<AnnieNLPResult> {
 
     controller =
         (ConditionalSerialAnalyserController) PersistenceManager.loadObjectFromFile(annieGapp);
-
-    progressListener.observeProgress(ANNIE_LOAD_PROGRESS_FRACTION);
   }
 
   /**
