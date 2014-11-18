@@ -1,14 +1,14 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
+import com.google.common.collect.ImmutableSet;
+
+import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 import net.jodah.typetools.TypeResolver;
 import net.jodah.typetools.TypeResolver.Unknown;
 
-import com.google.common.collect.ImmutableSet;
-
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * Describes a class for an analysis module
@@ -17,6 +17,7 @@ public final class ModuleClass {
   private final Class<?> clazz;
   private final Collection<Class<?>> dependencies;
   private final Class<?> resultClass;
+  private final double weight;
   private boolean hasZeroArgumentConstructor;
 
   /**
@@ -29,26 +30,27 @@ public final class ModuleClass {
     
     AnalysisModule annotation = moduleClass.getAnnotation(AnalysisModule.class);
     if (annotation == null) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " does not have the "
-          + "@AnalysisModule annotation.");
+      throw new InvalidModuleException(String.format(
+          "the class %s does not have the @AnalysisModule annotation.", moduleClass.getName()));
     }
 
     if (!Module.class.isAssignableFrom(moduleClass)) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " does not implement the "
-          + "Module interface.");
+      throw new InvalidModuleException(String.format(
+          "The class %s does not implement the Module interface.", moduleClass.getName()));
     }
     
     resultClass = getResultClass(moduleClass);
     if (resultClass == null) {
-      throw new InvalidModuleException("The class " + moduleClass.getName() + " should specify the "
-          + "concrete type parameter for the Module interface.");
+      throw new InvalidModuleException(String.format(
+          "The class %s should specify the concrete type parameter for the Module interface.",
+          moduleClass.getName()));
     }
     
     dependencies = ImmutableSet.copyOf(annotation.dependencies());
     
     if (dependencies.contains(resultClass)) {
-      throw new InvalidModuleException("The class " + moduleClass.getName()
-          + " depends on its own result");
+      throw new InvalidModuleException(String.format("The class %s depends on its own result",
+          moduleClass.getName()));
     }
 
     try {
@@ -57,6 +59,8 @@ public final class ModuleClass {
     } catch (NoSuchMethodException e) {
       hasZeroArgumentConstructor = false;
     }
+
+    weight = annotation.weight();
   }
   
   private static Class<?> getResultClass(Class<?> moduleClass) {
@@ -136,5 +140,9 @@ public final class ModuleClass {
   @Override
   public String toString() {
     return clazz.toString();
+  }
+
+  public double getWeight() {
+    return weight;
   }
 }

@@ -3,10 +3,10 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ['Fingerprint',
+  vitaDirectives.directive('fingerprint', ['DocumentViewSender',
                                            'RelationOccurrences',
-                                           'DocumentViewSender',
-                          function(Fingerprint, RelationOccurrences, DocumentViewSender) {
+                                           '$routeParams',
+                          function(DocumentViewSender, RelationOccurrences, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -43,16 +43,18 @@
 
       var occurrenceSteps = Math.floor(width / minBarWidth);
 
-      scope.$watch('entityIds', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue) || !angular.isUndefined(newValue)) {
-          if(angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
+        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
+          if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
             removeFingerPrint();
             return;
           }
-          Fingerprint.get({
-            documentId: scope.documentId,
+          RelationOccurrences.get({
+            documentId: $routeParams.documentId,
             entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps
+            steps: occurrenceSteps,
+            rangeStart: scope.rangeBegin,
+            rangeEnd: scope.rangeEnd
           }, function(response) {
             removeFingerPrint();
             buildFingerPrint(response.occurrences, scope);
@@ -94,36 +96,36 @@
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
 	        rectGroupEnter.append('rect')
-             .attr('x', function (occurrence) {
+             .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
               })
               .attr('y', heightScale(0))
-              .attr('width', function (occurrence) {
+              .attr('width', function(occurrence) {
                 var computedWidth = widthScale(occurrence.width);
                 // return at least the minimum bar width
                 return Math.max(computedWidth, minBarWidth);
               })
               .attr('height', heightScale(1))
-              .on('mouseover', function () {
+              .on('mouseover', function() {
                 // Toggle selection to the hovered element
                 deselectOccurrence(getSelectedOccurrence());
                 selectOccurrence(d3.select(this));
               })
-              .on('mouseout', function () {
+              .on('mouseout', function() {
                 // we need to check this because the user might have scrolled and
                 // selected a different occurrence
                 if (isOccurrenceSelected(d3.select(this))) {
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function (clickedOccurrence) {
+              .on('click', function(clickedOccurrence) {
                 RelationOccurrences.get({
                   documentId: scope.documentId,
                   entityIds: scope.entityIds.join(','),
                   rangeStart: clickedOccurrence.start.progress,
                   rangeEnd: clickedOccurrence.end.progress
-                }, function (response) {
+                }, function(response) {
                   DocumentViewSender.sendOccurrences(response.occurrences);
                 });
               });
@@ -246,10 +248,11 @@
     return {
       restrict: 'A',
       scope: {
-        documentId: '=',
         entityIds: '=',
         parts: '=',
-        height: '@'
+        height: '@',
+        rangeBegin: '=', // rangeStart parameter is not working with angular
+        rangeEnd: '='
       },
       link: link
     };

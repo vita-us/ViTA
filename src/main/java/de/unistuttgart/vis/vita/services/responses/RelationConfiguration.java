@@ -28,7 +28,7 @@ public class RelationConfiguration {
    * 
    * @param rel - the EntityRelation this RelationConfiguration should represent
    */
-  public RelationConfiguration(EntityRelation<Entity> rel) {
+  public RelationConfiguration(EntityRelation rel) {
     if (rel == null) {
       throw new IllegalArgumentException("EntityRelation must not be null!");
     }

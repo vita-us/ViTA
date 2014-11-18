@@ -3,7 +3,7 @@ describe('AnalysisService', function() {
   beforeEach(module('vitaServices'));
 
   it('should allow a stop', inject(function($httpBackend, Analysis) {
-    $httpBackend.expectPUT('/documents/doc13a/analysis/stop').respond(undefined);
+    $httpBackend.expectPUT('webapi/documents/doc13a/analysis/stop').respond(undefined);
 
     Analysis.stop('doc13a');
 
@@ -11,7 +11,7 @@ describe('AnalysisService', function() {
   }));
 
   it('should allow a restart', inject(function($httpBackend, Analysis) {
-    $httpBackend.expectPUT('/documents/doc13a/analysis/restart').respond(undefined);
+    $httpBackend.expectPUT('webapi/documents/doc13a/analysis/restart').respond(undefined);
 
     Analysis.restart('doc13a');
 

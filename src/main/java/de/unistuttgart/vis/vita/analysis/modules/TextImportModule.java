@@ -28,7 +28,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-@AnalysisModule
+@AnalysisModule(weight = 0.1)
 public class TextImportModule extends Module<ImportResult> {
 
   private Path filePath;
@@ -55,8 +55,7 @@ public class TextImportModule extends Module<ImportResult> {
    *                                      method denies read access to the file or directory
    */
   public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
-      throws InvalidPathException, FileNotFoundException, UnsupportedEncodingException,
-             SecurityException {
+      throws FileNotFoundException, UnsupportedEncodingException {
     ImportResult importResult;
     TextSplitter textSplitter = new TextSplitter(importLines(filePath));
     DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
@@ -95,10 +94,8 @@ public class TextImportModule extends Module<ImportResult> {
    * @throws SecurityException            If a security manager exists and its java.lang.SecurityManager.checkRead(java.lang.String)
    *                                      method denies read access to the file or directory
    */
-  private List<Line> importLines(Path filePath) throws InvalidPathException,
-                                                       FileNotFoundException,
-                                                       UnsupportedEncodingException,
-                                                       SecurityException {
+  private List<Line> importLines(Path filePath) throws FileNotFoundException,
+      UnsupportedEncodingException {
     TextFileImporter importer = new TextFileImporter(filePath);
     Filter filter = new Filter(importer.getLines());
     return filter.filterEbookText();

@@ -1,7 +1,7 @@
 var appPort, documentViewPort;
 
 function forwardMessage(message, port) {
-  if (typeof port !== "undefined" && message.type !== "REGISTER") {
+  if (typeof port !== 'undefined' && message.type !== 'REGISTER') {
     port.postMessage(message);
   }
 }
@@ -13,13 +13,13 @@ onconnect = function(event) {
   ports.push(port);
   port.start();
 
-  port.addEventListener("message", function(event) {
+  port.addEventListener('message', function(event) {
     var message = event.data;
 
-    if (message.sender === "APP") {
+    if (message.sender === 'APP') {
       appPort = port;
       forwardMessage(message, documentViewPort);
-    } else if (message.sender === "DOCUMENT_VIEW") {
+    } else if (message.sender === 'DOCUMENT_VIEW') {
       documentViewPort = port;
       forwardMessage(message, appPort);
     }

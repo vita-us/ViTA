@@ -12,7 +12,7 @@ module.exports = function(config) {
         'src/main/front-end/app/bower_components/d3/d3.js',
         'src/main/front-end/app/bower_components/d3-cloud/d3.layout.cloud.js',
         'src/main/front-end/app/js/app.js',
-        'src/main/front-end/app/js/*/*.js',
+        'src/main/front-end/app/js/*/!(mockBackend).js',
         'src/main/front-end/app/templates/*.html',
         'src/test/front-end/unit/**/*.js'],
 

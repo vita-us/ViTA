@@ -90,7 +90,7 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     targetPerson.getOccurrences().add(targetSeparateSpan);
     
     // set up relation between them
-    EntityRelation<Entity> testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
+    EntityRelation testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
     
     // save ids for query
     docId = testDoc.getId();
@@ -98,7 +98,7 @@ public class RelationOccurrencesServiceTest extends ServiceTest {
     addId(targetPerson.getId());
     
     // persist test data
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
     em.persist(testDoc);
     em.persist(chapterRange);

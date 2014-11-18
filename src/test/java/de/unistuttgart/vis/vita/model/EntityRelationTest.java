@@ -22,7 +22,7 @@ public class EntityRelationTest {
 
   // attributes
   private Person testPerson;
-  private EntityRelation<Entity> relation;
+  private EntityRelation relation;
 
   /**
    * Sets up the testPerson and its relations.
@@ -30,7 +30,7 @@ public class EntityRelationTest {
   @Before
   public void setUp() {
     testPerson = new Person();
-    relation = new EntityRelation<Entity>();
+    relation = new EntityRelation();
     testPerson.getEntityRelations().add(relation);
   }
 

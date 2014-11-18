@@ -34,8 +34,8 @@ public class EntityRelationTestData {
    * @param relatedPerson 
    * @return test relation to given entity
    */
-  public EntityRelation<Entity> createTestRelation(Entity originEntity, Entity relatedEntity) {
-    EntityRelation<Entity> rel = new EntityRelation<>();
+  public EntityRelation createTestRelation(Entity originEntity, Entity relatedEntity) {
+    EntityRelation rel = new EntityRelation();
     rel.setOriginEntity(originEntity);
     rel.setRelatedEntity(relatedEntity);
     rel.setWeight(TEST_ENTITY_RELATION_WEIGHT);
@@ -48,7 +48,7 @@ public class EntityRelationTestData {
    * 
    * @param entityRelationToCheck - the entity relation to be checked
    */
-  public void checkData(EntityRelation<? extends Entity> entityRelationToCheck) {
+  public void checkData(EntityRelation entityRelationToCheck) {
     assertNotNull(entityRelationToCheck);
   
     Entity relatedEntity = entityRelationToCheck.getRelatedEntity();

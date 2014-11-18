@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services.responses;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -12,8 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AttributesResponse extends AbstractListResponse {
   
-  @XmlElementWrapper(name = "attributes")
-  @XmlElement(name = "attribute")
+  @XmlElement(name = "attributes")
   private List<BasicAttribute> attributes;
 
   /**

@@ -1,7 +1,5 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -58,7 +56,6 @@ public class Attribute extends AbstractEntityBase {
   /**
    * Creates a new Attribute with given type and content.
    *
-   * @param pId - the id for the new attribute
    * @param pType - the type of the new attribute, for example 'Name'
    * @param pContent - the content of the new attribute, for example 'Bilbo Baggins'
    */
