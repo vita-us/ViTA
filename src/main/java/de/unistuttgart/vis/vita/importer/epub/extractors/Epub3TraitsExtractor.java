@@ -61,19 +61,29 @@ public class Epub3TraitsExtractor {
         if (resourceItem != null) {
           Document document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          Elements sections = document.select(Constants.SECTION);
-          for (Element sectionItem : sections) {
-            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)) {
-              Elements chapterElements = sectionItem.getAllElements();
-              chapterElements.remove(0);
-              chapters.add(getChapterLines(chapterElements));
-            }
-          }
-
+          addChaptersToList(chapters, document);
         }
       }
     }
     return chapters;
+  }
+
+  /**
+   * Adds chapters to chapter list
+   * @param chapters
+   * @param document
+   * @throws IOException
+   */
+  private void addChaptersToList(List<List<Epubline>> chapters, Document document)
+      throws IOException {
+    Elements sections = document.select(Constants.SECTION);
+    for (Element sectionItem : sections) {
+      if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.CHAPTER)) {
+        Elements chapterElements = sectionItem.getAllElements();
+        chapterElements.remove(0);
+        chapters.add(getChapterLines(chapterElements));
+      }
+    }
   }
 
   /**
@@ -113,16 +123,29 @@ public class Epub3TraitsExtractor {
         if (resourceItem != null) {
           Document document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          Elements sections = document.select(Constants.SECTION);
-          for (Element sectionItem : sections) {
-            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
-              parts.add(partBuilder(resourceItem, sectionItem, sections, resources));
-            }
-          }
+          addPartsToList(resources, parts, resourceItem, document);
         }
       }
     }
     return parts;
+  }
+
+  /**
+   * Adds parts to the parts List
+   * @param resources
+   * @param parts
+   * @param resourceItem
+   * @param document
+   * @throws IOException
+   */
+  private void addPartsToList(List<Resource> resources, List<List<List<Epubline>>> parts,
+      Resource resourceItem, Document document) throws IOException {
+    Elements sections = document.select(Constants.SECTION);
+    for (Element sectionItem : sections) {
+      if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+        parts.add(partBuilder(resourceItem, sectionItem, sections, resources));
+      }
+    }
   }
 
   /**

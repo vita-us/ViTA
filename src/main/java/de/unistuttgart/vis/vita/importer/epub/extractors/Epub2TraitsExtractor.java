@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import nl.siegmann.epublib.domain.Resource;
 
 import org.jsoup.Jsoup;
@@ -147,20 +148,20 @@ public class Epub2TraitsExtractor {
       List<Epubline> chapter, List<String> ids) {
 
     int start = 1;
-    if (!currentElement.equals(document.getAllElements().get(document.getAllElements().size() - 1))) {
-      if (ids.contains(document.getAllElements()
-          .get(document.getAllElements().indexOf(currentElement) + 1).id())
-          || document.getAllElements().get(document.getAllElements().indexOf(currentElement) + 1)
-              .attr(Constants.CLASS).matches(Constants.CHAPTER_TITLE)
-          || document.getAllElements().get(document.getAllElements().indexOf(currentElement) + 1)
-              .attr(Constants.ID).toLowerCase().contains(Constants.CHAPTER)) {
+    org.jsoup.select.Elements allElements = document.getAllElements();
+    if (!currentElement.equals(allElements.get(allElements.size() - 1))
+        && (ids.contains(allElements.get(allElements.indexOf(currentElement) + 1).id())
+            || allElements.get(allElements.indexOf(currentElement) + 1).attr(Constants.CLASS)
+                .matches(Constants.CHAPTER_TITLE) || allElements
+            .get(allElements.indexOf(currentElement) + 1).attr(Constants.ID).toLowerCase()
+            .contains(Constants.CHAPTER))) {
 
-        chapter.add(new Epubline(Constants.SUBHEADING, document.getAllElements()
-            .get(document.getAllElements().indexOf(currentElement) + 1).text(), document
-            .getAllElements().get(document.getAllElements().indexOf(currentElement) + 1).id()));
-        start = 2;
-      }
+      chapter.add(new Epubline(Constants.SUBHEADING, document.getAllElements()
+          .get(document.getAllElements().indexOf(currentElement) + 1).text(), document
+          .getAllElements().get(document.getAllElements().indexOf(currentElement) + 1).id()));
+      start = 2;
     }
+
     return start;
   }
 

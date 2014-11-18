@@ -57,21 +57,32 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       for (Resource resource : resources) {
         document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
 
-        for (String id : tocIds) {
-          Element currentElement = document.getElementById(id);
-
-          if (currentElement != null && !epubLineExistent(currentElement)) {
-            List<Epubline> epublines = new ArrayList<Epubline>();
-            epublines.addAll(epublineTraitsExtractor.extractChapterEpublines(currentElement,
-                document, resource, tocIds));
-            epublines.add(0,
-                new Epubline(Constants.HEADING, currentElement.text(), currentElement.id()));
-            reviser.annotateTextStartAndEndOfEpublines(epublines);
-            chapters.add(epublines);
-          }
-        }
+        addLinesToChapter(tocIds, resource);
       }
       removeEmptyChapters(chapters);
+    }
+  }
+
+  /**
+   * Adds the lines of chapter to chapters list
+   * 
+   * @param tocIds
+   * @param resource
+   * @throws IOException
+   */
+  private void addLinesToChapter(List<String> tocIds, Resource resource) throws IOException {
+    for (String id : tocIds) {
+      Element currentElement = document.getElementById(id);
+
+      if (currentElement != null && !epubLineExistent(currentElement)) {
+        List<Epubline> epublines = new ArrayList<Epubline>();
+        epublines.addAll(epublineTraitsExtractor.extractChapterEpublines(currentElement, document,
+            resource, tocIds));
+        epublines.add(0,
+            new Epubline(Constants.HEADING, currentElement.text(), currentElement.id()));
+        reviser.annotateTextStartAndEndOfEpublines(epublines);
+        chapters.add(epublines);
+      }
     }
   }
 

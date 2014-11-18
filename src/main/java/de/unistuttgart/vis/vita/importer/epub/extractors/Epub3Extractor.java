@@ -135,15 +135,23 @@ public class Epub3Extractor extends AbstractEpubExtractor {
         if (resourceItem != null) {
           document =
               Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          sections = document.select(Constants.SECTION);
-          for (Element sectionItem : sections) {
-            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
-              titleList.add(sectionItem.text());
-            }
-          }
+          addTitleToList(titleList);
         }
       }
     }
     return titleList;
+  }
+
+  /**
+   * Adds title string to list
+   * @param titleList
+   */
+  private void addTitleToList(List<String> titleList) {
+    sections = document.select(Constants.SECTION);
+    for (Element sectionItem : sections) {
+      if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+        titleList.add(sectionItem.text());
+      }
+    }
   }
 }

@@ -101,21 +101,30 @@ public class Epub2IdsAndTitlesExtractor {
       if (matcher.matches()) {
         List<String> partChaptersIds = new ArrayList<String>();
 
-        for (int i = elements.indexOf(id) + 1; i < elements.size(); i++) {
-          matcher = pattern.matcher(elements.get(i).text());
-          if (!matcher.matches()) {
-            partChaptersIds.add(elements.get(i).attr(Constants.ID));
-
-          } else {
-            break;
-          }
-        }
+        addIdToList(elements, id, partChaptersIds);
         partsWithChaptersIds.add(partChaptersIds);
 
       }
     }
 
     return partsWithChaptersIds;
+  }
+
+  /**
+   * Adds the id to partchapter list
+   * @param elements
+   * @param id
+   * @param partChaptersIds
+   */
+  private void addIdToList(List<Element> elements, Element id, List<String> partChaptersIds) {
+    for (int i = elements.indexOf(id) + 1; i < elements.size(); i++) {
+      matcher = pattern.matcher(elements.get(i).text());
+      if (!matcher.matches()) {
+        partChaptersIds.add(elements.get(i).attr(Constants.ID));
+      } else {
+        break;
+      }
+    }
   }
 
   /**
@@ -131,16 +140,24 @@ public class Epub2IdsAndTitlesExtractor {
       if (!navMaps.isEmpty()) {
         Elements contents = navMaps.get(0).select(Constants.CONTENT);
         if (!contents.isEmpty()) {
-          for (Element content : contents) {
-            if (content.hasAttr(Constants.SOURCE)
-                && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
-                    Constants.SOURCE).contains(Constants.ID))) {
-              String id = extractId(content.attr("src"));
-              if (!tocIds.contains(id)) {
-                tocIds.add(id);
-              }
-            }
-          }
+          addTocIdsToList(contents);
+        }
+      }
+    }
+  }
+
+  /**
+   * Adds the table of contents ids to list
+   * @param contents
+   */
+  private void addTocIdsToList(Elements contents) {
+    for (Element content : contents) {
+      if (content.hasAttr(Constants.SOURCE)
+          && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
+              Constants.SOURCE).contains(Constants.ID))) {
+        String id = extractId(content.attr("src"));
+        if (!tocIds.contains(id)) {
+          tocIds.add(id);
         }
       }
     }
