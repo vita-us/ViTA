@@ -144,7 +144,7 @@ public class PartsAndChaptersReviser {
       if (!chapterElement.getAllElements().isEmpty()) {
         Elements innerElements = chapterElement.getAllElements();
         fillEditedElements(editedElements, innerElements);
-        addEpubline(chapter, chapterElement, mode);
+        addText(chapter, chapterElement, existsSpan(chapterElement), mode);
       }
     }
   }
