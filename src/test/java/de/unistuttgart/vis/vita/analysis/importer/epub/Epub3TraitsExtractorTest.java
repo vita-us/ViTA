@@ -13,9 +13,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.Epub3TraitsExtractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub3TraitsExtractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 
 /**
  * JUnit test on Epub3TraitsExtractor
@@ -110,8 +110,6 @@ public class Epub3TraitsExtractorTest {
     assertTrue(parts.get(1).get(0).get(parts.get(1).get(0).size() - 1)
 .getEpubline()
         .endsWith("sort of a place this “Spouter\" may be."));
-
-    System.out.println(parts.get(1).get(parts.get(1).size() - 1).get(0).getEpubline());
 
     // last chapter: heading
     assertTrue(parts.get(1).get(parts.get(1).size() - 1).get(0).getEpubline()

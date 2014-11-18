@@ -17,8 +17,8 @@ import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
-import de.unistuttgart.vis.vita.importer.epub.PartsAndChaptersReviser;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.PartsAndChaptersReviser;
 
 /**
  * JUnit test on PartsAndChapterReviser
@@ -172,7 +172,6 @@ public class PartsAndChaptersReviserTest {
   public void testContentAndSize(){
     assertEquals(3, epublines.size());
     assertTrue(epublines.get(0).getEpubline().startsWith("s that venerable and learned poet"));
-    System.out.println(epublines.get(1).getEpubline());
     assertEquals("Paragraph 1", epublines.get(1).getEpubline().trim());
     assertEquals("Paragraph 2", epublines.get(2).getEpubline().trim());
 

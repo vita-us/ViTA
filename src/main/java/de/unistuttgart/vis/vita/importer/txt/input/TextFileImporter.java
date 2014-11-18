@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * Simple Class to import txt-files and output an ArrayList of Lines. The Encoding should be ASCII

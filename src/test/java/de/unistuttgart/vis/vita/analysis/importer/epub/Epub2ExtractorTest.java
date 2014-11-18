@@ -13,10 +13,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.Epub2Extractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2Extractor;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * JUnit test on Epub2Extractor
@@ -96,7 +96,6 @@ public class Epub2ExtractorTest {
         .startsWith("IN the central portion of the great North American Continent"));
 
     // end of PART II. The Country of the Saints.
-    System.out.println(parts.get(1).get(parts.get(1).size() - 2).getText());
     assertTrue(parts.get(1).get(parts.get(1).size() - 2).getText()
         .endsWith("Ipse domi simul ac nummos contemplor in arca.'\""));
     assertEquals("", parts.get(1).get(parts.get(1).size() - 1).getText());

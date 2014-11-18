@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.modules.EpubImportModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.importer.epub.NoExtractorFoundException;
+import de.unistuttgart.vis.vita.importer.epub.util.NoExtractorFoundException;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 

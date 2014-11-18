@@ -10,9 +10,9 @@ import nl.siegmann.epublib.domain.Book;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.ChapterPositionMaker;
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.epub.extractors.ChapterPositionMaker;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 
 public class ChapterPositionMakerTest {
 

@@ -1,0 +1,5 @@
+package de.unistuttgart.vis.vita.importer.util;
+
+public enum LineType {
+  WHITELINE, DATADIVIDER, SPECIALSIGNS, MARKEDHEADING, PREFACE, TABLEOFCONTENTS, BIGHEADING, SMALLHEADING, TEXT, UNKNOWN;
+}

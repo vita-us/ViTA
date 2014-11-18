@@ -2,9 +2,9 @@ package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.List;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * The advanced form of the Big Heading Chapter Analyzer tries to extend the heading with one
