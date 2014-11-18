@@ -18,11 +18,11 @@ import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
-import de.unistuttgart.vis.vita.importer.epub.Epub2IdsAndTitlesExtractor;
-import de.unistuttgart.vis.vita.importer.epub.Epub2TraitsExtractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.ContentBuilder;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2IdsAndTitlesExtractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2TraitsExtractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 
 /**
  * JUnit test on Epub2TraitsExtractor

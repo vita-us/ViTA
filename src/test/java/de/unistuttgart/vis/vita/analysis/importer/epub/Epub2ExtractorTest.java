@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -9,13 +12,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import de.unistuttgart.vis.vita.importer.epub.Epub2Extractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2Extractor;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * JUnit test on Epub2Extractor
@@ -71,7 +72,7 @@ public class Epub2ExtractorTest {
     assertEquals(4, chapterPositionsPart.get(0).getStartOfText(1));
 
     // end of chapterpostion of the last chapter; regarding textend
-    assertEquals(5392, chapterPositionsPart.get(0).getEndOfText(29));
+    assertEquals(5434, chapterPositionsPart.get(0).getEndOfText(29));
   }
 
   @Test
@@ -98,7 +99,6 @@ public class Epub2ExtractorTest {
     assertTrue(parts.get(1).get(parts.get(1).size() - 2).getText()
         .endsWith("Ipse domi simul ac nummos contemplor in arca.'\""));
     assertEquals("", parts.get(1).get(parts.get(1).size() - 1).getText());
-
   }
 
   @Test

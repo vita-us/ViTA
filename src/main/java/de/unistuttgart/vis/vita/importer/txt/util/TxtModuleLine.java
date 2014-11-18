@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.importer.txt.util;
 
+import de.unistuttgart.vis.vita.importer.util.AbstractLine;
+import de.unistuttgart.vis.vita.importer.util.LineType;
+
 /**
  * A Line contains a text-line of the imported file. The Line class can compute a type for the line
  * for further analysis of the text.

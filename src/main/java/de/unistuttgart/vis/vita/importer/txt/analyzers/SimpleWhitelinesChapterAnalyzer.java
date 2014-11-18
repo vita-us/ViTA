@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 import java.util.List;
+
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * Chapters will be built every time two or more Whitelines in a row are found. There will be no
@@ -21,8 +21,7 @@ public class SimpleWhitelinesChapterAnalyzer extends AbstractChapterAnalyzer {
    * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
    * @throws IllegalArgumentException If input is null.
    */
-  public SimpleWhitelinesChapterAnalyzer(List<Line> chapterArea)
-      throws IllegalArgumentException {
+  public SimpleWhitelinesChapterAnalyzer(List<Line> chapterArea) {
     super(chapterArea);
     this.startOfAnalysis = getStartPosition();
   }

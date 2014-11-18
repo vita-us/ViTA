@@ -6,12 +6,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 
 @AnalysisModule
-public class ModuleWithoutResultClass<V> implements Module<V> {
-
-  @Override
-  public void observeProgress(double progress) {
-
-  }
+public class ModuleWithoutResultClass<V> extends Module<V> {
 
   @Override
   public V execute(ModuleResultProvider result, ProgressListener progressListener) {

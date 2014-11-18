@@ -11,8 +11,10 @@ import de.unistuttgart.vis.vita.analysis.importer.epub.EpubImportTests;
  * Unit tests for analysis modules
  */
 @RunWith(Suite.class)
-@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class,EpubImportTests.class,
-    LuceneModuleTest.class})
+@SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class,
+    LuceneModuleTest.class, EntityRecognitionModuleRealTest.class, TextFeatureModuleTest.class,
+    EntityFeatureModuleTest.class, MainAnalysisModuleTest.class, EntityRecognitionModuleTest.class,
+    EpubImportTests.class})
 public class AnalysisModulesTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisModulesTests() {

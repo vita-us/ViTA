@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
 import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 public class LineTxtTest {
 

@@ -10,8 +10,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.ContentBuilder;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.epub.extractors.ContentBuilder;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 
 /**
  * JUnit test on ContentBuilder

@@ -11,9 +11,9 @@ import nl.siegmann.epublib.domain.Book;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.EpubVersion;
-import de.unistuttgart.vis.vita.importer.epub.EpubVersionDetector;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubVersion;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubVersionDetector;
 
 public class EpubVersionDetectorTest {
 

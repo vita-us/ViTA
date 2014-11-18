@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 import java.util.List;
+
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * The advanced form of the Big Heading Chapter Analyzer tries to extend the heading with one
@@ -28,8 +28,7 @@ public class AdvancedBigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * @throws IllegalArgumentException If chapterArea is null.
    */
   public AdvancedBigHeadingChapterAnalyzer(List<Line> chapterArea,
-                                           ChapterPosition bigHeadingPositions, int startOfAnalysis)
-      throws IllegalArgumentException {
+      ChapterPosition bigHeadingPositions, int startOfAnalysis) {
     super(chapterArea);
     this.chapterPositions = bigHeadingPositions.clone();
     this.startOfAnalysis = startOfAnalysis;

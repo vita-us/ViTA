@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 

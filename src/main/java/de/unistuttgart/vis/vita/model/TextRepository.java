@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.model;
 
-import de.unistuttgart.vis.vita.model.document.Chapter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -19,9 +21,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**
  * Manages texts for the model.
@@ -55,13 +55,17 @@ public class TextRepository {
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
    */
-  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
-                                                                                       ParseException {
+  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
-    Query query = queryParser.parse(chapterToPopulate.getId());
+    Query query;
+    try {
+      query = queryParser.parse(chapterToPopulate.getId());
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
     chapterToPopulate.setText(hitDoc.getField(CHAPTER_TEXT).stringValue());

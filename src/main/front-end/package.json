@@ -7,6 +7,7 @@
     "bower": "~1.3.8",
     "grunt": "~0.4.5",
     "grunt-cli": "~0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "~0.5.0",
     "grunt-contrib-connect": "git://github.com/gruntjs/grunt-contrib-connect#b96ae23af57e3c62c1a01f40a5925b6b8bfeb14f",
     "grunt-contrib-copy": "~0.5.0",

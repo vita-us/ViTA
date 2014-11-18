@@ -16,8 +16,8 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
 import de.unistuttgart.vis.vita.importer.txt.input.TextSplitter;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * JUnit test on TextSplitter

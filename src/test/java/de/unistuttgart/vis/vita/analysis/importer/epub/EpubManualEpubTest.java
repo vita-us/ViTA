@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.modules.EpubImportModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.importer.epub.NoExtractorFoundException;
+import de.unistuttgart.vis.vita.importer.epub.util.NoExtractorFoundException;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -24,7 +24,7 @@ public class EpubManualEpubTest {
   private final String SOURCE_PATH =
       "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\pg78.epub";
   private final String TARGET_FOLDER =
-      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\output\\";
+      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\pg78\\";
 
   @Test
   public void test() throws URISyntaxException, FileNotFoundException, IOException, ParseException,

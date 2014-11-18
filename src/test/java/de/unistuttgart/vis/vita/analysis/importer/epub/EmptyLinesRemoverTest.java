@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import de.unistuttgart.vis.vita.importer.epub.EmptyLinesRemover;
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.EmptyLinesRemover;
 
 /**
  * JUnit test on EmptyLinesRemover

@@ -7,10 +7,10 @@ import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.MetadataAnalyzerEpub;
+import static org.junit.Assert.assertEquals;
+import de.unistuttgart.vis.vita.importer.epub.extractors.MetadataAnalyzerEpub;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**

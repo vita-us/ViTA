@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
-
 import java.util.List;
+
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * Chapters will be built every time a Smallheading is found and there are at least two Whitelines
@@ -22,7 +22,7 @@ public class SmallHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
    * @param chapterArea ArrayList of Line - The lines containing the chapters. Should not be null.
    * @throws IllegalArgumentException If input is null.
    */
-  public SmallHeadingChapterAnalyzer(List<Line> chapterArea) throws IllegalArgumentException {
+  public SmallHeadingChapterAnalyzer(List<Line> chapterArea) {
     super(chapterArea);
     this.startOfAnalysis = getStartPosition();
   }

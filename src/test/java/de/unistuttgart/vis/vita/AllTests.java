@@ -9,12 +9,13 @@ import de.unistuttgart.vis.vita.analysis.modules.AnalysisModulesTests;
 import de.unistuttgart.vis.vita.model.ModelTests;
 import de.unistuttgart.vis.vita.persistence.PersistenceTests;
 import de.unistuttgart.vis.vita.services.ServiceTests;
+import de.unistuttgart.vis.vita.services.responses.ResponseTests;
 
 /**
  * A suite containing all back-end tests
  */
 @RunWith(Suite.class)
-@SuiteClasses({ServiceTests.class, ModelTests.class, PersistenceTests.class,
+@SuiteClasses({ServiceTests.class, ModelTests.class, PersistenceTests.class, ResponseTests.class,
     AnalysisInfrastructureTests.class, AnalysisModulesTests.class})
 public class AllTests {
 

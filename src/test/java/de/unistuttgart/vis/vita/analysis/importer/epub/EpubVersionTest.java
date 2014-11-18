@@ -9,11 +9,11 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.Epub2Extractor;
-import de.unistuttgart.vis.vita.importer.epub.Epub3Extractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.EpubVersion;
-import de.unistuttgart.vis.vita.importer.epub.NoExtractorFoundException;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2Extractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub3Extractor;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubVersion;
+import de.unistuttgart.vis.vita.importer.epub.util.NoExtractorFoundException;
 
 public class EpubVersionTest {
 

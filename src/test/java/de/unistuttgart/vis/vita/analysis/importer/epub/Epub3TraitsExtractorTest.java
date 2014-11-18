@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -10,11 +13,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import de.unistuttgart.vis.vita.importer.epub.Epub3TraitsExtractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub3TraitsExtractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epubline;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 
 /**
  * JUnit test on Epub3TraitsExtractor
@@ -57,14 +58,15 @@ public class Epub3TraitsExtractorTest {
         endsWith("one grand hooded phantom, like a snow hill in the air."));
 
     // eleventh chapter: heading
-    assertTrue(chaptersList.get(10).get(1).getEpubline().startsWith("Chapter 11. Nightgown."));
+    assertTrue(chaptersList.get(10).get(0).getEpubline().startsWith("Chapter 11. Nightgown."));
 
     // eleventh chapter: ending
     assertTrue(chaptersList.get(10).get(chaptersList.get(10).size() - 1)
         .getEpubline().endsWith("may prove in the mere skeleton I give."));
 
     // last chapter: heading
-    assertTrue(chaptersList.get(chaptersList.size() - 1).get(1).getEpubline().startsWith("Epilogue"));
+    assertTrue(chaptersList.get(chaptersList.size() - 1).get(0).getEpubline()
+        .startsWith("Epilogue"));
 
     // last chapter: ending
     assertTrue(chaptersList.get(chaptersList.size() - 1)
@@ -106,10 +108,12 @@ public class Epub3TraitsExtractorTest {
 
     // first chapter: ending
     assertTrue(parts.get(1).get(0).get(parts.get(1).get(0).size() - 1)
-        .getEpubline().endsWith("sort of a place this “Spouter\" may be."));
+.getEpubline()
+        .endsWith("sort of a place this “Spouter\" may be."));
 
     // last chapter: heading
-    assertTrue(parts.get(1).get(parts.get(1).size() - 1).get(1).getEpubline().matches("Chapter 49. The Hyena."));
+    assertTrue(parts.get(1).get(parts.get(1).size() - 1).get(0).getEpubline()
+        .matches("Chapter 49. The Hyena."));
 
     // last chapter: ending
     assertTrue(parts.get(1).get(parts.get(1).size() - 1)
@@ -119,14 +123,16 @@ public class Epub3TraitsExtractorTest {
     // part three
     
     // first chapter: heading
-    assertTrue(parts.get(2).get(0).get(1).getEpubline().startsWith("Chapter 50. Ahab’s Boat and Crew. Fedallah."));
+    assertTrue(parts.get(2).get(0).get(0).getEpubline()
+        .startsWith("Chapter 50. Ahab’s Boat and Crew. Fedallah."));
     
     // first chapter: ending
     assertTrue(parts.get(2).get(0).get(parts.get(2).get(0).size() - 1)
         .getEpubline().endsWith("indulged in mundane amours."));
 
     // last chapter: heading
-    assertTrue(parts.get(2).get(parts.get(2).size() - 1).get(1).getEpubline().startsWith("Epilogue"));
+    assertTrue(parts.get(2).get(parts.get(2).size() - 1).get(0).getEpubline()
+        .startsWith("Epilogue"));
 
     // last chapter: ending
     assertTrue(parts.get(2).get(parts.get(2).size() - 1)

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import de.unistuttgart.vis.vita.model.entity.Person;
@@ -19,9 +20,11 @@ public class DocumentContent {
   private List<DocumentPart> parts;
 
   @OneToMany
+  @JoinTable(name = "Document_Person")
   private List<Person> persons;
 
   @OneToMany
+  @JoinTable(name = "Document_Place")
   private List<Place> places;
 
   /**

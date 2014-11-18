@@ -14,8 +14,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.epub.Epub2IdsAndTitlesExtractor;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.epub.extractors.Epub2IdsAndTitlesExtractor;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 
 /**
  * JUnit test on Epub2IdsAndExtractor

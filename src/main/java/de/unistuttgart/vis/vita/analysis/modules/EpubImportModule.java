@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -12,19 +11,19 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.importer.epub.AbstractEpubExtractor;
-import de.unistuttgart.vis.vita.importer.epub.BookBuilder;
-import de.unistuttgart.vis.vita.importer.epub.EpubFileImporter;
-import de.unistuttgart.vis.vita.importer.epub.EpubImportResult;
-import de.unistuttgart.vis.vita.importer.epub.EpubVersion;
-import de.unistuttgart.vis.vita.importer.epub.EpubVersionDetector;
-import de.unistuttgart.vis.vita.importer.epub.MetadataAnalyzerEpub;
-import de.unistuttgart.vis.vita.importer.epub.NoExtractorFoundException;
+import de.unistuttgart.vis.vita.importer.epub.extractors.AbstractEpubExtractor;
+import de.unistuttgart.vis.vita.importer.epub.extractors.MetadataAnalyzerEpub;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubVersion;
+import de.unistuttgart.vis.vita.importer.epub.input.EpubVersionDetector;
+import de.unistuttgart.vis.vita.importer.epub.util.EpubImportResult;
+import de.unistuttgart.vis.vita.importer.epub.util.NoExtractorFoundException;
+import de.unistuttgart.vis.vita.importer.output.BookBuilder;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 @AnalysisModule
-public class EpubImportModule implements Module<ImportResult> {
+public class EpubImportModule extends Module<ImportResult> {
 
   Path filePath;
 
@@ -40,13 +39,12 @@ public class EpubImportModule implements Module<ImportResult> {
   /**
    * {@inheritDoc}
    * 
-   * @throws FileNotFoundException Thrown if the file at the given path can not be found.
    * @throws IOException Thrown if there is a problem while extracting data from the file.
    * @throws ParseException Thrown if metadata can not be parsed.
    * @throws NoExtractorFoundException Thrown of this epub-version can not be extracted.
    */
   public ImportResult execute(ModuleResultProvider result, ProgressListener progressListener)
-      throws FileNotFoundException, IOException, ParseException, NoExtractorFoundException {
+      throws IOException, ParseException, NoExtractorFoundException {
     ImportResult importResult;
     EpubFileImporter importer = new EpubFileImporter(filePath);
     DocumentMetadata documentMetadata = extractMetadata(importer.getEbook(), filePath);
