@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -72,9 +73,11 @@ public class TextRepository {
   public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
       throws IOException {
 
+
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(directory, config);
+
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }
