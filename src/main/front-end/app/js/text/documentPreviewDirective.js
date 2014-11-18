@@ -12,6 +12,8 @@
               return;
             }
 
+            scope.documentTitle = scope.document.metadata.title;
+
             DocumentParts.get({
               documentId: scope.document.id
             }, function(structure) {
@@ -31,7 +33,6 @@
             chapterId: parts[0].chapters[0].id
           }, function(chapter) {
             scope.previewText = chapter.text;
-            scope.documentTitle = scope.document.metadata.title;
           });
         }
 
