@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * An abstract superclass for all objects that can be persisted in a data base
@@ -17,6 +18,7 @@ public abstract class AbstractEntityBase {
     id = UUID.randomUUID().toString();
   }
 
+  @XmlElement
   public String getId() {
     return id;
   }

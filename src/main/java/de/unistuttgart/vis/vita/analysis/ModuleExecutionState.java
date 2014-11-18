@@ -213,10 +213,14 @@ public class ModuleExecutionState {
   
   private double calculateProgress() {
     double sum = 0;
-    for (double value : progressMap.values()) {
-      sum += value;
+    double sumWeights = 0;
+
+    for (Map.Entry<ModuleClass, Double> clazzEntry : progressMap.entrySet()) {
+      sum += clazzEntry.getKey().getWeight() * clazzEntry.getValue();
+      sumWeights += clazzEntry.getKey().getWeight();
     }
-    return sum / progressMap.size();
+
+    return sum / sumWeights;
   }
 
   @Override

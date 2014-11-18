@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
-import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.ServiceTest;
@@ -31,7 +30,7 @@ public class PersonsServiceTest extends ServiceTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    EntityManager em = Model.createUnitTestModel().getEntityManager();
+    EntityManager em = getModel().getEntityManager();
     
     testData = new PersonTestData();
     Person testPerson = testData.createTestPerson();

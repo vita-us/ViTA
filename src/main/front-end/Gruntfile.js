@@ -10,11 +10,20 @@ module.exports = function(grunt) {
     javascriptPath: '<%= appPath %>js/',
     cssPath: '<%= appPath %>css/',
     fontPath: '<%= appPath %>fonts/',
+    imgPath: '<%= appPath %>img/',
+    partialPath: '<%= appPath %>partials/',
     templatePath: '<%= appPath %>templates/',
 
     pkg: grunt.file.readJSON('package.json'),
     bowerrc: grunt.file.readJSON('.bowerrc'),
 
+    clean: {
+      options: {
+        force: true
+      },
+      app: ['<%= javascriptPath %>', '<%= cssPath %>', '<%= fontPath %>', '<%= imgPath %>',
+          '<%= partialPath %>', '<%= templatePath %>']
+    },
     concat: {
       options: {
         // Append a short comment of the path for each concatenated source file
@@ -38,7 +47,7 @@ module.exports = function(grunt) {
       devserver: {
         options: {
           livereload: true,
-          open: "http://localhost:8080/index.html"
+          open: 'http://localhost:8080/index.html'
         }
       },
       testserver: {}
@@ -97,6 +106,16 @@ module.exports = function(grunt) {
           dest: '<%= javascriptPath %>'
         }, {
           expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-ui/',
+          src: ['jquery-ui.js'],
+          dest: '<%= javascriptPath %>'
+        }, {
+          expand: true,
+          cwd: '<%= bowerrc.directory %>/jquery-ui/themes/smoothness/',
+          src: ['jquery-ui.css'],
+          dest: '<%= cssPath %>'
+        }, {
+          expand: true,
           cwd: '<%= bowerrc.directory %>/d3-cloud/',
           src: ['d3.layout.cloud.js'],
           dest: '<%= javascriptPath %>'
@@ -112,17 +131,17 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'app/partials',
           src: ['**'],
-          dest: '<%= appPath %>partials/'
+          dest: '<%= partialPath %>'
         }, {
           expand: true,
           cwd: 'app/img',
           src: ['**'],
-          dest: '<%= appPath %>img/'
+          dest: '<%= imgPath %>'
         }, {
           expand: true,
           cwd: 'app/templates',
           src: ['**'],
-          dest: '<%= appPath %>templates/'
+          dest: '<%= templatePath %>'
         }, {
           expand: true,
           cwd: 'app/js/',
@@ -183,19 +202,24 @@ module.exports = function(grunt) {
       scripts: {
         files: ['app/js/**/*.js'],
         tasks: ['concat', 'copy:statics']
+      },
+      dependencies: {
+        files: ['<%= bowerrc.directory %>/**'],
+        tasks: ['copy:dependencies']
       }
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-protractor-runner');
 
-  grunt.registerTask('build', ['copy', 'concat', 'less'])
+  grunt.registerTask('build', ['clean', 'copy', 'concat', 'less']);
   grunt.registerTask('default', ['build']);
   grunt.registerTask('test', ['test:unit']);
   grunt.registerTask('test:gui', ['build', 'connect:testserver', 'protractor']);

@@ -4,6 +4,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlElement;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
@@ -58,6 +59,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the GraphView feature
    */
+  @XmlElement(name = "graphView")
   public FeatureProgress getGraphViewProgress() {
     return graphViewProgress;
   }
@@ -74,6 +76,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the WordCloud feature
    */
+  @XmlElement(name = "wordCloud")
   public FeatureProgress getWordCloudProgress() {
     return wordCloudProgress;
   }
@@ -90,6 +93,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the Places feature
    */
+  @XmlElement(name = "places")
   public FeatureProgress getPlacesProgress() {
     return placesProgress;
   }
@@ -106,6 +110,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the Persons feature
    */
+  @XmlElement(name = "persons")
   public FeatureProgress getPersonsProgress() {
     return personsProgress;
   }
@@ -122,6 +127,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the FingerPrint feature
    */
+  @XmlElement(name = "fingerPrints")
   public FeatureProgress getFingerPrintProgress() {
     return fingerPrintProgress;
   }
@@ -138,6 +144,7 @@ public class AnalysisProgress extends AbstractEntityBase {
   /**
    * @return the progress of the text feature
    */
+  @XmlElement(name = "text")
   public FeatureProgress getTextProgress() {
     return textProgress;
   }

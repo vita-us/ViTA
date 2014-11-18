@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services.responses.occurrence;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -11,9 +10,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class OccurrencesResponse {
-  
-  @XmlElementWrapper(name="occurrences")
-  @XmlElement(name = "occurrence")
+
+  @XmlElement(name = "occurrences")
   private List<Occurrence> occurrences;
   
   /**

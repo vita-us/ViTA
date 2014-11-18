@@ -13,7 +13,8 @@ describe('FingerprintCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/documents/123/parts').respond(TestData.parts);
+    $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/123/parts').respond(TestData.parts);
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('FingerprintCtrl', {

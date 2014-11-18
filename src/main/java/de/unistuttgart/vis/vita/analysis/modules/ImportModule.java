@@ -16,7 +16,7 @@ import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 /**
  * @author Vincent Link, Eduard Marbach
  */
-@AnalysisModule()
+@AnalysisModule(weight = 0.1)
 public class ImportModule extends Module<ImportResult> {
 
   private Path filePath;
