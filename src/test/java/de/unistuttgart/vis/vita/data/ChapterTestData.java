@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -35,6 +34,7 @@ public class ChapterTestData {
     chapter.setRange(new TextSpan(
         TextPosition.fromGlobalOffset(chapter, 0),
         TextPosition.fromGlobalOffset(chapter, TEST_CHAPTER_LENGTH)));
+    chapter.setDocumentLength(TEST_CHAPTER_RANGE_END);
 
     return chapter;
   }
