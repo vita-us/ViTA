@@ -86,9 +86,15 @@
         Page.tab = 1;
         $scope.Page = Page;
 
+        var windowObject;
+
         $scope.openDocumentView = function() {
-          window.open('documentview.html', 'documentView',
-                  'width=0,height=0,left=0,alwaysRaised=yes');
+          if (!windowObject || windowObject.closed) {
+            windowObject = window.open('documentview.html', 'documentView',
+                    'width=0,height=0,left=0,alwaysRaised=yes');
+          } else {
+            windowObject.focus();
+          }
         };
 
         DocumentViewSender.onDocumentIdRequest(function() {
