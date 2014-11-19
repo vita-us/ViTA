@@ -27,6 +27,7 @@ import org.hibernate.annotations.Target;
                 query = "SELECT er "
                       + "FROM Entity e JOIN e.entityRelations er "
                       + "WHERE e.id IN :entityIds "
+                      + "AND er.relatedEntity.id IN :entityIds "
                       + "AND er.relatedEntity.class = :type"),
 
     @NamedQuery(name = "EntityRelation.findEntityRelationById", 
