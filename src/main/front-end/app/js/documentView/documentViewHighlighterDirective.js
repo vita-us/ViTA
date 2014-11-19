@@ -6,22 +6,21 @@
   vitaDirectives.directive('documentViewHighlighter', [
       'ChapterText',
       'CssClass',
-      'TestData',
-      function(ChapterText, CssClass, TestData) {
+      function(ChapterText, CssClass) {
 
         var highlighterElement;
 
         function link(scope, element, attrs) {
           highlighterElement = element;
-          scope.$watch('occurrences', function(newValue, oldValue) {
+          scope.$watch('[occurrences, entities]', function(newValue, oldValue) {
             if (!angular.equals(newValue, oldValue)) {
               clearChapters();
-              highlight(scope.occurrences, scope.documentId);
+              highlight(scope.occurrences, scope.documentId, scope.entities);
             }
           }, true);
         }
 
-        function highlight(occurrences, documentId) {
+        function highlight(occurrences, documentId, entities) {
           occurrences = angular.isUndefined(occurrences) ? [] : occurrences;
 
           occurrences = occurrences.sort(function(a, b) {
@@ -37,12 +36,12 @@
               chapterId: chapterId
             }, function(chapter) {
               var chapterOffset = chapter.range.start.offset;
-              highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId);
+              highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
             });
           });
         }
 
-        function highlightChapter(chapterOccurrences, chapterOffset, chapterId) {
+        function highlightChapter(chapterOccurrences, chapterOffset, chapterId, entities) {
           var chapterHTMLId = 'chapter-' + chapterId;
           var $chapter = $(highlighterElement[0]).find('[id="' + chapterHTMLId + '"] p');
           if ($chapter.length == 0) { return; }
@@ -50,7 +49,7 @@
 
           var splitParts = splitChapter(chapterText, chapterOccurrences, chapterOffset);
 
-          var highlightedOccurrenceParts = addHighlights(splitParts.occurrenceParts);
+          var highlightedOccurrenceParts = addHighlights(splitParts.occurrenceParts, entities);
 
           var highlightedChapterText = mergeChapter(highlightedOccurrenceParts,
                   splitParts.nonOccurrenceParts);
@@ -87,18 +86,21 @@
           };
         }
 
-        function addHighlights(occurrenceParts) {
+        function addHighlights(occurrenceParts, entities) {
           var highlightedOccurrenceParts = [];
           occurrenceParts.forEach(function(occurrencePart) {
-            var highlightedOccurrencePart = wrap(highlightEntities(occurrencePart), 'occurrence');
+            var highlightedOccurrencePart = wrap(highlightEntities(occurrencePart, entities), 'occurrence');
             highlightedOccurrenceParts.push(highlightedOccurrencePart);
           });
           return highlightedOccurrenceParts;
         }
 
-        function highlightEntities(occurrenceText) {
+        function highlightEntities(occurrenceText, entities) {
+          if (angular.isUndefined(entities)) {
+            return occurrenceText;
+          }
           var highlightedText = occurrenceText;
-          TestData.entities.forEach(function(entity) {
+          entities.forEach(function(entity) {
             var names = getAllNames(entity);
 
             // We need to highlight the longest names first
@@ -164,7 +166,8 @@
           restrict: 'A',
           scope: {
             occurrences: '=',
-            documentId: '='
+            documentId: '=',
+            entities: '='
           },
           link: link
         };

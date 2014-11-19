@@ -5,8 +5,9 @@
 
   vitaDirectives.directive('fingerprint', ['DocumentViewSender',
                                            'RelationOccurrences',
+                                           'Person',
                                            '$routeParams',
-                          function(DocumentViewSender, RelationOccurrences, $routeParams) {
+                          function(DocumentViewSender, RelationOccurrences, Person, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -119,16 +120,41 @@
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function(clickedOccurrence) {
-                RelationOccurrences.get({
-                  documentId: $routeParams.documentId,
-                  entityIds: scope.entityIds.join(','),
-                  rangeStart: clickedOccurrence.start.progress,
-                  rangeEnd: clickedOccurrence.end.progress
-                }, function(response) {
-                  DocumentViewSender.sendOccurrences(response.occurrences);
-                });
+              .on('click', function (clickedOccurrence) {
+                onClickOccurrence(clickedOccurrence, scope);
               });
+        }
+
+        function onClickOccurrence(clickedOccurrence, scope) {
+          RelationOccurrences.get({
+            documentId: $routeParams.documentId,
+            entityIds: scope.entityIds.join(','),
+            rangeStart: clickedOccurrence.start.progress,
+            rangeEnd: clickedOccurrence.end.progress
+          }, function(response) {
+            DocumentViewSender.sendOccurrences(response.occurrences);
+          });
+          var personsToSend = [];
+          scope.entityIds.forEach(function(entityId) {
+            // TODO: Fingeprint may contain places also
+            // How to figure out which service to call?
+            Person.get({
+              documentId: $routeParams.documentId,
+              personId: entityId
+            }, function(person) {
+              // Cannot simply push person as it contains angular promises
+              // which cannot be sent
+              personsToSend.push({
+                id: person.id,
+                displayName: person.displayName,
+                attributes: person.attributes,
+                rankingValue: person.rankingValue
+              });
+              if (personsToSend.length == scope.entityIds.length) {
+                DocumentViewSender.sendEntities(personsToSend);
+              }
+            })
+          });
         }
 
         function selectOccurrence(occurrenceRect) {

@@ -11,7 +11,7 @@ describe('documentHighlighter', function() {
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1.2').respond(TestData.secondChapter);
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1.3').respond(TestData.thirdChapter);
 
-    element = '<div data-document-view-highlighter data-document-id="documentId"'
+    element = '<div data-document-view-highlighter data-document-id="documentId"  data-entities="entities"'
             + ' data-occurrences="occurrences" class="col-sm-9 document-view-text"><div id="part-{{part.number}}"' 
             + ' data-part data-ng-repeat="part in parts" data-part-data="part"'
             + ' data-document-id="documentId"></div></div>';
@@ -29,6 +29,7 @@ describe('documentHighlighter', function() {
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1.2').respond(TestData.secondChapter);
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1.3').respond(TestData.thirdChapter);
     scope.occurrences = TestData.relationOccurrences.occurrences;
+    scope.entities = TestData.entities;
     scope.$digest();
     $httpBackend.flush();
   }));
