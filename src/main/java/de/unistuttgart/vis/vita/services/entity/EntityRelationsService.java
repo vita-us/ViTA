@@ -58,8 +58,7 @@ public class EntityRelationsService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public RelationsResponse getRelations(@QueryParam("steps") int steps,
-                                        @QueryParam("rangeStart") double rangeStart,
+  public RelationsResponse getRelations(@QueryParam("rangeStart") double rangeStart,
                                         @QueryParam("rangeEnd") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
@@ -81,16 +80,16 @@ public class EntityRelationsService {
       // get relations from database how they are read depends on 'type'
       switch (type.toLowerCase()) {
         case "person":
-          relations = readRelationsFromDatabase(steps, entityIds, Person.class.getSimpleName());
+          relations = readRelationsFromDatabase(entityIds, Person.class.getSimpleName());
           break;
         case "place":
-          relations = readRelationsFromDatabase(steps, entityIds, Place.class.getSimpleName());
+          relations = readRelationsFromDatabase(entityIds, Place.class.getSimpleName());
           break;
         case "all":
-          relations = readRelationsFromDatabase(steps, entityIds); 
+          relations = readRelationsFromDatabase(entityIds);
           break;
         default:
-          throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
+          throw new BadRequestException("Unknown type, must be 'person', 'place' or 'all'!");
       }
     }
     
@@ -106,10 +105,9 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation> readRelationsFromDatabase(int steps, List<String> ids) {
+  private List<EntityRelation> readRelationsFromDatabase(List<String> ids) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     query.setParameter("entityIds", ids);
-    query.setMaxResults(steps);
     return query.getResultList();
   }
   
@@ -122,13 +120,10 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation> readRelationsFromDatabase(int steps, 
-                                                                  List<String> ids, 
-                                                                  String type) {
+  private List<EntityRelation> readRelationsFromDatabase(List<String> ids, String type) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
     query.setParameter("entityIds", ids);
     query.setParameter("type", type);
-    query.setMaxResults(steps);
     return query.getResultList();
   } 
 
