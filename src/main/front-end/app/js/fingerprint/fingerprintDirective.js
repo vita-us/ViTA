@@ -121,7 +121,7 @@
               })
               .on('click', function(clickedOccurrence) {
                 RelationOccurrences.get({
-                  documentId: scope.documentId,
+                  documentId: $routeParams.documentId,
                   entityIds: scope.entityIds.join(','),
                   rangeStart: clickedOccurrence.start.progress,
                   rangeEnd: clickedOccurrence.end.progress
