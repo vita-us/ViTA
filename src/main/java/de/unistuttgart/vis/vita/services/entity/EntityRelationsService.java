@@ -7,11 +7,11 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -67,12 +67,10 @@ public class EntityRelationsService {
     List<EntityRelation> relations = null;
     
     // check parameters
-    if (steps <= 0) {
-      throw new WebApplicationException("Illegal amount of steps!");
-    } else if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
-      throw new WebApplicationException("Illegal range!");
+    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
+      throw new BadRequestException("Illegal range!");
     } else if (eIds == null || "".equals(eIds)) {
-      throw new WebApplicationException("No entities specified!");
+      throw new BadRequestException("No entities specified!");
     } else {
       // convert entity id string
       entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
