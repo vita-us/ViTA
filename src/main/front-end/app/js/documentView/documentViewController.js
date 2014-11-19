@@ -23,6 +23,11 @@
           $scope.$digest();
         });
 
+        DocumentViewReceiver.onEntities(function(messageData) {
+          $scope.entities = messageData.message;
+          $scope.$digest();
+        });
+
         DocumentViewReceiver.requestDocumentId();
 
         function requestParts(document) {
