@@ -8,35 +8,38 @@
     var directive = {
       restrict: 'A',
       scope: {
-        scrollElementId: '@'
+        menuSelector: '@',
+        scrollContainerId: '@'
       },
       link: link
     };
 
-    function link(scope, element, attrs) {
+    function link(scope, menuContainer) {
       // credits for concept: http://jsfiddle.net/cse_tushar/Dxtyu/141/
 
-      var scrollContainer = $('#' + scope.scrollElementId);
+      var scrollContainer = $('#' + scope.scrollContainerId);
 
       scrollContainer.on('scroll', function(event) {
-        var visibleTop = scrollContainer.scrollTop();
+        // a position in the scrollable area, which is currently visible for
+        // the user - in this case it's the top position
+        var visibleTopPosition = scrollContainer.scrollTop();
 
-        var anchorTags = element.find('a');
-        anchorTags.parent().removeClass('active-menu');
+        var menuItems = menuContainer.find(scope.menuSelector);
+        menuItems.removeClass('active-menu');
 
-        anchorTags.each(function() {
-          var anchorTag = $(this);
+        menuItems.each(function() {
+          var menu = $(this);
 
-          var referedElement = $(anchorTag.attr('href'));
+          var referedElement = $(menu.find('a').attr('href'));
 
           var elementTop = referedElement.position().top;
           var elementBottom = elementTop + referedElement.height();
 
           // Check whether the element is currently visible
-          if (elementTop <= visibleTop && elementBottom > visibleTop) {
-            anchorTag.parent().addClass('active-menu');
+          if (elementTop <= visibleTopPosition && elementBottom > visibleTopPosition) {
+            menu.addClass('active-menu');
           } else {
-            anchorTag.parent().removeClass('active-menu');
+            menu.removeClass('active-menu');
           }
         });
       });

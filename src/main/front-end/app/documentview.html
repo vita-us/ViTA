@@ -12,10 +12,11 @@
   </div>
   <div class="container-fluid" id="document-view-main">
     <div class="row" style="height: 100%">
-      <div class="col-sm-3 document-view-menu" data-menu-scroll-highlighting data-scroll-element-id="document-view-main">
+      <div class="col-sm-3 document-view-menu" data-menu-scroll-highlighting
+          data-menu-selector=".part, .chapter" data-scroll-container-id="document-view-main">
         <div class="dv-menu-fixed-wrap">
-          <div class="part" data-ng-repeat="part in parts">
-            <h3 data-ng-class="{'active-menu': $first}">
+          <div data-ng-repeat="part in parts">
+            <h3 class="part" data-ng-class="{'active-menu': $first}">
               <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
             </h3>
             <div class="chapter" data-ng-class="{'active-menu': $first}" data-ng-repeat="chapter in part.chapters">
