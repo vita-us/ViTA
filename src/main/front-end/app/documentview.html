@@ -17,10 +17,15 @@
         <div class="dv-menu-fixed-wrap">
           <div data-ng-repeat="part in parts">
             <h3 class="part" data-ng-class="{'active-menu': $first}">
-              <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+              <a href="#part-{{part.number}}">
+                Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
+              </a>
             </h3>
-            <div class="chapter" data-ng-class="{'active-menu': $parent.$first && $first}" data-ng-repeat="chapter in part.chapters">
-              <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
+            <div class="chapter" data-ng-class="{'active-menu': $parent.$first && $first}"
+                data-ng-repeat="chapter in part.chapters">
+              <a href="#chapter-{{chapter.id}}">
+                Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}
+              </a>
             </div>
           </div>
         </div>
