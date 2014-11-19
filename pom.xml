@@ -47,11 +47,20 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.17</version>
         <configuration>
-          <argLine>-Xms2048m -Xmx2048m -XX:MaxPermSize=512m</argLine>
           <includes>
             <include>**/AllTests.java</include>
           </includes>
+          <systemPropertyVariables>
+            <jersey.config.test.container.port>${env.JERSEY_PORT}</jersey.config.test.container.port>
+          </systemPropertyVariables>
         </configuration>
+        <executions>
+          <execution>
+            <configuration>
+              <argLine>${argLine} -Xms2048m -Xmx2048m -XX:MaxPermSize=512m</argLine>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

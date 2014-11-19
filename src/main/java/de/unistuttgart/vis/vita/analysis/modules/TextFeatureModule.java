@@ -28,7 +28,7 @@ import javax.persistence.EntityManager;
  * in lucene.
  */
 @AnalysisModule(dependencies = {ImportResult.class, DocumentPersistenceContext.class, Model.class,
-    IndexSearcher.class})
+                                IndexSearcher.class}, weight = 0.1)
 public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> {
 
   @Override

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-@AnalysisModule(dependencies=BasicEntityCollection.class)
+@AnalysisModule(dependencies = BasicEntityCollection.class, weight = 0.1)
 public class EntityRelationModule extends Module<EntityRelations> {
 
   /**

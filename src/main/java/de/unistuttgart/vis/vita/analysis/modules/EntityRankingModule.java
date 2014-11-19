@@ -1,5 +1,13 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import de.unistuttgart.vis.vita.analysis.Module;
@@ -10,11 +18,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-@AnalysisModule(dependencies = { BasicEntityCollection.class })
+@AnalysisModule(dependencies = {BasicEntityCollection.class}, weight = 0.1)
 public class EntityRankingModule extends Module<EntityRanking> {
   @Override
   public EntityRanking execute(ModuleResultProvider results, ProgressListener progressListener)

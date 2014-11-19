@@ -17,7 +17,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.Function;
 
-@AnalysisModule(dependencies = {ImportResult.class})
+@AnalysisModule(dependencies = {ImportResult.class}, weight = 0.1)
 public class StanfordNLPModule extends Module<StanfordNLPResult> {
   private StanfordCoreNLP pipeline;
   private int totalLength;

@@ -11,7 +11,7 @@ describe('DocumentSearch', function() {
   beforeEach(module('vita'));
 
   it('should expect a get request', inject(function($httpBackend, TestData, DocumentSearch) {
-    $httpBackend.expectGET('/documents/doc13a/search?query=hugs+and+kisses').respond(
+    $httpBackend.expectGET('webapi/documents/doc13a/search?query=hugs+and+kisses').respond(
             TestData.search);
 
     var response = DocumentSearch.search({

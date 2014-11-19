@@ -31,7 +31,7 @@ describe('DocumentService', function() {
   }));
 
   it('should expect a put request', inject(function($httpBackend, Document) {
-    $httpBackend.expectPUT('/documents/doc13a').respond(undefined);
+    $httpBackend.expectPUT('webapi/documents/doc13a').respond(undefined);
 
     var result = Document.rename({
       documentId: 'doc13a',

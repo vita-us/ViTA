@@ -28,7 +28,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-@AnalysisModule
+@AnalysisModule(weight = 0.1)
 public class TextImportModule extends Module<ImportResult> {
 
   private Path filePath;

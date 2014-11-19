@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
@@ -31,8 +32,9 @@ import javax.persistence.EntityManager;
  * This depends on the text feature module because the chapters must have been stored for the
  * TextSpans to be persistable
  */
-@AnalysisModule(dependencies = {EntityRanking.class, DocumentPersistenceContext.class,
-    Model.class, TextFeatureModule.class, EntityRelations.class})
+@AnalysisModule(dependencies = {EntityRanking.class, EntityRelations.class,
+                                BasicEntityCollection.class, DocumentPersistenceContext.class,
+                                Model.class, TextFeatureModule.class}, weight = 0.1)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
