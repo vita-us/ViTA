@@ -109,6 +109,8 @@
             });
 
             names.forEach(function(name) {
+              // dots in names must be escaped as they are a special character in a regex
+              name = name.replace('.', '\\.');
               highlightedText = highlightedText.replace(new RegExp('(' + name + ')\\b', 'g'), wrap(
                       '$1', CssClass.forRankingValue(entity.rankingValue)));
             });
