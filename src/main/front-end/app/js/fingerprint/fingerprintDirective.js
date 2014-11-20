@@ -5,9 +5,9 @@
 
   vitaDirectives.directive('fingerprint', ['DocumentViewSender',
                                            'RelationOccurrences',
-                                           'Person',
+                                           'Entity',
                                            '$routeParams',
-                          function(DocumentViewSender, RelationOccurrences, Person, $routeParams) {
+                          function(DocumentViewSender, RelationOccurrences, Entity, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -134,24 +134,22 @@
           }, function(response) {
             DocumentViewSender.sendOccurrences(response.occurrences);
           });
-          var personsToSend = [];
+          var entitiesToSend = [];
           scope.entityIds.forEach(function(entityId) {
-            // TODO: Fingeprint may contain places also
-            // How to figure out which service to call?
-            Person.get({
+            Entity.get({
               documentId: $routeParams.documentId,
-              personId: entityId
-            }, function(person) {
-              // Cannot simply push person as it contains angular promises
+              entityId: entityId
+            }, function(entity) {
+              // Cannot simply push entity as it contains angular promises
               // which cannot be sent
-              personsToSend.push({
-                id: person.id,
-                displayName: person.displayName,
-                attributes: person.attributes,
-                rankingValue: person.rankingValue
+              entitiesToSend.push({
+                id: entity.id,
+                displayName: entity.displayName,
+                attributes: entity.attributes,
+                rankingValue: entity.rankingValue
               });
-              if (personsToSend.length == scope.entityIds.length) {
-                DocumentViewSender.sendEntities(personsToSend);
+              if (entitiesToSend.length == scope.entityIds.length) {
+                DocumentViewSender.sendEntities(entitiesToSend);
               }
             })
           });
