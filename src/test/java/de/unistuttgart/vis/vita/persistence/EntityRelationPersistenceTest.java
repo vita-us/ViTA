@@ -128,6 +128,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // check Named Query finding entity relation for entities
     List<String> entityIdList = new ArrayList<>();
     entityIdList.add(testPerson.getId());
+    entityIdList.add(relatedPerson.getId());
     
     Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     entQ.setParameter("entityIds", entityIdList);
