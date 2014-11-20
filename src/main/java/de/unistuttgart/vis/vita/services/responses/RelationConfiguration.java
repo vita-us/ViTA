@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.services.responses;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 
 /**

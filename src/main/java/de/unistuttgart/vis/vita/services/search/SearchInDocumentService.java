@@ -13,7 +13,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 @ManagedBean
 public class SearchInDocumentService extends OccurrencesService {
-  
+
   private String documentId;
 
   @Inject
@@ -27,13 +27,19 @@ public class SearchInDocumentService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart, 
+                                            @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") double rangeEnd,
                                             @QueryParam("query") String searchQuery) {
 
     // TODO implement SearchInDocumentService
 
     return new OccurrencesResponse();
+  }
+
+  @Override
+  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+    // TODO Auto-generated method stub
+    return 0;
   }
 
 }

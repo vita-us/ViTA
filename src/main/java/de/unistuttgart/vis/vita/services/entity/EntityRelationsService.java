@@ -7,11 +7,11 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -58,8 +58,7 @@ public class EntityRelationsService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public RelationsResponse getRelations(@QueryParam("steps") int steps,
-                                        @QueryParam("rangeStart") double rangeStart,
+  public RelationsResponse getRelations(@QueryParam("rangeStart") double rangeStart,
                                         @QueryParam("rangeEnd") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
@@ -68,12 +67,10 @@ public class EntityRelationsService {
     List<EntityRelation> relations = null;
     
     // check parameters
-    if (steps <= 0) {
-      throw new WebApplicationException("Illegal amount of steps!");
-    } else if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
-      throw new WebApplicationException("Illegal range!");
+    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
+      throw new BadRequestException("Illegal range!");
     } else if (eIds == null || "".equals(eIds)) {
-      throw new WebApplicationException("No entities specified!");
+      throw new BadRequestException("No entities specified!");
     } else {
       // convert entity id string
       entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
@@ -81,16 +78,16 @@ public class EntityRelationsService {
       // get relations from database how they are read depends on 'type'
       switch (type.toLowerCase()) {
         case "person":
-          relations = readRelationsFromDatabase(steps, entityIds, Person.class.getSimpleName());
+          relations = readRelationsFromDatabase(entityIds, Person.class.getSimpleName());
           break;
         case "place":
-          relations = readRelationsFromDatabase(steps, entityIds, Place.class.getSimpleName());
+          relations = readRelationsFromDatabase(entityIds, Place.class.getSimpleName());
           break;
         case "all":
-          relations = readRelationsFromDatabase(steps, entityIds); 
+          relations = readRelationsFromDatabase(entityIds);
           break;
         default:
-          throw new WebApplicationException("Unknown type, must be 'person', 'place' or 'all'!");
+          throw new BadRequestException("Unknown type, must be 'person', 'place' or 'all'!");
       }
     }
     
@@ -106,10 +103,9 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation> readRelationsFromDatabase(int steps, List<String> ids) {
+  private List<EntityRelation> readRelationsFromDatabase(List<String> ids) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     query.setParameter("entityIds", ids);
-    query.setMaxResults(steps);
     return query.getResultList();
   }
   
@@ -122,13 +118,10 @@ public class EntityRelationsService {
    * @return list of EntityRelations matching the given criteria
    */
   @SuppressWarnings("unchecked")
-  private List<EntityRelation> readRelationsFromDatabase(int steps, 
-                                                                  List<String> ids, 
-                                                                  String type) {
+  private List<EntityRelation> readRelationsFromDatabase(List<String> ids, String type) {
     Query query = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
     query.setParameter("entityIds", ids);
     query.setParameter("type", type);
-    query.setMaxResults(steps);
     return query.getResultList();
   } 
 
