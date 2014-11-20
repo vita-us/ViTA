@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.model;
 
+import org.glassfish.hk2.api.Factory;
+import org.glassfish.jersey.server.CloseableService;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,20 +18,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.glassfish.hk2.api.Factory;
-import org.glassfish.jersey.server.CloseableService;
-
 /**
  * Represents the Model of the application.
  */
 @ManagedBean
 @ApplicationScoped
 public class Model implements Factory<EntityManager> {
-  private TextRepository textRepository = new TextRepository();
-  protected EntityManagerFactory entityManagerFactory;
-
-  @Inject
-  CloseableService closeableService;
 
   private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
 
@@ -39,6 +34,10 @@ public class Model implements Factory<EntityManager> {
      */
     loadDriver();
   }
+  protected EntityManagerFactory entityManagerFactory;
+  @Inject
+  CloseableService closeableService;
+  private TextRepository textRepository = new TextRepository();
 
   /**
    * Create a default Model instance
@@ -50,20 +49,6 @@ public class Model implements Factory<EntityManager> {
 
   protected Model(EntityManagerFactory emf) {
     entityManagerFactory = emf;
-  }
-
-  /**
-   * @return The entity manager.
-   */
-  public EntityManager getEntityManager() {
-    return entityManagerFactory.createEntityManager();
-  }
-
-  /**
-   * @return the TextRepository
-   */
-  public TextRepository getTextRepository() {
-    return textRepository;
   }
 
   private static void loadDriver() {
@@ -78,6 +63,20 @@ public class Model implements Factory<EntityManager> {
     } catch (ClassNotFoundException e) {
       Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load mysql driver", e);
     }
+  }
+
+  /**
+   * @return The entity manager.
+   */
+  public EntityManager getEntityManager() {
+    return entityManagerFactory.createEntityManager();
+  }
+
+  /**
+   * @return the TextRepository
+   */
+  public TextRepository getTextRepository() {
+    return textRepository;
   }
 
   @Override
@@ -106,8 +105,9 @@ public class Model implements Factory<EntityManager> {
 
   @Override
   public void dispose(@Disposes EntityManager instance) {
-    if (!instance.isOpen())
+    if (!instance.isOpen()) {
       return;
+    }
 
     instance.close();
   }
