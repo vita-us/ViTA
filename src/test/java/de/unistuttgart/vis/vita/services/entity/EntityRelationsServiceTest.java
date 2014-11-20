@@ -18,12 +18,10 @@ import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.entity.EntityRelationsService;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 
@@ -35,7 +33,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
   private static final double TEST_RANGE_END = 1.0;
   private static final String TEST_RELATION_TYPE = "person";
   
-  private static final int ERROR_STATUS = 500;
+  private static final int ERROR_STATUS = 400;
   
   private static final String TEST_RELATION_TYPE_ILLEGAL = "hobbits";
   private static final String TEST_NO_ENTITY_IDS = "";
@@ -75,6 +73,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     ids.add(testPerson.getId());
     originPersonId = testPerson.getId();
     Person relatedPerson = personTestData.createTestPerson(2);
+    ids.add(relatedPerson.getId());
     targetPersonId = relatedPerson.getId();
     EntityRelation testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(testPersonRelation);
@@ -84,6 +83,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     ids.add(testPlace.getId());
     originPlaceId = testPlace.getId();
     Place relatedPlace = placeTestData.createTestPlace(2);
+    ids.add(relatedPlace.getId());
     targetPlaceId = relatedPlace.getId();
     EntityRelation testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(testPlaceRelation);
@@ -191,20 +191,6 @@ public class EntityRelationsServiceTest extends ServiceTest {
                                                     .request().get(RelationsResponse.class);
     assertNotNull(actualResponse);
     assertEquals(2, actualResponse.getRelations().size());
-  }
-  
-  /**
-   * Check whether server response is 500 when requesting relations with illegal step value.
-   */
-  @Test
-  public void testGetRelationsWithIllegalSteps() {
-    Response actualResponse = target(path).queryParam("steps", TEST_STEPS_ILLEGAL)
-                                          .queryParam("rangeStart", TEST_RANGE_START)
-                                          .queryParam("rangeEnd", TEST_RANGE_END)
-                                          .queryParam("entityIds", ids)
-                                          .queryParam("type", TEST_RELATION_TYPE)
-                                          .request().get();
-    assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
   
   /**

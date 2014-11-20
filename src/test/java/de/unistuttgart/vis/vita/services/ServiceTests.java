@@ -17,20 +17,17 @@ import de.unistuttgart.vis.vita.services.entity.PersonServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PersonsServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PlaceServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PlacesServiceTest;
-import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesServiceTest;
-import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesServiceTest;
-import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesServiceTest;
+import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
 
 /**
  * A suite containing the tests for the REST API
  */
 @RunWith(Suite.class)
 @SuiteClasses({VersionServiceTest.class, DocumentsServiceTest.class, DocumentServiceTest.class,
-    ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class, 
-    PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class, 
+    ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class,
+    PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class,
     DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
-    EntityOccurrencesServiceTest.class, AttributesServiceTest.class, AttributeServiceTest.class,
-    RelationOccurrencesServiceTest.class, AttributeOccurrencesServiceTest.class})
+    AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class})
 public class ServiceTests {
 
 }
