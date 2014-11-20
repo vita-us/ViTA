@@ -38,4 +38,11 @@ describe('Progress Status Directive', function() {
     expect(elementAsHtml).toContain(percentageString);
   }));
 
+  it('should hide the status if data are undefined', function() {
+    scope.progress = undefined;
+    element.scope().$apply();
+
+    expect(element.find('.status').hasClass('ng-hide')).toBe(true);
+  });
+
 });

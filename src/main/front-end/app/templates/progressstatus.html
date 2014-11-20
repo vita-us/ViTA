@@ -1,3 +1,4 @@
 <img ng-src="{{image}}">
-<span class="status" ng-hide="status.isReady">{{status.progress * 100 | number:2}}%</span>
+<span class="status" ng-hide="!status || status.isReady">{{status.progress * 100 |
+  number:2}}%</span>
 <h4>{{title}}</h4>
