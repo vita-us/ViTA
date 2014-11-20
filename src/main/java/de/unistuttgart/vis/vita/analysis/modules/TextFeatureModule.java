@@ -28,7 +28,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * in lucene.
  */
 @AnalysisModule(dependencies = {ImportResult.class, DocumentPersistenceContext.class, Model.class,
-    IndexSearcher.class})
+                                IndexSearcher.class}, weight = 0.1)
 public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> {
 
   @Override
@@ -39,9 +39,22 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
     ImportResult importResult = result.getResultFor(ImportResult.class);
     
     document.getContent().getParts().addAll(importResult.getParts());
+
+    int characterCount = 0;
+    int chapterCount = 0;
+    for (DocumentPart part : importResult.getParts()) {
+      for (Chapter chapter : part.getChapters()) {
+        chapterCount++;
+        characterCount += chapter.getLength();
+      }
+    }
+    document.getMetrics().setCharacterCount(characterCount);
+    document.getMetrics().setChapterCount(chapterCount);
+
     for (DocumentPart part : importResult.getParts()) {
       em.persist(part);
       for (Chapter chapter : part.getChapters()) {
+        chapter.setDocumentLength(document.getMetrics().getCharacterCount());
         em.persist(chapter);
       }
     }

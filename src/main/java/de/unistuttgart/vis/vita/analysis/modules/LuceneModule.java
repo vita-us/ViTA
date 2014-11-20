@@ -18,7 +18,8 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * LuceneModule class with its result IndexSearcher
  */
-@AnalysisModule(dependencies = {ImportResult.class, Model.class, DocumentPersistenceContext.class})
+@AnalysisModule(dependencies = {ImportResult.class, Model.class,
+                                DocumentPersistenceContext.class}, weight = 0.1)
 public class LuceneModule extends Module<IndexSearcher> {
 
   private ImportResult importResult;

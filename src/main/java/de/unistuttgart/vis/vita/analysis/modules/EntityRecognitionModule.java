@@ -33,7 +33,7 @@ import de.unistuttgart.vis.vita.model.entity.EntityType;
 /**
  *
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class})
+@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();

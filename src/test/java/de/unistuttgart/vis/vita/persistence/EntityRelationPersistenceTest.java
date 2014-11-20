@@ -12,7 +12,6 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.PlaceTestData;
-import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -129,6 +128,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     // check Named Query finding entity relation for entities
     List<String> entityIdList = new ArrayList<>();
     entityIdList.add(testPerson.getId());
+    entityIdList.add(relatedPerson.getId());
     
     Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     entQ.setParameter("entityIds", entityIdList);

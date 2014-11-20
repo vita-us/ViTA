@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.importer.txt.analyzers.MetadataAnalyzer;
 import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
-import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 /**
