@@ -11,6 +11,9 @@ import javax.persistence.DiscriminatorType;
 import javax.persistence.Inheritance;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -21,6 +24,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 @javax.persistence.Entity
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
+@XmlRootElement
 public abstract class Entity extends AbstractEntityBase {
 
   // constants
@@ -31,6 +35,7 @@ public abstract class Entity extends AbstractEntityBase {
   private int rankingValue;
 
   @OneToMany(cascade = CascadeType.ALL)
+  @XmlElement(required = true)
   private Set<Attribute> attributes;
 
   @OneToMany(cascade = CascadeType.ALL)
@@ -38,6 +43,8 @@ public abstract class Entity extends AbstractEntityBase {
   private SortedSet<TextSpan> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
+  @XmlElement(name = "entityRelations")
+  @XmlJavaTypeAdapter(FlatEntityRelationAdapter.class)
   private Set<EntityRelation> entityRelations;
 
   /**
