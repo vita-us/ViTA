@@ -28,7 +28,7 @@
       if (onOccurrenceCallback instanceof Function && message.type === constants.OCCURRENCES) {
         onOccurrenceCallback(message);
       }
-      if (onOccurrenceCallback instanceof Function && message.type === constants.ENTITIES) {
+      if (onEntitiesCallback instanceof Function && message.type === constants.ENTITIES) {
         onEntitiesCallback(message);
       }
     }, false);
