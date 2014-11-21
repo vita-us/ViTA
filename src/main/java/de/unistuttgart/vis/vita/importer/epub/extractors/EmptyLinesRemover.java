@@ -30,7 +30,7 @@ public class EmptyLinesRemover {
   /**
    * Removes Epublines with empty lines in the current parts
    * 
-   * @param currentPart
+   * @param currentParts
    */
   public void removeEmptyLinesParts(List<List<List<Epubline>>> currentParts) {
     for (List<List<Epubline>> currentPart : currentParts) {

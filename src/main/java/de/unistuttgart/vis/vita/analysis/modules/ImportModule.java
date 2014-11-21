@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 
 /**
- * @author Vincent Link, Eduard Marbach
+ * Module to provide the correct importing method either for plain text files or for epub files.
  */
 @AnalysisModule(weight = 0.1)
 public class ImportModule extends Module<ImportResult> {
