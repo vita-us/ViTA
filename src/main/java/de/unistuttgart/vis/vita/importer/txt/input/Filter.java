@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * The Filter filters unnecessary comments in the entireEbookList and removes them
@@ -94,7 +95,7 @@ public class Filter {
     for (Line line : entireEbookList) {
       if (line.getText().matches(DEFAULT_COMMENT)) {
         editedLine = replaceMultipleWhitespaces(line, REMOVE_COMMENT);
-        editedLinesMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+        editedLinesMap.put(entireEbookList.indexOf(line), new TxtModuleLine(editedLine));
       }
     }
     setEditedLines(editedLinesMap);
@@ -125,7 +126,7 @@ public class Filter {
         if (existsEndBracket(line)) {
           addLinesToRemove(removeLines, line, editedLinesMap);
           editedLine = replaceMultipleWhitespaces(line, REMOVE_BEGIN_COMMENT);
-          editedLinesMap.put(entireEbookList.indexOf(line), new Line(editedLine));
+          editedLinesMap.put(entireEbookList.indexOf(line), new TxtModuleLine(editedLine));
         }
       }
     }
@@ -149,7 +150,7 @@ public class Filter {
     for (int i = entireEbookList.indexOf(line) + 1; i < entireEbookList.size(); i++) {
       if (entireEbookList.get(i).getText().matches(DEFAULT_END_COMMENT)) {
         String editedLine = replaceMultipleWhitespaces(entireEbookList.get(i), REMOVE_END_COMMENT);
-        editedLinesMap.put(i, new Line(editedLine));
+        editedLinesMap.put(i, new TxtModuleLine(editedLine));
         break;
       } else {
         removeLines.add(entireEbookList.get(i));

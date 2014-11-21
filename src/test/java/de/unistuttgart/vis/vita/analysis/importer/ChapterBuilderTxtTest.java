@@ -7,8 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.output.ChapterBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.output.ChapterBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 public class ChapterBuilderTxtTest {
@@ -21,9 +22,9 @@ public class ChapterBuilderTxtTest {
     String headingString = "This is the Heading.";
     String textString = "blablabla";
     
-    heading.add(new Line(" This is the Heading. ", true));
+    heading.add(new TxtModuleLine(" This is the Heading. ", true));
 
-    text.add(new Line(" blablabla ", true));
+    text.add(new TxtModuleLine(" blablabla ", true));
 
 
     ChapterBuilder builder = new ChapterBuilder(heading, text, 0);
@@ -41,13 +42,13 @@ public class ChapterBuilderTxtTest {
     String headingString = "This is the Heading.";
     String textString = "blablabla";
 
-    heading.add(new Line(" ", true));
-    heading.add(new Line(" This is the Heading. ", true));
-    heading.add(new Line("", true));
+    heading.add(new TxtModuleLine(" ", true));
+    heading.add(new TxtModuleLine(" This is the Heading. ", true));
+    heading.add(new TxtModuleLine("", true));
 
-    heading.add(new Line("", true));
-    text.add(new Line(" blablabla ", true));
-    heading.add(new Line(" ", true));
+    heading.add(new TxtModuleLine("", true));
+    text.add(new TxtModuleLine(" blablabla ", true));
+    heading.add(new TxtModuleLine(" ", true));
 
     ChapterBuilder builder = new ChapterBuilder(heading, text, 0);
     Chapter vitaChapter = builder.call();
@@ -64,16 +65,16 @@ public class ChapterBuilderTxtTest {
     String headingString = "This is the\n\n\nHeading.";
     String textString = "1blablabla\n\n2blablabla";
 
-    heading.add(new Line(" This is the ", true));
-    heading.add(new Line(" ", true));
-    heading.add(new Line("", true));
-    heading.add(new Line(" Heading. ", true));
+    heading.add(new TxtModuleLine(" This is the ", true));
+    heading.add(new TxtModuleLine(" ", true));
+    heading.add(new TxtModuleLine("", true));
+    heading.add(new TxtModuleLine(" Heading. ", true));
 
 
-    text.add(new Line(" 1blablabla ", true));
-    text.add(new Line("", true));
-    text.add(new Line(" ", true));
-    text.add(new Line(" 2blablabla ", true));
+    text.add(new TxtModuleLine(" 1blablabla ", true));
+    text.add(new TxtModuleLine("", true));
+    text.add(new TxtModuleLine(" ", true));
+    text.add(new TxtModuleLine(" 2blablabla ", true));
 
 
     ChapterBuilder builder = new ChapterBuilder(heading, text, 0);
@@ -90,8 +91,8 @@ public class ChapterBuilderTxtTest {
 
     String textString = "1blablabla 2blablabla";
 
-    text.add(new Line(" 1blablabla ", true));
-    text.add(new Line(" 2blablabla ", true));
+    text.add(new TxtModuleLine(" 1blablabla ", true));
+    text.add(new TxtModuleLine(" 2blablabla ", true));
 
 
     ChapterBuilder builder = new ChapterBuilder(heading, text, 0);
@@ -107,10 +108,10 @@ public class ChapterBuilderTxtTest {
 
     String headingString = " This is the\n\n\nHeading.";
 
-    heading.add(new Line(" # This is the ", true));
-    heading.add(new Line(" ", true));
-    heading.add(new Line("", true));
-    heading.add(new Line(" #Heading. ", true));
+    heading.add(new TxtModuleLine(" # This is the ", true));
+    heading.add(new TxtModuleLine(" ", true));
+    heading.add(new TxtModuleLine("", true));
+    heading.add(new TxtModuleLine(" #Heading. ", true));
 
     ChapterBuilder builder = new ChapterBuilder(heading, text, 0);
     Chapter vitaChapter = builder.call();

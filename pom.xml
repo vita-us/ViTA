@@ -312,7 +312,42 @@
       <artifactId>typetools</artifactId>
       <version>0.3.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>nl.siegmann.epublib</groupId>
+      <artifactId>epublib-core</artifactId>
+      <version>3.1</version>
+    </dependency>
+
+    <dependency>
+      <!-- jsoup HTML parser library @ http://jsoup.org/ -->
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.7.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.7</version>
+    </dependency>
+
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>psiegman-repo</id>
+      <url>https://github.com/psiegman/mvn-repo/raw/master/releases</url>
+    </repository>
+    <repository>
+      <id>xerces-mvn-repo</id>
+      <url>https://raw.github.com/Yogu/xerces/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <properties>
     <jersey.version>2.10.1</jersey.version>
@@ -347,15 +382,4 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <repositories>
-    <repository>
-      <id>xerces-mvn-repo</id>
-      <url>https://raw.github.com/Yogu/xerces/mvn-repo/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
 </project>
