@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.unistuttgart.vis.vita.analysis.Threads;
 import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -85,7 +86,7 @@ public class BookBuilder implements Callable<List<DocumentPart>> {
    * Starts the Threads for the construction of all Parts and adds the Objects to futureParts.
    */
   private void startPartComputation() {
-    ExecutorService executor = Executors.newCachedThreadPool();
+    ExecutorService executor = Threads.getGlobalExecutorService();
     for (int partIndex = 0; partIndex < size; partIndex++) {
       List<Line> currentPartText = this.partLines.get(partIndex);
       ChapterPosition currentPartChapterPosition = this.chapterPositions.get(partIndex);
