@@ -46,9 +46,6 @@
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: 'WordcloudCtrl'
-    }).when('/documents/:documentId/documentview', {
-      templateUrl: 'partials/documentview.html',
-      controller: ''
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
     }).otherwise({
