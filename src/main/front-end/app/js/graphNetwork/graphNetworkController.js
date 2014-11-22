@@ -4,13 +4,20 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      'Document', 'Page', function($scope, $routeParams, DocumentParts, Document, Page) {
+      'Document', 'Page', 'Person',
+      function($scope, $routeParams, DocumentParts, Document, Page, Person) {
 
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
           Page.breadcrumbs = 'Graph-Network';
           Page.setUpForDocument(document);
+        });
+
+        Person.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.persons = response.persons;
         });
 
         // Set a custom graph width

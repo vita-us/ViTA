@@ -3,14 +3,19 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  // Controller responsible for the wordcloud page
   vitaControllers.controller('WordcloudCtrl', ['$scope', 'Wordcloud', 'Page', '$routeParams',
-      'Document', function($scope, Wordcloud, Page, $routeParams, Document) {
+      'Document', 'Person', function($scope, Wordcloud, Page, $routeParams, Document, Person) {
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
           Page.breadcrumbs = 'Wordcloud';
           Page.setUpForDocument(document);
+        });
+
+        Person.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.persons = response.persons;
         });
 
         $scope.loadPersonWordcloud = function(person) {
