@@ -191,10 +191,8 @@
     }
 
     function setNewPositions() {
-      nodes.attr('cx', function(d) {
-        return d.x;
-      }).attr('cy', function(d) {
-        return d.y;
+      nodes.attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
       });
 
       links.attr('x1', function(d) {
@@ -221,17 +219,24 @@
             }
           });
 
-      nodes = graph.select('#nodeGroup').selectAll('.node')
+      nodes = graph.select('#nodeGroup').selectAll('g')
           .data(graphData.nodes);
 
       nodes.exit().remove();
-      nodes.enter().append('circle')
+      var newNodes = nodes.enter().append('g');
+      newNodes.append('circle')
           .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
           .attr('r', 20)
           .call(drag);
+
+      newNodes.append('text')
+        .classed('node-label', true)
+        .text(function(d, i) {
+          return d.displayName;
+        });
     }
 
     function updateSize(width, height) {
