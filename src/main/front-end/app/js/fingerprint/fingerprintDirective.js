@@ -96,7 +96,7 @@
           // group all the occurrence rects together
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
-	        rectGroupEnter.append('rect')
+          rectGroupEnter.append('rect')
              .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
@@ -148,10 +148,10 @@
                 attributes: entity.attributes,
                 rankingValue: entity.rankingValue
               });
-              if (entitiesToSend.length == scope.entityIds.length) {
+              if (entitiesToSend.length === scope.entityIds.length) {
                 DocumentViewSender.sendEntities(entitiesToSend);
               }
-            })
+            });
           });
         }
 

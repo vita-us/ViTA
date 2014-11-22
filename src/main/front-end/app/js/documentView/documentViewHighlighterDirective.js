@@ -10,10 +10,10 @@
 
         var highlighterElement;
 
-        function link(scope, element, attrs) {
+        function link(scope, element) {
           highlighterElement = element;
-          scope.$watch('[occurrences, entities]', function(newValue, oldValue) {
-            if (!angular.equals(newValue, oldValue)) {
+          scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
+            if (!angular.equals(newValues, oldValues)) {
               clearChapters();
               highlight(scope.occurrences, scope.documentId, scope.entities);
             }
@@ -44,7 +44,9 @@
         function highlightChapter(chapterOccurrences, chapterOffset, chapterId, entities) {
           var chapterHTMLId = 'chapter-' + chapterId;
           var $chapter = $(highlighterElement[0]).find('[id="' + chapterHTMLId + '"] p');
-          if ($chapter.length == 0) { return; }
+          if ($chapter.length === 0) {
+            return;
+          }
           var chapterText = $chapter.text();
 
           var splitParts = splitChapter(chapterText, chapterOccurrences, chapterOffset);
@@ -70,7 +72,7 @@
             var occurrenceText = chapterText.slice(occurrenceStart - chapterOffset, occurrenceEnd
                     - chapterOffset);
             occurrenceParts.push(occurrenceText);
-            if (i != chapterOccurrences.length - 1) {
+            if (i !== chapterOccurrences.length - 1) {
               // Parts between two occurrences, does not exist for last
               // occurrence in a chapter
               nonOccurrenceParts.push(chapterText.slice(occurrenceEnd - chapterOffset,
