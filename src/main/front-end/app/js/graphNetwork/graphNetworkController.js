@@ -23,7 +23,7 @@
           $scope.reset($scope.persons);
         });
 
-        setGraphNetworkDimensions()
+        setGraphNetworkDimensions();
         $(window).resize(function() {
           setGraphNetworkDimensions();
           $scope.$apply();

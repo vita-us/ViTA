@@ -142,10 +142,12 @@
     }
 
     function updateEntityNodeMap(newEntities, idsOfDisplayedEntities) {
+      var i, l;
+
       // Delete removed nodes also from entity map
       var currentIds = entityIdNodeMap.keys();
 
-      for (var i = 0, l = currentIds.length; i < l; i++) {
+      for (i = 0, l = currentIds.length; i < l; i++) {
         var id = currentIds[i];
         if (idsOfDisplayedEntities.indexOf(id) < 0) {
           entityIdNodeMap.remove(id);
@@ -153,7 +155,7 @@
       }
 
       // Create nodes for all new entities
-      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
+      for (i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
         var newId = idsOfDisplayedEntities[i];
 
         if (!entityIdNodeMap.has(newId)) {
@@ -164,7 +166,7 @@
       }
 
       // Add additional data of the entities
-      for (var i = 0, l = newEntities.length; i < l; i++) {
+      for (i = 0, l = newEntities.length; i < l; i++) {
         var entity = newEntities[i];
 
         // entity might be selected but doesn't occur in the selected range -> not displayed
@@ -234,7 +236,7 @@
 
       newNodes.append('text')
         .classed('node-label', true)
-        .text(function(d, i) {
+        .text(function(d) {
           return d.displayName;
         });
     }
