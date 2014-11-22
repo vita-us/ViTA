@@ -38,8 +38,6 @@
           // Check whether the element is currently visible
           if (elementTop <= visibleTopPosition && elementBottom > visibleTopPosition) {
             menu.addClass('active-menu');
-          } else {
-            menu.removeClass('active-menu');
           }
         });
       });
