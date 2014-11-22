@@ -23,11 +23,16 @@
           $scope.reset($scope.persons);
         });
 
-        // Set a custom graph width
-        $scope.graphWidth = $('#graph-network-wrapper').width();
+        setGraphNetworkDimensions()
+        $(window).resize(function() {
+          setGraphNetworkDimensions();
+          $scope.$apply();
+        });
 
-        // Set a custom graph height like this
-        $scope.graphHeight = $(window).height() * 0.7;
+        function setGraphNetworkDimensions() {
+          $scope.graphWidth = $('#graph-network-wrapper').width();
+          $scope.graphHeight = $(window).height() * 0.7;
+        }
 
         $scope.entities = [];
 

@@ -16,8 +16,8 @@
       restrict: 'A',
       scope: {
         entities: '=',
-        width: '@',
-        height: '@',
+        width: '=',
+        height: '=',
         rangeBegin: '=',
         rangeEnd: '=',
         showFingerprint: '&'
@@ -30,20 +30,13 @@
                   scope.showFingerprint);
         }, true);
 
-        scope.$watch('width', function(newValue, oldValue) {
-          if (!angular.equals(newValue, oldValue)) {
-            var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
-            updateWidth(newWidth);
+        scope.$watch('[width,height]', function(newValues, oldValues) {
+          if (!angular.equals(newValues, oldValues)) {
+            var newWidth = newValues[0] || MINIMUM_GRAPH_WIDTH;
+            var newHeight = newValues[1] || MINIMUM_GRAPH_HEIGHT;
+            updateSize(newWidth, newHeight);
           }
-        });
-
-        scope.$watch('height', function(newValue, oldValue) {
-          if (!angular.equals(newValue, oldValue)) {
-            // Fallback on the default value on an invalid parameter
-            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT;
-            updateHeight(newHeight);
-          }
-        });
+        }, true);
       }
     };
 
@@ -239,6 +232,11 @@
           .classed('node', true)
           .attr('r', 20)
           .call(drag);
+    }
+
+    function updateSize(width, height) {
+      svgContainer.attr('width', width).attr('height', height);
+      force.size([width, height]).start();
     }
 
     return directive;
