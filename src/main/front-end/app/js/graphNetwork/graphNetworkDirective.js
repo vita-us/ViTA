@@ -47,7 +47,7 @@
       }
     };
 
-    var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+    var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -96,6 +96,7 @@
           .size([width, height])
           .charge(-200)
           .gravity(0.025)
+          .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
     }
