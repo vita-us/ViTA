@@ -38,7 +38,7 @@
           min: sliderMin,
           max: sliderMax,
           values: [sliderMin, sliderMax],
-          slide: function(event, ui) {
+          change: function(event, ui) {
             var start = ui.values[0], end = ui.values[1];
 
             setSliderLabel(start, end);
