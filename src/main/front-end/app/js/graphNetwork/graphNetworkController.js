@@ -71,7 +71,7 @@
         };
 
         $scope.reset = function(persons) {
-          $scope.entities = persons.slice(0, 5);
+          $scope.entities = persons.slice(0, 7);
         };
 
         $scope.isActive = function(person) {
