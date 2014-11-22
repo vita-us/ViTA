@@ -18,6 +18,9 @@
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.persons = response.persons;
+
+          // manual initialization of the selection
+          $scope.reset($scope.persons);
         });
 
         // Set a custom graph width
