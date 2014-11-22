@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
@@ -17,6 +18,8 @@ public class ModuleExecutionStateTest {
   private ModuleClass dependencyModule;
   private ModuleExecutionState moduleState;
   private MockModule targetInstance;
+
+  private static final double EPSILON = 0.001;
 
   @Before
   public void setUp() {
@@ -109,7 +112,7 @@ public class ModuleExecutionStateTest {
     
     // There are two modules to be executed, and one is halfway through, so it's one fourth
     // note that there should be not rounding issues with base-2 fractions
-    verify(targetInstance).observeProgress(0.25);
+    verify(targetInstance).observeProgress(doubleThat(is(closeTo(0.25, EPSILON))));
   }
 
   @Test
@@ -119,7 +122,7 @@ public class ModuleExecutionStateTest {
     moduleState.notifyModuleFinished(dependencyModule, 123);
     
     // There are two modules to be executed, and one is done
-    verify(targetInstance).observeProgress(0.5);
+    verify(targetInstance).observeProgress(doubleThat(is(closeTo(0.5, EPSILON))));
   }
 
   @Test
@@ -131,7 +134,7 @@ public class ModuleExecutionStateTest {
     moduleState.notifyModuleProgress(targetModule, 0.5);
     
     // One module is finished completely, and the other halfway through
-    verify(targetInstance).observeProgress(0.75);
+    verify(targetInstance).observeProgress(doubleThat(is(closeTo(0.75, EPSILON))));
   }
 
   @Test
@@ -143,7 +146,7 @@ public class ModuleExecutionStateTest {
     moduleState.notifyModuleFinished(targetModule, "abc");
     
     // All dependencies and the target module are finished
-    verify(targetInstance).observeProgress(1.0);
+    verify(targetInstance).observeProgress(doubleThat(is(closeTo(1.0, EPSILON))));
   }
 
   @Test

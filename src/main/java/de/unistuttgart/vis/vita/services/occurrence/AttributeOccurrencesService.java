@@ -2,8 +2,10 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -69,7 +71,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
    * returns them in JSON.
    * 
    * @param steps
-   *          - maximum amount of occurrences
+   *          - amount of steps, the range should be divided into (default value 0 means exact)
    * @param rangeStart
    *          - start of range to be searched in
    * @param rangeEnd
@@ -78,18 +80,23 @@ public class AttributeOccurrencesService extends OccurrencesService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
+  public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart, 
                                             @QueryParam("rangeEnd") double rangeEnd) {
-    // check steps
-    if (steps <= 0) {
+    // check amount of steps
+    if (steps < 0 || steps > 1000) {
       throw new WebApplicationException("Illegal amount of steps!");
+    }
+    
+    // check range
+    if (rangeEnd < rangeStart) {
+      throw new WebApplicationException("Illegal range!");
     }
     
     int startOffset;
     int endOffset;
     
-    // compute offsets for the range
+    // calculate offsets for the range
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
@@ -97,24 +104,46 @@ public class AttributeOccurrencesService extends OccurrencesService {
       throw new WebApplicationException(e);
     }
     
-    // gets the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(steps, startOffset, endOffset);
+    List<Occurrence> occs = null;
+    if (steps == 0) {
+      occs = getExactEntityOccurrences(startOffset, endOffset);
+    } else {
+      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
+    }
 
-    // convert TextSpans to Occurrences
-    List<Occurrence> occurences = covertSpansToOccurrences(readTextSpans);
-
-    return new OccurrencesResponse(occurences);
+    return new OccurrencesResponse(occs);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int steps, int startOffset, int endOffset) {
+  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+    // get the TextSpans
+    List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
+    
+    // convert TextSpans into Occurrences and return them
+    return convertSpansToOccurrences(readTextSpans);
+  }
+
+  private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
     TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
         TextSpan.class);
     query.setParameter("entityId", entityId);
     query.setParameter("attributeId", attributeId);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);
-    query.setMaxResults(steps);
     return query.getResultList();
+  }
+  
+  private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
+    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForAttribute");
+    numberOfTextSpansQuery.setParameter("entityId", entityId);
+    numberOfTextSpansQuery.setParameter("attributeId", attributeId);
+    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
+    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
+    return (long) numberOfTextSpansQuery.getSingleResult();
+  }
+
+  @Override
+  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+    return getNumberOfSpansFromDatabase(stepStart, stepEnd);
   }
 
 }

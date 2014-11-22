@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -8,9 +11,6 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
  * A service which provides a method to GET the analysis progress for a specific document.
@@ -46,8 +46,9 @@ public class ProgressService {
     }
     
     // Right after document creation, the progress is not persisted. It is assumed to be zero.
-    if (doc.getProgress() == null)
+    if (doc.getProgress() == null) {
       return new AnalysisProgress();
+    }
 
     return doc.getProgress();
   }

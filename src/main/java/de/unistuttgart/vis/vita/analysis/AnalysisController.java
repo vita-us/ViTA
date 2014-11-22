@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,9 +15,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
@@ -92,8 +92,9 @@ public class AnalysisController {
       startAnalysis(document);
     }
   }
-  
-  private synchronized void startAnalysis(Document document) {
+
+  private synchronized void startAnalysis(final Document document) {
+    setStatus(document.getId(),  AnalysisStatus.RUNNING);
     Path path = documentPaths.get(document.getId());
     currentExecuter = executorFactory.createExecutor(document.getId(), path);
     currentExecuter.start();
@@ -102,24 +103,33 @@ public class AnalysisController {
     currentExecuter.addObserver(new AnalysisObserver() {
       @Override
       public void onFinish(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FINISHED);
         startNextAnalysis();
       }
 
       @Override
       public void onFail(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FAILED);
         startNextAnalysis();
       }
     });
   }
-  
+
   private Document createDocument(Path filePath) {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
-    EntityManager em = model.getEntityManager();
-    em.getTransaction().begin();
-    em.persist(document);
-    em.getTransaction().commit();
-    em.close();
+    document.getProgress().setStatus(AnalysisStatus.READY);
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      em.persist(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null) {
+        em.close();
+      }
+    }
     return document;
   }
 
@@ -162,15 +172,22 @@ public class AnalysisController {
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    EntityManager em = model.getEntityManager();
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    List<Document> documents = query.getResultList();
-    if (documents.isEmpty()) {
-      throw new IllegalArgumentException("No such document found");
+    EntityManager em = null;
+    Document document;
+    try {
+      em = model.getEntityManager();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      document = documents.get(0);
+    } finally {
+      if (em != null) {
+        em.close();
+      }
     }
-    Document document = documents.get(0);
-    em.close();
 
     scheduleDocumentAnalyisis(document);
   }
@@ -192,5 +209,29 @@ public class AnalysisController {
    */
   public synchronized boolean isWorking() {
     return isAnalysisRunning;
+  }
+
+  private void setStatus(String documentId, AnalysisStatus status) {
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      Document document = documents.get(0);
+  
+      document.getProgress().setStatus(status);
+  
+      em.merge(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null) {
+        em.close();
+      }
+    }
   }
 }

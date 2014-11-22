@@ -6,22 +6,35 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
+    @NamedQuery(name = "Chapter.findAllChapters", 
+        query = "SELECT c " 
+              + "FROM Chapter c"),
 
-    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.id = :chapterId"),
+    @NamedQuery(name = "Chapter.findChapterById",
+      query = "SELECT c " 
+            + "FROM Chapter c "
+            + "WHERE c.id = :chapterId"),
 
-    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.title = :chapterTitle")})
+    @NamedQuery(name = "Chapter.findChapterByTitle", 
+      query = "SELECT c " 
+            + "FROM Chapter c "
+            + "WHERE c.title = :chapterTitle"),
+        
+    @NamedQuery(name = "Chapter.findChapterByOffset", 
+      query = "SELECT c "
+            + "FROM Chapter c "
+            + "WHERE :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
   
   private int number;
@@ -31,6 +44,9 @@ public class Chapter extends AbstractEntityBase {
   // text attribute is transient, this means it will not be persisted in the database!
   @Transient
   private String text;
+
+  // is required for getOccurrence()
+  private int documentLength;
 
   @OneToOne(cascade=CascadeType.ALL)
   private TextSpan range;
@@ -127,5 +143,22 @@ public class Chapter extends AbstractEntityBase {
    */
   public void setRange(TextSpan range) {
     this.range = range;
+  }
+
+  /**
+   * Gets the range of this chapter, as an {@link Occurrence} object that contains the progress
+   * property. Only exists in persisted objects.
+   */
+  @XmlElement(name = "range")
+  public Occurrence getRangeAsOccurrence() {
+    return range.toOccurrence(documentLength);
+  }
+
+  /**
+   * 
+   * @param length
+   */
+  public void setDocumentLength(int length) {
+    this.documentLength = length;
   }
 }
