@@ -45,8 +45,7 @@
           }, function(response) {
             var occurrences = response.occurrences;
             $scope.resultCount = occurrences.length;
-            // TODO highlight occurrences
-            // highlightOccurrences(occurrences);
+            $scope.occurrences = occurrences;
           });
         };
       }]);
