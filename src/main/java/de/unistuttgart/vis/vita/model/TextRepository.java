@@ -1,10 +1,9 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -20,7 +19,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 
-import de.unistuttgart.vis.vita.model.document.Chapter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages texts for the model.
@@ -54,17 +55,13 @@ public class TextRepository {
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
    */
-  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException {
+  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
+                                                                                       ParseException {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
-    Query query;
-    try {
-      query = queryParser.parse(chapterToPopulate.getId());
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
-    }
+    Query query = queryParser.parse(chapterToPopulate.getId());
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
     chapterToPopulate.setText(hitDoc.getField(CHAPTER_TEXT).stringValue());
@@ -76,11 +73,10 @@ public class TextRepository {
   public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
       throws IOException {
 
-
-    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
+    CharArraySet charArraySet = new CharArraySet(0, true);
+    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer(charArraySet));
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(directory, config);
-
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }
