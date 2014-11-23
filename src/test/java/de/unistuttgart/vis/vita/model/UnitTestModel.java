@@ -30,12 +30,16 @@ public class UnitTestModel extends Model {
    * Drops the old database so that the next instance of {@link UnitTestModel} will work on a fresh
    * database
    */
-  public static void startNewSession() throws IOException {
+  public static void startNewSession() {
     if (emfCache != null) {
       if (emfCache.isOpen())
         emfCache.close();
       emfCache = null;
     }
-    FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
+    try {
+      FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
+    } catch (IOException e) {
+      throw new RuntimeException("Unable to delete lucene index", e);
+    }
   }
 }
