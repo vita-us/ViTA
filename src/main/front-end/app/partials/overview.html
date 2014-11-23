@@ -30,7 +30,7 @@
         <dl>
           <dt>Main characters:</dt>
           <dd>
-            <ul ng-controller="PersonListCtrl" class="list-inline">
+            <ul class="list-inline">
               <li ng-repeat="person in persons | orderBy: 'rankingValue' | limitTo: 5"><a
                 href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
                 class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
