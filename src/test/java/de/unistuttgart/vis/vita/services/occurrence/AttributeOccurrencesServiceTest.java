@@ -20,6 +20,7 @@ import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -68,16 +69,22 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     chapterId = testChapter.getId();
     entityId = testEntity.getId();
     attributeId = testAttribute.getId();
+    
+    DocumentPart testPart = new DocumentPart();
+    testPart.getChapters().add(testChapter);
+    testDoc.getContent().getParts().add(testPart);
 
     // persist it
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(testDoc);
+
     em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(attributeTextSpan);
     em.persist(testEntity);
     em.persist(testAttribute);
+    em.persist(testPart);
+    em.persist(testDoc);
     em.getTransaction().commit();
     em.close();
   }
