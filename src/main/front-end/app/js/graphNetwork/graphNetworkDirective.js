@@ -221,11 +221,13 @@
             }
           });
 
+
       nodes = graph.select('#nodeGroup').selectAll('g')
           .data(graphData.nodes);
 
       nodes.exit().remove();
       var newNodes = nodes.enter().append('g').call(drag);
+
       newNodes.append('circle')
           .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
@@ -233,11 +235,34 @@
           .classed('node', true)
           .attr('r', 20);
 
-      newNodes.append('text')
-        .classed('node-label', true)
-        .text(function(d) {
-          return d.displayName;
-        });
+      var labelGroups = newNodes.append('g').classed('node-label', true);
+
+      // we need to draw the labels first or we cant get the bbox for the background
+      labelGroups.append('text')
+          .classed('label-text', true)
+          .text(function(d) {
+            return d.displayName;
+          });
+
+      labelGroups.each(function(d) {
+        var labelGroup = d3.select(this);
+        var label = labelGroup.select('text');
+
+        // display the label shortly or we cant get the bounding box
+        labelGroup.style('display', 'block');
+        var labelBBox = label.node().getBBox();
+        labelGroup.style('display', undefined);
+
+        labelGroup.append('rect')
+            .classed('label-background', true)
+            .attr('x', -labelBBox.width / 2)
+            .attr('y', -labelBBox.height / 2)
+            .attr('width', labelBBox.width)
+            .attr('height', labelBBox.height);
+
+        // place the text on top
+        labelGroup.node().appendChild(label.node());
+      });
     }
 
     function updateSize(width, height) {

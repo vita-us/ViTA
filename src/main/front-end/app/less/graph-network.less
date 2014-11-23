@@ -43,11 +43,19 @@
 
 .node-label {
   display: none;
-  text-anchor: middle;
-  dominant-baseline: central;
   cursor: pointer;
 }
 
-.node:hover + .node-label, .node-label:hover {
+.label-text {
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.label-background {
+  fill: lightgrey;
+  opacity: 0.5;
+}
+
+.node:hover ~ .node-label, .node-label:hover {
   display: block;
 }
