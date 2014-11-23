@@ -10,12 +10,14 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
+
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -114,11 +116,14 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     docId = testDoc.getId();
     addId(originPerson.getId());
     addId(targetPerson.getId());
+    
+    DocumentPart testPart = new DocumentPart();
+    testPart.getChapters().add(testChapter);
+    testDoc.getContent().getParts().add(testPart);
 
     // persist test data
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(testDoc);
     em.persist(chapterRange);
     em.persist(testChapter);
     em.persist(originSpan);
@@ -128,6 +133,8 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     em.persist(targetSeparateSpan);
     em.persist(targetPerson);
     em.persist(testRelation);
+    em.persist(testPart);
+    em.persist(testDoc);
     em.getTransaction().commit();
     em.close();
   }

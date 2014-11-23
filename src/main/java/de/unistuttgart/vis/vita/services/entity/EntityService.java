@@ -2,8 +2,17 @@ package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
 import de.unistuttgart.vis.vita.services.search.SearchEntityService;
 
@@ -15,6 +24,9 @@ public class EntityService {
   
   private String documentId;
   private String entityId;
+
+  @Inject
+  private EntityManager em;
   
   @Inject
   private AttributesService attributesService;
@@ -43,6 +55,31 @@ public class EntityService {
   public EntityService setEntityId(String eId) {
     this.entityId = eId;
     return this;
+  }
+
+  /**
+   * Reads the requested entity from the database and returns it in JSON using the REST.
+   *
+   * @return the entity with the current id in JSON
+   */
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public Entity getEntity() {
+    Entity readEntity = null;
+
+    try {
+      readEntity = readEntityFromDatabase();
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    return readEntity;
+  }
+
+  private Entity readEntityFromDatabase() {
+    TypedQuery<Entity> eq = em.createNamedQuery("Entity.findEntityById", Entity.class);
+    eq.setParameter("entityId", entityId);
+    return eq.getSingleResult();
   }
 
   /**

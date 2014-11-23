@@ -8,6 +8,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.xml.bind.annotation.XmlElement;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
@@ -40,8 +41,12 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 )
 public class Attribute extends AbstractEntityBase {
   
+  // there is another "type" in Entity, so this must be named differently!
+  @XmlElement(name = "attributetype", required= true)
   private AttributeType type;
+  
   private String content;
+  
   @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("START_OFFSET ASC")
   private SortedSet<TextSpan> occurrences;
