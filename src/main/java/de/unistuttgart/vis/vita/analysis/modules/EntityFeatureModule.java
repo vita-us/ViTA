@@ -87,6 +87,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         relation.setOriginEntity(source);
         relation.setRelatedEntity(target);
         relation.setWeight(entry.getValue());
+        relation.setWeightOverTime(relations.getWeightOverTime(basicEntity, entry.getKey()));
         em.persist(relation);
       }
     }
