@@ -244,7 +244,7 @@
             return d.displayName;
           });
 
-      labelGroups.each(function(d) {
+      labelGroups.each(function() {
         var labelGroup = d3.select(this);
         var label = labelGroup.select('text');
 
