@@ -4,7 +4,12 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('WordcloudCtrl', ['$scope', 'Wordcloud', 'Page', '$routeParams',
-      'Document', 'Person', function($scope, Wordcloud, Page, $routeParams, Document, Person) {
+      'Document', 'Person', 'CssClass',
+      function($scope, Wordcloud, Page, $routeParams, Document, Person, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {

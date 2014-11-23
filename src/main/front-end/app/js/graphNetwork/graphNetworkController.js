@@ -4,8 +4,11 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      'Document', 'Page', 'Person',
-      function($scope, $routeParams, DocumentParts, Document, Page, Person) {
+      'Document', 'Page', 'Person', 'CssClass',
+      function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
 
         Document.get({
           documentId: $routeParams.documentId

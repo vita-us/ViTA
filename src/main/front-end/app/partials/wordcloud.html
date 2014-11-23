@@ -13,8 +13,10 @@
         <a href="" class="list-group-item" ng-class="{'active': activeWordcloud == 'global'}"
           ng-click="loadGlobalWordcloud()">global</a>
         <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
-          ng-click="loadPersonWordcloud(person)" class="list-group-item"
-          ng-class="{'active': activeWordcloud == person.id}">{{person.displayName}}</a>
+          ng-click="loadPersonWordcloud(person)" ng-class="{'active': activeWordcloud == person.id}"
+          class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
+              {{person.displayName}}
+        </a>
       </div>
     </div>
   </div>
