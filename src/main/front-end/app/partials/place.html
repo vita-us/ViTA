@@ -10,6 +10,12 @@
           <dt>{{attribute.type}}</dt>
           <dd>{{attribute.content}}</dd>
         </dl>
+        <dl class="dl-horizontal">
+          <dt>co-occurences</dt>
+          <dd ng-repeat="entity in relatedEntities | limitTo: 5">
+            <a ng-href="index.html#/documents/{{document.id}}/places/{{entity.id}}">{{entity.displayName}}</a>
+          </dd>
+        </dl>
       </div>
       <div class="row">
         <div data-fingerprint class="fingerprint-container" data-entity-ids="[place]"data-parts="parts"></div>
