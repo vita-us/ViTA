@@ -222,11 +222,11 @@
           });
 
 
-      nodes = graph.select('#nodeGroup').selectAll('g')
+      nodes = graph.select('#nodeGroup').selectAll('.node-container')
           .data(graphData.nodes);
 
       nodes.exit().remove();
-      var newNodes = nodes.enter().append('g').call(drag);
+      var newNodes = nodes.enter().append('g').classed('node-container', true).call(drag);
 
       newNodes.append('circle')
           .attr('class', function(d) {
