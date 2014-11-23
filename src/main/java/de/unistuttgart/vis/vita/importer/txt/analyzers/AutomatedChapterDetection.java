@@ -8,8 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.analysis.Threads;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * Uses different Chapter Analyzer and decides which result is most likely the best result for a
@@ -22,7 +23,7 @@ public class AutomatedChapterDetection {
 
   private float smallHeadingsPercentage = 0.0f;
   private int bigHeadingAnalysisStart;
-  private ExecutorService executor = Executors.newCachedThreadPool();
+  private ExecutorService executor = Threads.getGlobalExecutorService();
   private List<Line> lines = new ArrayList<>();
   private List<Future<ChapterPosition>> activeChapterAnalyzers = new ArrayList<>();
   private Future<ChapterPosition> markedHeadingChapters;

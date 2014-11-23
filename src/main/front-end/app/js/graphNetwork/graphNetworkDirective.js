@@ -181,8 +181,8 @@
 
     function createLinkFromRelation(relation) {
       return {
-        source: entityIdNodeMap.get(relation.personAId),
-        target: entityIdNodeMap.get(relation.personBId),
+        source: entityIdNodeMap.get(relation.entityAId),
+        target: entityIdNodeMap.get(relation.entityBId),
         weight: relation.weight
       };
     }

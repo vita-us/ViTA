@@ -6,6 +6,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlElement;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
@@ -17,13 +18,13 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
   @NamedQuery(name = "AnalysisProgress.findAllProgresses",
               query = "SELECT p "
                     + "FROM AnalysisProgress p"),
-                    
+
   @NamedQuery(name = "AnalysisProgress.findProgressById",
               query = "SELECT p "
                     + "FROM AnalysisProgress p "
                     + "WHERE p.id = :progressId"),
-              
-  @NamedQuery(name = "AnalysisProgress.findProgressByDocumentId", 
+
+  @NamedQuery(name = "AnalysisProgress.findProgressByDocumentId",
               query = "SELECT p "
                     + "FROM AnalysisProgress p, Document d "
                     + "WHERE d.id = :documentId "
@@ -43,6 +44,8 @@ public class AnalysisProgress extends AbstractEntityBase {
   @Embedded
   private FeatureProgress textProgress;
 
+  private AnalysisStatus status;
+
   /**
    * Creates a new instance of AnalysisProgress, setting all FeatureProgresses to Zero and not
    * ready.
@@ -54,6 +57,7 @@ public class AnalysisProgress extends AbstractEntityBase {
     this.personsProgress = new FeatureProgress();
     this.fingerPrintProgress = new FeatureProgress();
     this.textProgress = new FeatureProgress();
+    status = AnalysisStatus.READY;
   }
 
   /**
@@ -156,6 +160,21 @@ public class AnalysisProgress extends AbstractEntityBase {
    */
   public void setTextProgress(FeatureProgress newTextProgress) {
     this.textProgress = newTextProgress;
+  }
+
+  /**
+   * Gets the global status of the document analysis
+   */
+  @XmlElement(name = "status")
+  public AnalysisStatus getStatus() {
+    return status;
+  }
+
+  /**
+   * Sets the global status of the document analysis
+   */
+  public void setStatus(AnalysisStatus status) {
+    this.status = status;
   }
 
 }

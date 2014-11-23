@@ -66,5 +66,10 @@ public class Occurrence {
   public void setLength(int occLength) {
     this.length = occLength;
   }
+  
+  @Override
+  public String toString() {
+    return "Occurrence: " + start.getOffset() + " - " + end.getOffset(); 
+  }
 
 }

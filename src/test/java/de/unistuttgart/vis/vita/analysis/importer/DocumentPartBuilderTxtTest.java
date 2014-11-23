@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.output.DocumentPartBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -29,19 +30,19 @@ public class DocumentPartBuilderTxtTest {
     String thirdChapterText = "Text Of Third Chapter Blabla bla bla blubb";
     String fourthChapterText = "Text Of Fourth Chapter";
 
-    lines.add(new Line("First Chapter Heading", true));
-    lines.add(new Line("", true));
-    lines.add(new Line("Text Of First Chapter", true));
-    lines.add(new Line("Blabla bla bla blubb", true));
-    lines.add(new Line("", true));
-    lines.add(new Line("Second Chapter Heading", true));
-    lines.add(new Line("Text Of Second Chapter", true));
-    lines.add(new Line("Blabla bla bla blubb", true));
-    lines.add(new Line("", true));
-    lines.add(new Line("Text Of Third Chapter", true));
-    lines.add(new Line("Blabla bla bla blubb", true));
-    lines.add(new Line("", true));
-    lines.add(new Line("Text Of Fourth Chapter", true));
+    lines.add(new TxtModuleLine("First Chapter Heading", true));
+    lines.add(new TxtModuleLine("", true));
+    lines.add(new TxtModuleLine("Text Of First Chapter", true));
+    lines.add(new TxtModuleLine("Blabla bla bla blubb", true));
+    lines.add(new TxtModuleLine("", true));
+    lines.add(new TxtModuleLine("Second Chapter Heading", true));
+    lines.add(new TxtModuleLine("Text Of Second Chapter", true));
+    lines.add(new TxtModuleLine("Blabla bla bla blubb", true));
+    lines.add(new TxtModuleLine("", true));
+    lines.add(new TxtModuleLine("Text Of Third Chapter", true));
+    lines.add(new TxtModuleLine("Blabla bla bla blubb", true));
+    lines.add(new TxtModuleLine("", true));
+    lines.add(new TxtModuleLine("Text Of Fourth Chapter", true));
 
     position.addChapter(0, 2, 3);
     position.addChapter(4, 6, 7);
