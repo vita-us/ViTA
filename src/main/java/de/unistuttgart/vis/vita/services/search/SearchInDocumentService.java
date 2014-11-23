@@ -47,7 +47,7 @@ public class SearchInDocumentService extends OccurrencesService {
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
-                                            @QueryParam("query") String query) throws IOException {
+                                            @QueryParam("query") @DefaultValue("") String query) throws IOException {
     // first check amount of steps
     if (steps < 0 || steps > 1000) {
       throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
