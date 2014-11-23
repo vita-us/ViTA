@@ -1,4 +1,4 @@
-@document-view-header-height: 60px;
+@document-view-header-height: 65px;
 @document-view-footer-height: 50px;
 
 body#document-view {
@@ -16,6 +16,13 @@ body#document-view {
   height: @document-view-header-height;
   border-bottom: 1px solid @border-color;
   top: 0;
+  
+  .document-title {
+    line-height: 1.1em;
+    max-height: 2.2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 #document-view-footer {
