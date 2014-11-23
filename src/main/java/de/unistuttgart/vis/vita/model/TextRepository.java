@@ -54,14 +54,18 @@ public class TextRepository {
   /**
    * Sets the text of the commited chapter with the related chapter text of lucene index
    */
-  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException,
-                                                                                       ParseException {
+  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     CharArraySet charArraySet = new CharArraySet(0, true);
     QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer(charArraySet));
-    Query query = queryParser.parse(chapterToPopulate.getId());
+    Query query;
+    try {
+      query = queryParser.parse(chapterToPopulate.getId());
+    } catch (ParseException e) {
+      throw new RuntimeException(e);
+    }
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
     chapterToPopulate.setText(hitDoc.getField(CHAPTER_TEXT).stringValue());
