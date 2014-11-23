@@ -1,7 +1,8 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
-import de.unistuttgart.vis.vita.importer.txt.output.MetadataBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.output.MetadataBuilder;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 import org.apache.commons.lang.StringUtils;
@@ -74,7 +75,7 @@ public class MetadataAnalyzer {
       }
     } else {
       List<Line> title = new ArrayList<Line>();
-      title.add(new Line(new File(path.toString()).getName()));
+      title.add(new TxtModuleLine(new File(path.toString()).getName()));
       metadataBuilder.setTitle(title);
     }
     return metadataBuilder.getMetadata();
