@@ -39,7 +39,7 @@ public class TextRepository {
    * Creates a TextRepository with the default DirectoryFactory
    */
   public TextRepository() {
-    directoryFactory = new UnitTestDirectoryFactory();
+    directoryFactory = new DefaultDirectoryFactory();
   }
 
   /**
