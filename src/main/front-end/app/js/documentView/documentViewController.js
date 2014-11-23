@@ -18,6 +18,16 @@
           });
         });
 
+        DocumentViewReceiver.onOccurrences(function(messageData) {
+          $scope.occurrences = messageData.message;
+          $scope.$digest();
+        });
+
+        DocumentViewReceiver.onEntities(function(messageData) {
+          $scope.entities = messageData.message;
+          $scope.$digest();
+        });
+
         DocumentViewReceiver.requestDocumentId();
 
         function requestParts(document) {
@@ -35,8 +45,7 @@
           }, function(response) {
             var occurrences = response.occurrences;
             $scope.resultCount = occurrences.length;
-            // TODO highlight occurrences
-            // highlightOccurrences(occurrences);
+            $scope.occurrences = occurrences;
           });
         };
       }]);

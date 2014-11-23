@@ -23,7 +23,7 @@
         showFingerprint: '&'
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.width, scope.height);
+        buildGraph(element, scope.width, scope.height);
 
         scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
           fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
@@ -44,7 +44,7 @@
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
-    function buildGraph(element, entities, width, height) {
+    function buildGraph(element, width, height) {
       var container = d3.select(element[0]);
       width = width || MINIMUM_GRAPH_WIDTH;
       height = height || MINIMUM_GRAPH_HEIGHT;
