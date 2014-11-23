@@ -74,10 +74,16 @@ body#document-view {
       padding-left: 3px;
       margin-bottom: 5px;
     }
-  }
-  
-  .active-menu {
-    background-color: lightgrey;
+    
+    .chapter.active-menu {
+      background-color: @light-grey-background-color;
+      font-weight: bold;
+      padding: 1px 6px;
+    }
+    
+    .part.active-menu {
+      font-weight: bold;
+    }
   }
 
   @media (min-width: 768px) {
