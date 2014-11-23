@@ -25,10 +25,13 @@ import com.google.common.base.Joiner;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-
+/**
+ * This class performs the searching for a word or phrase in a document
+ * 
+ *
+ */
 
 public class Searcher {
 
@@ -39,12 +42,15 @@ public class Searcher {
   public List<TextSpan> searchString(String documentId, String searchString,
       List<Chapter> chapters, Model model) throws IOException, ParseException {
 
+    // This empty set allows to search for stop words
     CharArraySet charArraySet = new CharArraySet(0, true);
     StandardAnalyzer analyzer = new StandardAnalyzer(charArraySet);
     List<TextSpan> textSpans = new ArrayList<TextSpan>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
     IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(documentId);
+
+    // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
     callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
@@ -52,6 +58,16 @@ public class Searcher {
     return textSpans;
   }
 
+  /**
+   * Calls the right Tokenizer regarding the searchString
+   * 
+   * @param searchString
+   * @param chapters
+   * @param textSpans
+   * @param indexSearcher
+   * @param hits
+   * @throws IOException
+   */
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
       List<TextSpan> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits) throws IOException {
     for (int i = 0; i < hits.length; i++) {
@@ -73,6 +89,13 @@ public class Searcher {
     }
   }
 
+  /**
+   * Returns the correct chapter regarding the current hit document
+   * 
+   * @param document
+   * @param chapters
+   * @return
+   */
   private Chapter getCorrectChapter(Document document, List<Chapter> chapters) {
 
     for (Chapter chapter : chapters) {
@@ -83,9 +106,20 @@ public class Searcher {
     return null;
   }
 
+  /**
+   * Produces the textspans and them to textSpans list
+   * 
+   * @param tokenizer
+   * @param searchString
+   * @param words
+   * @param currentChapter
+   * @param textSpans
+   * @throws IOException
+   */
   private void addTextSpansToList(Tokenizer tokenizer, String searchString, String[] words,
       Chapter currentChapter, List<TextSpan> textSpans) throws IOException {
 
+    // if it is a single word
     if (words != null && words.length == 1) {
 
       CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
@@ -101,7 +135,9 @@ public class Searcher {
       }
       tokenizer.end();
       tokenizer.close();
-    } else if (words != null && words.length > 1) {
+    }
+    // if it is a phrase
+    else if (words != null && words.length > 1) {
 
       CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
       OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
@@ -111,7 +147,7 @@ public class Searcher {
       while (tokenizer.incrementToken()) {
         if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
           int startOffset = offset.startOffset();
-          
+
           tokens.add(charTermAttrib.toString());
           String sentence = extractSentence(words, charTermAttrib, tokens, tokenizer);
           if (sentence.toLowerCase().equals(searchString.toLowerCase())) {
@@ -128,6 +164,16 @@ public class Searcher {
 
   }
 
+  /**
+   * Returns the phrase(searchString) of the hit document, which is build in this method
+   * 
+   * @param words
+   * @param charTermAttrib
+   * @param tokens
+   * @param tokenizer
+   * @return
+   * @throws IOException
+   */
   private String extractSentence(String[] words, CharTermAttribute charTermAttrib,
       List<String> tokens, Tokenizer tokenizer) throws IOException {
     int i = 0;
@@ -136,7 +182,7 @@ public class Searcher {
       i++;
     }
     Joiner joiner = Joiner.on(" ");
-    String sentence = joiner.join(tokens);
-    return sentence;
+    String phrase = joiner.join(tokens);
+    return phrase;
   }
 }

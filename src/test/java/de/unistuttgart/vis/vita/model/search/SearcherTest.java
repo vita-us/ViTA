@@ -16,6 +16,11 @@ import de.unistuttgart.vis.vita.model.StandaloneModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
+/**
+ * 
+ * JUnit test on Searcher
+ *
+ */
 public class SearcherTest {
 
   private Searcher searcher = new Searcher();
@@ -54,8 +59,13 @@ public class SearcherTest {
     model.getTextRepository().storeChaptersTexts(chapters, documentId);
   }
   
+  /**
+   * Tests the case-insensitivity of the word
+   * @throws IOException
+   * @throws ParseException
+   */
   @Test
-  public void testCaseInsensitivity() throws IOException, ParseException{
+  public void testCaseInsensitivityWord() throws IOException, ParseException{
     List<TextSpan> spansSmallCases = searcher.searchString(documentId,"virginia" , chapters, model);
     
     assertEquals(1, spansSmallCases.size());
@@ -79,6 +89,11 @@ public class SearcherTest {
     assertEquals("Virginia", virginia);
   }
   
+  /**
+   * Tests the results regarding the searching for a phrase
+   * @throws IOException
+   * @throws ParseException
+   */
   @Test 
   public void testPhrase1() throws IOException, ParseException{
     List<TextSpan> spansSmallCases = searcher.searchString(documentId,"at that time" , chapters, model);
@@ -140,6 +155,11 @@ public class SearcherTest {
     
   }
   
+  /**
+   * Tests the results and case-insensitivity regarding the same phrase in "testPhrase1"
+   * @throws IOException
+   * @throws ParseException
+   */
   @Test 
   public void testPhrase2() throws IOException, ParseException{
     List<TextSpan> spansMixedCases = searcher.searchString(documentId,"At ThAt tiMe" , chapters, model);
@@ -201,12 +221,22 @@ public class SearcherTest {
     
   }
   
+  /**
+   * Tests failure of the results regarding the searching for a subphrase
+   * @throws IOException
+   * @throws ParseException
+   */
   @Test
   public void testPhraseFailure() throws IOException, ParseException{
     List<TextSpan> spans = searcher.searchString(documentId,"at that tim" , chapters, model);
     assertEquals(0, spans.size());
   }
   
+  /**
+   * Tests the results regarding the searching for a stop word
+   * @throws IOException
+   * @throws ParseException
+   */
   @Test
   public void testStopWords() throws IOException, ParseException{
     List<TextSpan> spansStopWords = searcher.searchString(documentId,"this" , chapters, model);
