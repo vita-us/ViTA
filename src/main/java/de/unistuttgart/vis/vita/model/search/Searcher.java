@@ -49,12 +49,12 @@ public class Searcher {
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
     IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(documentId);
-
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
-    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
 
+    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
+    indexSearcher.getIndexReader().close();
     return textSpans;
   }
 
