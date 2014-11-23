@@ -40,6 +40,19 @@ public class AnalysisControllerTest {
     model = new UnitTestModel();
     executorFactory = mock(AnalysisExecutorFactory.class);
     controller = new AnalysisController(model, executorFactory);
+    removeAllDocuments();
+  }
+
+  private void removeAllDocuments() {
+    EntityManager em = model.getEntityManager();
+    em.getTransaction().begin();
+    List<Document> documents =
+        em.createNamedQuery("Document.findAllDocuments", Document.class).getResultList();
+    for (Document document : documents) {
+      em.remove(document);
+    }
+    em.getTransaction().commit();
+    em.close();
   }
 
   @After
