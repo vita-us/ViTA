@@ -31,7 +31,6 @@ public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
-  List<Document> docs = new ArrayList<>();
   private DirectoryFactory directoryFactory;
   // list of directories
   private List<Directory> indexes = new ArrayList<>();
@@ -60,7 +59,8 @@ public class TextRepository {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
+    CharArraySet charArraySet = new CharArraySet(0, true);
+    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer(charArraySet));
     Query query = queryParser.parse(chapterToPopulate.getId());
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
     Document hitDoc = indexSearcher.doc(hits[0].doc);
@@ -109,7 +109,6 @@ public class TextRepository {
     Document document = new Document();
     document.add(new Field(CHAPTER_ID, chapterToStore.getId(), TextField.TYPE_STORED));
     document.add(new Field(CHAPTER_TEXT, chapterToStore.getText(), TextField.TYPE_STORED));
-    docs.add(document);
     return document;
   }
 }
