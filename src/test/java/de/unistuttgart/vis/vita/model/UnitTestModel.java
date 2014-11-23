@@ -1,7 +1,11 @@
 package de.unistuttgart.vis.vita.model;
 
+import java.io.IOException;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * A model that uses a h2 database that can be dropped at any time with {@link #startNewSession()}
@@ -13,7 +17,7 @@ public class UnitTestModel extends Model {
   private static EntityManagerFactory emfCache;
 
   public UnitTestModel() {
-    super(getEntityManagerFactory());
+    super(getEntityManagerFactory(), new TextRepository(new UnitTestDirectoryFactory()));
   }
 
   private static EntityManagerFactory getEntityManagerFactory() {
@@ -26,11 +30,12 @@ public class UnitTestModel extends Model {
    * Drops the old database so that the next instance of {@link UnitTestModel} will work on a fresh
    * database
    */
-  public static void startNewSession() {
+  public static void startNewSession() throws IOException {
     if (emfCache != null) {
       if (emfCache.isOpen())
         emfCache.close();
       emfCache = null;
     }
+    FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
   }
 }
