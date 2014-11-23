@@ -23,7 +23,7 @@
         showFingerprint: '&'
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.width, scope.height);
+        buildGraph(element, scope.width, scope.height);
 
         scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
           fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
@@ -51,7 +51,7 @@
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
-    function buildGraph(element, entities, width, height) {
+    function buildGraph(element, width, height) {
       var container = d3.select(element[0]);
       width = width || MINIMUM_GRAPH_WIDTH;
       height = height || MINIMUM_GRAPH_HEIGHT;
@@ -148,10 +148,12 @@
     }
 
     function updateEntityNodeMap(newEntities, idsOfDisplayedEntities) {
+      var i, l;
+
       // Delete removed nodes also from entity map
       var currentIds = entityIdNodeMap.keys();
 
-      for (var i = 0, l = currentIds.length; i < l; i++) {
+      for (i = 0, l = currentIds.length; i < l; i++) {
         var id = currentIds[i];
         if (idsOfDisplayedEntities.indexOf(id) < 0) {
           entityIdNodeMap.remove(id);
@@ -159,7 +161,7 @@
       }
 
       // Create nodes for all new entities
-      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
+      for (i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
         var newId = idsOfDisplayedEntities[i];
 
         if (!entityIdNodeMap.has(newId)) {
@@ -170,7 +172,7 @@
       }
 
       // Add additional data of the entities
-      for (var i = 0, l = newEntities.length; i < l; i++) {
+      for (i = 0, l = newEntities.length; i < l; i++) {
         var entity = newEntities[i];
 
         // entity might be selected but doesn't occur in the selected range -> not displayed

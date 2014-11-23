@@ -51,6 +51,10 @@
       sendMessage(constants.OCCURRENCES, occurrences);
     };
 
+    this.sendEntities = function(entities) {
+      sendMessage(constants.ENTITIES, entities);
+    };
+
   }]);
 
 })(angular);
