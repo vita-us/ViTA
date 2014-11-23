@@ -225,14 +225,13 @@
           .data(graphData.nodes);
 
       nodes.exit().remove();
-      var newNodes = nodes.enter().append('g');
+      var newNodes = nodes.enter().append('g').call(drag);
       newNodes.append('circle')
           .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
-          .attr('r', 20)
-          .call(drag);
+          .attr('r', 20);
 
       newNodes.append('text')
         .classed('node-label', true)
