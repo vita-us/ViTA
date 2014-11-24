@@ -45,4 +45,25 @@ describe('Progress Status Directive', function() {
     expect(element.find('.status').hasClass('ng-hide')).toBe(true);
   });
 
+  it('should update if the status changes', function() {
+    expect(element.find('.status').hasClass('ng-hide')).toBe(false);
+
+    scope.progress = undefined;
+    element.scope().$apply();
+
+    expect(element.find('.status').hasClass('ng-hide')).toBe(true);
+  });
+
+  it('should shouldnt display the percentage if it failed', function() {
+    expect(element.find('.status').text()).toContain('%');
+
+    scope.progress = {
+      progress: 0.33,
+      isFailed: true
+    };
+    element.scope().$apply();
+
+    expect(element.find('.status').text()).not.toContain('%');
+  });
+
 });
