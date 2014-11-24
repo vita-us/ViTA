@@ -8,11 +8,13 @@
       function($scope, Document, Page, Person, $routeParams, DocumentParts) {
 
         $scope.relatedEntities = [];
+        $scope.fingerprintIds = [];
         Person.get({
           documentId: $routeParams.documentId,
           personId: $routeParams.personId
         }, function(person) {
           $scope.person = person;
+          $scope.fingerprintIds.push(person.id);
 
           for (var i = 0; i < $scope.person.entityRelations.length; i++) {
             retrieveEntityName($scope.person.entityRelations[i].relatedEntity);
@@ -27,6 +29,19 @@
           }, function(person) {
             $scope.relatedEntities.push(person);
           });
+        };
+
+        $scope.setFingerprint = function(id) {
+          var position = $scope.fingerprintIds.indexOf(id);
+          if (position > -1) {
+            $scope.fingerprintIds.splice(position, 1);
+          } else {
+            $scope.fingerprintIds.push(id);
+          }
+        };
+
+        $scope.isMarked = function(id) {
+          return ($scope.fingerprintIds.indexOf(id) > -1);
         };
 
         Document.get({
