@@ -221,9 +221,12 @@
             }
           });
 
-
-      nodes = graph.select('#nodeGroup').selectAll('.node-container')
-          .data(graphData.nodes);
+      nodes = graph.select('#nodeGroup')
+          .selectAll('.node-container')
+          .data(graphData.nodes,
+              function(node) {
+                return node.id;
+              });
 
       nodes.exit().remove();
       var newNodes = nodes.enter().append('g').classed('node-container', true).call(drag);
