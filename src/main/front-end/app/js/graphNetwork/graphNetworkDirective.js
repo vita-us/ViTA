@@ -87,8 +87,8 @@
 
       force = d3.layout.force()
           .size([width, height])
-          .charge(-200)
-          .gravity(0.025)
+          .charge(-800)
+          .gravity(0.04)
           .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
