@@ -129,7 +129,7 @@ public class Searcher {
       while (tokenizer.incrementToken()) {
         if (charTermAttrib.toString().toLowerCase().matches(searchString.toLowerCase())) {
           int startOffset = offset.startOffset();
-          int endOffset = offset.endOffset() - 1;
+          int endOffset = offset.endOffset();
           textSpans.add(new TextSpan(currentChapter, startOffset, endOffset));
         }
       }
@@ -151,7 +151,7 @@ public class Searcher {
           tokens.add(charTermAttrib.toString());
           String sentence = extractSentence(words, charTermAttrib, tokens, tokenizer);
           if (sentence.toLowerCase().equals(searchString.toLowerCase())) {
-            int endOffset = startOffset + searchString.length() - 1;
+            int endOffset = startOffset + searchString.length();
             textSpans.add(new TextSpan(currentChapter, startOffset, endOffset));
 
           }
@@ -182,7 +182,7 @@ public class Searcher {
       i++;
     }
     Joiner joiner = Joiner.on(" ");
-    String phrase = joiner.join(tokens);
-    return phrase;
+    
+    return joiner.join(tokens);
   }
 }
