@@ -4,7 +4,11 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      'Document', 'Page', function($scope, $routeParams, DocumentParts, Document, Page) {
+      'Document', 'Page', 'Person', 'CssClass',
+      function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
 
         Document.get({
           documentId: $routeParams.documentId
@@ -13,11 +17,25 @@
           Page.setUpForDocument(document);
         });
 
-        // Set a custom graph width
-        $scope.graphWidth = $('#graph-network-wrapper').width();
+        Person.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.persons = response.persons;
 
-        // Set a custom graph height like this
-        $scope.graphHeight = $(window).height() * 0.7;
+          // manual initialization of the selection
+          $scope.reset($scope.persons);
+        });
+
+        setGraphNetworkDimensions();
+        $(window).resize(function() {
+          setGraphNetworkDimensions();
+          $scope.$apply();
+        });
+
+        function setGraphNetworkDimensions() {
+          $scope.graphWidth = $('#graph-network-wrapper').width();
+          $scope.graphHeight = $(window).height() * 0.7;
+        }
 
         $scope.entities = [];
 
@@ -28,7 +46,7 @@
           min: sliderMin,
           max: sliderMax,
           values: [sliderMin, sliderMax],
-          slide: function(event, ui) {
+          change: function(event, ui) {
             var start = ui.values[0], end = ui.values[1];
 
             setSliderLabel(start, end);
@@ -64,7 +82,7 @@
         };
 
         $scope.reset = function(persons) {
-          $scope.entities = persons.slice(0, 5);
+          $scope.entities = persons.slice(0, 7);
         };
 
         $scope.isActive = function(person) {
