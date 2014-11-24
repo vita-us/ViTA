@@ -76,9 +76,11 @@ public class TextRepository {
   public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
       throws IOException {
 
+
     IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(directory, config);
+
     for (Chapter chapterToStore : chaptersToStore) {
       indexWriter.addDocument(addFieldsToDocument(chapterToStore));
     }

@@ -14,6 +14,7 @@ describe('WordcloudCtrl', function() {
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/123/persons').respond(TestData.persons)
     $httpBackend.expectGET('webapi/documents/123/wordcloud').respond(TestData.wordcloud);
     $routeParams.documentId = '123';
     scope = $rootScope.$new();

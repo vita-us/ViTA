@@ -14,6 +14,33 @@
       function($scope, Document, Page, FileUpload, $interval, ChapterText) {
         Page.setUp('Documents', 1);
 
+        var allowedExtensions = ['.txt', '.epub'];
+        $scope.allowedExtensions = allowedExtensions.join(',');
+
+        // Validate the file selection
+        $scope.$watch('file', function() {
+          if (!$scope.file) {
+            return;
+          }
+
+          var isValid = false;
+
+          for (var i = 0, l = allowedExtensions.length; i < l; i++) {
+            var extension = allowedExtensions[i], name = $scope.file.name.toLowerCase();
+
+            if (name.indexOf(extension, name.length - extension.length) !== -1) {
+              isValid = true;
+              break;
+            }
+          }
+
+          if (!isValid) {
+            alert('Invalid file selection. Only the following extensions are allowed: '
+                    + $scope.allowedExtensions);
+            resetUploadField();
+          }
+        });
+
         $scope.uploading = false;
 
         $scope.loadDocuments = function() {

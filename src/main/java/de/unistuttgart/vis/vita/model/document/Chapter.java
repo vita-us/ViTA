@@ -33,8 +33,11 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
         
     @NamedQuery(name = "Chapter.findChapterByOffset", 
       query = "SELECT c "
-            + "FROM Chapter c "
-            + "WHERE :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
+            + "FROM Document d, DocumentPart dp, Chapter c "
+            + "WHERE d.id = :documentId "
+            + "AND dp MEMBER OF d.content.parts "
+            + "AND c MEMBER OF dp.chapters "
+            + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
   
   private int number;

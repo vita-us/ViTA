@@ -16,42 +16,35 @@
       restrict: 'A',
       scope: {
         entities: '=',
-        width: '@',
-        height: '@',
+        width: '=',
+        height: '=',
         rangeBegin: '=',
         rangeEnd: '=',
         showFingerprint: '&'
       },
       link: function(scope, element) {
-        buildGraph(element, scope.entities, scope.width, scope.height);
+        buildGraph(element, scope.width, scope.height);
 
         scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
           fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
                   scope.showFingerprint);
         }, true);
 
-        scope.$watch('width', function(newValue, oldValue) {
-          if (!angular.equals(newValue, oldValue)) {
-            var newWidth = newValue || MINIMUM_GRAPH_WIDTH;
-            updateWidth(newWidth);
+        scope.$watch('[width,height]', function(newValues, oldValues) {
+          if (!angular.equals(newValues, oldValues)) {
+            var newWidth = newValues[0] || MINIMUM_GRAPH_WIDTH;
+            var newHeight = newValues[1] || MINIMUM_GRAPH_HEIGHT;
+            updateSize(newWidth, newHeight);
           }
-        });
-
-        scope.$watch('height', function(newValue, oldValue) {
-          if (!angular.equals(newValue, oldValue)) {
-            // Fallback on the default value on an invalid parameter
-            var newHeight = newValue || MINIMUM_GRAPH_HEIGHT;
-            updateHeight(newHeight);
-          }
-        });
+        }, true);
       }
     };
 
-    var MAXIMUM_LINK_DISTANCE = 100, MINIMUM_LINK_DISTANCE = 40;
+    var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
-    function buildGraph(element, entities, width, height) {
+    function buildGraph(element, width, height) {
       var container = d3.select(element[0]);
       width = width || MINIMUM_GRAPH_WIDTH;
       height = height || MINIMUM_GRAPH_HEIGHT;
@@ -96,6 +89,7 @@
           .size([width, height])
           .charge(-200)
           .gravity(0.025)
+          .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
     }
@@ -148,10 +142,12 @@
     }
 
     function updateEntityNodeMap(newEntities, idsOfDisplayedEntities) {
+      var i, l;
+
       // Delete removed nodes also from entity map
       var currentIds = entityIdNodeMap.keys();
 
-      for (var i = 0, l = currentIds.length; i < l; i++) {
+      for (i = 0, l = currentIds.length; i < l; i++) {
         var id = currentIds[i];
         if (idsOfDisplayedEntities.indexOf(id) < 0) {
           entityIdNodeMap.remove(id);
@@ -159,7 +155,7 @@
       }
 
       // Create nodes for all new entities
-      for (var i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
+      for (i = 0, l = idsOfDisplayedEntities.length; i < l; i++) {
         var newId = idsOfDisplayedEntities[i];
 
         if (!entityIdNodeMap.has(newId)) {
@@ -170,7 +166,7 @@
       }
 
       // Add additional data of the entities
-      for (var i = 0, l = newEntities.length; i < l; i++) {
+      for (i = 0, l = newEntities.length; i < l; i++) {
         var entity = newEntities[i];
 
         // entity might be selected but doesn't occur in the selected range -> not displayed
@@ -197,10 +193,8 @@
     }
 
     function setNewPositions() {
-      nodes.attr('cx', function(d) {
-        return d.x;
-      }).attr('cy', function(d) {
-        return d.y;
+      nodes.attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
       });
 
       links.attr('x1', function(d) {
@@ -227,17 +221,53 @@
             }
           });
 
-      nodes = graph.select('#nodeGroup').selectAll('.node')
+
+      nodes = graph.select('#nodeGroup').selectAll('.node-container')
           .data(graphData.nodes);
 
       nodes.exit().remove();
-      nodes.enter().append('circle')
+      var newNodes = nodes.enter().append('g').classed('node-container', true).call(drag);
+
+      newNodes.append('circle')
           .attr('class', function(d) {
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
-          .attr('r', 20)
-          .call(drag);
+          .attr('r', 20);
+
+      var labelGroups = newNodes.append('g').classed('node-label', true);
+
+      // we need to draw the labels first or we cant get the bbox for the background
+      labelGroups.append('text')
+          .classed('label-text', true)
+          .text(function(d) {
+            return d.displayName;
+          });
+
+      labelGroups.each(function() {
+        var labelGroup = d3.select(this);
+        var label = labelGroup.select('text');
+
+        // display the label shortly or we cant get the bounding box
+        labelGroup.style('display', 'block');
+        var labelBBox = label.node().getBBox();
+        labelGroup.style('display', undefined);
+
+        labelGroup.append('rect')
+            .classed('label-background', true)
+            .attr('x', -labelBBox.width / 2)
+            .attr('y', -labelBBox.height / 2)
+            .attr('width', labelBBox.width)
+            .attr('height', labelBBox.height);
+
+        // place the text on top
+        labelGroup.node().appendChild(label.node());
+      });
+    }
+
+    function updateSize(width, height) {
+      svgContainer.attr('width', width).attr('height', height);
+      force.size([width, height]).start();
     }
 
     return directive;
