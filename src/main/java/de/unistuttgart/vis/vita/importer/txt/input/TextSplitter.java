@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.input;
 
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,65 +1,69 @@
 package de.unistuttgart.vis.vita.services.entity;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.data.PersonTestData;
-import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.entity.PersonService;
 
 /**
- * Performs test on PersonService to check whether GET works correctly.
+ * Performs tests on PersonService to check whether GET works correctly.
  */
-public class PersonServiceTest extends ServiceTest {
-  
-  private String docId;
-  private String personId;
-  private PersonTestData testData;
-
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
-    
-    EntityManager em = getModel().getEntityManager();
-    
-    // set up test data
-    testData = new PersonTestData();
-    Person testPerson = testData.createTestPerson(1);
-    Document testDoc = new DocumentTestData().createTestDocument(1);
-    testDoc.getContent().getPersons().add(testPerson);
-    
-    // save ids for request
-    docId = testDoc.getId();
-    personId = testPerson.getId();
-    
-    // persist test data
-    em.getTransaction().begin();
-    em.persist(testPerson);
-    em.persist(testDoc);
-    em.getTransaction().commit();
-    em.close();
-  }
+public class PersonServiceTest extends EntityServiceTest {
   
   @Override
   protected Application configure() {
     return new ResourceConfig(PersonService.class);
   }
-  
+
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+
+    // create persons
+    Person testPerson = personTestData.createTestPerson(1);
+    Person relatedPerson = personTestData.createTestPerson(2);
+
+    // create relation
+    EntityRelation testRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
+    testPerson.getEntityRelations().add(testRelation);
+
+    // create attribute
+    Attribute testAttribute = attributeTestData.createTestAttribute();
+    testPerson.getAttributes().add(testAttribute);
+
+    // add persons to document
+    testDoc.getContent().getPersons().add(testPerson);
+
+    // save id for request
+    entityId = testPerson.getId();
+
+    // persist test data
+    em.getTransaction().begin();
+    em.persist(testAttribute);
+    em.persist(testPerson);
+    em.persist(testRelation);
+    em.persist(relatedPerson);
+    em.persist(testDoc);
+    em.getTransaction().commit();
+    em.close();
+  }
+
   /**
    * Checks whether a Person can be got using REST.
    */
   @Test
   public void testGetPerson() {
-    String path = "documents/" + docId + "/persons/" + personId;
-    Person responsePerson = target(path).request().get(Person.class);
-    
-    testData.checkData(responsePerson, 1);
+    Person responsePerson = target(getPath("persons")).request().get(Person.class);
+    check(responsePerson);
   }
 
+  @Override
+  public void testGetEntity() {
+    Person responseEntity = target(getPath("entities")).request().get(Person.class);
+    check(responseEntity);
+  }
 }

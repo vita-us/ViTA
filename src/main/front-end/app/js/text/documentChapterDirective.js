@@ -9,6 +9,7 @@
         documentId: scope.documentId,
         chapterId: scope.chapterData.id
       }, function(chapter) {
+        scope.title = chapter.title;
         scope.text = chapter.text;
       });
     }
