@@ -74,7 +74,7 @@ public class SearcherTest {
    assertEquals(chapterIds.get(0), spansSmallCases.get(0).getStart().getChapter().getId());
    assertEquals(chapterIds.get(0), spansSmallCases.get(0).getEnd().getChapter().getId());
    assertEquals(69, spansSmallCases.get(0).getStart().getOffset());
-   assertEquals(76, spansSmallCases.get(0).getEnd().getOffset());
+   assertEquals(77, spansSmallCases.get(0).getEnd().getOffset());
   
   
    List<TextSpan> spansMixedCases = searcher.searchString(documentId, "ViRgIniA", chapters,
@@ -83,13 +83,13 @@ public class SearcherTest {
    assertEquals(chapterIds.get(0), spansMixedCases.get(0).getStart().getChapter().getId());
    assertEquals(chapterIds.get(0), spansMixedCases.get(0).getEnd().getChapter().getId());
    assertEquals(69, spansMixedCases.get(0).getStart().getOffset());
-   assertEquals(76, spansMixedCases.get(0).getEnd().getOffset());
+   assertEquals(77, spansMixedCases.get(0).getEnd().getOffset());
   
    String virginia = "";
-   for (int i = 69; i < 77; i++) {
+   for (int i = 69; i < 78; i++) {
    virginia += (CHAPTERS_TEXTS[0].charAt(i));
    }
-   assertEquals("Virginia", virginia);
+   assertEquals("Virginia ", virginia);
    }
   
    /**
@@ -106,55 +106,55 @@ public class SearcherTest {
    assertEquals(chapterIds.get(1), spansSmallCases.get(0).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansSmallCases.get(0).getEnd().getChapter().getId());
    assertEquals(4, spansSmallCases.get(0).getStart().getOffset());
-   assertEquals(15, spansSmallCases.get(0).getEnd().getOffset());
+   assertEquals(16, spansSmallCases.get(0).getEnd().getOffset());
   
    String atThatTime1 = "";
-   for (int i = 4; i < 16; i++) {
+   for (int i = 4; i < 17; i++) {
    atThatTime1 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime1);
+   assertEquals("at that time ", atThatTime1);
   
    assertEquals(chapterIds.get(1), spansSmallCases.get(1).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansSmallCases.get(1).getEnd().getChapter().getId());
    assertEquals(41, spansSmallCases.get(1).getStart().getOffset());
-   assertEquals(52, spansSmallCases.get(1).getEnd().getOffset());
+   assertEquals(53, spansSmallCases.get(1).getEnd().getOffset());
   
    String atThatTime2 = "";
-   for (int i = 41; i < 53; i++) {
+   for (int i = 41; i < 54; i++) {
    atThatTime2 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime2);
+   assertEquals("at that time ", atThatTime2);
   
    assertEquals(chapterIds.get(1), spansSmallCases.get(2).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansSmallCases.get(2).getEnd().getChapter().getId());
    assertEquals(111, spansSmallCases.get(2).getStart().getOffset());
-   assertEquals(122, spansSmallCases.get(2).getEnd().getOffset());
+   assertEquals(123, spansSmallCases.get(2).getEnd().getOffset());
   
    String atThatTime3 = "";
-   for (int i = 111; i < 123; i++) {
+   for (int i = 111; i < 124; i++) {
    atThatTime3 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime3);
+   assertEquals("at that time ", atThatTime3);
    assertEquals(chapterIds.get(0), spansSmallCases.get(3).getStart().getChapter().getId());
    assertEquals(chapterIds.get(0), spansSmallCases.get(3).getEnd().getChapter().getId());
    assertEquals(132, spansSmallCases.get(3).getStart().getOffset());
-   assertEquals(143, spansSmallCases.get(3).getEnd().getOffset());
+   assertEquals(144, spansSmallCases.get(3).getEnd().getOffset());
   
    String atThatTime4 = "";
-   for (int i = 132; i < 144; i++) {
+   for (int i = 132; i < 145; i++) {
    atThatTime4 += (CHAPTERS_TEXTS[0].charAt(i));
    }
-   assertEquals("at that time", atThatTime4);
+   assertEquals("at that time ", atThatTime4);
    assertEquals(chapterIds.get(3), spansSmallCases.get(4).getStart().getChapter().getId());
    assertEquals(chapterIds.get(3), spansSmallCases.get(4).getEnd().getChapter().getId());
    assertEquals(40, spansSmallCases.get(4).getStart().getOffset());
-   assertEquals(51, spansSmallCases.get(4).getEnd().getOffset());
+   assertEquals(52, spansSmallCases.get(4).getEnd().getOffset());
   
    String atThatTime5 = "";
-   for (int i = 40; i < 52; i++) {
+   for (int i = 40; i < 53; i++) {
    atThatTime5 += (CHAPTERS_TEXTS[3].charAt(i));
    }
-   assertEquals("at that time", atThatTime5);
+   assertEquals("at that time ", atThatTime5);
   
    }
   
@@ -173,55 +173,55 @@ public class SearcherTest {
    assertEquals(chapterIds.get(1), spansMixedCases.get(0).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansMixedCases.get(0).getEnd().getChapter().getId());
    assertEquals(4, spansMixedCases.get(0).getStart().getOffset());
-   assertEquals(15, spansMixedCases.get(0).getEnd().getOffset());
+   assertEquals(16, spansMixedCases.get(0).getEnd().getOffset());
   
    String atThatTime1 = "";
-   for (int i = 4; i < 16; i++) {
+   for (int i = 4; i < 17; i++) {
    atThatTime1 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime1);
+   assertEquals("at that time ", atThatTime1);
   
    assertEquals(chapterIds.get(1), spansMixedCases.get(1).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansMixedCases.get(1).getEnd().getChapter().getId());
    assertEquals(41, spansMixedCases.get(1).getStart().getOffset());
-   assertEquals(52, spansMixedCases.get(1).getEnd().getOffset());
+   assertEquals(53, spansMixedCases.get(1).getEnd().getOffset());
   
    String atThatTime2 = "";
-   for (int i = 41; i < 53; i++) {
+   for (int i = 41; i < 54; i++) {
    atThatTime2 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime2);
+   assertEquals("at that time ", atThatTime2);
   
    assertEquals(chapterIds.get(1), spansMixedCases.get(2).getStart().getChapter().getId());
    assertEquals(chapterIds.get(1), spansMixedCases.get(2).getEnd().getChapter().getId());
    assertEquals(111, spansMixedCases.get(2).getStart().getOffset());
-   assertEquals(122, spansMixedCases.get(2).getEnd().getOffset());
+   assertEquals(123, spansMixedCases.get(2).getEnd().getOffset());
   
    String atThatTime3 = "";
-   for (int i = 111; i < 123; i++) {
+   for (int i = 111; i < 124; i++) {
    atThatTime3 += (CHAPTERS_TEXTS[1].charAt(i));
    }
-   assertEquals("at that time", atThatTime3);
+   assertEquals("at that time ", atThatTime3);
    assertEquals(chapterIds.get(0), spansMixedCases.get(3).getStart().getChapter().getId());
    assertEquals(chapterIds.get(0), spansMixedCases.get(3).getEnd().getChapter().getId());
    assertEquals(132, spansMixedCases.get(3).getStart().getOffset());
-   assertEquals(143, spansMixedCases.get(3).getEnd().getOffset());
+   assertEquals(144, spansMixedCases.get(3).getEnd().getOffset());
   
    String atThatTime4 = "";
-   for (int i = 132; i < 144; i++) {
+   for (int i = 132; i < 145; i++) {
    atThatTime4 += (CHAPTERS_TEXTS[0].charAt(i));
    }
-   assertEquals("at that time", atThatTime4);
+   assertEquals("at that time ", atThatTime4);
    assertEquals(chapterIds.get(3), spansMixedCases.get(4).getStart().getChapter().getId());
    assertEquals(chapterIds.get(3), spansMixedCases.get(4).getEnd().getChapter().getId());
    assertEquals(40, spansMixedCases.get(4).getStart().getOffset());
-   assertEquals(51, spansMixedCases.get(4).getEnd().getOffset());
+   assertEquals(52, spansMixedCases.get(4).getEnd().getOffset());
   
    String atThatTime5 = "";
-   for (int i = 40; i < 52; i++) {
+   for (int i = 40; i < 53; i++) {
    atThatTime5 += (CHAPTERS_TEXTS[3].charAt(i));
    }
-   assertEquals("at that time", atThatTime5);
+   assertEquals("at that time ", atThatTime5);
   
    }
   
@@ -252,11 +252,11 @@ public class SearcherTest {
     assertEquals(chapterIds.get(2), spansStopWords.get(0).getStart().getChapter().getId());
     assertEquals(chapterIds.get(2), spansStopWords.get(0).getEnd().getChapter().getId());
     assertEquals(0, spansStopWords.get(0).getStart().getOffset());
-    assertEquals(3, spansStopWords.get(0).getEnd().getOffset());
+    assertEquals(4, spansStopWords.get(0).getEnd().getOffset());
 
     assertEquals(chapterIds.get(3), spansStopWords.get(1).getStart().getChapter().getId());
     assertEquals(chapterIds.get(3), spansStopWords.get(1).getEnd().getChapter().getId());
     assertEquals(0, spansStopWords.get(1).getStart().getOffset());
-    assertEquals(3, spansStopWords.get(1).getEnd().getOffset());
+    assertEquals(4, spansStopWords.get(1).getEnd().getOffset());
   }
 }
