@@ -1,7 +1,5 @@
 package de.unistuttgart.vis.vita.persistence;
 
-import java.io.IOException;
-
 import javax.persistence.EntityManager;
 
 import org.junit.After;
@@ -21,7 +19,7 @@ public abstract class AbstractPersistenceTest {
    * Creates Model and EntityManager and starts the first Transaction.
    */
   @Before
-  public void setUp() throws IOException {
+  public void setUp() {
     UnitTestModel.startNewSession();
     model = new UnitTestModel();
     em = model.getEntityManager();

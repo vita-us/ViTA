@@ -41,6 +41,9 @@ public class Searcher {
 
   public List<TextSpan> searchString(String documentId, String searchString,
       List<Chapter> chapters, Model model) throws IOException, ParseException {
+    if (chapters.isEmpty()) {
+      return new ArrayList<TextSpan>();
+    }
 
     // This empty set allows to search for stop words
     CharArraySet charArraySet = new CharArraySet(0, true);
