@@ -31,6 +31,10 @@
         });
 
         $scope.entityIds = ['34534', '3459'];
+
+        $scope.deselectAll = function() {
+          $scope.activeFingerprints = [];
+        };
       }]);
 
 })(angular);
