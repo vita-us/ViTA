@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -43,6 +44,7 @@ public class DocumentPart extends AbstractEntityBase {
 
   @OneToMany
   @XmlElement(name = "chapters")
+  @OrderColumn(name = "TEXTSPAN_START")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**

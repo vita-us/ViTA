@@ -16,14 +16,21 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Document.findAllDocuments", query = "SELECT d " + "FROM Document d"),
+    @NamedQuery(name = "Document.findAllDocuments",
+                query = "SELECT d "
+                      + "FROM Document d"),
 
-    @NamedQuery(name = "Document.findDocumentById", query = "SELECT d " + "FROM Document d "
-        + "WHERE d.id = :documentId"),
+    @NamedQuery(name = "Document.findDocumentById",
+                query = "SELECT d "
+                      + "FROM Document d "
+                      + "WHERE d.id = :documentId"),
 
-    @NamedQuery(name = "Document.findDocumentByTitle", query = "SELECT d " + "FROM Document d "
-        + "WHERE d.metadata.title = :documentTitle")})
+    @NamedQuery(name = "Document.findDocumentByTitle",
+                query = "SELECT d "
+                      + "FROM Document d "
+                      + "WHERE d.metadata.title = :documentTitle")})
 public class Document extends AbstractEntityBase {
+
   @Embedded
   private DocumentMetadata metadata;
   @Embedded

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -21,10 +22,12 @@ public class DocumentContent {
 
   @OneToMany
   @JoinTable(name = "Document_Person")
+  @OrderBy("rankingValue ASC")
   private List<Person> persons;
 
   @OneToMany
   @JoinTable(name = "Document_Place")
+  @OrderBy("rankingValue ASC")
   private List<Place> places;
 
   /**

@@ -42,8 +42,9 @@ public class Attribute extends AbstractEntityBase {
   
   private AttributeType type;
   private String content;
+
   @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("START_OFFSET ASC")
+  @OrderBy("start.offset ASC")
   private SortedSet<TextSpan> occurrences;
 
   /**
