@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div data-document-view-highlighter data-document-id="document.id"
+      <div data-document-view-highlighter data-document-id="document.id" data-selected-occurrence-index="selectedOccurrenceIndex"
         data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
           data-part-data="part" data-document-id="document.id"></div>
@@ -45,6 +45,10 @@
       </button>
       <span class="result-count" ng-show="resultCount >= 0">
         {{resultCount}} results found.
+      </span>
+      <span>
+        <button class="btn btn-default" ng-click="up()">Up</button>
+        <button class="btn btn-default" ng-click="down()">Down</button>
       </span>
     </form>
   </div>

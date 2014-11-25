@@ -48,6 +48,17 @@
             $scope.occurrences = occurrences;
           });
         };
+
+        $scope.down = function() {
+          $scope.selectedOccurrenceIndex = angular.isUndefined($scope.selectedOccurrenceIndex) ? 0 : $scope.selectedOccurrenceIndex;
+          $scope.selectedOccurrenceIndex += 1;
+          $scope.selectedOccurrenceIndex %= $scope.occurrences.length;
+        }
+        $scope.up = function() {
+          $scope.selectedOccurrenceIndex = angular.isUndefined($scope.selectedOccurrenceIndex) ? 0 : $scope.selectedOccurrenceIndex;
+          $scope.selectedOccurrenceIndex -= 1;
+          $scope.selectedOccurrenceIndex = $scope.selectedOccurrenceIndex < 0 ? $scope.occurrences.length - 1 : $scope.selectedOccurrenceIndex;
+        }
       }]);
 
 })(angular);
