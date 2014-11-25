@@ -2,8 +2,8 @@ package de.unistuttgart.vis.vita.services.occurrence;
 
 import java.util.List;
 
-import javax.persistence.Query;
 import javax.annotation.ManagedBean;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -82,7 +82,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart, 
-                                            @QueryParam("rangeEnd") double rangeEnd) {
+                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
     // check amount of steps
     if (steps < 0 || steps > 1000) {
       throw new WebApplicationException("Illegal amount of steps!");
