@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -41,7 +42,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 public class Chapter extends AbstractEntityBase {
   
   private int number;
+
+  @Column(length = 1000)
   private String title;
+
   private int length;
   
   // text attribute is transient, this means it will not be persisted in the database!
