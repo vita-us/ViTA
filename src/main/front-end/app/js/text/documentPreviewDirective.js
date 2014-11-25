@@ -12,6 +12,8 @@
               return;
             }
 
+            scope.documentTitle = scope.document.metadata.title;
+
             DocumentParts.get({
               documentId: scope.document.id
             }, function(structure) {
@@ -21,6 +23,7 @@
         }
 
         function previewFirstChapter(scope, parts) {
+          scope.previewText = undefined;
           if (parts.length === 0 || parts[0].chapters.length === 0) {
             scope.previewText = 'Currently no text available';
             return;
@@ -31,7 +34,6 @@
             chapterId: parts[0].chapters[0].id
           }, function(chapter) {
             scope.previewText = chapter.text;
-            scope.documentTitle = scope.document.metadata.title;
           });
         }
 

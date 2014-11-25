@@ -13,6 +13,7 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
+    $httpBackend.expectGET('webapi/documents/123/persons').respond(TestData.persons);
     $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
     $httpBackend.expectGET('webapi/documents/123/progress').respond(TestData.analysisProgress);
 

@@ -9,7 +9,8 @@
     var directive = {
       restrict: 'A',
       scope: {
-        document: '='
+        document: '=',
+        reloadDocuments: '&'
       },
       link: link,
       templateUrl: 'templates/documentlistitem.html'
@@ -22,6 +23,7 @@
         var confirmed = confirm('Delete document "' + document.metadata.title + '" ?');
         if (confirmed) {
           Document.remove({documentId: document.id});
+          scope.reloadDocuments();
         }
       };
 
@@ -29,6 +31,7 @@
         var confirmed = confirm('Restart the analysis of "' + document.metadata.title + '" ?');
         if (confirmed) {
           Analysis.restart(document.id);
+          scope.reloadDocuments();
         }
       };
 
@@ -36,6 +39,7 @@
         var confirmed = confirm('Stop the analysis of "' + document.metadata.title + '" ?');
         if (confirmed) {
           Analysis.stop(document.id);
+          scope.reloadDocuments();
         }
       };
 

@@ -46,9 +46,6 @@
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: 'WordcloudCtrl'
-    }).when('/documents/:documentId/documentview', {
-      templateUrl: 'partials/documentview.html',
-      controller: ''
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
     }).otherwise({
@@ -86,9 +83,15 @@
         Page.tab = 1;
         $scope.Page = Page;
 
+        var windowObject;
+
         $scope.openDocumentView = function() {
-          window.open('documentview.html', 'documentView',
-                  'width=0,height=0,left=0,alwaysRaised=yes');
+          if (!windowObject || windowObject.closed) {
+            windowObject = window.open('documentview.html', 'documentView',
+                    'width=0,height=0,left=0,alwaysRaised=yes');
+          } else {
+            windowObject.focus();
+          }
         };
 
         DocumentViewSender.onDocumentIdRequest(function() {

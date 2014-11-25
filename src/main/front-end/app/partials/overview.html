@@ -1,59 +1,84 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-2">
-      <div ng-include="'partials/menu.html'"></div>
-    </div>
-    <div class="col-md-10">
-      <div class="row">
-        <div class="col-md-11 highlight">
-          <p>Author: {{document.metadata.author}}</p>
-          <p>Published: {{document.metadata.publishYear}} {{document.metadata.publisher}}</p>
-          <p>Number of chapters: {{document.metrics.chapterCount}}</p>
-          <p>Number of words: {{document.metrics.wordCount}}</p>
-        </div>
+<div class="row">
+  <div class="col-md-2">
+    <div ng-include="'partials/menu.html'"></div>
+  </div>
+  <div class="col-md-10">
+    <div class="row">
+      <div class="col-md-6">
+        <dl>
+          <dt>Author:</dt>
+          <dd>{{document.metadata.author}}</dd>
+        </dl>
+        <dl>
+          <dt>Published:</dt>
+          <dd>{{document.metadata.publishYear}}</dd>
+        </dl>
       </div>
-      <div class="row overview-preview-images top-buffer">
-        <div class="col-md-11 highlight">
-          <div class="row">
-            <div class="col-md-4 col-xs-6">
-              <a ng-href="#/documents/{{document.id}}/characters" class="link-to-visualization">
-                <span data-progress-status data-status="progress.persons"
-                  data-image="img/overview-preview-image-chars.png" data-title="Characters"></span>
-              </a>
-            </div>
-            <div class="col-md-4 col-xs-6">
-              <a ng-href="#/documents/{{document.id}}/places" class="link-to-visualization">
-                <span data-progress-status data-status="progress.places"
-                  data-image="img/overview-preview-image-places.png" data-title="Places"></span>
-              </a>
-            </div>
-            <div class="col-md-4 col-xs-6">
-              <a ng-href="#/documents/{{document.id}}/fingerprint" class="link-to-visualization">
-                <span data-progress-status data-status="progress.fingerPrints"
-                  data-image="img/overview-preview-image-fp.png" data-title="Fingerprint"></span>
-              </a>
-            </div>
-            <div class="col-md-4 col-xs-6">
-              <a ng-href="#/documents/{{document.id}}/graphnetwork" class="link-to-visualization">
-                <span data-progress-status data-status="progress.graphView"
-                  data-image="img/overview-preview-image-gn.png" data-title="Graph-Network"></span>
-              </a>
-            </div>
-            <div class="col-md-4 col-xs-6">
-              <a ng-href="#/documents/{{document.id}}/wordcloud" class="link-to-visualization">
-                <span data-progress-status data-status="progress.wordCloud"
-                  data-image="img/overview-preview-image-cloud.png" data-title="Word Cloud"></span>
-              </a>
-            </div>
-            <div class="col-md-4 col-xs-6">
-              <a href="" ng-click="openDocumentView()" class="link-to-visualization">
-                <span data-progress-status data-status="progress.text"
-                  data-image="img/overview-preview-image-doc.png" data-title="Document"></span>
-              </a>
-            </div>
-          </div>
-        </div>
+      <div class="col-md-6">
+        <dl>
+          <dt>Number of chapters:</dt>
+          <dd>{{document.metrics.chapterCount}}</dd>
+        </dl>
+        <dl>
+          <dt>Number of words:</dt>
+          <dd>{{document.metrics.wordCount}}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <dl>
+          <dt>Main characters:</dt>
+          <dd>
+            <ul class="list-inline">
+              <li ng-repeat="person in persons | orderBy: 'rankingValue' | limitTo: 5"><a
+                href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
+                class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
+                  {{person.displayName}}</a></li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <hr />
+    <div class="row overview-preview-images top-buffer">
+      <div class="col-md-4 col-xs-6">
+        <a ng-href="#/documents/{{document.id}}/characters" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.persons"
+          data-image="img/overview-preview-image-chars.png" data-title="Characters"></span>
+        </a>
+      </div>
+      <div class="col-md-4 col-xs-6">
+        <a ng-href="#/documents/{{document.id}}/places" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.places"
+          data-image="img/overview-preview-image-places.png" data-title="Places"></span>
+        </a>
+      </div>
+      <div class="col-md-4 col-xs-6">
+        <a ng-href="#/documents/{{document.id}}/fingerprint" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.fingerPrints"
+          data-image="img/overview-preview-image-fp.png" data-title="Fingerprint"></span>
+        </a>
+      </div>
+      <div class="col-md-4 col-xs-6">
+        <a ng-href="#/documents/{{document.id}}/graphnetwork" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.graphView"
+          data-image="img/overview-preview-image-gn.png" data-title="Graph-Network"></span>
+        </a>
+      </div>
+      <div class="col-md-4 col-xs-6">
+        <a ng-href="#/documents/{{document.id}}/wordcloud" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.wordCloud"
+          data-image="img/overview-preview-image-cloud.png" data-title="Word Cloud"></span>
+        </a>
+      </div>
+      <div class="col-md-4 col-xs-6">
+        <a href="" ng-click="openDocumentView()" class="link-to-visualization"> <span
+          data-progress-status data-status="progress.text"
+          data-image="img/overview-preview-image-doc.png" data-title="Document"></span>
+        </a>
       </div>
     </div>
   </div>
 </div>
+

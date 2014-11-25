@@ -117,6 +117,7 @@ public abstract class OccurrencesService {
   protected Chapter getSurroundingChapter(int offset) {
     TypedQuery<Chapter> chapterQ = em.createNamedQuery("Chapter.findChapterByOffset",
                                                         Chapter.class);
+    chapterQ.setParameter("documentId", documentId);
     chapterQ.setParameter("offset", offset);
 
     List<Chapter> chapters = chapterQ.getResultList();
