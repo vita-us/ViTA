@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -147,11 +148,11 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
   
   private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
-    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForRelations");
+    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
     numberOfTextSpansQuery.setParameter("entityIds", entityIds);
     numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
     numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
-    return (long) numberOfTextSpansQuery.getSingleResult();
+    return (long) numberOfTextSpansQuery.getSingleResult() == entityIds.size() ? 1 : 0;
   }
 
   @Override

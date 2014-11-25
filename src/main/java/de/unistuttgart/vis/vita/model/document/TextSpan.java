@@ -86,25 +86,17 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
           + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
   
-  // for checking the amount of spans for a relation in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForRelations", 
-    query = "SELECT DISTINCT COUNT(ts1) "
-          + "FROM TextSpan ts1, Entity e " 
-          + "INNER JOIN e.occurrences ts2 "
+  // checks whether a set of entities occur in a range (for relation occurrences)
+  @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
+    query = "SELECT COUNT(DISTINCT e.id) "
+          + "FROM Entity e "
+          + "INNER JOIN e.occurrences ts "
           + "WHERE e.id IN :entityIds "
           // range checks
-          + "AND ts1.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // intervals have an overlap
-          + "AND ((ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts1.start.offset "
-          + "AND ts2.start.offset < ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + ") "
-          + "OR (ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts2.start.offset "
-          + "AND ts1.start.offset < ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + ")) "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
-          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
+          + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
 
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts " 
       + "FROM TextSpan ts "
