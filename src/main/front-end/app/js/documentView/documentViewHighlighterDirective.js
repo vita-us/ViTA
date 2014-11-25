@@ -15,8 +15,7 @@
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
-              highlight(scope.occurrences, scope.documentId, scope.entities,
-                      scope.selectedOccurrenceIndex);
+              highlight(scope.occurrences, scope.documentId, scope.entities);
             }
           }, true);
           scope.$watch('selectedOccurrenceIndex', function(newValue, oldValue) {
@@ -26,7 +25,7 @@
           }, true);
         }
 
-        function highlight(occurrences, documentId, entities, selectedOccurrenceIndex) {
+        function highlight(occurrences, documentId, entities) {
           occurrences = angular.isUndefined(occurrences) ? [] : occurrences;
 
           occurrences = occurrences.sort(function(a, b) {
