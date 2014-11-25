@@ -15,7 +15,8 @@
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
-              highlight(scope.occurrences, scope.documentId, scope.entities, scope.selectedOccurrenceIndex);
+              highlight(scope.occurrences, scope.documentId, scope.entities,
+                      scope.selectedOccurrenceIndex);
             }
           }, true);
           scope.$watch('selectedOccurrenceIndex', function(newValue, oldValue) {
@@ -63,7 +64,8 @@
 
           var splitParts = splitChapter(chapterText, chapterOccurrences, chapterOffset);
 
-          var highlightedOccurrenceParts = addHighlights(splitParts.occurrenceParts, chapterOccurrences, entities);
+          var highlightedOccurrenceParts = addHighlights(splitParts.occurrenceParts,
+                  chapterOccurrences, entities);
 
           var highlightedChapterText = mergeChapter(highlightedOccurrenceParts,
                   splitParts.nonOccurrenceParts);
@@ -103,7 +105,8 @@
         function addHighlights(occurrenceParts, occurrences, entities) {
           var highlightedOccurrenceParts = [];
           occurrenceParts.forEach(function(occurrencePart, i) {
-            var highlightedOccurrencePart = wrap(highlightEntities(occurrencePart, entities), 'occurrence', 'occurrence-' + occurrences[i].index);
+            var highlightedOccurrencePart = wrap(highlightEntities(occurrencePart, entities),
+                    'occurrence', 'occurrence-' + occurrences[i].index);
             highlightedOccurrenceParts.push(highlightedOccurrencePart);
           });
           return highlightedOccurrenceParts;
@@ -162,7 +165,8 @@
           if (prevSelectedOccurence.length !== 0) {
             prevSelectedOccurence.removeClass('selected');
           }
-          var newSelectedOccurrence = $(highlighterElement[0]).find('[id^="occurrence-' + selectedOccurrenceIndex + '"]');
+          var newSelectedOccurrence = $(highlighterElement[0]).find(
+                  '[id^="occurrence-' + selectedOccurrenceIndex + '"]');
           if (newSelectedOccurrence.length === 0) {
             return;
           }
