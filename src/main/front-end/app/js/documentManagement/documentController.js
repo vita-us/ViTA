@@ -79,7 +79,7 @@
         }
 
         $scope.isDocumentSelected = function(document) {
-          return angular.equals($scope.selectedDocument, document);
+          return angular.equals($scope.selectedDocument.id, document.id);
         };
 
         $scope.updateSelection = function(selectedDocument) {
