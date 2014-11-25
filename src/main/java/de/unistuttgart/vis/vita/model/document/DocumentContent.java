@@ -18,6 +18,7 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 public class DocumentContent {
   
   @OneToMany
+  @OrderBy("number ASC")
   private List<DocumentPart> parts;
 
   @OneToMany
