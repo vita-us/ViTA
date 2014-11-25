@@ -14,10 +14,43 @@
       function($scope, Document, Page, FileUpload, $interval, ChapterText) {
         Page.setUp('Documents', 1);
 
+        var allowedExtensions = ['.txt', '.epub'];
+        $scope.allowedExtensions = allowedExtensions.join(',');
+
+        // Validate the file selection
+        $scope.$watch('file', function() {
+          if (!$scope.file) {
+            return;
+          }
+
+          var isValid = false;
+
+          for (var i = 0, l = allowedExtensions.length; i < l; i++) {
+            var extension = allowedExtensions[i], name = $scope.file.name.toLowerCase();
+
+            if (name.indexOf(extension, name.length - extension.length) !== -1) {
+              isValid = true;
+              break;
+            }
+          }
+
+          if (!isValid) {
+            alert('Invalid file selection. Only the following extensions are allowed: '
+                    + $scope.allowedExtensions);
+            resetUploadField();
+          }
+        });
+
         $scope.uploading = false;
 
-        loadDocuments();
-        var timerId = $interval(loadDocuments, 5000);
+        $scope.loadDocuments = function() {
+          Document.get(function(response) {
+            $scope.documents = response.documents;
+          });
+        };
+
+        $scope.loadDocuments();
+        var timerId = $interval($scope.loadDocuments, 5000);
 
         $scope.uploadSelectedFile = function() {
           // allow only a single upload simultaneously
@@ -41,12 +74,6 @@
           }
         };
 
-        function loadDocuments() {
-          Document.get(function(response) {
-            $scope.documents = response.documents;
-          });
-        }
-
         function resetUploadField() {
           document.getElementById('document-input').value = '';
         }
@@ -64,9 +91,12 @@
           var newName = prompt('Please enter a new name for document "' + document.metadata.title
                   + '".');
           if (newName) {
+            document.metadata.title = newName;
             Document.rename({
               documentId: document.id,
               name: newName
+            }, function() {
+              $scope.loadDocuments();
             });
           }
         };
