@@ -143,11 +143,14 @@ public class AnalysisController {
       currentExecuter.cancel();
       currentDocument = null;
       currentExecuter = null;
+      setStatus(documentID,  AnalysisStatus.CANCELLED);
       startNextAnalysis();
     } else {
       Iterator<Document> it = analysisQueue.iterator();
       while (it.hasNext()) {
         if (it.next().getId().equals(documentID)) {
+          // Only set status to cancelled if it is currently running or scheduled
+          setStatus(documentID,  AnalysisStatus.CANCELLED);
           it.remove();
           return;
         }
