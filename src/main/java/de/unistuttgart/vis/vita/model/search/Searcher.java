@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Tokenizer;
@@ -61,13 +60,8 @@ public class Searcher {
 
     callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
     indexSearcher.getIndexReader().close();
-    
-    // Sorts the textspans in ascending order regarding the global start offsets
-    Collections.sort(textSpans, new Comparator<TextSpan>(){
-      @ Override public int compare(TextSpan textSpan1, TextSpan textSpan2) {
-          return textSpan1.getStart().getOffset()-textSpan2.getStart().getOffset();
-      }
-  });
+
+    Collections.sort(textSpans);
     return textSpans;
   }
 
@@ -143,7 +137,7 @@ public class Searcher {
         if (charTermAttrib.toString().toLowerCase().matches(searchString.toLowerCase())) {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
-          
+
           textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
               TextPosition.fromGlobalOffset(currentChapter, endOffset)));
         }
@@ -166,9 +160,8 @@ public class Searcher {
 
           String sentence = extractSentence(words, charTermAttrib, tokens, tokenizer);
           if (sentence.toLowerCase().equals(searchString.toLowerCase())) {
-            int endOffset =
-                offset.endOffset() + currentChapter.getRange().getStart().getOffset();
-           
+            int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+
             textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
                 TextPosition.fromGlobalOffset(currentChapter, endOffset)));
           }
