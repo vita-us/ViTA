@@ -187,6 +187,7 @@ public class AnalysisController {
         throw new IllegalArgumentException("No such document found");
       }
       document = documents.get(0);
+      AnalysisResetter.resetDocument(em, document);
     } finally {
       if (em != null) {
         em.close();
