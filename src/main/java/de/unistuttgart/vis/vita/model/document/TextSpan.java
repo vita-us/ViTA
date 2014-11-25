@@ -7,6 +7,7 @@ import javax.persistence.NamedQuery;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
@@ -77,8 +78,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
           + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // intervals have an overlap
-          + "AND ((ts2.start.offset > ts1.start.offset " + "AND ts2.start.offset < ts1.end.offset) "
-            + "OR (ts1.start.offset > ts2.start.offset " + "AND ts1.start.offset < ts2.end.offset)) "
+          + "AND ((ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts1.start.offset "
+          + "AND ts2.start.offset < ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + ") "
+          + "OR (ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts2.start.offset "
+          + "AND ts1.start.offset < ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + ")) "
           // Null checks
           + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
           + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
@@ -95,8 +98,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
           + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // intervals have an overlap
-          + "AND ((ts2.start.offset > ts1.start.offset " + "AND ts2.start.offset < ts1.end.offset) "
-            + "OR (ts1.start.offset > ts2.start.offset " + "AND ts1.start.offset < ts2.end.offset)) "
+          + "AND ((ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts1.start.offset "
+          + "AND ts2.start.offset < ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + ") "
+          + "OR (ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts2.start.offset "
+          + "AND ts1.start.offset < ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + ")) "
           // Null checks
           + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
           + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
@@ -106,7 +111,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
       + "WHERE ts.id = :textSpanId")
   })
 public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
-
+  
   // constants
   private static final int MIN_LENGTH = 0;
 

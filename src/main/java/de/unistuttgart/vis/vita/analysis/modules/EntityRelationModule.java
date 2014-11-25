@@ -22,7 +22,8 @@ public class EntityRelationModule extends Module<EntityRelations> {
   /**
    * The maximum distance in characters two entities my occur at to be considered in a relation
    */
-  private static final int MAX_DISTANCE = 50;
+  public static final int MAX_DISTANCE = 50;
+  
   private SortedSet<RelationEvent> events = new TreeSet<>();
   private Map<BasicEntity, Integer> presentEntities = new HashMap<>();
   private Map<BasicEntity, Map<BasicEntity, Integer>> weights = new HashMap<>();

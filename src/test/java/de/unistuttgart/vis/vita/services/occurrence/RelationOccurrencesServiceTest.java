@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -49,6 +50,15 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
   private static final int OL2_START_OFFSET = 110000;
   private static final int OL2_END_OFFSET   = 120000;
 
+  /*
+   * NEAR for TextSpans that are near to each other
+   */
+  private static final int NEAR1_START_OFFSET = 2000000;
+  private static final int NEAR1_END_OFFSET = 2000100;
+
+  private static final int NEAR2_START_OFFSET = 2000200;
+  private static final int NEAR2_END_OFFSET = 2000300;
+
   private static final int OL_LENGTH = OL1_END_OFFSET - OL2_START_OFFSET;
 
   private PersonTestData personTestData;
@@ -89,8 +99,14 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition originEnd = TextPosition.fromGlobalOffset(testChapter, OL1_END_OFFSET);
     TextSpan originSpan = new TextSpan(originStart, originEnd);
 
+    // TextSpans next to each other
+    TextPosition originNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR1_START_OFFSET);
+    TextPosition originNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR1_END_OFFSET);
+    TextSpan originNearSpan = new TextSpan(originNearStart, originNearEnd);
+
     originPerson.getOccurrences().add(originSpan);
     originPerson.getOccurrences().add(originSeparateSpan);
+    originPerson.getOccurrences().add(originNearSpan);
 
     // set up second person
     Person targetPerson = personTestData.createTestPerson(2);
@@ -104,9 +120,15 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition targetStart = TextPosition.fromGlobalOffset(testChapter, OL2_START_OFFSET);
     TextPosition targetEnd = TextPosition.fromGlobalOffset(testChapter, OL2_END_OFFSET);
     TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
+
+    // TextSpans next to each other
+    TextPosition targetNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR2_START_OFFSET);
+    TextPosition targetNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR2_END_OFFSET);
+    TextSpan targetNearSpan = new TextSpan(targetNearStart, targetNearEnd);
     
     targetPerson.getOccurrences().add(targetSpan);
     targetPerson.getOccurrences().add(targetSeparateSpan);
+    targetPerson.getOccurrences().add(targetNearSpan);
     
     // set up relation between them
     EntityRelation testRelation = relationTestData.createTestRelation(originPerson, 
@@ -128,10 +150,12 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     em.persist(testChapter);
     em.persist(originSpan);
     em.persist(originSeparateSpan);
+    em.persist(originNearSpan);
     em.persist(originPerson);
     em.persist(targetSpan);
     em.persist(targetSeparateSpan);
     em.persist(targetPerson);
+    em.persist(targetNearSpan);
     em.persist(testRelation);
     em.persist(testPart);
     em.persist(testDoc);
@@ -197,7 +221,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
 
-    assertEquals(1, receivedOccurrences.size());
+    assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
     Occurrence receivedOccurrence = receivedOccurrences.get(0);
