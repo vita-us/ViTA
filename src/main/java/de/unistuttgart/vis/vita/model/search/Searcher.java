@@ -5,6 +5,8 @@ package de.unistuttgart.vis.vita.model.search;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Tokenizer;
@@ -25,6 +27,7 @@ import com.google.common.base.Joiner;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
@@ -58,6 +61,13 @@ public class Searcher {
 
     callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
     indexSearcher.getIndexReader().close();
+    
+    // Sorts the textspans in ascending order regarding the global start offsets
+    Collections.sort(textSpans, new Comparator<TextSpan>(){
+      @ Override public int compare(TextSpan textSpan1, TextSpan textSpan2) {
+          return textSpan1.getStart().getOffset()-textSpan2.getStart().getOffset();
+      }
+  });
     return textSpans;
   }
 
@@ -131,9 +141,11 @@ public class Searcher {
       tokenizer.reset();
       while (tokenizer.incrementToken()) {
         if (charTermAttrib.toString().toLowerCase().matches(searchString.toLowerCase())) {
-          int startOffset = offset.startOffset();
-          int endOffset = offset.endOffset();
-          textSpans.add(new TextSpan(currentChapter, startOffset, endOffset));
+          int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
+          int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+          
+          textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
+              TextPosition.fromGlobalOffset(currentChapter, endOffset)));
         }
       }
       tokenizer.end();
@@ -149,14 +161,16 @@ public class Searcher {
       tokenizer.reset();
       while (tokenizer.incrementToken()) {
         if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
-          int startOffset = offset.startOffset();
-
+          int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           tokens.add(charTermAttrib.toString());
+
           String sentence = extractSentence(words, charTermAttrib, tokens, tokenizer);
           if (sentence.toLowerCase().equals(searchString.toLowerCase())) {
-            int endOffset = startOffset + searchString.length();
-            textSpans.add(new TextSpan(currentChapter, startOffset, endOffset));
-
+            int endOffset =
+                offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+           
+            textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
+                TextPosition.fromGlobalOffset(currentChapter, endOffset)));
           }
         }
         tokens.clear();
@@ -185,7 +199,7 @@ public class Searcher {
       i++;
     }
     Joiner joiner = Joiner.on(" ");
-    
+
     return joiner.join(tokens);
   }
 }
