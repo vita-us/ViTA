@@ -20,6 +20,7 @@
 
         DocumentViewReceiver.onOccurrences(function(messageData) {
           $scope.occurrences = messageData.message;
+          $scope.selectedOccurrenceIndex = 0;
           $scope.$digest();
         });
 
@@ -46,6 +47,7 @@
             var occurrences = response.occurrences;
             $scope.resultCount = occurrences.length;
             $scope.occurrences = occurrences;
+            $scope.selectedOccurrenceIndex = 0;
           });
         };
 
