@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
  * extracted Lines into String parameters for the Chapter and assures these Strings have the correct
  * text style.<br> <br> The structure of given List-parameters can be changed by this class.
  */
+
+//TODO issue 138
 public class ChapterBuilder implements Callable<Chapter> {
 
   // Regex for detection of whitespace in a line

@@ -17,6 +17,8 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
  * other components of ViTA. It transforms the result of the MetadataAnalyzer into a Metadata. One
  * MetadataBuilder should be used for one Metadata.<br>
  */
+
+//TODO issue 138
 public class MetadataBuilder {
 
   private static final String TITLE_VERSION1 = "Title:";
