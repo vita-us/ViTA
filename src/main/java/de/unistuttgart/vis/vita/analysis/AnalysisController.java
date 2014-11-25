@@ -141,6 +141,7 @@ public class AnalysisController {
   public synchronized void cancelAnalysis(String documentID) {
     if (currentDocument != null && currentDocument.getId().equals(documentID)) {
       currentExecuter.cancel();
+      currentDocument = null;
       currentExecuter = null;
       startNextAnalysis();
     } else {
