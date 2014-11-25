@@ -5,6 +5,7 @@
 
   vitaDirectives.directive('part', function() {
     function link(scope) {
+      scope.title = scope.partData.title || 'Part ' + scope.partData.number;
       scope.chapters = scope.partData.chapters;
     }
 

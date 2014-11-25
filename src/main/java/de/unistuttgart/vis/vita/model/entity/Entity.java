@@ -9,8 +9,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Inheritance;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -19,11 +25,18 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
  * ranking value, occurrences, fingerprint and relations to other entities.
  */
 @javax.persistence.Entity
+@NamedQueries(
+  @NamedQuery(name = "Entity.findEntityById",
+          query = "SELECT e "
+                + "FROM Entity e "
+                + "WHERE e.id = :entityId")
+)
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
+@XmlRootElement
+@XmlSeeAlso({Person.class, Place.class})
 public abstract class Entity extends AbstractEntityBase {
 
-  // constants
   private static final int MIN_RANK_VALUE = 1;
 
   private String displayName;
@@ -31,6 +44,7 @@ public abstract class Entity extends AbstractEntityBase {
   private int rankingValue;
 
   @OneToMany(cascade = CascadeType.ALL)
+  @XmlElement(required = true)
   private Set<Attribute> attributes;
 
   @OneToMany(cascade = CascadeType.ALL)
@@ -38,6 +52,8 @@ public abstract class Entity extends AbstractEntityBase {
   private SortedSet<TextSpan> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
+  @XmlElement(name = "entityRelations")
+  @XmlJavaTypeAdapter(FlatEntityRelationAdapter.class)
   private Set<EntityRelation> entityRelations;
 
   /**

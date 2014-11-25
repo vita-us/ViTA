@@ -76,8 +76,11 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     for (BasicEntity basicEntity : basicEntities) {
       Entity source = realEntities.get(basicEntity);
       Map<BasicEntity, Double> weights = relations.getRelatedEntities(basicEntity);
-      if (weights == null)
+
+      if (weights == null) {
         continue;
+      }
+
       for (Map.Entry<BasicEntity, Double> entry : weights.entrySet()) {
         Entity target = realEntities.get(entry.getKey());
         EntityRelation relation = new EntityRelation();

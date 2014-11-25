@@ -8,8 +8,8 @@ describe('Graph-Network Directive', function() {
     "rankingValue": 6,
   };
   var additionalRelation = {
-    "personAId": "person8Hugo",
-    "personBId": "person10Bert",
+    "entityAId": "person8Hugo",
+    "entityBId": "person10Bert",
     "weight": 0.222
   };
 

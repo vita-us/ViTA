@@ -8,23 +8,30 @@
 </head>
 <body id="document-view">
   <div class="container-fluid" id="document-view-header">
-    <h2>{{document.metadata.title}}</h2>
+    <h2 class="document-title">{{document.metadata.title}}</h2>
   </div>
   <div class="container-fluid" id="document-view-main">
     <div class="row" style="height: 100%">
-      <div class="col-sm-3 document-view-menu">
+      <div class="col-sm-3 document-view-menu" data-menu-scroll-highlighting
+          data-menu-selector=".part, .chapter" data-scroll-container-id="document-view-main">
         <div class="dv-menu-fixed-wrap">
-          <div class="part" data-ng-repeat="part in parts">
-            <h3>
-              <a href="#part-{{part.number}}">Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}</a>
+          <div data-ng-repeat="part in parts">
+            <h3 class="part" data-ng-class="{'active-menu': $first}">
+              <a href="#part-{{part.number}}">
+                Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
+              </a>
             </h3>
-            <div class="chapter" data-ng-repeat="chapter in part.chapters">
-              <a href="#chapter-{{chapter.id}}">Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}</a>
+            <div class="chapter" data-ng-class="{'active-menu': $parent.$first && $first}"
+                data-ng-repeat="chapter in part.chapters">
+              <a href="#chapter-{{chapter.id}}">
+                Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}
+              </a>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-9 document-view-text document-text">
+      <div data-document-view-highlighter data-document-id="document.id"
+        data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
           data-part-data="part" data-document-id="document.id"></div>
       </div>

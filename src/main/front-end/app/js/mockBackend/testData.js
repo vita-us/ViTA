@@ -330,54 +330,54 @@
           'number': 1,
           'title': 'Der erste Teil',
           'chapters': [{
-            'id': '1.13',
-            'title': 'Seenot',
-            'number': 13,
+            'id': '1-1',
+            'title': 'Anfang',
+            'number': 1,
             'length': 242341,
             'range': {
               'start': {
-                'chapter': '1.13',
+                'chapter': '1-1',
                 'offset': 13,
                 'progress': 0
               },
               'end': {
-                'chapter': '1.13',
+                'chapter': '1-1',
                 'offset': 29,
                 'progress': 0.237261231
               },
               'length': 14123
             }
           }, {
-            'id': '1.14',
-            'title': 'Baum',
-            'number': 14,
+            'id': '1-2',
+            'title': 'Mittel',
+            'number': 2,
             'length': 581234,
             'range': {
               'start': {
-                'chapter': '1.14',
+                'chapter': '1-2',
                 'offset': 123,
                 'progress': 0.29
               },
               'end': {
-                'chapter': '1.13',
+                'chapter': '1-2',
                 'offset': 29888,
                 'progress': 0.487261231
               },
               'length': 82342
             }
           }, {
-            'id': '1.15',
-            'title': 'Seenot am Ende',
-            'number': 15,
+            'id': '1-3',
+            'title': 'Ende',
+            'number': 3,
             'length': 8215,
             'range': {
               'start': {
-                'chapter': '1.15',
+                'chapter': '1-3',
                 'offset': 115,
                 'progress': 0.682381
               },
               'end': {
-                'chapter': '1.15',
+                'chapter': '1-3',
                 'offset': 229,
                 'progress': 0.87261231
               },
@@ -388,19 +388,61 @@
       },
 
       singleChapter: {
-        'id': '1.13',
-        'title': 'Seenot',
+        'id': '1-1',
+        'title': 'Anfang',
         'number': 13,
         'length': 128438,
-        'text': 'gaaaaanz ... viiiiieleeeee ... Woeerteeer, Saetze, etc.',
+        'text': 'When Mr. Bilbo Baggins of Bag End announced that he would shortly be celebrating his eleventy-first birthday with a party of special magnificence, there was much talk and excitement in Hobbiton.Bilbo was very rich and very peculiar, and had been the wonder of the Shire for sixty years, ever since his remarkable disappearance and unexpected return. The riches he had brought back from his travels had now become a local legend, and it was popularly believed, whatever the old folk might say, that the Hill at Bag End was full of tunnels stuffed with treasure. And if that was not enough for fame, there was also his prolonged vigour to marvel at. Time wore on, but it seemed to have little effect on Mr. Baggins. At ninety he was much the same as at fifty. At ninety-nine they began to call him well-preserved; but unchanged would have been nearer the mark. There were some that shook their heads and thought this was too much of a good thing; it seemed unfair that anyone should possess (apparently) perpetual youth as well as (reputedly) inexhaustible wealth.‘It will have to be paid for,’ they said. ‘It isn’t natural, and trouble will come of it!’',
         'range': {
           'start': {
-            'chapter': '1.13',
-            'offset': 13,
+            'chapter': '1-1',
+            'offset': 0,
             'progress': 0.182381
           },
           'end': {
-            'chapter': '1.13',
+            'chapter': '1-1',
+            'offset': 29,
+            'progress': 0.87261231
+          },
+          'length': 14123
+        }
+      },
+
+      secondChapter: {
+        'id': '1-13',
+        'title': 'Seenot',
+        'number': 13,
+        'length': 128438,
+        'text': '‘But what about this Frodo that lives with him?’ asked Old Noakes of Bywater. ‘Baggins is his name, but he’s more than half a Brandybuck, they say. It beats me why any Baggins of Hobbiton should go looking for a wife away there in Buckland, where folks are so queer.’',
+        'range': {
+          'start': {
+            'chapter': '1-13',
+            'offset': 1000,
+            'progress': 0.182381
+          },
+          'end': {
+            'chapter': '1-13',
+            'offset': 29,
+            'progress': 0.87261231
+          },
+          'length': 14123
+        }
+      },
+
+      thirdChapter: {
+        'id': '1-13',
+        'title': 'Ende',
+        'number': 13,
+        'length': 128438,
+        'text': 'That very month was September, and as fine as you could ask. A day or two later a rumour (probably started by the knowledgeable Sam) was spread about that there were going to be fireworks – fireworks, what is more, such as had not been seen in the Shire for nigh on a century, not indeed since the Old Took died.Days passed and The Day drew nearer. An odd-looking waggon laden with odd-looking packages rolled into Hobbiton one evening and toiled up the Hill to Bag End. The startled hobbits peered out of lamplit doors to gape at it. It was driven by outlandish folk, singing strange songs: dwarves with long beards and deep hoods. A few of them remained at Bag End. At the end of the second week in September a cart came in through Bywater from the direction of Brandywine Bridge in broad daylight. An old man was driving it all alone. He wore a tall pointed blue hat, a long grey cloak, and a silver scarf. He had a long white beard and bushy eyebrows that stuck out beyond the brim of his hat. Small hobbit-children ran after the cart all through Hobbiton and right up the hill. It had a cargo of fireworks, as they rightly guessed. At Bilbo’s front door the old man began to unload: there were great bundles of fireworks of all sorts and shapes, each labelled with a large red G and the elf-rune, .That was Gandalf’s mark, of course, and the old man was Gandalf the Wizard, whose fame in the Shire was due mainly to his skill with fires, smokes, and lights. His real business was far more difficult and dangerous, but the Shire-folk knew nothing about it. To them he was just one of the ‘attractions’ at the Party. Hence the excitement of the hobbit-children. ‘G for Grand!’ they shouted, and the old man smiled. They knew him by sight, though he only appeared in Hobbiton occasionally and never stopped long; but neither they nor any but the oldest of their elders had seen one of his firework displays – they now belonged to a legendary past.',
+        'range': {
+          'start': {
+            'chapter': '1-13',
+            'offset': 2000,
+            'progress': 0.182381
+          },
+          'end': {
+            'chapter': '1-13',
             'offset': 29,
             'progress': 0.87261231
           },
@@ -533,66 +575,78 @@
       },
 
       relationOccurrences: {
-        "occurrences": [{
-          "start": {
-            "chapter": 1.1,
-            "offset": 10,
-            "progress": 0
+        'occurrences': [{
+          'start': {
+            'chapter': '1-1',
+            'offset': 5,
+            'progress': 0
           },
-          "end": {
-            "chapter": 1.1,
-            "offset": 35,
-            "progress": 0.05
+          'end': {
+            'chapter': '1-1',
+            'offset': 22,
+            'progress': 0.05
           },
-          "length": 25
+          'length': 25
         }, {
-          "start": {
-            "chapter": 1.1,
-            "offset": 45,
-            "progress": 0.05
+          'start': {
+            'chapter': '1-1',
+            'offset': 194,
+            'progress': 0.05
           },
-          "end": {
-            "chapter": 1.1,
-            "offset": 60,
-            "progress": 0.1
+          'end': {
+            'chapter': '1-1',
+            'offset': 199,
+            'progress': 0.1
           },
-          "length": 15
+          'length': 15
         }, {
-          "start": {
-            "chapter": 1.2,
-            "offset": 200,
-            "progress": 0.2
+          'start': {
+            'chapter': '1-1',
+            'offset': 701,
+            'progress': 0.05
           },
-          "end": {
-            "chapter": 1.2,
-            "offset": 230,
-            "progress": 0.25
+          'end': {
+            'chapter': '1-1',
+            'offset': 712,
+            'progress': 0.1
           },
-          "length": 30
+          'length': 15
         }, {
-          "start": {
-            "chapter": 1.3,
-            "offset": 500,
-            "progress": 0.3
+          'start': {
+            'chapter': '1-2',
+            'offset': 1000,
+            'progress': 0.2
           },
-          "end": {
-            "chapter": 1.3,
-            "offset": 520,
-            "progress": 0.35
+          'end': {
+            'chapter': '1-2',
+            'offset': 1077,
+            'progress': 0.25
           },
-          "length": 20
+          'length': 30
         }, {
-          "start": {
-            "chapter": 1.3,
-            "offset": 600,
-            "progress": 0.3
+          'start': {
+            'chapter': '1-3',
+            'offset': 3359,
+            'progress': 0.3
           },
-          "end": {
-            "chapter": 1.3,
-            "offset": 650,
-            "progress": 0.35
+          'end': {
+            'chapter': '1-3',
+            'offset': 3377,
+            'progress': 0.35
           },
-          "length": 50
+          'length': 20
+        }, {
+          'start': {
+            'chapter': '1-3',
+            'offset': 3100,
+            'progress': 0.3
+          },
+          'end': {
+            'chapter': '1-3',
+            'offset': 3150,
+            'progress': 0.35
+          },
+          'length': 50
         }]
       },
 
@@ -633,6 +687,76 @@
           'rankingValue': 7
         }]
       },
+
+      entities: [{
+        'id': 'bilbo',
+        'displayName': 'Mr. Bilbo Baggins',
+        'type': 'person',
+        'attributes': [{
+          'id': 'attr12397',
+          'content': '15',
+          'type': 'age'
+        }, {
+          'id': 'at65657',
+          'content': 'Mr. Baggins',
+          'type': 'name'
+        }, {
+          'id': 'at65657',
+          'content': 'Bilbo',
+          'type': 'name'
+        }],
+        'rankingValue': 3,
+        'entityRelations': [{
+          'relatedEntity': 'person10Ben',
+          'weight': 0.81234
+        }, {
+          'relatedEntity': 'person18Bert',
+          'weight': 0.7345
+        }]
+      }, {
+        'id': 'person9',
+        'displayName': 'Frodo',
+        'type': 'person',
+        'attributes': [],
+        'rankingValue': 2,
+        'entityRelations': [{
+          'relatedEntity': 'person10Ben',
+          'weight': 0.81234
+        }, {
+          'relatedEntity': 'person18Bert',
+          'weight': 0.7345
+        }]
+      }, {
+        'id': 'person9',
+        'displayName': 'Gandalf',
+        'type': 'person',
+        'attributes': [{
+          'id': 'attr12397',
+          'content': 'Gandalf the Wizard',
+          'type': 'name'
+        }],
+        'rankingValue': 7,
+        'entityRelations': [{
+          'relatedEntity': 'person10Ben',
+          'weight': 0.81234
+        }, {
+          'relatedEntity': 'person18Bert',
+          'weight': 0.7345
+        }]
+      }, {
+        'id': 'person9',
+        'displayName': 'Old Noakes of Bywater',
+        'type': 'person',
+        'attributes': [],
+        'rankingValue': 70,
+        'entityRelations': [{
+          'relatedEntity': 'person10Ben',
+          'weight': 0.81234
+        }, {
+          'relatedEntity': 'person18Bert',
+          'weight': 0.7345
+        }]
+      }],
 
       graphNetworkEntities: [{
         'id': 'person8Andi',
@@ -689,8 +813,8 @@
       entityRelations: {
         'entityIds': ['person8Andi', 'person10Bert', 'person61Nobody'],
         'relations': [{
-          'personAId': 'person8Andi',
-          'personBId': 'person10Bert',
+          'entityAId': 'person8Andi',
+          'entityBId': 'person10Bert',
           'weight': 0.81234
         }]
       },
@@ -900,6 +1024,7 @@
           'length': 989
         }]
       }
+
     };
 
   });

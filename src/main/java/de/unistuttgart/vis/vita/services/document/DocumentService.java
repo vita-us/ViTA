@@ -18,13 +18,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
 import de.unistuttgart.vis.vita.services.entity.PlacesService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
+import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
 
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
@@ -36,6 +39,9 @@ public class DocumentService {
 
   @Inject
   private EntityManager em;
+  
+  @Inject
+  private AnalysisController analysisController;
 
   @Inject
   ProgressService progressService;
@@ -58,6 +64,11 @@ public class DocumentService {
   @Inject
   AnalysisService analysisService;
 
+  @Inject
+  SearchInDocumentService searchInDocumentService;
+
+  @Inject
+  WordCloudService wordCloudService;
 
   /**
    * Sets the id of the document this resource should represent
@@ -135,16 +146,24 @@ public class DocumentService {
   @DELETE
   public Response deleteDocument() {
     Response response = null;
+    
     try {
+      // first cancel a running analysis
+      analysisController.cancelAnalysis(id);
+      
+      // then remove it from the database
       em.getTransaction().begin();
       Document docToDelete = readDocumentFromDatabase();
       em.remove(docToDelete);
       em.getTransaction().commit();
 
+      // create the response
       response = Response.noContent().build();
     } catch (NoResultException nre) {
       throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
     }
+    
+    // send response
     return response;
   }
 
@@ -217,6 +236,26 @@ public class DocumentService {
   @Path("/analysis")
   public AnalysisService stopAnalysis() {
     return analysisService.setDocumentId(id);
+  }
+  
+  /**
+   * Return the SearchInDocumentService for the current document.
+   * 
+   * @return the SearchInDocumentService which answers this request
+   */
+  @Path("/search")
+  public SearchInDocumentService getSearch() {
+    return searchInDocumentService.setDocumentId(id);
+  }
+  
+  /**
+   * Return the WordCloudService for the current document.
+   * 
+   * @return the WordCloudService which answers this request
+   */
+  @Path("/wordcloud")
+  public WordCloudService getWordcloud() {
+    return wordCloudService.setDocumentId(id);
   }
 
 }
