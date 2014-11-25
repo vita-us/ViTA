@@ -98,6 +98,8 @@
             }, function() {
               $scope.loadDocuments();
             });
+          } else if (newName === '') {
+            alert('The document name must not be empty!');
           }
         };
 
