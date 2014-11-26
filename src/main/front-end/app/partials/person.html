@@ -7,7 +7,7 @@
       <div class="row">
         <h1><small><span class="glyphicon glyphicon-user"></span></small> {{person.displayName}}</h1>
           <dl class="dl-horizontal" ng-repeat="attribute in person.attributes" ng-show="!$first">
-            <dt>{{attribute.type}}</dt>
+            <dt>{{attribute.attributetype}}</dt>
             <dd>{{attribute.content}}</dd>
           </dl>
           <dl class="dl-horizontal">
