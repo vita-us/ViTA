@@ -15,12 +15,12 @@
         });
 
         $scope.activeFingerprints = [];
-        $scope.onclick = function(id) {
-          if ($scope.activeFingerprints.indexOf(id) > -1) {
+        $scope.onclick = function(person) {
+          if ($scope.activeFingerprints.indexOf(person) > -1) {
             $scope.activeFingerprints.splice(
-              $scope.activeFingerprints.indexOf(id), 1);
+              $scope.activeFingerprints.indexOf(person), 1);
           } else {
-            $scope.activeFingerprints.push(id);
+            $scope.activeFingerprints.push(person);
           }
         };
 
