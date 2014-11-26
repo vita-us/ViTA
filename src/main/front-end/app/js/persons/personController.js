@@ -44,6 +44,15 @@
           return ($scope.fingerprintIds.indexOf(id) > -1);
         };
 
+        $scope.path = function(type) {
+          if (type === 'person') {
+            return 'characters';
+          }
+          if (type === 'place') {
+            return 'places';
+          }
+        };
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
