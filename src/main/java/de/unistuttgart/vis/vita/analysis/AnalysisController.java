@@ -2,12 +2,9 @@ package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
-
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -30,11 +27,6 @@ public class AnalysisController {
   private boolean isAnalysisRunning;
   private AnalysisExecutor currentExecuter;
   private Document currentDocument;
-  
-  /**
-   * Stores the document file locations for each document id
-   */
-  private Map<String, Path> documentPaths = new HashMap<>();
   
   /**
    * New instance of the controller with given model. It will be created a new empty module
@@ -80,7 +72,6 @@ public class AnalysisController {
    */
   public synchronized String scheduleDocumentAnalysis(Path filePath) {
     Document document = createDocument(filePath);
-    documentPaths.put(document.getId(), filePath);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
@@ -95,7 +86,9 @@ public class AnalysisController {
 
   private synchronized void startAnalysis(final Document document) {
     setStatus(document.getId(),  AnalysisStatus.RUNNING);
-    Path path = documentPaths.get(document.getId());
+    Path path = document.getFilePath();
+    if (path == null)
+      throw new UnsupportedOperationException("There is no file associated with the document");
     currentExecuter = executorFactory.createExecutor(document.getId(), path);
     currentExecuter.start();
     currentDocument = document;
@@ -119,6 +112,7 @@ public class AnalysisController {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
     document.getProgress().setStatus(AnalysisStatus.READY);
+    document.setFilePath(filePath);
     EntityManager em = null;
     try {
       em = model.getEntityManager();
@@ -141,12 +135,16 @@ public class AnalysisController {
   public synchronized void cancelAnalysis(String documentID) {
     if (currentDocument != null && currentDocument.getId().equals(documentID)) {
       currentExecuter.cancel();
+      currentDocument = null;
       currentExecuter = null;
+      setStatus(documentID,  AnalysisStatus.CANCELLED);
       startNextAnalysis();
     } else {
       Iterator<Document> it = analysisQueue.iterator();
       while (it.hasNext()) {
         if (it.next().getId().equals(documentID)) {
+          // Only set status to cancelled if it is currently running or scheduled
+          setStatus(documentID,  AnalysisStatus.CANCELLED);
           it.remove();
           return;
         }
@@ -183,6 +181,7 @@ public class AnalysisController {
         throw new IllegalArgumentException("No such document found");
       }
       document = documents.get(0);
+      AnalysisResetter.resetDocument(em, document);
     } finally {
       if (em != null) {
         em.close();

@@ -18,7 +18,8 @@ import javax.persistence.NamedQuery;
               query = "SELECT pl "
                     + "FROM Place pl, Document d "
                     + "WHERE d.id = :documentId "
-                    + "AND pl MEMBER OF d.content.places"),
+                    + "AND pl MEMBER OF d.content.places "
+                    + "ORDER BY pl.rankingValue"),
       
   @NamedQuery(name = "Place.findPlaceById",
               query = "SELECT pl "

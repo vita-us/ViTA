@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,7 +26,8 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
                 query = "SELECT dp "
                       + "FROM DocumentPart dp, Document d "
                       + "WHERE d.id = :documentId "
-                      + "AND dp MEMBER OF d.content.parts"),
+                      + "AND dp MEMBER OF d.content.parts "
+                      + "ORDER BY dp.number"),
 
     @NamedQuery(name = "DocumentPart.findPartById", 
                 query = "SELECT dp "
@@ -43,6 +45,7 @@ public class DocumentPart extends AbstractEntityBase {
 
   @OneToMany
   @XmlElement(name = "chapters")
+  @OrderColumn(name = "number")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**

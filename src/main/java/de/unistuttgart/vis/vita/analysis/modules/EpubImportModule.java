@@ -16,9 +16,9 @@ import de.unistuttgart.vis.vita.importer.epub.extractors.MetadataAnalyzerEpub;
 import de.unistuttgart.vis.vita.importer.epub.input.EpubFileImporter;
 import de.unistuttgart.vis.vita.importer.epub.input.EpubVersion;
 import de.unistuttgart.vis.vita.importer.epub.input.EpubVersionDetector;
-import de.unistuttgart.vis.vita.importer.epub.util.EpubImportResult;
 import de.unistuttgart.vis.vita.importer.epub.util.NoExtractorFoundException;
 import de.unistuttgart.vis.vita.importer.output.BookBuilder;
+import de.unistuttgart.vis.vita.importer.output.ImportResultImpl;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -95,6 +95,6 @@ public class EpubImportModule extends Module<ImportResult> {
    * @return The ImportResult is the result of the module.
    */
   private ImportResult buildImportResult(List<DocumentPart> parts, DocumentMetadata metadata) {
-    return new EpubImportResult(parts, metadata);
+    return new ImportResultImpl(parts, metadata);
   }
 }

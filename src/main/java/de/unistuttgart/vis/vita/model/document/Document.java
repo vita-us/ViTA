@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -16,14 +19,21 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Document.findAllDocuments", query = "SELECT d " + "FROM Document d"),
+    @NamedQuery(name = "Document.findAllDocuments",
+                query = "SELECT d "
+                      + "FROM Document d"),
 
-    @NamedQuery(name = "Document.findDocumentById", query = "SELECT d " + "FROM Document d "
-        + "WHERE d.id = :documentId"),
+    @NamedQuery(name = "Document.findDocumentById",
+                query = "SELECT d "
+                      + "FROM Document d "
+                      + "WHERE d.id = :documentId"),
 
-    @NamedQuery(name = "Document.findDocumentByTitle", query = "SELECT d " + "FROM Document d "
-        + "WHERE d.metadata.title = :documentTitle")})
+    @NamedQuery(name = "Document.findDocumentByTitle",
+                query = "SELECT d "
+                      + "FROM Document d "
+                      + "WHERE d.metadata.title = :documentTitle")})
 public class Document extends AbstractEntityBase {
+
   @Embedded
   private DocumentMetadata metadata;
   @Embedded
@@ -32,6 +42,8 @@ public class Document extends AbstractEntityBase {
   private DocumentContent content;
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
+
+  private String filePath;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -105,6 +117,25 @@ public class Document extends AbstractEntityBase {
    */
   public void setProgress(AnalysisProgress newProgress) {
     this.progress = newProgress;
+  }
+  
+  /**
+   * Gets the path to the uploaded file
+   * @return the path, or null if the file does not exist anymore
+   */
+  public Path getFilePath() {
+    if (filePath == null) {
+      return null;
+    }
+    return Paths.get(filePath);
+  }
+
+  /**
+   * Associates the path of the uploaded file with this document
+   * @param filePath the path, or null to indicate that the file has been deleted
+   */
+  public void setFilePath(Path filePath) {
+    this.filePath = filePath.toString();
   }
 
 }

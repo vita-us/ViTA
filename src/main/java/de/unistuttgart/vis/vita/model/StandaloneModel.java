@@ -10,6 +10,7 @@ public class StandaloneModel extends Model {
       "de.unistuttgart.vis.vita.standalone";
   
   public StandaloneModel() {
-    super(Persistence.createEntityManagerFactory(STANDALONE_PERSISTENCE_UNIT_NAME));
+    super(Persistence.createEntityManagerFactory(STANDALONE_PERSISTENCE_UNIT_NAME),
+        new TextRepository(new DefaultDirectoryFactory()));
   }
 }

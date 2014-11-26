@@ -1,7 +1,11 @@
 package de.unistuttgart.vis.vita.model;
 
+import java.io.IOException;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * A model that uses a h2 database that can be dropped at any time with {@link #startNewSession()}
@@ -13,7 +17,7 @@ public class UnitTestModel extends Model {
   private static EntityManagerFactory emfCache;
 
   public UnitTestModel() {
-    super(getEntityManagerFactory());
+    super(getEntityManagerFactory(), new TextRepository(new UnitTestDirectoryFactory()));
   }
 
   private static EntityManagerFactory getEntityManagerFactory() {
@@ -31,6 +35,11 @@ public class UnitTestModel extends Model {
       if (emfCache.isOpen())
         emfCache.close();
       emfCache = null;
+    }
+    try {
+      FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
+    } catch (IOException e) {
+      throw new RuntimeException("Unable to delete lucene index", e);
     }
   }
 }
