@@ -1,18 +1,27 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Represents one item of a WordCloud. This includes a word and its frequency of occurrence in a
  * document.
  */
-public class WordCloudItem {
+@Entity
+public class WordCloudItem extends AbstractEntityBase implements Comparable<WordCloudItem> {
 
   // constants
   private static final int MIN_FREQUENCY = 1;
 
   // attributes
+  @XmlElement
   private String word;
+
+  @XmlElement
   private int frequency;
 
   /**
@@ -88,4 +97,13 @@ public class WordCloudItem {
     return String.format("%s x %d", word, frequency);
   }
 
+  @Override
+  public int compareTo(WordCloudItem o) {
+    // compareTo must not return zero if the items are not identical, so set up some artificial
+    // ordering in that case
+    if (frequency == o.frequency)
+      return word.compareTo(o.word);
+
+    return Integer.compare(frequency, o.frequency);
+  }
 }
