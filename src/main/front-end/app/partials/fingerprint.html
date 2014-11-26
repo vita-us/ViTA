@@ -7,16 +7,16 @@
       <div class="row filterable-list">
         <div class="col-md-9">
           <div class="row">
-            <h3 class="col-md-1">Global</h3>
-            <div class="col-md-11">
+            <h3 class="col-md-2">Combination</h3>
+            <div class="col-md-10">
               <div data-fingerprint class="fingerprint-container"
                 data-entity-ids="activeFingerprints" data-parts="parts">
               </div>
             </div>
           </div>
           <div class="row" ng-repeat="active in activeFingerprints">
-            <h3 class="col-md-1">{{active.displayName}}</h3>
-            <div class="col-md-11">
+            <h3 class="col-md-2">{{active.displayName}}</h3>
+            <div class="col-md-10">
               <div data-fingerprint
                 class="fingerprint-container" data-entity-ids="[active]"
                 data-parts="parts">
