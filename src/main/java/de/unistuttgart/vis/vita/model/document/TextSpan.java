@@ -30,7 +30,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts MEMBER OF e.occurrences "
           // range checks
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          // right ordering
+          + "ORDER BY ts.start.offset"),
           
   // for checking the amount of spans for an entity in a given range
   @NamedQuery(name = "TextSpan.getNumberOfTextSpansForEntity", 
@@ -52,7 +54,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts MEMBER OF a.occurrences "
           // range checks
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          // right ordering
+          + "ORDER BY ts.start.offset"),
           
   // for checking the amount of spans for an attribute in a given range
   @NamedQuery(name = "TextSpan.getNumberOfTextSpansForAttribute", 
@@ -84,7 +88,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "AND ts1.start.offset < ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + ")) "
           // Null checks
           + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL " 
-          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
+          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL "
+          // right ordering
+          + "ORDER BY ts1.start.offset"),
   
   // checks whether a set of entities occur in a range (for relation occurrences)
   @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",

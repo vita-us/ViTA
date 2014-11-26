@@ -3,10 +3,12 @@ package de.unistuttgart.vis.vita.model.document;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,7 +27,8 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
                 query = "SELECT dp "
                       + "FROM DocumentPart dp, Document d "
                       + "WHERE d.id = :documentId "
-                      + "AND dp MEMBER OF d.content.parts"),
+                      + "AND dp MEMBER OF d.content.parts "
+                      + "ORDER BY dp.number"),
 
     @NamedQuery(name = "DocumentPart.findPartById", 
                 query = "SELECT dp "
@@ -38,11 +41,15 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
                       + "WHERE dp.title = :partTitle")})
 @XmlRootElement
 public class DocumentPart extends AbstractEntityBase {
+
   private int number;
+
+  @Column(length = 1000)
   private String title;
 
   @OneToMany
   @XmlElement(name = "chapters")
+  @OrderColumn(name = "number")
   private List<Chapter> chapters = new ArrayList<Chapter>();
 
   /**

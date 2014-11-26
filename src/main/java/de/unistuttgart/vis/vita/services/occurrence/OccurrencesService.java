@@ -121,11 +121,16 @@ public abstract class OccurrencesService {
     chapterQ.setParameter("offset", offset);
 
     List<Chapter> chapters = chapterQ.getResultList();
-    if (chapters.size() == 1) {
-      return chapters.get(0);
+    if (chapters.isEmpty()) {
+      throw new IllegalArgumentException("There is no chapter for the offset " +
+          offset);
+    }
+    if (chapters.size() > 1) {
+      throw new IllegalArgumentException("There is more than one (" +
+          chapters.size() + ") chapter for the offset " + offset);
     }
 
-    return null;
+    return chapters.get(0);
   }
 
   protected List<Occurrence> getGranularEntityOccurrences(int steps, int startOffset, int endOffset) {

@@ -13,10 +13,19 @@ public class DocumentMetadata {
   // attributes
   @Column(length = 1000)
   private String title;
+
+  @Column(length = 1000)
   private String author;
+
+  @Column(length = 1000)
   private String publisher;
+
   private int publishYear;
+
+  @Column(length = 1000)
   private String genre;
+
+  @Column(length = 1000)
   private String edition;
   
   /**

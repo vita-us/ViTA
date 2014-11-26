@@ -48,24 +48,28 @@ public class TextPosition implements Comparable<TextPosition> {
   /**
    * Creates a new TextPosition by specifying the chapter and the chapter-local character offset
    *
-   * @param pChapter - the chapter this TextPosition lies in
+   * @param chapter - the chapter this TextPosition lies in
    * @param pOffset - the offset of this TextPosition within the chapter
    */
-  public static TextPosition fromLocalOffset(Chapter pChapter, int localOffset) {
+  public static TextPosition fromLocalOffset(Chapter chapter, int localOffset) {
+    if (chapter == null)
+      throw new NullPointerException("chapter is null");
     return new TextPosition(
-        pChapter,
-        pChapter.getRange().getStart().getOffset() + localOffset);
+        chapter,
+        chapter.getRange().getStart().getOffset() + localOffset);
   }
 
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
    *
-   * @param pChapter - the chapter this TextPosition lies in
+   * @param chapter - the chapter this TextPosition lies in
    * @param globalOffset - the global offset of this TextPosition within the document
    */
-  public static TextPosition fromGlobalOffset(Chapter pChapter, int globalOffset) {
+  public static TextPosition fromGlobalOffset(Chapter chapter, int globalOffset) {
+    if (chapter == null)
+      throw new NullPointerException("chapter is null");
     return new TextPosition(
-        pChapter,
+        chapter,
         globalOffset);
   }
 

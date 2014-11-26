@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
 /**
  * Provides a method to tell the server to stop the analysis for the current Document.
@@ -40,17 +39,9 @@ public class AnalysisService {
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/stop")
-  public Response stopAnalysis(DocumentIdRequest idRequest) {
-    Response response = null;
-    
-    if (documentId.equals(idRequest.getId())) {
-      analysisController.cancelAnalysis(idRequest.getId());
-      response = Response.noContent().build();
-    } else {
-      response = Response.serverError().build();
-    }
-    
-    return response;
+  public Response stopAnalysis() {
+    analysisController.cancelAnalysis(documentId);
+    return Response.noContent().build();
   }
   
   /**

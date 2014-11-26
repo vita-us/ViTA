@@ -4,6 +4,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -44,11 +45,12 @@ public class Attribute extends AbstractEntityBase {
   // there is another "type" in Entity, so this must be named differently!
   @XmlElement(name = "attributetype", required= true)
   private AttributeType type;
-  
+
+  @Column(length = 1000)
   private String content;
-  
+
   @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("START_OFFSET ASC")
+  @OrderBy("start.offset ASC")
   private SortedSet<TextSpan> occurrences;
 
   /**

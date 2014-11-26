@@ -5,8 +5,14 @@
 
   // Controller responsible for the overview page
   vitaControllers.controller('OverviewCtrl', ['$scope', 'Document', 'Page', '$routeParams',
-      'AnalysisProgress', '$interval',
-      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval) {
+      'AnalysisProgress', '$interval', 'Person',
+      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval, Person) {
+
+        Person.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.persons = response.persons;
+        });
 
         Document.get({
           documentId: $routeParams.documentId

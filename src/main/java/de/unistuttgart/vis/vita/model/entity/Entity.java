@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Inheritance;
@@ -39,6 +40,7 @@ public abstract class Entity extends AbstractEntityBase {
 
   private static final int MIN_RANK_VALUE = 1;
 
+  @Column(length = 1000)
   private String displayName;
   private boolean[] fingerprint;
   private int rankingValue;
@@ -48,7 +50,7 @@ public abstract class Entity extends AbstractEntityBase {
   private Set<Attribute> attributes;
 
   @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("START_OFFSET ASC")
+  @OrderBy("start.offset ASC")
   private SortedSet<TextSpan> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")

@@ -23,4 +23,10 @@ public interface ImportResult {
    * @return the meta data
    */
   public DocumentMetadata getMetadata();
+  
+  /**
+   * Gets the sum of the lengths of all chapters
+   * @return
+   */
+  public int getTotalLength();
 }

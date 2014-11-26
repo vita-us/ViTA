@@ -76,6 +76,10 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
 
       @Override
       public void progressChanged(int i) {
+        if (Thread.currentThread().isInterrupted()) {
+          controller.interrupt();
+        }
+        
         calcProgress(i);
       }
 
