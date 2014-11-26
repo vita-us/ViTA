@@ -32,7 +32,7 @@
           .attr('height', height);
 
       // Add a rectangle for the background
-      svgContainer.append('rect')
+      var backgroundRect = svgContainer.append('rect')
           .attr('width', widthScale(1))
           .attr('height', heightScale(1))
           .classed('background', true)
@@ -48,6 +48,8 @@
         width = $(element).width();
         svgContainer.attr('width', width);
         widthScale.range([0, width]);
+        backgroundRect.attr('width', widthScale(1));
+
         // We need a timer so we only update when the size hasn't changed
         // for x ms, otherwise requests would be sent constantly
         clearTimeout($.data(this, 'resizeTimer'));
