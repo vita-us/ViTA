@@ -4,8 +4,9 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the person page
-  vitaControllers.controller('PersonCtrl', ['$scope', 'Document', 'Page', 'Person', '$routeParams', 'DocumentParts',
-      function($scope, Document, Page, Person, $routeParams, DocumentParts) {
+  vitaControllers.controller('PersonCtrl',
+    ['$scope', 'Document', 'Page', 'Person', '$routeParams', 'DocumentParts', 'Entity',
+      function($scope, Document, Page, Person, $routeParams, DocumentParts, Entity) {
 
         $scope.relatedEntities = [];
         $scope.fingerprintIds = [];
@@ -17,17 +18,17 @@
           $scope.fingerprintIds.push(person.id);
 
           for (var i = 0; i < $scope.person.entityRelations.length; i++) {
-            retrieveEntityName($scope.person.entityRelations[i].relatedEntity);
-            }
+            retrieveEntity($scope.person.entityRelations[i].relatedEntity);
+          }
           Page.breadcrumbs = 'Characters > ' + person.displayName;
         });
 
-        var retrieveEntityName = function(id) {
-          var entity = Person.get({
+        var retrieveEntity = function(id) {
+          var entity = Entity.get({
             documentId: $routeParams.documentId,
-              personId: id
-          }, function(person) {
-            $scope.relatedEntities.push(person);
+            entityId: id
+          }, function(entity) {
+            $scope.relatedEntities.push(entity);
           });
         };
 
