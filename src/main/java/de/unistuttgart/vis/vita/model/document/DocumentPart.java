@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.document;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -40,7 +41,10 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
                       + "WHERE dp.title = :partTitle")})
 @XmlRootElement
 public class DocumentPart extends AbstractEntityBase {
+
   private int number;
+
+  @Column(length = 1000)
   private String title;
 
   @OneToMany
