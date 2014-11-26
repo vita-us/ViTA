@@ -42,7 +42,22 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
 
-      var occurrenceSteps = Math.floor(width / minBarWidth);
+      var occurrenceSteps = calculateOccurrenceSteps();
+
+      $(window).resize(function() {
+        width = $(element).width();
+        svgContainer.attr('width', width);
+        widthScale.range([0, width]);
+        // We need a timer so we only update when the size hasn't changed
+        // for x ms, otherwise requests would be sent constantly
+        clearTimeout($.data(this, 'resizeTimer'));
+        $.data(this, 'resizeTimer', setTimeout(function() {
+          calculateOccurrenceSteps();
+          getRelationOccurrences();
+          removeChapterSeparators();
+          buildChapterSeparators(scope);
+        }, 200));
+      });
 
       scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
         if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
@@ -50,18 +65,7 @@
             removeFingerPrint();
             return;
           }
-          RelationOccurrences.get({
-            documentId: $routeParams.documentId,
-            entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps,
-            rangeStart: scope.rangeBegin,
-            rangeEnd: scope.rangeEnd
-          }, function(response) {
-            removeFingerPrint();
-            buildFingerPrint(response.occurrences, scope);
-          }, function() {
-            removeFingerPrint();
-          });
+          getRelationOccurrences();
         }
       }, true);
 
@@ -73,6 +77,24 @@
           buildChapterSeparators(scope);
         }
       }, true);
+
+      function getRelationOccurrences() {
+        if (angular.isUndefined(scope.entityIds)) {
+          return;
+        }
+        RelationOccurrences.get({
+          documentId: $routeParams.documentId,
+          entityIds: scope.entityIds.join(','),
+          steps: occurrenceSteps,
+          rangeStart: scope.rangeBegin,
+          rangeEnd: scope.rangeEnd
+        }, function(response) {
+          removeFingerPrint();
+          buildFingerPrint(response.occurrences, scope);
+        }, function() {
+          removeFingerPrint();
+        });
+      }
 
       function buildFingerPrint(occurrences, scope) {
         occurrences = occurrences || [];
@@ -214,7 +236,6 @@
               });
           return occurrenceRect;
         }
-
       }
 
       function buildChapterSeparators(scope) {
@@ -266,6 +287,10 @@
 
       function removeChapterSeparators() {
         chapterLineGroup.selectAll('line').remove();
+      }
+
+      function calculateOccurrenceSteps() {
+        return Math.floor(width / minBarWidth);
       }
     }
 
