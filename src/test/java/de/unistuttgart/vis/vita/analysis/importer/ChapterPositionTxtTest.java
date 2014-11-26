@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 
 public class ChapterPositionTxtTest {
 

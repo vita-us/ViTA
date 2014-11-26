@@ -4,11 +4,11 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
 /**
  * Provides a method to tell the server to stop the analysis for the current Document.
@@ -38,13 +38,26 @@ public class AnalysisService {
    */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response stopAnalysis(DocumentIdRequest idRequest) {
+  @Path("/stop")
+  public Response stopAnalysis() {
+    analysisController.cancelAnalysis(documentId);
+    return Response.noContent().build();
+  }
+  
+  /**
+   * Restarts a previously canceled analysis.
+   * 
+   * @return Response with HTTP 204 status if analysis could be restarted
+   */
+  @PUT
+  @Path("/restart")
+  public Response restartAnalysis() {
     Response response = null;
     
-    if (documentId.equals(idRequest.getId())) {
-      analysisController.cancelAnalysis(idRequest.getId());
+    try {
+      analysisController.restartAnalysis(documentId);
       response = Response.noContent().build();
-    } else {
+    } catch (IllegalArgumentException iae) {
       response = Response.serverError().build();
     }
     

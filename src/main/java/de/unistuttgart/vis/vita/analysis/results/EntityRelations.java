@@ -18,4 +18,13 @@ public interface EntityRelations {
    * @return map of weighting factors
    */
   public Map<BasicEntity, Double> getRelatedEntities(BasicEntity entity);
+
+  /**
+   * Gets an array of doubles, representing the relation weights evenly distributed over the whole
+   * document
+   * @param entity1
+   * @param entity2
+   * @return
+   */
+  double[] getWeightOverTime(BasicEntity entity1, BasicEntity entity2);
 }

@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -18,44 +20,40 @@ import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
-public class AttributeOccurrencesServiceTest extends ServiceTest {
-  private static final int    ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
-  private static final double START_PROGRESS        = ABSOLUTE_START_OFFSET
-                                                        / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
+  
+  private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
+  private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
 
-  private static final int    ABSOLUTE_END_OFFSET   = TextSpanTestData.TEST_TEXT_SPAN_END;
-  private static final double END_PROGRESS          = ABSOLUTE_END_OFFSET
-                                                        / (double) DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT;
+  private String documentId;
+  private String entityId;
+  private String chapterId;
+  private String attributeId;
 
-  private static final double DELTA                 = 0.001;
-
-  private String              documentId;
-  private String              entityId;
-  private String              chapterId;
-  private String              attributeId;
-
+  @Override
   @Before
   public void setUp() throws Exception {
-    // first set up test data
     super.setUp();
+    
+    // first set up test data
     TextSpanTestData testData = new TextSpanTestData();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     Chapter testChapter = new ChapterTestData().createTestChapter();
 
     // Set range
     TextPosition rangeStartPos =
-        TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_START);
+        TextPosition.fromGlobalOffset(testChapter, 0);
     TextPosition rangeEndPos =
-        TextPosition.fromGlobalOffset(testChapter, ChapterTestData.TEST_CHAPTER_RANGE_END);
+        TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
 
     TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
@@ -71,62 +69,88 @@ public class AttributeOccurrencesServiceTest extends ServiceTest {
     chapterId = testChapter.getId();
     entityId = testEntity.getId();
     attributeId = testAttribute.getId();
+    
+    DocumentPart testPart = new DocumentPart();
+    testPart.getChapters().add(testChapter);
+    testDoc.getContent().getParts().add(testPart);
 
     // persist it
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(testDoc);
+
     em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(attributeTextSpan);
     em.persist(testEntity);
     em.persist(testAttribute);
+    em.persist(testPart);
+    em.persist(testDoc);
     em.getTransaction().commit();
     em.close();
   }
 
+  @Override
   protected Application configure() {
     return new ResourceConfig(AttributeOccurrencesService.class);
   }
-
+  
   /**
-   * Checks whether occurrences for attribute of an entity can be caught using
-   * the REST interface.
+   * @return the path to the service under test
+   */
+  @Override
+  protected String getPath() {
+    return "/documents/" + documentId + "/entities/" + entityId + "/attributes/" + attributeId 
+        + "/occurrences";
+  }
+  
+  /**
+   * Checks whether the exact occurrences for an attribute of an entity can be caught via GET by not
+   * passing a "step" parameter
    */
   @Test
-  public void testGetOccurences() {
+  public void testGetExactOccurrences() {
+    OccurrencesResponse actualResponse = target(getPath()).queryParam("rangeStart", DEFAULT_RANGE_START)
+                                                        .queryParam("rangeEnd", DEFAULT_RANGE_END)
+                                                        .request().get(OccurrencesResponse.class);
+    assertNotNull(actualResponse);
+    checkOccurrences(actualResponse.getOccurrences(), true);
+  }
 
-
-    String path = "/documents/" + documentId + "/entities/" + entityId + "/attributes/"
-        + attributeId + "/occurrences";
-
-    OccurrencesResponse actualResponse = target(path).queryParam("steps", 100)
-        .queryParam("rangeStart", 0.0).queryParam("rangeEnd", 1.0).request()
-        .get(OccurrencesResponse.class);
+  /**
+   * Checks whether stepwise occurrences for attribute of an entity can be caught via GET.
+   */
+  @Test
+  public void testGetStepwiseOccurences() {
+    OccurrencesResponse actualResponse = target(getPath()).queryParam("steps", DEFAULT_STEP_AMOUNT)
+                                                      .queryParam("rangeStart", DEFAULT_RANGE_START)
+                                                      .queryParam("rangeEnd", DEFAULT_RANGE_END)
+                                                      .request().get(OccurrencesResponse.class);
 
     // check response and amount of occurrences
     assertNotNull(actualResponse);
-    checkOccurrences(actualResponse.getOccurrences());
+    checkOccurrences(actualResponse.getOccurrences(), false);
   }
 
-  private void checkOccurrences(List<Occurrence> occurrences) {
+  private void checkOccurrences(List<Occurrence> occurrences, boolean exact) {
     assertEquals(1, occurrences.size());
-
     Occurrence receivedOccurence = occurrences.get(0);
 
-    // check start position
     AbsoluteTextPosition absoluteStart = receivedOccurence.getStart();
-    assertEquals(chapterId, absoluteStart.getChapter());
-    assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
-    assertEquals(START_PROGRESS, absoluteStart.getProgress().doubleValue(), DELTA);
-
-    // check end position
     AbsoluteTextPosition absoluteEnd = receivedOccurence.getEnd();
+    
+    // check ids of the chapters
+    assertEquals(chapterId, absoluteStart.getChapter());
     assertEquals(chapterId, absoluteEnd.getChapter());
-    assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
-    assertEquals(END_PROGRESS, absoluteEnd.getProgress().doubleValue(), DELTA);
-
-    // check the length
-    assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+    
+    // check values
+    if (exact) {
+      assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
+      assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
+      assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+    } else {
+      assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
+      assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
+      assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength());
+    }
   }
 }

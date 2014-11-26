@@ -1,12 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.Arrays;
-
-import javax.persistence.EntityManager;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.IndexSearcher;
-
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -18,6 +11,13 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.search.IndexSearcher;
+
+import java.util.Arrays;
+
+import javax.persistence.EntityManager;
+
 /**
  * The feature module that stores document outline and document metadata
  * 
@@ -28,7 +28,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * in lucene.
  */
 @AnalysisModule(dependencies = {ImportResult.class, DocumentPersistenceContext.class, Model.class,
-    IndexSearcher.class})
+                                IndexSearcher.class}, weight = 0.1)
 public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> {
 
   @Override
@@ -39,9 +39,22 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
     ImportResult importResult = result.getResultFor(ImportResult.class);
     
     document.getContent().getParts().addAll(importResult.getParts());
+
+    int characterCount = 0;
+    int chapterCount = 0;
+    for (DocumentPart part : importResult.getParts()) {
+      for (Chapter chapter : part.getChapters()) {
+        chapterCount++;
+        characterCount += chapter.getLength();
+      }
+    }
+    document.getMetrics().setCharacterCount(characterCount);
+    document.getMetrics().setChapterCount(chapterCount);
+
     for (DocumentPart part : importResult.getParts()) {
       em.persist(part);
       for (Chapter chapter : part.getChapters()) {
+        chapter.setDocumentLength(document.getMetrics().getCharacterCount());
         em.persist(chapter);
       }
     }
@@ -50,8 +63,9 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
     document.setMetadata(importResult.getMetadata());
     
     // Restore the old title which is the file name if no title has been found
-    if (StringUtils.isEmpty(document.getMetadata().getTitle()))
-        document.getMetadata().setTitle(oldTitle);
+    if (StringUtils.isEmpty(document.getMetadata().getTitle())) {
+      document.getMetadata().setTitle(oldTitle);
+    }
 
     return this;
   }

@@ -18,7 +18,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-@AnalysisModule(dependencies = { BasicEntityCollection.class })
+@AnalysisModule(dependencies = {BasicEntityCollection.class}, weight = 0.1)
 public class EntityRankingModule extends Module<EntityRanking> {
   @Override
   public EntityRanking execute(ModuleResultProvider results, ProgressListener progressListener)
@@ -43,12 +43,18 @@ public class EntityRankingModule extends Module<EntityRanking> {
 
     @Override
     public int compare(BasicEntity o1, BasicEntity o2) {
-      if (o1 == null && o2 == null)
+      if (o1 == null && o2 == null) {
         return 0;
-      if (o1 == null)
+      }
+
+      if (o1 == null) {
         return 1;
-      if (o2 == null)
+      }
+
+      if (o2 == null) {
         return -1;
+      }
+
       return Integer.compare(o2.getOccurences().size(), o1.getOccurences().size());
     }
     

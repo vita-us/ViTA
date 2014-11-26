@@ -3,8 +3,11 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ['RelationOccurrences', '$routeParams',
-    function(RelationOccurrences, $routeParams) {
+  vitaDirectives.directive('fingerprint', ['DocumentViewSender',
+                                           'RelationOccurrences',
+                                           'Entity',
+                                           '$routeParams',
+                          function(DocumentViewSender, RelationOccurrences, Entity, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -55,7 +58,7 @@
             rangeEnd: scope.rangeEnd
           }, function(response) {
             removeFingerPrint();
-            buildFingerPrint(response.occurrences);
+            buildFingerPrint(response.occurrences, scope);
           }, function() {
             removeFingerPrint();
           });
@@ -71,7 +74,7 @@
         }
       }, true);
 
-      function buildFingerPrint(occurrences) {
+      function buildFingerPrint(occurrences, scope) {
         occurrences = occurrences || [];
         var occurrenceCount = occurrences.length;
 
@@ -93,7 +96,7 @@
           // group all the occurrence rects together
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
-	        rectGroupEnter.append('rect')
+          rectGroupEnter.append('rect')
              .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
@@ -117,9 +120,39 @@
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function() {
-                // TODO: Show the occurrence in the document view
+              .on('click', function (clickedOccurrence) {
+                onClickOccurrence(clickedOccurrence, scope);
               });
+        }
+
+        function onClickOccurrence(clickedOccurrence, scope) {
+          RelationOccurrences.get({
+            documentId: $routeParams.documentId,
+            entityIds: scope.entityIds.join(','),
+            rangeStart: clickedOccurrence.start.progress,
+            rangeEnd: clickedOccurrence.end.progress
+          }, function(response) {
+            DocumentViewSender.sendOccurrences(response.occurrences);
+          });
+          var entitiesToSend = [];
+          scope.entityIds.forEach(function(entityId) {
+            Entity.get({
+              documentId: $routeParams.documentId,
+              entityId: entityId
+            }, function(entity) {
+              // Cannot simply push entity as it contains angular promises
+              // which cannot be sent
+              entitiesToSend.push({
+                id: entity.id,
+                displayName: entity.displayName,
+                attributes: entity.attributes,
+                rankingValue: entity.rankingValue
+              });
+              if (entitiesToSend.length === scope.entityIds.length) {
+                DocumentViewSender.sendEntities(entitiesToSend);
+              }
+            });
+          });
         }
 
         function selectOccurrence(occurrenceRect) {

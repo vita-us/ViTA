@@ -12,23 +12,23 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.importer.output.DocumentPartBuilder;
+import de.unistuttgart.vis.vita.importer.output.ImportResultImpl;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.AutomatedChapterDetection;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.FullTextChapterAnalyzer;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.MetadataAnalyzer;
 import de.unistuttgart.vis.vita.importer.txt.input.Filter;
 import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
 import de.unistuttgart.vis.vita.importer.txt.input.TextSplitter;
-import de.unistuttgart.vis.vita.importer.txt.output.DocumentPartBuilder;
-import de.unistuttgart.vis.vita.importer.txt.output.TextImportResult;
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
-@AnalysisModule
+@AnalysisModule(weight = 0.1)
 public class TextImportModule extends Module<ImportResult> {
 
   private Path filePath;
@@ -143,6 +143,6 @@ public class TextImportModule extends Module<ImportResult> {
   private ImportResult buildImportResult(DocumentMetadata metadata, DocumentPart chapters) {
     List<DocumentPart> list = new ArrayList<DocumentPart>();
     list.add(chapters);
-    return new TextImportResult(list, metadata);
+    return new ImportResultImpl(list, metadata);
   }
 }

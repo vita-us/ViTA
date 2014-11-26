@@ -1,10 +1,10 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Document;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -12,9 +12,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.document.Document;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
@@ -30,11 +27,6 @@ public class AnalysisController {
   private boolean isAnalysisRunning;
   private AnalysisExecutor currentExecuter;
   private Document currentDocument;
-  
-  /**
-   * Stores the document file locations for each document id
-   */
-  private Map<String, Path> documentPaths = new HashMap<>();
   
   /**
    * New instance of the controller with given model. It will be created a new empty module
@@ -80,7 +72,6 @@ public class AnalysisController {
    */
   public synchronized String scheduleDocumentAnalysis(Path filePath) {
     Document document = createDocument(filePath);
-    documentPaths.put(document.getId(), filePath);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
@@ -92,9 +83,12 @@ public class AnalysisController {
       startAnalysis(document);
     }
   }
-  
-  private synchronized void startAnalysis(Document document) {
-    Path path = documentPaths.get(document.getId());
+
+  private synchronized void startAnalysis(final Document document) {
+    setStatus(document.getId(),  AnalysisStatus.RUNNING);
+    Path path = document.getFilePath();
+    if (path == null)
+      throw new UnsupportedOperationException("There is no file associated with the document");
     currentExecuter = executorFactory.createExecutor(document.getId(), path);
     currentExecuter.start();
     currentDocument = document;
@@ -102,24 +96,34 @@ public class AnalysisController {
     currentExecuter.addObserver(new AnalysisObserver() {
       @Override
       public void onFinish(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FINISHED);
         startNextAnalysis();
       }
 
       @Override
       public void onFail(AnalysisExecutor executor) {
+        setStatus(document.getId(),  AnalysisStatus.FAILED);
         startNextAnalysis();
       }
     });
   }
-  
+
   private Document createDocument(Path filePath) {
     Document document = new Document();
     document.getMetadata().setTitle(filePath.getFileName().toString());
-    EntityManager em = model.getEntityManager();
-    em.getTransaction().begin();
-    em.persist(document);
-    em.getTransaction().commit();
-    em.close();
+    document.getProgress().setStatus(AnalysisStatus.READY);
+    document.setFilePath(filePath);
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      em.persist(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null) {
+        em.close();
+      }
+    }
     return document;
   }
 
@@ -131,12 +135,16 @@ public class AnalysisController {
   public synchronized void cancelAnalysis(String documentID) {
     if (currentDocument != null && currentDocument.getId().equals(documentID)) {
       currentExecuter.cancel();
+      currentDocument = null;
       currentExecuter = null;
+      setStatus(documentID,  AnalysisStatus.CANCELLED);
       startNextAnalysis();
     } else {
       Iterator<Document> it = analysisQueue.iterator();
       while (it.hasNext()) {
         if (it.next().getId().equals(documentID)) {
+          // Only set status to cancelled if it is currently running or scheduled
+          setStatus(documentID,  AnalysisStatus.CANCELLED);
           it.remove();
           return;
         }
@@ -162,15 +170,23 @@ public class AnalysisController {
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    EntityManager em = model.getEntityManager();
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    List<Document> documents = query.getResultList();
-    if (documents.isEmpty()) {
-      throw new IllegalArgumentException("No such document found");
+    EntityManager em = null;
+    Document document;
+    try {
+      em = model.getEntityManager();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      document = documents.get(0);
+      AnalysisResetter.resetDocument(em, document);
+    } finally {
+      if (em != null) {
+        em.close();
+      }
     }
-    Document document = documents.get(0);
-    em.close();
 
     scheduleDocumentAnalyisis(document);
   }
@@ -192,5 +208,29 @@ public class AnalysisController {
    */
   public synchronized boolean isWorking() {
     return isAnalysisRunning;
+  }
+
+  private void setStatus(String documentId, AnalysisStatus status) {
+    EntityManager em = null;
+    try {
+      em = model.getEntityManager();
+      em.getTransaction().begin();
+      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
+      query.setParameter("documentId", documentId);
+      List<Document> documents = query.getResultList();
+      if (documents.isEmpty()) {
+        throw new IllegalArgumentException("No such document found");
+      }
+      Document document = documents.get(0);
+  
+      document.getProgress().setStatus(status);
+  
+      em.merge(document);
+      em.getTransaction().commit();
+    } finally {
+      if (em != null) {
+        em.close();
+      }
+    }
   }
 }

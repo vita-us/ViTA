@@ -16,7 +16,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.importer.txt.output.TextImportResult;
+import de.unistuttgart.vis.vita.importer.output.ImportResultImpl;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -133,6 +133,6 @@ public class TextFeatureModuleTest {
     
     DocumentMetadata metadata = new DocumentMetadata(DOCUMENT_TITLE, DOCUMENT_AUTHOR);
 
-    return new TextImportResult(parts, metadata);
+    return new ImportResultImpl(parts, metadata);
   }
 }

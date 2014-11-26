@@ -1,10 +1,9 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -20,7 +19,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
 
-import de.unistuttgart.vis.vita.model.document.Chapter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages texts for the model.
@@ -30,7 +31,6 @@ public class TextRepository {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
   private static final Version LUCENE_VERSION = Version.LUCENE_4_10_0;
-  List<Document> docs = new ArrayList<>();
   private DirectoryFactory directoryFactory;
   // list of directories
   private List<Directory> indexes = new ArrayList<>();
@@ -58,7 +58,8 @@ public class TextRepository {
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer());
+    CharArraySet charArraySet = new CharArraySet(0, true);
+    QueryParser queryParser = new QueryParser(CHAPTER_ID, new StandardAnalyzer(charArraySet));
     Query query;
     try {
       query = queryParser.parse(chapterToPopulate.getId());
@@ -76,7 +77,8 @@ public class TextRepository {
   public void storeChaptersTexts(List<Chapter> chaptersToStore, String documentId)
       throws IOException {
 
-    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer());
+    CharArraySet charArraySet = new CharArraySet(0, true);
+    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer(charArraySet));
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(directory, config);
     for (Chapter chapterToStore : chaptersToStore) {
@@ -111,7 +113,6 @@ public class TextRepository {
     Document document = new Document();
     document.add(new Field(CHAPTER_ID, chapterToStore.getId(), TextField.TYPE_STORED));
     document.add(new Field(CHAPTER_TEXT, chapterToStore.getText(), TextField.TYPE_STORED));
-    docs.add(document);
     return document;
   }
 }

@@ -1,14 +1,8 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
@@ -22,6 +16,13 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+
 /**
  * The feature module that stores entities.
  * 
@@ -31,8 +32,9 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * This depends on the text feature module because the chapters must have been stored for the
  * TextSpans to be persistable
  */
-@AnalysisModule(dependencies = {EntityRanking.class, DocumentPersistenceContext.class,
-    Model.class, TextFeatureModule.class, EntityRelations.class})
+@AnalysisModule(dependencies = {EntityRanking.class, EntityRelations.class,
+                                BasicEntityCollection.class, DocumentPersistenceContext.class,
+                                Model.class, TextFeatureModule.class}, weight = 0.1)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
@@ -42,7 +44,8 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     EntityRelations relations = result.getResultFor(EntityRelations.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     
-    int currentRanking = 1;
+    int currentPersonRanking = 1;
+    int currentPlaceRanking = 1;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -50,38 +53,43 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
           Person person = new Person();
           document.getContent().getPersons().add(person);
           entity = person;
+          entity.setRankingValue(currentPersonRanking);
+          currentPersonRanking++;
           break;
         case PLACE:
           Place place = new Place();
           document.getContent().getPlaces().add(place);
           entity = place;
+          entity.setRankingValue(currentPlaceRanking);
+          currentPlaceRanking++;
           break;
         default:
           continue;
       }
      
-      entity.setRankingValue(currentRanking);
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());
       
       em.persist(entity);
       realEntities.put(basicEntity, entity);
-      
-      currentRanking++;
     }
     
     for (BasicEntity basicEntity : basicEntities) {
       Entity source = realEntities.get(basicEntity);
       Map<BasicEntity, Double> weights = relations.getRelatedEntities(basicEntity);
-      if (weights == null)
+
+      if (weights == null) {
         continue;
+      }
+
       for (Map.Entry<BasicEntity, Double> entry : weights.entrySet()) {
         Entity target = realEntities.get(entry.getKey());
         EntityRelation relation = new EntityRelation();
         relation.setOriginEntity(source);
         relation.setRelatedEntity(target);
         relation.setWeight(entry.getValue());
+        relation.setWeightOverTime(relations.getWeightOverTime(basicEntity, entry.getKey()));
         em.persist(relation);
       }
     }

@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import javax.persistence.EntityManager;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
@@ -15,8 +14,6 @@ import org.junit.Test;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
-import de.unistuttgart.vis.vita.services.requests.DocumentIdRequest;
 
 /**
  * Performs a test on the AnalysisService, checking whether an analysis of a document can be 
@@ -58,31 +55,14 @@ public class AnalysisServiceTest extends ServiceTest {
   @Test
   public void testStopAnalysis() {
     // set up request
-    String path = "/documents/" + documentId + "/analysis";
-    DocumentIdRequest request = new DocumentIdRequest(documentId);
-    Entity<DocumentIdRequest> requestEntity = Entity.entity(request, MediaType.APPLICATION_JSON);
+    String path = "/documents/" + documentId + "/analysis/stop";
     
     // send request and get response
-    Response actualResponse = target(path).request().put(requestEntity);
+    Response actualResponse = target(path).request().put(Entity.json(new EmptyEntity()));
     
     // check response is empty (Status 204)
     assertNotNull(actualResponse);
     assertEquals(204, actualResponse.getStatus());
-  }
-  
-  @Test
-  public void testAmbiguousStopRequest() {
-    // set up request
-    String path = "/documents/" + documentId + "/analysis";
-    DocumentIdRequest request = new DocumentIdRequest("I'm another id!");
-    Entity<DocumentIdRequest> requestEntity = Entity.entity(request, MediaType.APPLICATION_JSON);
-    
-    // send request and get response
-    Response actualResponse = target(path).request().put(requestEntity);
-    
-    // check response is empty (Status 204)
-    assertNotNull(actualResponse);
-    assertEquals(500, actualResponse.getStatus());
   }
 
 }

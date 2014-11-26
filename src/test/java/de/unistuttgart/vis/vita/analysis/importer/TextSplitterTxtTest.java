@@ -16,7 +16,8 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
 import de.unistuttgart.vis.vita.importer.txt.input.TextSplitter;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
+import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
+import de.unistuttgart.vis.vita.importer.util.Line;
 
 /**
  * JUnit test on TextSplitter
@@ -60,14 +61,14 @@ public class TextSplitterTxtTest {
   @Test
   public void testMultiLineDivider() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("***Start of this", true));
-    lines.add(new Line("book***", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of this", true));
-    lines.add(new Line("book***", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("***Start of this", true));
+    lines.add(new TxtModuleLine("book***", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of this", true));
+    lines.add(new TxtModuleLine("book***", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -83,14 +84,14 @@ public class TextSplitterTxtTest {
   @Test
   public void testMultiLineDividerWithSpaces() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line(" ***Start of this", true));
-    lines.add(new Line("book*** ", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of this", true));
-    lines.add(new Line("book***", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine(" ***Start of this", true));
+    lines.add(new TxtModuleLine("book*** ", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of this", true));
+    lines.add(new TxtModuleLine("book***", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -106,11 +107,11 @@ public class TextSplitterTxtTest {
   @Test
   public void testWithoutEnding() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("***Start of this book***", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("***Start of this book***", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -126,12 +127,12 @@ public class TextSplitterTxtTest {
   @Test
   public void testWithoutStart() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of book***", true));
-    lines.add(new Line("Postface", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of book***", true));
+    lines.add(new TxtModuleLine("Postface", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -145,10 +146,10 @@ public class TextSplitterTxtTest {
   @Test
   public void testNoMetadata() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -162,13 +163,13 @@ public class TextSplitterTxtTest {
   @Test
   public void testWithFalseEnding() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("***Start of this book***", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of another book***", true));
-    lines.add(new Line("Postface", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("***Start of this book***", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of another book***", true));
+    lines.add(new TxtModuleLine("Postface", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -184,16 +185,16 @@ public class TextSplitterTxtTest {
   @Test
   public void testWithHalfMarker() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("***", true));
-    lines.add(new Line("Text", true));
-    lines.add(new Line("***", true));
-    lines.add(new Line("***", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of another book***", true));
-    lines.add(new Line("Postface", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("***", true));
+    lines.add(new TxtModuleLine("Text", true));
+    lines.add(new TxtModuleLine("***", true));
+    lines.add(new TxtModuleLine("***", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of another book***", true));
+    lines.add(new TxtModuleLine("Postface", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 
@@ -207,17 +208,17 @@ public class TextSplitterTxtTest {
   @Test
   public void testWithDoubleMarkers() {
     List<Line> lines = new ArrayList<Line>();
-    lines.add(new Line("Title: Book Title", true));
-    lines.add(new Line("blabla", true));
-    lines.add(new Line("*** Start of BOOK ***", true));
-    lines.add(new Line("text1", true));
-    lines.add(new Line("*** Start of BOOK ***", true));
-    lines.add(new Line("Chapter 1", true));
-    lines.add(new Line("blablabla", true));
-    lines.add(new Line("***End of BOOK***", true));
-    lines.add(new Line("text2", true));
-    lines.add(new Line("***End of BOOK***", true));
-    lines.add(new Line("Postface", true));
+    lines.add(new TxtModuleLine("Title: Book Title", true));
+    lines.add(new TxtModuleLine("blabla", true));
+    lines.add(new TxtModuleLine("*** Start of BOOK ***", true));
+    lines.add(new TxtModuleLine("text1", true));
+    lines.add(new TxtModuleLine("*** Start of BOOK ***", true));
+    lines.add(new TxtModuleLine("Chapter 1", true));
+    lines.add(new TxtModuleLine("blablabla", true));
+    lines.add(new TxtModuleLine("***End of BOOK***", true));
+    lines.add(new TxtModuleLine("text2", true));
+    lines.add(new TxtModuleLine("***End of BOOK***", true));
+    lines.add(new TxtModuleLine("Postface", true));
 
     TextSplitter textSplitter = new TextSplitter(lines);
 

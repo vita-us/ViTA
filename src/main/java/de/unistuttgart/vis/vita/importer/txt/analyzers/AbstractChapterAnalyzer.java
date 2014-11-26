@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import de.unistuttgart.vis.vita.importer.txt.util.ChapterPosition;
-import de.unistuttgart.vis.vita.importer.txt.util.Line;
-import de.unistuttgart.vis.vita.importer.txt.util.LineType;
+import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
+import de.unistuttgart.vis.vita.importer.util.Line;
+import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
  * Implements Callable returning ChapterPosition.<br> <br>

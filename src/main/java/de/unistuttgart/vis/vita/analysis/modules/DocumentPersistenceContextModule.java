@@ -6,7 +6,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 
-@AnalysisModule
+@AnalysisModule(weight = 0.1)
 public class DocumentPersistenceContextModule extends Module<DocumentPersistenceContext> {
 
   private String id;
