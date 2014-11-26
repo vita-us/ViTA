@@ -44,7 +44,8 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     EntityRelations relations = result.getResultFor(EntityRelations.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     
-    int currentRanking = 1;
+    int currentPersonRanking = 1;
+    int currentPlaceRanking = 1;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -52,25 +53,26 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
           Person person = new Person();
           document.getContent().getPersons().add(person);
           entity = person;
+          entity.setRankingValue(currentPersonRanking);
+          currentPersonRanking++;
           break;
         case PLACE:
           Place place = new Place();
           document.getContent().getPlaces().add(place);
           entity = place;
+          entity.setRankingValue(currentPlaceRanking);
+          currentPlaceRanking++;
           break;
         default:
           continue;
       }
      
-      entity.setRankingValue(currentRanking);
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());
       
       em.persist(entity);
       realEntities.put(basicEntity, entity);
-      
-      currentRanking++;
     }
     
     for (BasicEntity basicEntity : basicEntities) {
