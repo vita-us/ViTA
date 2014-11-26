@@ -15,6 +15,7 @@
         });
 
         $scope.activeFingerprints = [];
+        $scope.activeFingerprintIds = [];
         $scope.onclick = function(person) {
           if ($scope.activeFingerprints.indexOf(person) > -1) {
             $scope.activeFingerprints.splice(
@@ -22,6 +23,7 @@
           } else {
             $scope.activeFingerprints.push(person);
           }
+          $scope.activeFingerprintIds = $scope.activeFingerprints.map(function(e) { return e.id});
         };
 
         DocumentParts.get({
@@ -34,6 +36,7 @@
 
         $scope.deselectAll = function() {
           $scope.activeFingerprints = [];
+          $scope.activeFingerprintIds = [];
         };
       }]);
 
