@@ -21,20 +21,24 @@
           $scope.fingerprintIds.push(place.id);
 
           var relations = place.entityRelations;
+          relations.sort(function(a, b) {
+            // move relations with high weights to the front
+            return b.weight - a.weight;
+          });
           var displayedOccurrenceCount = Math.min(relations.length, MAX_DISPLAYED_COOCCURRENCES);
           for (var i = 0; i < displayedOccurrenceCount; i++) {
-            retrieveEntity(relations[i].relatedEntity);
+            retrieveEntity(relations[i].relatedEntity, i);
           }
 
           Page.breadcrumbs = 'Places > ' + place.displayName;
         });
 
-        var retrieveEntity = function(id) {
+        var retrieveEntity = function(id, index) {
           var entity = Entity.get({
             documentId: $routeParams.documentId,
             entityId: id
           }, function(entity) {
-            $scope.relatedEntities.push(entity);
+            $scope.relatedEntities[index] = entity;
           });
         };
 
