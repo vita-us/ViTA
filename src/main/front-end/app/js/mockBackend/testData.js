@@ -308,11 +308,11 @@
         'attributes': [{
           'id': 'attr12697',
           'content': '1700km2',
-          'type': 'unknown'
+          'type': 'area'
         }, {
           'id': 'at65157',
-          'content': 'North Germany',
-          'type': 'unknown'
+          'content': 'Hamburg',
+          'type': 'state'
         }],
         'rankingValue': 3,
         'entityRelations': [{
