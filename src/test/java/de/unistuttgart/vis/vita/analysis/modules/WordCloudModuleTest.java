@@ -31,8 +31,8 @@ public class WordCloudModuleTest {
 
   private static final String DOCUMENT_ID = "thedocumentid";
   // "such" and "a" are stop words
-  private static final String CHAPTER_1_TEXT = "once twice twice three three such a";
-  private static final String CHAPTER_2_TEXT = "three other words";
+  private static final String CHAPTER_1_TEXT = "Frodo Bilbo Bilbo Gandalf Gandalf such a";
+  private static final String CHAPTER_2_TEXT = "Gandalf Mordor";
 
   @Before
   public void setUp() throws IOException {
@@ -51,13 +51,14 @@ public class WordCloudModuleTest {
 
   @Test
   public void testWordCloud() throws Exception {
-    Set<WordCloudItem> wordCloud = module.execute(resultProvider, progressListener).getItems();
-    assertThat(wordCloud, containsInAnyOrder(
-        new WordCloudItem("once", 1),
-        new WordCloudItem("twice", 2),
-        new WordCloudItem("three", 3),
-        new WordCloudItem("other", 1),
-        new WordCloudItem("words", 1)));
+    Set<WordCloudItem> wordCloud = module.execute(resultProvider, progressListener)
+          .getGlobalWordCloud().getItems();
+    // items with same frequency are sorted alphabetically, but backwards
+    assertThat(wordCloud, contains(
+        new WordCloudItem("gandalf", 3),
+        new WordCloudItem("bilbo", 2),
+        new WordCloudItem("mordor", 1),
+        new WordCloudItem("frodo", 1)));
 
   }
 
