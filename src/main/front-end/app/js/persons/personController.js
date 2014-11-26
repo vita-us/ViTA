@@ -8,8 +8,11 @@
     ['$scope', 'Document', 'Page', 'Person', '$routeParams', 'DocumentParts', 'Entity',
       function($scope, Document, Page, Person, $routeParams, DocumentParts, Entity) {
 
+        var MAX_DISPLAYED_COOCCURRENCES = 5;
+
         $scope.relatedEntities = [];
         $scope.fingerprintIds = [];
+
         Person.get({
           documentId: $routeParams.documentId,
           personId: $routeParams.personId
@@ -17,8 +20,10 @@
           $scope.person = person;
           $scope.fingerprintIds.push(person.id);
 
-          for (var i = 0; i < $scope.person.entityRelations.length; i++) {
-            retrieveEntity($scope.person.entityRelations[i].relatedEntity);
+          var relations = person.entityRelations;
+          var displayedOccurrenceCount = Math.min(relations.length, MAX_DISPLAYED_COOCCURRENCES);
+          for (var i = 0; i < displayedOccurrenceCount; i++) {
+            retrieveEntity(relations[i].relatedEntity);
           }
           Page.breadcrumbs = 'Characters > ' + person.displayName;
         });
