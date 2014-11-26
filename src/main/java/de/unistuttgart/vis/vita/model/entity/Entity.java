@@ -12,6 +12,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,6 +20,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 /**
  * Represents an entity found in the document including its id, type, displayed name, attributes,
@@ -55,6 +57,9 @@ public abstract class Entity extends AbstractEntityBase {
   @XmlElement(name = "entityRelations")
   @XmlJavaTypeAdapter(FlatEntityRelationAdapter.class)
   private Set<EntityRelation> entityRelations;
+
+  @OneToOne
+  private WordCloud wordCloud;
 
   /**
    * Creates a new entity with default values.
@@ -123,7 +128,7 @@ public abstract class Entity extends AbstractEntityBase {
   /**
    * Gets a bit vector that divides the whole document in spans of equal lengths and determines
    * whether this entity occurs in a given span (true) or not (false).
-   * 
+   *
    * @return the fingerprint vector
    */
   public boolean[] getFingerprint() {
@@ -145,6 +150,14 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public Set<EntityRelation> getEntityRelations() {
     return entityRelations;
+  }
+
+  public WordCloud getWordCloud() {
+    return wordCloud;
+  }
+
+  public void setWordCloud(WordCloud wordCloud) {
+    this.wordCloud = wordCloud;
   }
 
 }
