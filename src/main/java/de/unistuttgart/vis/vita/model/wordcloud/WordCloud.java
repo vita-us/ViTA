@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -35,7 +36,7 @@ public class WordCloud extends AbstractEntityBase {
   @OneToMany(cascade = CascadeType.ALL)
   @XmlElement
   @OrderBy("frequency DESC")
-  private SortedSet<WordCloudItem> items;
+  private Set<WordCloudItem> items;
 
   /**
    * Creates a new empty WordCloud.
@@ -58,7 +59,7 @@ public class WordCloud extends AbstractEntityBase {
   /**
    * @return a Set of all items of this WordCloud
    */
-  public SortedSet<WordCloudItem> getItems() {
+  public Set<WordCloudItem> getItems() {
     return items;
   }
 
