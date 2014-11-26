@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Represents one item of a WordCloud. This includes a word and its frequency of occurrence in a
  * document.
@@ -64,6 +66,26 @@ public class WordCloudItem {
       throw new IllegalArgumentException("word must occur at least one time!");
     }
     this.frequency = frequency;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof WordCloudItem)) {
+      return false;
+    }
+
+    WordCloudItem other = (WordCloudItem)obj;
+    return other.word.equals(word) && other.frequency == frequency;
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(word).append(frequency).toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s x %d", word, frequency);
   }
 
 }
