@@ -179,6 +179,11 @@ public class EntityFeatureModuleTest {
       public Map<BasicEntity, Double> getRelatedEntities(BasicEntity entity) {
         return ImmutableMap.of();
       }
+
+      @Override
+      public double[] getWeightOverTime(BasicEntity entity1, BasicEntity entity2) {
+        return new double[] { 0, 2, 1 };
+      }
     };
   }
 }
