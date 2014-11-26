@@ -26,6 +26,10 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
+/**
+ * Calculates a word cloud for each entity. This is done by looking at the text around the entity
+ * occurrences.
+ */
 @AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int RADIUS = 100;
@@ -98,7 +102,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   }
 
   private List<TextSpan> getTextSpansAroundEntity(BasicEntity entity) {
-    List<TextSpan> spans = new ArrayList(entity.getOccurences().size());
+    List<TextSpan> spans = new ArrayList<>(entity.getOccurences().size());
     for (TextSpan span : entity.getOccurences()) {
       spans.add(span.widen(100));
     }

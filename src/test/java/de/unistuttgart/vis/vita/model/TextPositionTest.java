@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class TextPositionTest {
     assertThat(pos.getOffset(), is(30));
     assertThat(pos.getChapter(), is(chapter));
   }
-  
+
   /**
    * Checks whether a negative offset causes an IllegalArgumentException to be thrown.
    */
@@ -58,13 +58,13 @@ public class TextPositionTest {
   public void testNegativeOffset() {
     TextPosition.fromGlobalOffset(chapter, -42);
   }
-  
+
   @Test
   public void testCompareTo() {
     TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
-    
+
     assertEquals(1, pos1.compareTo(null));
     assertEquals(-1, pos1.compareTo(pos2));
     assertEquals(1, pos2.compareTo(pos1));
@@ -77,22 +77,38 @@ public class TextPositionTest {
     TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
-    
+
     assertTrue(pos1.equals(pos1Duplicate));
     assertFalse(pos1.equals(pos2));
     assertFalse(pos2.equals(pos1));
     assertFalse(pos1.equals(null));
     assertFalse(pos1.equals("an object of a different class"));
   }
-  
+
   @Test
   public void testHashCode() {
     TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
     TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
-    
+
     assertEquals(pos1.hashCode(), pos1Duplicate.hashCode());
     assertNotEquals(pos1.hashCode(), pos2.hashCode());
+  }
+
+  @Test
+  public void testMin() {
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100);
+    assertThat(TextPosition.min(pos1, pos2), is(pos1));
+    assertThat(TextPosition.min(pos2, pos1), is(pos1));
+  }
+
+  @Test
+  public void testMax() {
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100);
+    assertThat(TextPosition.max(pos1, pos2), is(pos2));
+    assertThat(TextPosition.max(pos2, pos1), is(pos2));
   }
 
 }

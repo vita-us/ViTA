@@ -21,6 +21,9 @@ import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
+/**
+ * Calculates the document-wide word cloud using lucene
+ */
 @AnalysisModule(dependencies = {IndexSearcher.class})
 public class WordCloudModule extends Module<GlobalWordCloudResult> {
   private static final int MAX_COUNT = 100;
@@ -56,9 +59,12 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
       }
       term = enumerator.next();
     }
+
+    // WordCloudItems sort normally, but we want the higher items at the start, thus reversed
     Collections.sort(items, Collections.reverseOrder());
     if (items.size() > MAX_COUNT)
       items = items.subList(0, MAX_COUNT);
+
     return new WordCloud(items);
   }
 }

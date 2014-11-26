@@ -321,6 +321,11 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
         TextPosition.fromGlobalOffset(getEnd().getChapter(), end));
   }
 
+  /**
+   * Merges overlapping or touching text spans, but not across chapter boundaries
+   * @param spans the input spans
+   * @return the normalized spans
+   */
   public static List<TextSpan> normalizeOverlaps(List<TextSpan> spans) {
     spans = new ArrayList<>(spans); // clone
     Collections.sort(spans);
@@ -349,6 +354,6 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
       newSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
     }
 
-    return spans;
+    return newSpans;
   }
 }
