@@ -4,18 +4,26 @@
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('documentViewHighlighter', [
-      'ChapterText',
       'CssClass',
-      function(ChapterText, CssClass) {
+      function(CssClass) {
 
         var highlighterElement;
+        var chapterMap;
 
         function link(scope, element) {
           highlighterElement = element;
+          createChapterMap(scope.parts);
+
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
               highlight(scope.occurrences, scope.documentId, scope.entities);
+            }
+          }, true);
+
+          scope.$watch('parts', function(newValue, oldValue) {
+            if (!angular.equals(newValue, oldValue)) {
+              createChapterMap(scope.parts);
             }
           }, true);
         }
@@ -31,13 +39,9 @@
 
           // Highlight each chapter that contains occurrence(s)
           Object.keys(chapterOccurrences).forEach(function(chapterId) {
-            ChapterText.get({
-              documentId: documentId,
-              chapterId: chapterId
-            }, function(chapter) {
-              var chapterOffset = chapter.range.start.offset;
-              highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
-            });
+            var chapter = chapterMap[chapterId];
+            var chapterOffset = chapter.range.start.offset;
+            highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
           });
         }
 
@@ -166,12 +170,29 @@
           });
         }
 
+        function createChapterMap(parts) {
+          chapterMap = {};
+
+          if (!parts) {
+            return;
+          }
+
+          for (var pIndex = 0, pLength = parts.length; pIndex < pLength; pIndex++) {
+            var chapters = parts[pIndex].chapters;
+            for (var cIndex = 0, cLength = chapters.length; cIndex < cLength; cIndex++) {
+              var chapter = chapters[cIndex];
+              chapterMap[chapter.id] = chapter;
+            }
+          }
+        }
+
         return {
           restrict: 'A',
           scope: {
             occurrences: '=',
             documentId: '=',
-            entities: '='
+            entities: '=',
+            parts: '='
           },
           link: link
         };
