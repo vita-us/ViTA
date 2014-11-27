@@ -47,10 +47,14 @@
       <span class="result-count" ng-show="resultCount >= 0">
         {{resultCount}} results found.
       </span>
-      <span>
-        <button class="btn btn-default" ng-click="up()">Up</button>
-        <button class="btn btn-default" ng-click="down()">Down</button>
-      </span>
+      <div class="up-down-navigation">
+        <button class="btn btn-default" ng-click="up()">
+          <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-default" ng-click="down()">
+          <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+        </button>
+      </div>
     </form>
   </div>
 
