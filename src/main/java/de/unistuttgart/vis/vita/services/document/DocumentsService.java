@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -20,13 +21,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
@@ -80,7 +80,12 @@ public class DocumentsService {
     
     // set up path
     String fileName = fDispo.getFileName();
-    String filePath = DOCUMENT_PATH + fileName;
+    String baseName = getBaseName(fileName);
+    String fileExtension = getFileExtension(fileName);
+    String uuid = UUID.randomUUID().toString();
+
+    String filePath = DOCUMENT_PATH + baseName + "_" + uuid + fileExtension;
+    System.out.println(filePath);
     
     // check path and save file
     if (!checkAndCreateDir(DOCUMENT_PATH)) {
@@ -97,6 +102,40 @@ public class DocumentsService {
     }
 
     return response;
+  }
+
+  /**
+   * Returns the base name of a given file name, which means the name without the extension.
+   *
+   * @param fileName - the file name to find the base name for
+   * @return the base name
+   */
+  private String getBaseName(String fileName) {
+    String baseName = fileName;
+    int lastIndexOfDot = baseName.lastIndexOf(".");
+
+    // if there is a dot in the name
+    if (lastIndexOfDot != -1) {
+      baseName = fileName.substring(0, lastIndexOfDot);
+    }
+    return baseName;
+  }
+
+  /**
+   * Returns the file extension of a given file name.
+   *
+   * @param fileName - the full name of the file
+   * @return the file extension
+   */
+  private String getFileExtension(String fileName) {
+    String extension = "";
+    int lastIndexOfDot = fileName.lastIndexOf(".");
+
+    // if there is an extension
+    if (lastIndexOfDot != -1) {
+      extension = fileName.substring(lastIndexOfDot);
+    }
+    return extension;
   }
   
   /**
