@@ -50,7 +50,7 @@
         };
 
         $scope.loadDocuments();
-        var timerId = $interval($scope.loadDocuments, 5000);
+        var timerId = $interval($scope.loadDocuments, 1000);
 
         $scope.uploadSelectedFile = function() {
           // allow only a single upload simultaneously

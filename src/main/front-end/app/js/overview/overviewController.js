@@ -29,7 +29,7 @@
         // Load the analysis progress repeatedly
         var timerToken = $interval(function() {
           loadAnalysisProgress();
-        }, 5000);
+        }, 1000);
 
         function loadAnalysisProgress() {
           AnalysisProgress.get({
