@@ -1,11 +1,13 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -19,16 +21,22 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * depending on how often they are used in a document.
  */
 @Entity
-@NamedQuery(name = "WordCloud.getGlobal",
-  query = "SELECT doc.content.globalWordCloud "
-  + "FROM Document doc "
-  + "WHERE doc.id = :documentId")
+@NamedQueries({
+  @NamedQuery(name = "WordCloud.getGlobal",
+    query = "SELECT doc.content.globalWordCloud "
+    + "FROM Document doc "
+    + "WHERE doc.id = :documentId"),
+  @NamedQuery(name = "WordCloud.getForEntity",
+    query = "SELECT ent.wordCloud "
+    + "FROM Entity ent "
+    + "WHERE ent.id = :entityId")
+})
 @XmlRootElement
 public class WordCloud extends AbstractEntityBase {
   @OneToMany(cascade = CascadeType.ALL)
   @XmlElement
   @OrderBy("frequency DESC")
-  private SortedSet<WordCloudItem> items;
+  private Set<WordCloudItem> items;
 
   /**
    * Creates a new empty WordCloud.
@@ -51,7 +59,7 @@ public class WordCloud extends AbstractEntityBase {
   /**
    * @return a Set of all items of this WordCloud
    */
-  public SortedSet<WordCloudItem> getItems() {
+  public Set<WordCloudItem> getItems() {
     return items;
   }
 

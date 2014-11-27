@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -30,12 +29,17 @@ public class WordCloudService {
   @Produces(MediaType.APPLICATION_JSON)
   public WordCloud getWordCloudContent(@QueryParam("wordCount") int wordCount,
                                         @QueryParam("entityId") String entityId) {
-    if (!StringUtils.isEmpty(entityId))
-        throw new NotImplementedException("entity word clouds are not yet implemented");
+    WordCloud wordCloud;
 
-    WordCloud wordCloud = em.createNamedQuery("WordCloud.getGlobal", WordCloud.class)
-        .setParameter("documentId", documentId)
-        .getSingleResult();
+    if (StringUtils.isEmpty(entityId)) {
+      wordCloud = em.createNamedQuery("WordCloud.getGlobal", WordCloud.class)
+          .setParameter("documentId", documentId)
+          .getSingleResult();
+    } else {
+      wordCloud = em.createNamedQuery("WordCloud.getForEntity", WordCloud.class)
+          .setParameter("entityId", entityId)
+          .getSingleResult();
+    }
 
     return wordCloud;
   }
