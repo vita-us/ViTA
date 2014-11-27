@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
+import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -31,6 +33,8 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
+import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
 public class EntityFeatureModuleTest {
   private static final String NAME1_1 = "Frodo";
@@ -42,14 +46,16 @@ public class EntityFeatureModuleTest {
   private static final int OCCURANCE2_END = 40;
   private static final int OCCURANCE3_START = 15;
   private static final int OCCURANCE3_END = 25;
-  
+
   private Document document;
   private Chapter chapter;
   private EntityFeatureModule module;
   private EntityManager em;
   private ModuleResultProvider resultProvider;
   private ProgressListener listener;
-  
+  private BasicEntity entity1;
+  private BasicEntity entity2;
+
   @Before
   public void setUp() throws Exception {
     UnitTestModel.startNewSession();
@@ -60,18 +66,20 @@ public class EntityFeatureModuleTest {
     EntityRelations relations = createEntityRelations();
     DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
     when(context.getDocumentId()).thenReturn(document.getId());
-    
+    EntityWordCloudResult wordClouds = getWordClouds();
+
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     when(resultProvider.getResultFor(EntityRanking.class)).thenReturn(entities);
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
     when(resultProvider.getResultFor(EntityRelations.class)).thenReturn(relations);
-    
+    when(resultProvider.getResultFor(EntityWordCloudResult.class)).thenReturn(wordClouds);
+
     listener = mock(ProgressListener.class);
-    
+
     module = new EntityFeatureModule();
   }
-  
+
   @Test
   public void testEntitiesArePersisted() throws Exception {
     module.execute(resultProvider, listener);
@@ -87,7 +95,7 @@ public class EntityFeatureModuleTest {
     assertThat(place.getDisplayName(), is(NAME2));
     assertThat(place.getType(), is(EntityType.PLACE));
   }
-  
+
   @Test
   public void testAttributesArePersisted() throws Exception {
     module.execute(resultProvider, listener);
@@ -99,7 +107,7 @@ public class EntityFeatureModuleTest {
     assertThat(attribute.getContent(), is(NAME2));
     assertThat(attribute.getType(), is(AttributeType.NAME));
   }
-  
+
   @Test
   public void testOccurrencesArePersisted() throws Exception {
     module.execute(resultProvider, listener);
@@ -108,6 +116,17 @@ public class EntityFeatureModuleTest {
     Place place = document.getContent().getPlaces().get(0);
     assertThat(place.getOccurrences(), contains(
         new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END)));
+  }
+
+  @Test
+  public void testWordCloudIsPersisted() throws Exception {
+    module.execute(resultProvider, listener);
+    em.refresh(document);
+
+    Person person = document.getContent().getPersons().get(0);
+    WordCloud wordCloud = person.getWordCloud();
+    assertThat(wordCloud.getItems(), contains(
+        new WordCloudItem("peril", 4), new WordCloudItem("comfortable", 1)));
   }
 
   @Test
@@ -145,11 +164,11 @@ public class EntityFeatureModuleTest {
     em.persist(chapter);
     em.getTransaction().commit();
   }
-  
+
   private EntityRanking createBasicEntities() {
     final List<BasicEntity> list = new ArrayList<>();
-    
-    BasicEntity entity1 = new BasicEntity();
+
+    entity1 = new BasicEntity();
     entity1.setDisplayName(NAME1_1);
     entity1.setType(EntityType.PERSON);
     entity1.getOccurences().add(new TextSpan(chapter, OCCURANCE1_START, OCCURANCE1_END));
@@ -157,14 +176,14 @@ public class EntityFeatureModuleTest {
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
     list.add(entity1);
-    
-    BasicEntity entity2 = new BasicEntity();
+
+    entity2 = new BasicEntity();
     entity2.setType(EntityType.PLACE);
     entity2.setDisplayName(NAME2);
     entity2.getOccurences().add(new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END));
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
-    
+
     return new EntityRanking() {
       @Override
       public List<BasicEntity> getRankedEntities() {
@@ -185,5 +204,16 @@ public class EntityFeatureModuleTest {
         return new double[] { 0, 2, 1 };
       }
     };
+  }
+
+  private EntityWordCloudResult getWordClouds() {
+    WordCloud wordCloud = new WordCloud(Arrays.asList(
+        new WordCloudItem("peril", 4), new WordCloudItem("comfortable", 1)));
+
+    EntityWordCloudResult result = mock(EntityWordCloudResult.class);
+    when(result.getWordCloudForEntity(entity1)).thenReturn(wordCloud);
+    when(result.getWordCloudForEntity(entity2)).thenReturn(wordCloud);
+
+    return result;
   }
 }
