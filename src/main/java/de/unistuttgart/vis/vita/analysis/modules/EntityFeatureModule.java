@@ -105,6 +105,6 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
   @Override
   protected Iterable<FeatureProgress> getProgresses(AnalysisProgress progress) {
     return Arrays.asList(progress.getPersonsProgress(), progress.getPlacesProgress(),
-        progress.getGraphViewProgress());
+        progress.getGraphViewProgress(), progress.getFingerPrintProgress());
   }
 }
