@@ -11,7 +11,6 @@ import javax.persistence.NamedQuery;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
 import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
@@ -74,28 +73,20 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
         + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
         + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
-  // for returning the exact spans for an relation in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForRelations",
-    query = "SELECT DISTINCT ts1 "
-          + "FROM TextSpan ts1, Entity e "
-          + "INNER JOIN e.occurrences ts2 "
+  // gets the occurrences of all entities
+  @NamedQuery(name = "TextSpan.findTextSpansForEntities",
+    query = "SELECT ts "
+          + "FROM TextSpan ts, Entity e "
           + "WHERE e.id IN :entityIds "
+          + "AND ts MEMBER OF e.occurrences "
           // range checks
-          + "AND ts1.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // intervals have an overlap
-          + "AND ((ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts1.start.offset "
-          + "AND ts2.start.offset < ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + ") "
-          + "OR (ts1.end.offset + " + EntityRelationModule.MAX_DISTANCE + " > ts2.start.offset "
-          + "AND ts1.start.offset < ts2.end.offset + " + EntityRelationModule.MAX_DISTANCE + ")) "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL "
-          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL "
+          + "AND ts.start.chapter IS NOT NULL "
           // right ordering
-          + "ORDER BY ts1.start.offset"),
-  
+          + "ORDER BY ts.start.offset"),
+
   // checks whether a set of entities occur in a range (for relation occurrences)
   @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
     query = "SELECT COUNT(DISTINCT e.id) "
@@ -113,7 +104,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
       + "WHERE ts.id = :textSpanId")
   })
 public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
-  
+
   // constants
   private static final int MIN_LENGTH = 0;
 
@@ -352,5 +343,15 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     }
 
     return newSpans;
+  }
+
+  /**
+   * Intersects multiple text span lists
+   *
+   * @param list of span lists. The spans in each list must not be overlapping
+   * @return the text spans that are included in all given lists of text spans
+   */
+  public static List<TextSpan> intersect(List<List<TextSpan>> lists) {
+    return TextSpanIntersector.intersect(lists);
   }
 }

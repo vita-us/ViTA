@@ -129,7 +129,7 @@ public class TextPosition implements Comparable<TextPosition> {
 
   @Override
   public String toString() {
-    return String.format("Pos %d %s", offset, chapter);
+    return String.format("[%d]", offset);
   }
 
   /**

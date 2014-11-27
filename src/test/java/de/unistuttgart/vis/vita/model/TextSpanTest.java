@@ -225,4 +225,22 @@ public class TextSpanTest {
         new TextSpan(chapter, 50,80),
         new TextSpan(chapter2, 80,90)));
   }
+
+  @Test
+  public void testIntersect() {
+    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    TextSpan span2 = new TextSpan(chapter, 80, 100);
+    List<TextSpan> list1 = Arrays.asList(span1, span2);
+
+    TextSpan span3 = new TextSpan(chapter, 40, 90);
+    TextSpan span4 = new TextSpan(chapter, 95, 110);
+    List<TextSpan> list2 = Arrays.asList(span3, span4);
+
+    List<TextSpan> result = TextSpan.intersect(Arrays.asList(list1, list2));
+    System.out.println(result);
+    assertThat(result, contains(
+        new TextSpan(chapter, 50, 70),
+        new TextSpan(chapter, 80, 90),
+        new TextSpan(chapter, 95, 100)));
+  }
 }
