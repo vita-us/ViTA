@@ -43,8 +43,14 @@
 
         $scope.uploading = false;
 
-        loadDocuments();
-        var timerId = $interval(loadDocuments, 5000);
+        $scope.loadDocuments = function() {
+          Document.get(function(response) {
+            $scope.documents = response.documents;
+          });
+        };
+
+        $scope.loadDocuments();
+        var timerId = $interval($scope.loadDocuments, 5000);
 
         $scope.uploadSelectedFile = function() {
           // allow only a single upload simultaneously
@@ -68,12 +74,6 @@
           }
         };
 
-        function loadDocuments() {
-          Document.get(function(response) {
-            $scope.documents = response.documents;
-          });
-        }
-
         function resetUploadField() {
           document.getElementById('document-input').value = '';
         }
@@ -91,9 +91,12 @@
           var newName = prompt('Please enter a new name for document "' + document.metadata.title
                   + '".');
           if (newName) {
+            document.metadata.title = newName;
             Document.rename({
               documentId: document.id,
               name: newName
+            }, function() {
+              $scope.loadDocuments();
             });
           }
         };

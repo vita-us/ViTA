@@ -37,7 +37,7 @@ public class Model implements Factory<EntityManager> {
   protected EntityManagerFactory entityManagerFactory;
   @Inject
   CloseableService closeableService;
-  private TextRepository textRepository = new TextRepository();
+  private TextRepository textRepository;
 
   /**
    * Create a default Model instance
@@ -45,10 +45,12 @@ public class Model implements Factory<EntityManager> {
   public Model() {
     entityManagerFactory =
         Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+    textRepository = new TextRepository();
   }
 
-  protected Model(EntityManagerFactory emf) {
+  protected Model(EntityManagerFactory emf, TextRepository textRepository) {
     entityManagerFactory = emf;
+    this.textRepository = textRepository;
   }
 
   private static void loadDriver() {

@@ -87,8 +87,8 @@
 
       force = d3.layout.force()
           .size([width, height])
-          .charge(-200)
-          .gravity(0.025)
+          .charge(-800)
+          .gravity(0.04)
           .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
@@ -221,9 +221,12 @@
             }
           });
 
-
-      nodes = graph.select('#nodeGroup').selectAll('.node-container')
-          .data(graphData.nodes);
+      nodes = graph.select('#nodeGroup')
+          .selectAll('.node-container')
+          .data(graphData.nodes,
+              function(node) {
+                return node.id;
+              });
 
       nodes.exit().remove();
       var newNodes = nodes.enter().append('g').classed('node-container', true).call(drag);

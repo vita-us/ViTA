@@ -1,7 +1,10 @@
 package de.unistuttgart.vis.vita.model;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +45,9 @@ public class TextSpanTest {
     DocumentMetrics metrics = doc.getMetrics();
     metrics.setCharacterCount(DOCUMENT_LENGTH);
     chapter = new Chapter();
+    chapter.setRange(new TextSpan(
+        TextPosition.fromGlobalOffset(chapter, 0),
+        TextPosition.fromGlobalOffset(chapter, DOCUMENT_LENGTH)));
 
     pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_1);
     pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_2);
@@ -59,7 +65,7 @@ public class TextSpanTest {
   @Test
   public void testUtilityConstructor() {
     chapter.setRange(new TextSpan(pos1, pos4));
-    
+
     TextSpan span = new TextSpan(chapter, OFFSET_2, OFFSET_3);
     assertThat(span.getStart().getOffset(), is(OFFSET_1 + OFFSET_2));
     assertThat(span.getEnd().getOffset(), is(OFFSET_1 + OFFSET_3));
@@ -116,13 +122,13 @@ public class TextSpanTest {
     TextSpan testTextSpan = new TextSpan(pos2, pos3);
     assertEquals(DIFF, testTextSpan.getLength());
   }
-  
+
   @Test
   public void testCompareTo() {
     TextSpan span1 = new TextSpan(pos1, pos2);
     TextSpan span2 = new TextSpan(pos2, pos3);
     TextSpan span1Duplicate = new TextSpan(pos1, pos2);
-    
+
     assertEquals(1, span1.compareTo(null));
     assertEquals(-1, span1.compareTo(span2));
     assertEquals(1, span2.compareTo(span1));
@@ -133,7 +139,7 @@ public class TextSpanTest {
   public void testCompareToWithEqualStartPositions() {
     TextSpan span1 = new TextSpan(pos1, pos2);
     TextSpan span2 = new TextSpan(pos1, pos3);
-    
+
     assertEquals(-1, span1.compareTo(span2));
     assertEquals(1, span2.compareTo(span1));
   }
@@ -144,7 +150,7 @@ public class TextSpanTest {
     TextSpan span2 = new TextSpan(pos2, pos3);
     TextSpan span3 = new TextSpan(pos1, pos3);
     TextSpan span1Duplicate = new TextSpan(pos1, pos2);
-    
+
     assertTrue(span1.equals(span1Duplicate));
     assertFalse(span1.equals(pos2));
     assertFalse(span2.equals(span1));
@@ -152,16 +158,72 @@ public class TextSpanTest {
     assertFalse(span1.equals(null));
     assertFalse(span1.equals("an object of a different class"));
   }
-  
+
   @Test
   public void testHashCode() {
     TextSpan span1 = new TextSpan(pos1, pos2);
     TextSpan span2 = new TextSpan(pos2, pos3);
     TextSpan span3 = new TextSpan(pos1, pos3);
     TextSpan span1Duplicate = new TextSpan(pos1, pos2);
-    
+
     assertEquals(span1.hashCode(), span1Duplicate.hashCode());
     assertNotEquals(span1.hashCode(), pos2.hashCode());
     assertNotEquals(span2.hashCode(), span3.hashCode());
+  }
+
+  @Test
+  public void testWiden() {
+    TextSpan span = new TextSpan(chapter, 50, 60);
+    TextSpan widened = span.widen(10);
+    assertThat(widened.getStart().getOffset(), is(40));
+    assertThat(widened.getStart().getChapter(), is(chapter));
+    assertThat(widened.getEnd().getOffset(), is(70));
+    assertThat(widened.getEnd().getChapter(), is(chapter));
+  }
+
+  @Test
+  public void testWidenLimits() {
+    TextSpan span = new TextSpan(chapter, 50, 60);
+    TextSpan widened = span.widen(70);
+    assertThat(widened.getStart().getOffset(), is(0));
+    assertThat(widened.getEnd().getOffset(), is(130));
+  }
+
+  @Test
+  public void testNormalizeOverlaps() {
+    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    TextSpan span2 = new TextSpan(chapter, 60, 80);
+    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    assertThat(normalized, contains(new TextSpan(chapter, 50,80)));
+  }
+
+  @Test
+  public void testNormalizeOverlapsWithTouching() {
+    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    TextSpan span2 = new TextSpan(chapter, 70, 80);
+    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    assertThat(normalized, contains(new TextSpan(chapter, 50,80)));
+  }
+
+  @Test
+  public void testNormalizeOverlapsWithoutOverlap() {
+    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    TextSpan span2 = new TextSpan(chapter, 80, 90);
+    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    assertThat(normalized, contains(
+        new TextSpan(chapter, 50,70),
+        new TextSpan(chapter, 80,90)));
+  }
+
+  @Test
+  public void testNormalizeOverlapsAcrossChapters() {
+    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    Chapter chapter2 = new Chapter();
+    TextSpan span2 = new TextSpan(chapter2, 60, 80);
+    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    // should not do any merging because these are two different chapters
+    assertThat(normalized, contains(
+        new TextSpan(chapter, 50,70),
+        new TextSpan(chapter2, 60,80)));
   }
 }
