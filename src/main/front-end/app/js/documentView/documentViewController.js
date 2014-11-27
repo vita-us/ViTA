@@ -52,6 +52,7 @@
         $scope.reset = function() {
           $scope.resultCount = -1;
           $scope.occurrences = [];
+          $scope.entities = [];
         };
       }]);
 
