@@ -14,8 +14,16 @@ import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
-public class BookBuilder implements Callable<List<DocumentPart>> {
-
+/**
+ * Implements Callable - returning a List of DocumentParts. <br>
+ * <br>
+ * The BookBuilder is the link between Epub Extractor and the DocumentPart Objects used by all
+ * other components of ViTA. It transforms the result of the Extractor into a List of
+ * DocumentPart.<br>
+ * <br>
+ * The structure of the given List-parameters can be changed by this class.
+ */
+public class BookBuilder extends AbstractBuilder implements Callable<List<DocumentPart>> {
   private static final Logger LOG = Logger.getLogger("Exception");
   private List<Future<DocumentPart>> futureDocumentParts = new ArrayList<>();
   private List<List<Line>> partLines;

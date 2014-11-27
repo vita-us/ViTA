@@ -17,9 +17,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
  * other components of ViTA. It transforms the result of the MetadataAnalyzer into a Metadata. One
  * MetadataBuilder should be used for one Metadata.<br>
  */
-
-//TODO issue 138
-public class MetadataBuilder {
+public class MetadataBuilder extends AbstractBuilder {
 
   private static final String TITLE_VERSION1 = "Title:";
   private static final String AUTHOR_VERSION1 = "Author:";
@@ -94,7 +92,6 @@ public class MetadataBuilder {
    */
   public void setPublishYear(List<Line> publishYearList) {
     setPublishYear(filterMetadata(publishYearList, releaseDateSet));
-
   }
 
   /**
@@ -126,7 +123,7 @@ public class MetadataBuilder {
 
   /**
    * Some text at the beginning of the metadata or white spaces at the beginning and end of the raw
-   * metadata will be deleted.
+   * metadata will be deleted. Also makes the String shorter, if it gets too long.
    * 
    * @param metadata The raw metadata in list-representation
    * @param preTexts Describes which text at the beginning of the metadata belongs not the metadata
@@ -149,7 +146,7 @@ public class MetadataBuilder {
       }
       text = newMetadata;
     }
-    return text;
+    return getShortenedString(text);
   }
 
   /**

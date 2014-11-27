@@ -17,9 +17,7 @@ import java.util.regex.Pattern;
  * extracted Lines into String parameters for the Chapter and assures these Strings have the correct
  * text style.<br> <br> The structure of given List-parameters can be changed by this class.
  */
-
-//TODO issue 138
-public class ChapterBuilder implements Callable<Chapter> {
+public class ChapterBuilder extends AbstractBuilder implements Callable<Chapter> {
 
   // Regex for detection of whitespace in a line
   private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
@@ -75,7 +73,7 @@ public class ChapterBuilder implements Callable<Chapter> {
   private Chapter buildChapter(String heading, String text) {
     Chapter chapter = new Chapter();
     chapter.setNumber(chapterNumber);
-    chapter.setTitle(heading);
+    chapter.setTitle(getShortenedString(heading));
     chapter.setText(text);
     chapter.setLength(text.length());
     return chapter;
