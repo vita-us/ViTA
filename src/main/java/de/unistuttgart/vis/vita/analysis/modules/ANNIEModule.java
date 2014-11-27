@@ -129,7 +129,11 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
       }
     }
     maxDocuments = corpus.size();
-    progressSteps = 1 / maxDocuments;
+    if (maxDocuments > 0) {
+      progressSteps = 1 / maxDocuments;
+    } else {
+      progressSteps = 0;
+    }
   }
 
   /**
