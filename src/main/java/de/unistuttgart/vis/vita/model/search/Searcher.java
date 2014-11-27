@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * This class performs the searching for a word or phrase in a document
- * 
+ *
  *
  */
 
@@ -67,7 +67,7 @@ public class Searcher {
 
   /**
    * Calls the right Tokenizer regarding the searchString
-   * 
+   *
    * @param searchString
    * @param chapters
    * @param textSpans
@@ -83,22 +83,27 @@ public class Searcher {
 
       String[] words = searchString.split(" ");
 
+      Tokenizer tokenizer;
+
       if (searchString.matches(NO_SPECIAL_CHARACTERS)) {
-        StandardTokenizer tokenizer = new StandardTokenizer(reader);
-        addTextSpansToList(tokenizer, searchString, words,
-            getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans);
+        tokenizer = new StandardTokenizer(reader);
       } else {
-        Tokenizer tokenizer = new WhitespaceTokenizer(reader);
-        addTextSpansToList(tokenizer, searchString, words,
-            getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans);
+        tokenizer = new WhitespaceTokenizer(reader);
       }
 
+      Chapter chapter = getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters);
+      if (chapter == null) {
+        // We retrieved a hit for a chapter that was not requested
+        continue;
+      }
+
+      addTextSpansToList(tokenizer, searchString, words, chapter, textSpans);
     }
   }
 
   /**
    * Returns the correct chapter regarding the current hit document
-   * 
+   *
    * @param document
    * @param chapters
    * @return
@@ -115,7 +120,7 @@ public class Searcher {
 
   /**
    * Produces the textspans and them to textSpans list
-   * 
+   *
    * @param tokenizer
    * @param searchString
    * @param words
@@ -176,7 +181,7 @@ public class Searcher {
 
   /**
    * Returns the phrase(searchString) of the hit document, which is build in this method
-   * 
+   *
    * @param words
    * @param charTermAttrib
    * @param tokens
