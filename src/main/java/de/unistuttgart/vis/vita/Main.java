@@ -20,6 +20,7 @@ public class Main {
   private static final int DEFAULT_PORT = 9998;
 
   private static int getPort() {
+    System.out.println(System.getenv());
     String portEnv = System.getenv("PORT");
     if (StringUtils.isEmpty(portEnv)) {
       return DEFAULT_PORT;
