@@ -47,9 +47,9 @@
       <span class="result-count" ng-show="resultCount >= 0">
         {{resultCount}} results found.
       </span>
-      <span>
-        <button class="btn btn-default" ng-click="up()">Up</button>
-        <button class="btn btn-default" ng-click="down()">Down</button>
+      <span ng-show="resultCount >= 0">
+        <button class="btn btn-default" ng-click="up()" ng-disabled="resultCount === 0">Up</button>
+        <button class="btn btn-default" ng-click="down()" ng-disabled="resultCount === 0">Down</button>
       </span>
     </form>
   </div>
