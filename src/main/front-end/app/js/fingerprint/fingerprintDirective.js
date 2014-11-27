@@ -49,16 +49,10 @@
         svgContainer.attr('width', width);
         widthScale.range([0, width]);
         backgroundRect.attr('width', widthScale(1));
-
-        // We need a timer so we only update when the size hasn't changed
-        // for x ms, otherwise requests would be sent constantly
-        clearTimeout($.data(this, 'resizeTimer'));
-        $.data(this, 'resizeTimer', setTimeout(function() {
-          calculateOccurrenceSteps();
-          getRelationOccurrences();
-          removeChapterSeparators();
-          buildChapterSeparators(scope);
-        }, 200));
+        calculateOccurrenceSteps();
+        getRelationOccurrences();
+        removeChapterSeparators();
+        buildChapterSeparators(scope);
       });
 
       scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
