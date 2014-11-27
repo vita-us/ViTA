@@ -17,7 +17,7 @@ module.exports = function(config) {
               'karma-coverage', 'karma-ng-html2js-preprocessor'],
 
     junitReporter: {
-      outputFile: 'target/surefire-reports/TEST-front-end.xml',
+      outputFile: 'target/frontend-test-results/TEST-front-end.xml',
       suite: 'unit'
     },
 
@@ -28,7 +28,7 @@ module.exports = function(config) {
 
     coverageReporter: {
       type: 'lcovonly',
-      dir: 'target/',
+      dir: 'target/frontend-test-results/',
       subdir: '.'
     }
 
