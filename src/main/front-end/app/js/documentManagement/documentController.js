@@ -79,6 +79,9 @@
         }
 
         $scope.isDocumentSelected = function(document) {
+          if (!$scope.selectedDocument || !document) {
+            return false;
+          }
           return angular.equals($scope.selectedDocument.id, document.id);
         };
 
