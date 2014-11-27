@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.DefaultValue;
@@ -30,9 +31,12 @@ public class RelationOccurrencesService extends OccurrencesService {
 
   private List<String> entityIds;
 
+  @Inject
+  private EntityOccurrencesService entityOccurrenceService;
+
   /**
    * Sets the id of the document this service refers to.
-   * 
+   *
    * @param docId - the id of the Document to which this service refers to
    * @return this RelationOccurrencesService
    */
@@ -44,22 +48,22 @@ public class RelationOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart, 
+                                            @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
                                             @QueryParam("entityIds") String eIds) {
     // first check amount of steps
     if (steps < 0 || steps > 1000) {
       throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
     }
-    
+
     // check range
     if (rangeEnd < rangeStart) {
       throw new WebApplicationException("Illegal range!");
     }
-    
+
     int startOffset;
     int endOffset;
-    
+
     // calculate offsets
     try {
       startOffset = getStartOffset(rangeStart);
@@ -67,14 +71,22 @@ public class RelationOccurrencesService extends OccurrencesService {
     } catch(IllegalRangeException ire) {
       throw new WebApplicationException(ire);
     }
-    
+
     entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
-    
+
+    if (entityIds.size() == 1) {
+      // If there is only one entityId, that can be better handled by the entity occurrence service
+      return entityOccurrenceService
+          .setDocumentId(documentId)
+          .setEntityId(entityIds.get(0))
+          .getOccurrences(steps, rangeStart, rangeEnd);
+    }
+
     List<Occurrence> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
-      occs = getGranularEntityOccurrences(steps, startOffset, endOffset); 
+      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
     }
 
     // create response and return it
@@ -84,9 +96,9 @@ public class RelationOccurrencesService extends OccurrencesService {
   private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
     List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
-    
+
     List<TextSpan> intersectSpans = computeIntersection(readTextSpans);
-    
+
     // convert TextSpans into Occurrences and return them
     return convertSpansToOccurrences(intersectSpans);
   }
@@ -96,41 +108,41 @@ public class RelationOccurrencesService extends OccurrencesService {
     if (readTextSpans.size() < 2) {
       return readTextSpans;
     }
- 
+
     // Create an empty stack of intervals
     Deque<TextSpan> s = new ArrayDeque<>();
- 
+
     // push the first interval to stack
     s.push(readTextSpans.get(0));
- 
+
     // Start from the next TextSpan and merge if necessary
     for (int i = 1 ; i < readTextSpans.size(); i++) {
         // get interval from stack top
         TextSpan top = s.peek();
         TextSpan currentSpan = readTextSpans.get(i);
-        
+
         // if current TextSpan is not overlapping with stack top, push it to the stack
         if (!top.overlapsWith(currentSpan)) {
             s.push(readTextSpans.get(i));
         } else {
           TextPosition start = top.getStart();
           TextPosition end = top.getEnd();
-          
+
           TextPosition currentStart = currentSpan.getStart();
-          if (top.getStart().getOffset() < currentStart.getOffset() 
+          if (top.getStart().getOffset() < currentStart.getOffset()
               && currentStart.getOffset() <= end.getOffset()) {
             start = currentStart;
           }
-          
+
           if (top.getEnd().getOffset() > currentSpan.getEnd().getOffset()) {
             end = currentSpan.getEnd();
           }
-          
+
           s.pop();
           s.push(new TextSpan(start, end));
         }
     }
-    
+
     List<TextSpan> resultList = new ArrayList<>();
     while (!s.isEmpty()) {
       resultList.add(s.pop());
@@ -146,7 +158,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     query.setParameter("rangeEnd", endOffset);
     return query.getResultList();
   }
-  
+
   private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
     Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
     numberOfTextSpansQuery.setParameter("entityIds", entityIds);
