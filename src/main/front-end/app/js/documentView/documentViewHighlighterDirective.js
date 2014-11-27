@@ -164,8 +164,7 @@
           if (prevSelectedOccurence.length !== 0) {
             prevSelectedOccurence.removeClass('selected');
           }
-          var newSelectedOccurrence = $(highlighterElement[0]).find(
-                  '[id^="occurrence-' + selectedOccurrenceIndex + '"]');
+          var newSelectedOccurrence = $('#occurrence-' + selectedOccurrenceIndex);
           if (newSelectedOccurrence.length === 0) {
             return;
           }
