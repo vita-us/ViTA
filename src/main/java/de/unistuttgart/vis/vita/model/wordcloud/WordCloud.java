@@ -1,21 +1,41 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Represents the model for a WordCloud. A WordCloud shows a set of words in different font sizes,
  * depending on how often they are used in a document.
  */
-public class WordCloud {
-
-  private Set<WordCloudItem> items;
+@Entity
+@NamedQuery(name = "WordCloud.getGlobal",
+  query = "SELECT doc.content.globalWordCloud "
+  + "FROM Document doc "
+  + "WHERE doc.id = :documentId")
+@XmlRootElement
+public class WordCloud extends AbstractEntityBase {
+  @OneToMany(cascade = CascadeType.ALL)
+  @XmlElement
+  @OrderBy("frequency DESC")
+  private SortedSet<WordCloudItem> items;
 
   /**
    * Creates a new empty WordCloud.
    */
   public WordCloud() {
-    this.items = new HashSet<>();
+    // higher items (with higher scores) should be at the top
+    this.items = new TreeSet<WordCloudItem>().descendingSet();
   }
 
   /**
@@ -23,7 +43,7 @@ public class WordCloud {
    *
    * @param pItems - the items for the new WordCloud
    */
-  public WordCloud(Set<WordCloudItem> pItems) {
+  public WordCloud(Collection<WordCloudItem> pItems) {
     this();
     items.addAll(pItems);
   }
@@ -31,14 +51,14 @@ public class WordCloud {
   /**
    * @return a Set of all items of this WordCloud
    */
-  public Set<WordCloudItem> getItems() {
+  public SortedSet<WordCloudItem> getItems() {
     return items;
   }
 
   /**
    * Sets the items for this WordCloud
    */
-  public void setItems(Set<WordCloudItem> newItems) {
+  public void setItems(SortedSet<WordCloudItem> newItems) {
     this.items = newItems;
   }
 

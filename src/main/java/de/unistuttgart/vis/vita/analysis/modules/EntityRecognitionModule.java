@@ -52,7 +52,24 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     startAnalysis();
 
     progressListener.observeProgress(1);
+    filterEntities();
     return buildResult();
+  }
+
+  /**
+   * Removes those entites which has only one or less occurences.
+   * Reduces the chance from getting wrong entities based on NLP failure.
+   */
+  private void filterEntities() {
+      Set<BasicEntity> entityToRemove = new HashSet<>();
+
+      for (BasicEntity entity : entities) {
+        if (entity.getOccurences().size() <= 1) {
+          entityToRemove.add(entity);
+        }
+      }
+
+      entities.removeAll(entityToRemove);
   }
 
   /**

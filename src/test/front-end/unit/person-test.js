@@ -15,6 +15,9 @@ describe('PersonCtrl', function() {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/doc13a/persons/person8').respond(TestData.singlePerson);
     $httpBackend.expectGET('webapi/documents/doc13a').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/doc13a/parts').respond(TestData.parts);
+    $httpBackend.expectGET(new RegExp('webapi/documents/doc13a/entities/')).respond(TestData.person);
+    $httpBackend.expectGET(new RegExp('webapi/documents/doc13a/entities/')).respond(TestData.person);
 
     $routeParams.documentId = 'doc13a';
     $routeParams.personId = 'person8';
