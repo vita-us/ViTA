@@ -211,7 +211,7 @@ public class TextSpanTest {
     TextSpan span2 = new TextSpan(chapter, 80, 90);
     List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
     assertThat(normalized, contains(
-        new TextSpan(chapter, 50,80),
+        new TextSpan(chapter, 50,70),
         new TextSpan(chapter, 80,90)));
   }
 
@@ -221,8 +221,9 @@ public class TextSpanTest {
     Chapter chapter2 = new Chapter();
     TextSpan span2 = new TextSpan(chapter2, 60, 80);
     List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    // should not do any merging because these are two different chapters
     assertThat(normalized, contains(
-        new TextSpan(chapter, 50,80),
-        new TextSpan(chapter2, 80,90)));
+        new TextSpan(chapter, 50,70),
+        new TextSpan(chapter2, 60,80)));
   }
 }
