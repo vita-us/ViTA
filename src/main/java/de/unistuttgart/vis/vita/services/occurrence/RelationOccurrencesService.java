@@ -34,7 +34,7 @@ public class RelationOccurrencesService extends OccurrencesService {
   /**
    * The length up to which relation occurrences should be found and highlighted
    */
-  private static final int HIGHLIGHT_LENGTH = 200;
+  public static final int HIGHLIGHT_LENGTH = 200;
 
   /**
    * Sets the id of the document this service refers to.

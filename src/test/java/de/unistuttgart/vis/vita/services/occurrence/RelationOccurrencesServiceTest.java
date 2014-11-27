@@ -125,20 +125,20 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition targetNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR2_START_OFFSET);
     TextPosition targetNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR2_END_OFFSET);
     TextSpan targetNearSpan = new TextSpan(targetNearStart, targetNearEnd);
-    
+
     targetPerson.getOccurrences().add(targetSpan);
     targetPerson.getOccurrences().add(targetSeparateSpan);
     targetPerson.getOccurrences().add(targetNearSpan);
-    
+
     // set up relation between them
-    EntityRelation testRelation = relationTestData.createTestRelation(originPerson, 
+    EntityRelation testRelation = relationTestData.createTestRelation(originPerson,
                                                                               targetPerson);
-    
+
     // save ids for query
     docId = testDoc.getId();
     addId(originPerson.getId());
     addId(targetPerson.getId());
-    
+
     DocumentPart testPart = new DocumentPart();
     testPart.getChapters().add(testChapter);
     testDoc.getContent().getParts().add(testPart);
@@ -189,7 +189,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
   protected String getPath() {
     return "/documents/"+ docId +"/entities/relations/occurrences";
   }
-  
+
   @Override
   protected WebTarget prepareWebTarget(int steps, double rangeStart, double rangeEnd) {
     return super.prepareWebTarget(steps, rangeStart, rangeEnd).queryParam("entityIds", entityIds);
@@ -205,17 +205,18 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
 
-    assertEquals(1, receivedOccurrences.size());
+    assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
     Occurrence receivedOccurrence = receivedOccurrences.get(0);
-    assertEquals(OL_LENGTH, receivedOccurrence.getLength());
+    assertEquals(OL_LENGTH + RelationOccurrencesService.HIGHLIGHT_LENGTH,
+        receivedOccurrence.getLength());
   }
 
   @Override
   public void testGetStepwiseOccurences() {
-    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT, 
-                                                            DEFAULT_RANGE_START, 
+    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT,
+                                                            DEFAULT_RANGE_START,
                                                             DEFAULT_RANGE_END).request()
                                                             .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
