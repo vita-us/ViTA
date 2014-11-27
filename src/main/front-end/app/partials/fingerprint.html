@@ -10,7 +10,7 @@
             <h3 class="col-md-2">Combination</h3>
             <div class="col-md-10">
               <div data-fingerprint class="fingerprint-container"
-                data-entity-ids="activeFingerprints" data-parts="parts">
+                data-entity-ids="activeFingerprintIds" data-parts="parts">
               </div>
             </div>
           </div>
@@ -18,7 +18,7 @@
             <h3 class="col-md-2">{{active.displayName}}</h3>
             <div class="col-md-10">
               <div data-fingerprint
-                class="fingerprint-container" data-entity-ids="[active]"
+                class="fingerprint-container" data-entity-ids="[active.id]"
                 data-parts="parts">
               </div>
             </div>
@@ -31,7 +31,7 @@
           <div ng-controller="PersonListCtrl" class="list-group" id="list1">
             <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
               class="list-group-item" ng-class="{active: activeFingerprints.indexOf(person) > -1}"
-              ng-click="onclick(person)">{{person.displayName}}</a>
+              ng-click="toggleFingerprint(person)">{{person.displayName}}</a>
           </div>
         </div>
       </div>

@@ -15,13 +15,17 @@
         });
 
         $scope.activeFingerprints = [];
-        $scope.onclick = function(person) {
+        $scope.activeFingerprintIds = [];
+        $scope.toggleFingerprint = function(person) {
           if ($scope.activeFingerprints.indexOf(person) > -1) {
             $scope.activeFingerprints.splice(
               $scope.activeFingerprints.indexOf(person), 1);
           } else {
             $scope.activeFingerprints.push(person);
           }
+          $scope.activeFingerprintIds = $scope.activeFingerprints.map(function(e) {
+            return e.id;
+          });
         };
 
         DocumentParts.get({
@@ -30,10 +34,9 @@
           $scope.parts = response.parts;
         });
 
-        $scope.entityIds = ['34534', '3459'];
-
         $scope.deselectAll = function() {
           $scope.activeFingerprints = [];
+          $scope.activeFingerprintIds = [];
         };
       }]);
 
