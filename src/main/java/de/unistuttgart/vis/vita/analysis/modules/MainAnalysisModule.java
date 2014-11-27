@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
  * the analysis.
  */
 @AnalysisModule(dependencies = {TextFeatureModule.class, EntityFeatureModule.class,
-    WordCloudFeatureModule.class}, weight = 0.1)
+    GlobalWordCloudFeatureModule.class}, weight = 0.1)
 public class MainAnalysisModule extends Module<MainAnalysisModule> {
   @Override
   public MainAnalysisModule execute(ModuleResultProvider result, ProgressListener progressListener) {
