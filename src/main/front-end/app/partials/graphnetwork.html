@@ -3,18 +3,16 @@
     <div ng-include="'partials/menu.html'"></div>
   </div>
   <div class="col-md-8">
-    <div class="row">
-      <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
-        data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
-      <p>
-        <label for="amount">Percentage:</label> <input type="text" id="amount" readonly
-          style="border: 0; color: #f6931f; font-weight: bold;">
-      </p>
-      <div id="slider-range"></div>
-      <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
-        data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
-        data-height="graphHeight" data-width="graphWidth" id="graph-network-wrapper"></div>
-    </div>
+    <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
+      data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
+    <p>
+      <label for="amount">Percentage:</label> <input type="text" id="amount" readonly
+        style="border: 0; color: #f6931f; font-weight: bold;">
+    </p>
+    <div id="slider-range"></div>
+    <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
+      data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
+      data-height="graphHeight" data-width="graphWidth" id="graph-network-wrapper"></div>
   </div>
   <div class="col-md-2">
     <div class="row">
