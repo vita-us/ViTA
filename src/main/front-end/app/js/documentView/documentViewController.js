@@ -48,6 +48,11 @@
             $scope.occurrences = occurrences;
           });
         };
+
+        $scope.reset = function() {
+          $scope.resultCount = -1;
+          $scope.occurrences = [];
+        };
       }]);
 
 })(angular);
