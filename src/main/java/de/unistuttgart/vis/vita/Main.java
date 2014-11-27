@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -16,8 +17,23 @@ import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.servlet.GrizzlyWebContainerFactory;
 
 public class Main {
+  private static final int DEFAULT_PORT = 9998;
+
+  private static int getPort() {
+    String portEnv = System.getenv("PORT");
+    if (StringUtils.isEmpty(portEnv)) {
+      return DEFAULT_PORT;
+    }
+
+    try {
+      return Integer.parseInt(portEnv);
+    } catch (NumberFormatException e) {
+      throw new RuntimeException("Invalid PORT environment variable: " + portEnv, e);
+    }
+  }
+
   private static URI getBaseURI() {
-    return UriBuilder.fromUri("http://localhost/webapi").port(9998).build();
+    return UriBuilder.fromUri("http://localhost/webapi").port(getPort()).build();
   }
 
   private static HttpServer startServer() throws IOException {
