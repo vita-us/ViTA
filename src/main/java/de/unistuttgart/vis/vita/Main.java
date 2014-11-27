@@ -55,10 +55,18 @@ public class Main {
     return server;
   }
 
-  public static void main(String[] args) throws IOException {
-    HttpServer server = startServer();
+  public static void main(String[] args) throws IOException, InterruptedException {
+    final HttpServer server = startServer();
     System.out.println("server started at http://localhost:" + getPort());
-    System.in.read();
-    server.shutdown();
+
+    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("Stopping server..");
+            server.shutdown();
+        }
+    }, "shutdownHook"));
+
+    Thread.currentThread().join();
   }
 }
