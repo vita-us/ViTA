@@ -24,7 +24,7 @@
             <div class="chapter" data-ng-class="{'active-menu': $parent.$first && $first}"
                 data-ng-repeat="chapter in part.chapters">
               <a href="#chapter-{{chapter.id}}">
-                Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}
+                <span class="chapter-number">({{chapter.number}})</span>{{chapter.title}}
               </a>
             </div>
           </div>
