@@ -5,8 +5,11 @@
 
   // Controller responsible for the overview page
   vitaControllers.controller('OverviewCtrl', ['$scope', 'Document', 'Page', '$routeParams',
-      'AnalysisProgress', '$interval', 'Person',
-      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval, Person) {
+      'AnalysisProgress', '$interval', 'Person', 'CssClass',
+      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval, Person, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
 
         Person.get({
           documentId: $routeParams.documentId
