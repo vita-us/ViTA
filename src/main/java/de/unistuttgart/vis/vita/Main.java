@@ -57,7 +57,7 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     HttpServer server = startServer();
-    System.out.println("server started at " + getBaseURI());
+    System.out.println("server started at http://localhost:" + getPort());
     System.in.read();
     server.shutdown();
   }
