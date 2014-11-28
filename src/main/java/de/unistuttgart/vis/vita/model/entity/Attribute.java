@@ -76,6 +76,7 @@ public class Attribute extends AbstractEntityBase {
   public String toString() {
     return "Attribute{" +
            "type=" + type +
+           ", size=" + occurrences.size() +
            ", content='" + content + '\'' +
            '}';
   }
