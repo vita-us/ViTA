@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
@@ -17,6 +16,8 @@ import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.services.RangeService;
+import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 import de.unistuttgart.vis.vita.services.occurrence.RelationOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.RelationConfiguration;
 import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
@@ -25,12 +26,7 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
  * Provides methods returning EntityRelations and its occurrences requested using GET.
  */
 @ManagedBean
-public class EntityRelationsService {
-  
-  private String documentId;
-
-  @Inject
-  private EntityManager em;
+public class EntityRelationsService extends RangeService {
   
   @Inject
   private RelationOccurrencesService relationOccurrencesService;
@@ -64,27 +60,43 @@ public class EntityRelationsService {
                                         @QueryParam("type") String type) {
     // initialize lists
     List<String> entityIds = null;
+    List<String> occurringEntityIds = new ArrayList<>();
     List<EntityRelation> relations = null;
     
-    // check parameters
-    if (!isValidRangeValue(rangeStart) || !isValidRangeValue(rangeEnd)) {
-      throw new BadRequestException("Illegal range!");
-    } else if (eIds == null || "".equals(eIds)) {
+    // calculate offsets
+    int startOffset;
+    int endOffset;
+    try {
+      startOffset = getStartOffset(rangeStart);
+      endOffset = getEndOffset(rangeEnd);
+    } catch (IllegalRangeException ire) {
+      throw new BadRequestException("Illegal Range", ire);
+    }
+    
+    // check entityIds
+    if (eIds == null || "".equals(eIds)) {
       throw new BadRequestException("No entities specified!");
     } else {
       // convert entity id string
       entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
       
+      // first check whether this entity occurs in the given range
+      for (String entityId : entityIds) {
+        if (occurrsInRange(entityId, startOffset, endOffset)) {
+          occurringEntityIds.add(entityId);
+        }
+      }
+      
       // get relations from database how they are read depends on 'type'
       switch (type.toLowerCase()) {
         case "person":
-          relations = readRelationsFromDatabase(entityIds, Person.class.getSimpleName());
+          relations = readRelationsFromDatabase(occurringEntityIds, Person.class.getSimpleName());
           break;
         case "place":
-          relations = readRelationsFromDatabase(entityIds, Place.class.getSimpleName());
+          relations = readRelationsFromDatabase(occurringEntityIds, Place.class.getSimpleName());
           break;
         case "all":
-          relations = readRelationsFromDatabase(entityIds);
+          relations = readRelationsFromDatabase(occurringEntityIds);
           break;
         default:
           throw new BadRequestException("Unknown type, must be 'person', 'place' or 'all'!");
@@ -92,7 +104,15 @@ public class EntityRelationsService {
     }
     
     // create the response and return it
-    return new RelationsResponse(entityIds, createConfiguration(relations));
+    return new RelationsResponse(occurringEntityIds, createConfiguration(relations));
+  }
+
+  private boolean occurrsInRange(String entityId, int startOffset, int endOffset) {
+    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
+    numberOfTextSpansQuery.setParameter("entityId", entityId);
+    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
+    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
+    return ((long) numberOfTextSpansQuery.getSingleResult() > 0);
   }
 
   /**
@@ -138,16 +158,6 @@ public class EntityRelationsService {
       configurations.add(new RelationConfiguration(entityRelation));
     }
     return configurations;
-  }
-  
-  /**
-   * Returns whether given number is a valid range value or not.
-   * 
-   * @param value - the value to be checked
-   * @return true if given value is a valid range value, false otherwise
-   */
-  private boolean isValidRangeValue(double value) {
-    return value >= 0.0 && value <= 1.0;
   }
   
   /**
