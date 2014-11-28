@@ -69,18 +69,31 @@ public abstract class OccurrencesService extends RangeService {
 
     List<TextSpan> stepSpans = new ArrayList<>();
 
+    TextPosition currentSpanStart = null;
+    TextPosition currentSpanEnd = null;
+    boolean includesLastStep = false;
     for (int step = 0; step < steps; step++) {
       int stepStart = startOffset + (stepSize * step);
       int stepEnd = startOffset + (stepSize * (step + 1));
 
       if (getNumberOfSpansInStep(stepStart, stepEnd) > 0) {
-        // create new Positions with offset and surrounding Chapter
-        TextPosition startPos = TextPosition.fromGlobalOffset(getSurroundingChapter(stepStart), stepStart);
-        TextPosition endPos = TextPosition.fromGlobalOffset(getSurroundingChapter(stepEnd), stepEnd);
+        if (!includesLastStep) {
+          // Start a new step
+          includesLastStep = true;
+          currentSpanStart = TextPosition.fromGlobalOffset(getSurroundingChapter(stepStart), stepStart);
+        }
+        currentSpanEnd = TextPosition.fromGlobalOffset(getSurroundingChapter(stepEnd), stepEnd);
 
-        // create and add new Span
-        stepSpans.add(new TextSpan(startPos, endPos));
+      } else if (includesLastStep) {
+        // The step is over, add it to the list
+        stepSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
+        includesLastStep = false;
       }
+    }
+    
+    if (includesLastStep) {
+      // There is a step at the very end
+      stepSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
     }
 
     return convertSpansToOccurrences(stepSpans);

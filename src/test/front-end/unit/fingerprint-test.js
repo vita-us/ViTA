@@ -15,6 +15,7 @@ describe('FingerprintCtrl', function() {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
     $httpBackend.expectGET('webapi/documents/123/parts').respond(TestData.parts);
+    $httpBackend.expectGET('webapi/documents/123/persons').respond(TestData.persons);
     $routeParams.documentId = '123';
     scope = $rootScope.$new();
     ctrl = $controller('FingerprintCtrl', {

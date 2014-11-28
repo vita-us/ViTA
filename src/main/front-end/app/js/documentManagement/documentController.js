@@ -50,7 +50,7 @@
         };
 
         $scope.loadDocuments();
-        var timerId = $interval($scope.loadDocuments, 5000);
+        var timerId = $interval($scope.loadDocuments, 1000);
 
         $scope.uploadSelectedFile = function() {
           // allow only a single upload simultaneously
@@ -79,7 +79,10 @@
         }
 
         $scope.isDocumentSelected = function(document) {
-          return angular.equals($scope.selectedDocument, document);
+          if (!$scope.selectedDocument || !document) {
+            return false;
+          }
+          return angular.equals($scope.selectedDocument.id, document.id);
         };
 
         $scope.updateSelection = function(selectedDocument) {
@@ -98,6 +101,8 @@
             }, function() {
               $scope.loadDocuments();
             });
+          } else if (newName === '') {
+            alert('The document name must not be empty!');
           }
         };
 

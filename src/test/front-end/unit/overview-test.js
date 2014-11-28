@@ -48,7 +48,7 @@ describe('OverviewCtrl', function() {
       }
     });
     // Simulate the expected time interval
-    $interval.flush(5000);
+    $interval.flush(1000);
     $httpBackend.flush();
 
     expect(scope.progress.graphView.isReady).toBe(true);

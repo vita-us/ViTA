@@ -308,11 +308,11 @@
         'attributes': [{
           'id': 'attr12697',
           'content': '1700km2',
-          'type': 'unknown'
+          'type': 'area'
         }, {
           'id': 'at65157',
-          'content': 'North Germany',
-          'type': 'unknown'
+          'content': 'Hamburg',
+          'type': 'state'
         }],
         'rankingValue': 3,
         'entityRelations': [{
@@ -337,7 +337,7 @@
             'range': {
               'start': {
                 'chapter': '1-1',
-                'offset': 13,
+                'offset': 0,
                 'progress': 0
               },
               'end': {
@@ -355,12 +355,12 @@
             'range': {
               'start': {
                 'chapter': '1-2',
-                'offset': 123,
+                'offset': 1000,
                 'progress': 0.29
               },
               'end': {
                 'chapter': '1-2',
-                'offset': 29888,
+                'offset': 29,
                 'progress': 0.487261231
               },
               'length': 82342
@@ -373,12 +373,12 @@
             'range': {
               'start': {
                 'chapter': '1-3',
-                'offset': 115,
+                'offset': 2000,
                 'progress': 0.682381
               },
               'end': {
                 'chapter': '1-3',
-                'offset': 229,
+                'offset': 29,
                 'progress': 0.87261231
               },
               'length': 14123

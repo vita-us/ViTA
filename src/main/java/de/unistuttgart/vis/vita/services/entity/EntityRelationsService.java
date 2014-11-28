@@ -7,6 +7,7 @@ import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -54,8 +55,8 @@ public class EntityRelationsService extends RangeService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public RelationsResponse getRelations(@QueryParam("rangeStart") double rangeStart,
-                                        @QueryParam("rangeEnd") double rangeEnd,
+  public RelationsResponse getRelations(@QueryParam("rangeStart") @DefaultValue("0") double rangeStart,
+                                        @QueryParam("rangeEnd")  @DefaultValue("1") double rangeEnd,
                                         @QueryParam("entityIds") String eIds,
                                         @QueryParam("type") String type) {
     // initialize lists
@@ -104,7 +105,7 @@ public class EntityRelationsService extends RangeService {
     }
     
     // create the response and return it
-    return new RelationsResponse(occurringEntityIds, createConfiguration(relations));
+    return new RelationsResponse(occurringEntityIds, createConfiguration(relations, rangeStart, rangeEnd));
   }
 
   private boolean occurrsInRange(String entityId, int startOffset, int endOffset) {
@@ -152,10 +153,13 @@ public class EntityRelationsService extends RangeService {
    * @param relations - the EntityRelations to be mapped
    * @return the configurations as a flat representation of the given relations
    */
-  private List<RelationConfiguration> createConfiguration(List<EntityRelation> relations) {
+  private List<RelationConfiguration> createConfiguration(List<EntityRelation> relations,
+      double rangeStart, double rangeEnd) {
     List<RelationConfiguration> configurations = new ArrayList<>();
     for (EntityRelation entityRelation : relations) {
-      configurations.add(new RelationConfiguration(entityRelation));
+      if (entityRelation.getWeightForRange(rangeStart, rangeEnd) > 0) {
+        configurations.add(new RelationConfiguration(entityRelation, rangeStart, rangeEnd));
+      }
     }
     return configurations;
   }

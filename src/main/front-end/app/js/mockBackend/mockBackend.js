@@ -13,8 +13,6 @@
                 TestData.wordcloudhugo);
         $httpBackend.whenGET(/\/documents\/[^/]+\/wordcloud\?entityId=person10Bert$/).respond(
                 TestData.wordcloudbert);
-        $httpBackend.whenGET(new RegExp('/documents/[^/]+/wordcloud$'))
-                .respond(TestData.wordcloud);
 
         $httpBackend.whenGET(new RegExp('.*')).passThrough();
         $httpBackend.whenPOST(new RegExp('.*')).passThrough();
