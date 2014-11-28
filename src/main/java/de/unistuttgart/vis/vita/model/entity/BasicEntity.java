@@ -17,13 +17,15 @@ import org.apache.commons.lang.StringUtils;
 public class BasicEntity {
   private String displayName;
   private EntityType type;
-  
+
+  private Set<Attribute> attributes;
   private Set<Attribute> nameAttributes;
   private SortedSet<TextSpan> occurrences;
   
   public BasicEntity() {
     nameAttributes = new HashSet<>();
     occurrences = new TreeSet<>();
+    attributes = new HashSet<>();
   }
 
   /**
@@ -105,6 +107,15 @@ public class BasicEntity {
            ", displayName='" + displayName + '\'' +
            ", occurrences=" + StringUtils.join(occurrences, ", ") +
            ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
+           ", attributes=" + StringUtils.join(attributes, ", ") +
            '}';
+  }
+
+  public Set<Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Set<Attribute> attributes) {
+    this.attributes = attributes;
   }
 }
