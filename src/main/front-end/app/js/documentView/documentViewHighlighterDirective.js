@@ -157,7 +157,7 @@
           names.push(entity.displayName);
 
           entity.attributes.forEach(function(attribute) {
-            if (attribute.type === 'name') {
+            if (attribute.attributetype === 'name') {
               names.push(attribute.content);
             }
           });
