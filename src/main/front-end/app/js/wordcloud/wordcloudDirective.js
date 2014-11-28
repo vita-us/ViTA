@@ -3,7 +3,10 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('wordcloud', [function() {
+  vitaDirectives.directive('wordcloud', ['DocumentSearch',
+                                         'DocumentViewSender',
+                                         '$routeParams',
+                                         function(DocumentSearch, DocumentViewSender, $routeParams) {
 
     function link(scope, element, attrs) {
 
@@ -77,7 +80,17 @@
         words.style('font-size', getFontSize)
             .style('fill', getFill)
             .attr('transform', getTransform)
-            .text(getText);
+            .text(getText)
+            .on('click', onClick);
+      }
+
+      function onClick(word) {
+        DocumentSearch.search({
+          documentId: $routeParams.documentId,
+          query: word.text
+        }, function(response) {
+          DocumentViewSender.sendOccurrences(response.occurrences);
+        });
       }
 
       /**
