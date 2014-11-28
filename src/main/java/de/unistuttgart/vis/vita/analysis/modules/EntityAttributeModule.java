@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import gate.Annotation;
 
 /**
- *
+ * This module is dependent for finding all possible attributes like gender,... for the entities.
  */
 @AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class,
                                 BasicEntityCollection.class}, weight = 0.1)
@@ -64,6 +64,9 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
     };
   }
 
+  /**
+   * Starts the analysis through the whole annotations.
+   */
   private void startAnalysis() {
     List<DocumentPart> documentParts = importResult.getParts();
 
@@ -84,6 +87,13 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
     }
   }
 
+  /**
+   * Applies the gender attribute to the given entity name. If a gender already exists in the entity
+   * do nothing.
+   *
+   * @param entityName      A name of the desired entity.
+   * @param annieAnnotation The current annotation.
+   */
   private void applyGender(String entityName, Annotation annieAnnotation) {
     BasicEntity theEntity = getEntityForName(entityName);
 
@@ -99,6 +109,12 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
     }
   }
 
+  /**
+   * Searches the correct entity to a given name.
+   *
+   * @param entityName The name to search for.
+   * @return The correct entity or null if not found.
+   */
   private BasicEntity getEntityForName(String entityName) {
     for (BasicEntity basicEntity : entities.getEntities()) {
       for (Attribute attribute : basicEntity.getNameAttributes()) {
