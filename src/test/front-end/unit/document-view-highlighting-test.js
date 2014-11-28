@@ -11,9 +11,10 @@ describe('documentHighlighter', function() {
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-3').respond(TestData.thirdChapter);
 
     element = '<div data-document-view-highlighter data-document-id="documentId" data-entities="entities"'
+            + ' data-selected-occurrence-index="selectedOccurrenceIndex"'
             + ' data-occurrences="occurrences" data-parts="parts" class="col-sm-9 document-view-text">'
-            + '<div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"'
-            + 'data-part-data="part" data-document-id="documentId"></div></div>';
+            + ' <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"'
+            + ' data-part-data="part" data-document-id="documentId"></div></div>';
 
     scope.documentId = TestData.singleDocument.id;
     scope.parts = TestData.parts.parts;
@@ -50,4 +51,19 @@ describe('documentHighlighter', function() {
     scope.$digest();
     expect(element.find('span.occurrence').length).toBe(3);
   }));
+
+  it('should select first occurrence by default', function() {
+    var selected = element.find('span.selected');
+    expect(selected.length).toBe(1);
+    expect(selected.attr('id')).toBe('occurrence-0');
+  });
+
+  it('should update selected occurrence when data changes', function(TestData) {
+    scope.selectedOccurrenceIndex = 1;
+    scope.$digest();
+
+    var selected = element.find('span.selected');
+    expect(selected.length).toBe(1);
+    expect(selected.attr('id')).toBe('occurrence-1');
+  });
 });

@@ -56,7 +56,6 @@ public class Epub2Extractor extends AbstractEpubExtractor {
     if (!tocIds.isEmpty()) {
       for (Resource resource : resources) {
         document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
-
         addLinesToChapter(tocIds, resource);
       }
       removeEmptyChapters(chapters);
@@ -71,6 +70,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
    * @throws IOException
    */
   private void addLinesToChapter(List<String> tocIds, Resource resource) throws IOException {
+
     for (String id : tocIds) {
       Element currentElement = document.getElementById(id);
 
@@ -127,8 +127,8 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   private List<List<Line>> getPartLines() {
     List<List<Line>> partLines = new ArrayList<List<Line>>();
     List<Line> chaptersLines = new ArrayList<Line>();
-
-    for (List<Epubline> chapter : reviser.formatePartEpub2(chapters)) {
+    List<List<Epubline>> newChapters = reviser.formatePartEpub2(chapters);
+    for (List<Epubline> chapter : newChapters) {
       for (Epubline epubline : chapter) {
         chaptersLines.add(new EpubModuleLine(epubline.getEpubline()));
       }
@@ -148,8 +148,9 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   private List<List<Line>> getPartsLines() throws IOException {
     List<List<Line>> partsLines = new ArrayList<List<Line>>();
 
-    for (List<List<Epubline>> part : reviser.formatePartsEpub2(epublineTraitsExtractor
-        .getPartsEpublines(chapters))) {
+    List<List<List<Epubline>>> parts =
+        reviser.formatePartsEpub2(epublineTraitsExtractor.getPartsEpublines(chapters));
+    for (List<List<Epubline>> part : parts) {
       List<Line> chaptersLines = new ArrayList<Line>();
       for (List<Epubline> chapter : part) {
         for (Epubline epubline : chapter) {
@@ -168,8 +169,9 @@ public class Epub2Extractor extends AbstractEpubExtractor {
    * @throws IOException
    */
   private void addEpublinesToList(List<List<List<Epubline>>> parts) throws IOException {
-    for (List<List<Epubline>> part : reviser.formatePartsEpub2(epublineTraitsExtractor
-        .getPartsEpublines(chapters))) {
+    List<List<List<Epubline>>> formatedParts =
+        reviser.formatePartsEpub2(epublineTraitsExtractor.getPartsEpublines(chapters));
+    for (List<List<Epubline>> part : formatedParts) {
       parts.add(part);
     }
   }
@@ -177,7 +179,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
   @Override
   public List<List<Line>> getPartList() throws IOException {
 
-    if (epub2IdsExtractor.existsPart()) {
+    if (epub2IdsExtractor.existsPart() && !partIsEmpty()) {
       return getPartsLines();
     } else {
       return getPartLines();
@@ -187,7 +189,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
 
   @Override
   public List<ChapterPosition> getChapterPositionList() throws IOException {
-    if (epub2IdsExtractor.existsPart()) {
+    if (epub2IdsExtractor.existsPart() && !partIsEmpty()) {
 
       List<ChapterPosition> chapterPositionsParts = new ArrayList<ChapterPosition>();
       List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
@@ -196,29 +198,52 @@ public class Epub2Extractor extends AbstractEpubExtractor {
         chapterPositionsParts.add(chapterPositionMaker.calculateChapterPositionsEpub2(part,
             resources, tocResource));
       }
-
       return chapterPositionsParts;
+
     } else {
-      List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
-      List<List<Epubline>> part = reviser.formatePartEpub2(chapters);
-      chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, resources,
-          tocResource));
+      List<ChapterPosition> chapterPositionsPart = getPartChapterPositionList();
 
       return chapterPositionsPart;
     }
+  }
+
+  /**
+   * Returns the ChapterPositions regarding only one part
+   * @return
+   */
+  private List<ChapterPosition> getPartChapterPositionList() {
+    List<ChapterPosition> chapterPositionsPart = new ArrayList<ChapterPosition>();
+    List<List<Epubline>> part = reviser.formatePartEpub2(chapters);
+    chapterPositionsPart.add(chapterPositionMaker.calculateChapterPositionsEpub2(part, resources,
+        tocResource));
+    return chapterPositionsPart;
   }
 
   @Override
   public List<String> getTitleList() throws IOException {
     List<String> titleList = new ArrayList<String>();
 
-    if (epub2IdsExtractor.existsPart()) {
+    if (epub2IdsExtractor.existsPart() && !partIsEmpty()) {
       titleList = epub2IdsExtractor.getPartsTitles();
-
       return titleList;
     } else {
       return titleList;
     }
 
+  }
+
+  /**
+   * Checks if a part is empty
+   * @return
+   * @throws IOException
+   */
+  private boolean partIsEmpty() throws IOException {
+    List<List<Line>> parts = getPartsLines();
+    for (int i = 0; i < parts.size(); i++) {
+      if (parts.get(i).isEmpty()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

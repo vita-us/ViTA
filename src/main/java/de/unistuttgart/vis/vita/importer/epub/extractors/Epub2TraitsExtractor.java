@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import nl.siegmann.epublib.domain.Resource;
 
 import org.jsoup.Jsoup;
@@ -50,7 +49,7 @@ public class Epub2TraitsExtractor {
         .getAllElements().size(); i++) {
 
       Element innerElement = document.getAllElements().get(i);
-      if (!ids.contains(innerElement.id())) {
+      if (!ids.contains(innerElement.id())&& !innerElement.text().matches(Constants.PART)) {
         addElementTexts(chapter, editedElements, innerElement);
       } else {
         return chapter;
@@ -62,9 +61,9 @@ public class Epub2TraitsExtractor {
       Document nextDocument =
           Jsoup.parse(contentBuilder.getStringFromInputStream(resources.get(j).getInputStream()));
       for (int k = 0; k < nextDocument.getAllElements().size(); k++) {
-
+        
         Element innerElement = nextDocument.getAllElements().get(k);
-        if (!ids.contains(innerElement.id())) {
+        if (!ids.contains(innerElement.id()) && !innerElement.text().matches(Constants.PART)) {
           addElementTexts(chapter, editedElements, innerElement);
         } else {
           return chapter;
@@ -191,7 +190,6 @@ public class Epub2TraitsExtractor {
       }
       parts.add(partChapters);
     }
-
     return parts;
   }
 

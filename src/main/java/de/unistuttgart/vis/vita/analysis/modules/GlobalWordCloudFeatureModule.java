@@ -9,7 +9,7 @@ import org.apache.lucene.search.IndexSearcher;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
-import de.unistuttgart.vis.vita.analysis.results.WordCloudResult;
+import de.unistuttgart.vis.vita.analysis.results.GlobalWordCloudResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
@@ -26,15 +26,15 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  * in lucene.
  */
 @AnalysisModule(dependencies = {DocumentPersistenceContext.class, Model.class,
-                                WordCloudResult.class}, weight = 0.1)
-public class WordCloudFeatureModule extends AbstractFeatureModule<WordCloudFeatureModule> {
+                                GlobalWordCloudResult.class}, weight = 0.1)
+public class GlobalWordCloudFeatureModule extends AbstractFeatureModule<GlobalWordCloudFeatureModule> {
 
   @Override
-  public WordCloudFeatureModule storeResults(ModuleResultProvider result, Document document,
+  public GlobalWordCloudFeatureModule storeResults(ModuleResultProvider result, Document document,
       EntityManager em)
       throws Exception {
 
-    WordCloud wordCloud = result.getResultFor(WordCloudResult.class).getGlobalWordCloud();
+    WordCloud wordCloud = result.getResultFor(GlobalWordCloudResult.class).getGlobalWordCloud();
     em.persist(wordCloud);
     document.getContent().setGlobalWordCloud(wordCloud);
 

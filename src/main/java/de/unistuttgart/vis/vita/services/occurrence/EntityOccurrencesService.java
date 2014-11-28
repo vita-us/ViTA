@@ -60,7 +60,7 @@ public class EntityOccurrencesService extends OccurrencesService {
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") double rangeEnd) {
+                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
     // first check amount of steps
     if (steps < 0 || steps > 1000) {
       throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);

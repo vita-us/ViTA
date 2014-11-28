@@ -23,7 +23,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
   /**
    * The maximum distance in characters two entities my occur at to be considered in a relation
    */
-  private static final int MAX_DISTANCE = 50;
+  public static final int MAX_DISTANCE = 50;
 
   private static final int TIME_STEPS = 20;
   
