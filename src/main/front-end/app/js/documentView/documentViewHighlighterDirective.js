@@ -169,7 +169,8 @@
           if (prevSelectedOccurence.length !== 0) {
             prevSelectedOccurence.removeClass('selected');
           }
-          var newSelectedOccurrence = $('#occurrence-' + selectedOccurrenceIndex);
+          var newSelectedOccurrence = $(highlighterElement).find(
+                  '#occurrence-' + selectedOccurrenceIndex);
           if (newSelectedOccurrence.length === 0) {
             return;
           }
