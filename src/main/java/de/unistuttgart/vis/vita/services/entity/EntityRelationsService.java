@@ -62,7 +62,7 @@ public class EntityRelationsService extends RangeService {
     // initialize lists
     List<String> entityIds = null;
     List<String> occurringEntityIds = new ArrayList<>();
-    List<EntityRelation> relations = null;
+    List<EntityRelation> relations = new ArrayList<>();
     
     // calculate offsets
     int startOffset;
@@ -88,19 +88,24 @@ public class EntityRelationsService extends RangeService {
         }
       }
       
-      // get relations from database how they are read depends on 'type'
-      switch (type.toLowerCase()) {
-        case "person":
-          relations = readRelationsFromDatabase(occurringEntityIds, Person.class.getSimpleName());
-          break;
-        case "place":
-          relations = readRelationsFromDatabase(occurringEntityIds, Place.class.getSimpleName());
-          break;
-        case "all":
-          relations = readRelationsFromDatabase(occurringEntityIds);
-          break;
-        default:
-          throw new BadRequestException("Unknown type, must be 'person', 'place' or 'all'!");
+      // check whether there are entities left
+      if (!occurringEntityIds.isEmpty()) {
+        
+        // get relations from database how they are read depends on 'type'
+        switch (type.toLowerCase()) {
+          case "person":
+            relations = readRelationsFromDatabase(occurringEntityIds, Person.class.getSimpleName());
+            break;
+          case "place":
+            relations = readRelationsFromDatabase(occurringEntityIds, Place.class.getSimpleName());
+            break;
+          case "all":
+            relations = readRelationsFromDatabase(occurringEntityIds);
+            break;
+          default:
+            throw new BadRequestException("Unknown type, must be 'person', 'place' or 'all'!");
+        }
+      
       }
     }
     
