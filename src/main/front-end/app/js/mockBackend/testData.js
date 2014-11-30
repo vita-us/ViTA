@@ -657,11 +657,11 @@
         'attributes': [{
           'id': 'attr12397',
           'content': '15',
-          'type': 'age'
+          'attributetype': 'age'
         }, {
           'id': 'at65657',
           'content': 'Hugo Martin',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 3,
         'entityRelations': [{
@@ -699,11 +699,11 @@
         }, {
           'id': 'at65657',
           'content': 'Mr. Baggins',
-          'type': 'name'
+          'attributetype': 'name'
         }, {
           'id': 'at65657',
           'content': 'Bilbo',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 3,
         'entityRelations': [{
@@ -733,7 +733,7 @@
         'attributes': [{
           'id': 'attr12397',
           'content': 'Gandalf the Wizard',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 7,
         'entityRelations': [{
@@ -765,11 +765,11 @@
         'attributes': [{
           'id': 'attr12397',
           'content': '15',
-          'type': 'age'
+          'attributetype': 'age'
         }, {
           'id': 'at65657',
           'content': 'Andreas',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 3,
         'entityRelations': [{
@@ -786,11 +786,11 @@
         'attributes': [{
           'id': 'attr1041',
           'content': '22',
-          'type': 'age'
+          'attributetype': 'age'
         }, {
           'id': 'at7214',
           'content': 'Bert Bauer',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 2,
         'entityRelations': [{
@@ -804,7 +804,7 @@
         'attributes': [{
           'id': 'at542',
           'content': 'Nobo Dy',
-          'type': 'name'
+          'attributetype': 'name'
         }],
         'rankingValue': 25,
         'entityRelations': []
