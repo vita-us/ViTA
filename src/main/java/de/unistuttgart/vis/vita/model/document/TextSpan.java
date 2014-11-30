@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -20,6 +22,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  * aware of the actual text within the bounds.
  */
 @Entity
+@Table(indexes={
+  @Index(columnList="start.offset"),
+  @Index(columnList="end.offset")
+})
 @NamedQueries({
   @NamedQuery(name = "TextSpan.findAllTextSpans",
       query = "SELECT ts "
