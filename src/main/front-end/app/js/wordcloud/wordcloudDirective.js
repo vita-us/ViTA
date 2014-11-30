@@ -85,11 +85,13 @@
       }
 
       function onClick(word) {
-        DocumentSearch.search({
-          documentId: $routeParams.documentId,
-          query: word.text
-        }, function(response) {
-          DocumentViewSender.sendOccurrences(response.occurrences);
+        DocumentViewSender.open(function() {
+          DocumentSearch.search({
+            documentId: $routeParams.documentId,
+            query: word.text
+          }, function(response) {
+            DocumentViewSender.sendOccurrences(response.occurrences);
+          });
         });
       }
 
