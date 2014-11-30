@@ -52,6 +52,12 @@
           });
         };
 
+        $scope.reset = function() {
+          $scope.resultCount = -1;
+          $scope.occurrences = [];
+          $scope.entities = [];
+        };
+
         $scope.down = function() {
           $scope.selectedOccurrenceIndex = angular.isUndefined($scope.selectedOccurrenceIndex) ? 0
                   : $scope.selectedOccurrenceIndex;
