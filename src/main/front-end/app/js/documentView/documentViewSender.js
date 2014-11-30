@@ -5,8 +5,11 @@
 
   vitaServices.service('DocumentViewSender', ['SharedWorkerFactory',
                                               'DocumentViewWorkerConstants',
-                                              function(workerFactory, constants) {
+                                              '$timeout',
+                                              function(workerFactory, constants, $timeout) {
     var worker = workerFactory.create(), onReceiveCallback, onDocumentIdRequestCallback;
+
+    var windowObject;
 
     // Register this port at the shared worker
     worker.port.start();
@@ -53,6 +56,15 @@
 
     this.sendEntities = function(entities) {
       sendMessage(constants.ENTITIES, entities);
+    };
+
+    this.open = function() {
+      if (!windowObject || windowObject.closed) {
+        windowObject = window.open('documentview.html', 'documentView',
+                'width=0,height=0,left=0,alwaysRaised=yes');
+      } else {
+        windowObject.focus();
+      }
     };
 
   }]);
