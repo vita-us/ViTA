@@ -5,8 +5,12 @@
 
   // Controller responsible for the fingerprint page
   vitaControllers.controller('FingerprintCtrl',
-      ['$scope', 'Page', '$routeParams', 'DocumentParts', 'Document',
-      function($scope, Page, $routeParams, DocumentParts, Document) {
+      ['$scope', 'Page', '$routeParams', 'DocumentParts', 'Document', 'Person', 'CssClass',
+      function($scope, Page, $routeParams, DocumentParts, Document, Person, CssClass) {
+
+        // Provide the service for direct usage in the scope
+        $scope.CssClass = CssClass;
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
@@ -32,6 +36,12 @@
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.parts = response.parts;
+        });
+
+        Person.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.persons = response.persons;
         });
 
         $scope.deselectAll = function() {

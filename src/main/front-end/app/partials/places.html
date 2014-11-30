@@ -6,7 +6,7 @@
     <div class="row filterable-list">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
       <ul>
-        <li ng-repeat="place in places | entityNameFilter:search | orderBy: '-rankingValue' ">
+        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' ">
           <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">{{place.displayName}}</a>
         </li>
       </ul>
