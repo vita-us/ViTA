@@ -25,7 +25,9 @@ public class FlatEntityRelationAdapter extends XmlAdapter<FlatEntityRelation, En
    */
   @Override
   public FlatEntityRelation marshal(EntityRelation rel) throws Exception {
-    return new FlatEntityRelation(rel.getRelatedEntity().getId(), rel.getWeight());
+    return new FlatEntityRelation(rel.getRelatedEntity().getId(),
+                                  rel.getWeight(),
+                                  rel.getRelatedEntity().getType());
   }
 
 }

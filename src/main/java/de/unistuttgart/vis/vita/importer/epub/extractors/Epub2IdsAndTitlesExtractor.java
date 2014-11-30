@@ -25,7 +25,7 @@ import org.jsoup.select.Elements;
 public class Epub2IdsAndTitlesExtractor {
 
   private final List<Resource> resources;
-  private final Resource tocResource;
+  private Resource tocResource;
   private List<String> tocIds = new ArrayList<String>();
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Pattern pattern = Pattern.compile(Constants.PART, Pattern.CASE_INSENSITIVE);
@@ -43,7 +43,7 @@ public class Epub2IdsAndTitlesExtractor {
       throws IOException {
     this.resources = resources;
     this.tocResource = tocResource;
-    addIds();
+    extractTocIds();
   }
 
   /**
@@ -77,9 +77,9 @@ public class Epub2IdsAndTitlesExtractor {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
       for (String id : tocIds) {
         if (document.getElementById(id) != null && !map.containsKey(id)) {
-            elementsIds.add(document.getElementById(id));
-            map.put(id, document.getElementById(id).text());
-          }
+          elementsIds.add(document.getElementById(id));
+          map.put(id, document.getElementById(id).text());
+        }
       }
     }
     return elementsIds;
@@ -100,7 +100,6 @@ public class Epub2IdsAndTitlesExtractor {
       matcher = pattern.matcher(id.text());
       if (matcher.matches()) {
         List<String> partChaptersIds = new ArrayList<String>();
-
         addIdToList(elements, id, partChaptersIds);
         partsWithChaptersIds.add(partChaptersIds);
 
@@ -112,6 +111,7 @@ public class Epub2IdsAndTitlesExtractor {
 
   /**
    * Adds the id to partchapter list
+   * 
    * @param elements
    * @param id
    * @param partChaptersIds
@@ -127,56 +127,87 @@ public class Epub2IdsAndTitlesExtractor {
     }
   }
 
-  /**
-   * Extracts the chapter ids of the table of contents
-   * 
-   * @throws IOException
-   */
-  private void addIds() throws IOException {
+  private void extractTocIds() throws IOException {
+    if (notEveryElementHasId()) {
 
+      for (Resource resource : resources) {
+        document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
+        if (!document.getAllElements().isEmpty()) {
+          Elements allElements = document.getAllElements();
+          for (Element currentElement : allElements) {
+            if (!currentElement.attr(Constants.ID).isEmpty()
+                && !currentElement.text().matches(Constants.PART)
+                && !currentElement.tagName().matches(Constants.DIV)
+                && !currentElement.hasAttr("href") && !currentElement.text().isEmpty()) {
+              String id = currentElement.attr(Constants.ID);
+              if (!tocIds.contains(id)) {
+                tocIds.add(id);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      addNcxIdsToList();
+    }
+  }
+
+  private void addNcxIdsToList() throws IOException {
     if (tocResource != null) {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(tocResource.getInputStream()));
       Elements navMaps = document.select(Constants.NAVMAP);
       if (!navMaps.isEmpty()) {
         Elements contents = navMaps.get(0).select(Constants.CONTENT);
         if (!contents.isEmpty()) {
-          addTocIdsToList(contents);
+          for (Element content : contents) {
+
+            if (content.hasAttr(Constants.SOURCE)
+                && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
+                    Constants.SOURCE).contains(Constants.ID))) {
+              String id = extractId(content.attr(Constants.SOURCE));
+              if (!tocIds.contains(id)) {
+                tocIds.add(id);
+              }
+            }
+          }
         }
       }
     }
   }
 
   /**
-   * Adds the table of contents ids to list
-   * @param contents
-   */
-  private void addTocIdsToList(Elements contents) {
-    for (Element content : contents) {
-      if (content.hasAttr(Constants.SOURCE)
-          && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
-              Constants.SOURCE).contains(Constants.ID))) {
-        String id = extractId(content.attr("src"));
-        if (!tocIds.contains(id)) {
-          tocIds.add(id);
-        }
-      }
-    }
-  }
-
-  /**
-   * Extracts the exact chapter id of the "src" element in the table of contents
+   * Checks if every element in a document has a id
    * 
-   * @param input
    * @return
+   * @throws IOException
    */
-  private String extractId(String input) {
+  private boolean notEveryElementHasId() throws IOException {
+    for (Resource resource : resources) {
+      document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
+      if (!document.getAllElements().isEmpty()) {
+        Elements allElements = document.getAllElements();
+        if (getFirstIdElement(allElements) != null) {
+          Element firstIdElement = getFirstIdElement(allElements);
+          for (int i = allElements.indexOf(firstIdElement); i < allElements.size(); i++) {
 
-    StringTokenizer stringTokenizer = new StringTokenizer(input, "#");
-    while (stringTokenizer.hasMoreElements()) {
-      stringTokenizer.nextToken();
-      return stringTokenizer.nextToken();
+            if (!allElements.get(i).hasAttr(Constants.ID)) {
+              return true;
+            }
+          }
+        }
+      }
     }
-    return "";
+    return false;
+  }
+
+  private Element getFirstIdElement(Elements allElements) {
+    Element firstIdElement = null;
+    for (Element currentElement : allElements) {
+      if (!currentElement.attr(Constants.ID).isEmpty()) {
+        firstIdElement = currentElement;
+      }
+    }
+    return firstIdElement;
   }
 
   /**
@@ -196,6 +227,16 @@ public class Epub2IdsAndTitlesExtractor {
       }
     }
     return partsTitles;
+  }
+
+  private String extractId(String input) {
+
+    StringTokenizer stringTokenizer = new StringTokenizer(input, "#");
+    while (stringTokenizer.hasMoreElements()) {
+      stringTokenizer.nextToken();
+      return stringTokenizer.nextToken();
+    }
+    return "";
   }
 
   /**

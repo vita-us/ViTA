@@ -30,7 +30,8 @@
           </div>
         </div>
       </div>
-      <div data-document-view-highlighter data-document-id="document.id"
+      <div data-document-view-highlighter data-parts="parts" data-document-id="document.id"
+        data-selected-occurrence-index="selectedOccurrenceIndex"
         data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
           data-part-data="part" data-document-id="document.id"></div>
@@ -46,6 +47,14 @@
       <span class="result-count" ng-show="resultCount >= 0">
         {{resultCount}} results found.
       </span>
+      <div class="up-down-navigation" ng-show="resultCount >= 0">
+        <button class="btn btn-default" ng-click="up()" ng-disabled="resultCount === 0">
+          <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+        </button>
+        <button class="btn btn-default" ng-click="down()" ng-disabled="resultCount === 0">
+          <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+        </button>
+      </div>
       <button type="reset" class="btn btn-warning pull-right" ng-click="reset()">
         <span>Reset Highlighting</span>
       </button>

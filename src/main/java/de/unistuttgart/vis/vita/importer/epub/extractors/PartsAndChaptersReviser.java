@@ -134,8 +134,8 @@ public class PartsAndChaptersReviser {
    */
   public void addDivTexts(List<Epubline> chapter, Element chapterElement,
       List<Element> editedElements, String mode) {
-    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) { 
-      if (!chapterElement.getAllElements().isEmpty()) {  
+    if (chapterElement.ownText().isEmpty() && allElementsNotSpans(chapterElement)) {
+      if (!chapterElement.getAllElements().isEmpty()) {
         Elements innerElements = chapterElement.getAllElements();
         innerElements.remove(0);
         addInnerElementText(chapter, editedElements, mode, innerElements);
@@ -212,7 +212,7 @@ public class PartsAndChaptersReviser {
    */
   public boolean allElementsNotSpans(Element currentElement) {
     if (!currentElement.getAllElements().isEmpty()) {
-      
+
       Elements innerElements = currentElement.getAllElements();
       if (innerElements.get(0).tagName().matches(Constants.DIV)) {
         innerElements.remove(0);
@@ -226,12 +226,24 @@ public class PartsAndChaptersReviser {
     return false;
   }
 
+  /**
+   * Adds the edited inner elements to the list
+   * @param editedElements
+   * @param innerElements
+   */
   private void fillEditedElements(List<Element> editedElements, Elements innerElements) {
     for (Element innerElement : innerElements) {
       editedElements.add(innerElement);
     }
   }
 
+  /**
+   * Adds the text of a div or nested divs
+   * @param chapter
+   * @param editedElements
+   * @param mode
+   * @param innerElements
+   */
   private void addInnerElementText(List<Epubline> chapter, List<Element> editedElements,
       String mode, Elements innerElements) {
     for (Element innerElement : innerElements) {
