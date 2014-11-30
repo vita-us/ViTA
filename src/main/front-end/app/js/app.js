@@ -89,16 +89,7 @@
         Page.tab = 1;
         $scope.Page = Page;
 
-        var windowObject;
-
-        $scope.openDocumentView = function() {
-          if (!windowObject || windowObject.closed) {
-            windowObject = window.open('documentview.html', 'documentView',
-                    'width=0,height=0,left=0,alwaysRaised=yes');
-          } else {
-            windowObject.focus();
-          }
-        };
+        $scope.openDocumentView = DocumentViewSender.open;
 
         DocumentViewSender.onDocumentIdRequest(function() {
           DocumentViewSender.sendDocumentId($routeParams.documentId);
