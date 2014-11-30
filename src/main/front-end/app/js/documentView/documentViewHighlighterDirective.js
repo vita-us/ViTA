@@ -4,20 +4,29 @@
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('documentViewHighlighter', [
-      'ChapterText',
       'CssClass',
-      function(ChapterText, CssClass) {
+      function(CssClass) {
 
         var highlighterElement;
+        var chapterMap;
 
         function link(scope, element) {
           highlighterElement = element;
+          createChapterMap(scope.parts);
+
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
               highlight(scope.occurrences, scope.documentId, scope.entities);
             }
           }, true);
+
+          scope.$watch('parts', function(newValue, oldValue) {
+            if (!angular.equals(newValue, oldValue)) {
+              createChapterMap(scope.parts);
+            }
+          }, true);
+
           scope.$watch('selectedOccurrenceIndex', function(newValue, oldValue) {
             if (!angular.equals(newValue, oldValue) && !angular.isUndefined(newValue)) {
               highlightSelectedOccurrence(scope.selectedOccurrenceIndex);
@@ -40,16 +49,12 @@
 
           // Highlight each chapter that contains occurrence(s)
           Object.keys(chapterOccurrences).forEach(function(chapterId, i) {
-            ChapterText.get({
-              documentId: documentId,
-              chapterId: chapterId
-            }, function(chapter) {
-              var chapterOffset = chapter.range.start.offset;
-              highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
-              if (i === 0) {
-                highlightSelectedOccurrence(0);
-              }
-            });
+            var chapter = chapterMap[chapterId];
+            var chapterOffset = chapter.range.start.offset;
+            highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
+            if (i === 0) {
+              highlightSelectedOccurrence(0);
+            }
           });
         }
 
@@ -152,7 +157,7 @@
           names.push(entity.displayName);
 
           entity.attributes.forEach(function(attribute) {
-            if (attribute.type === 'name') {
+            if (attribute.attributetype === 'name') {
               names.push(attribute.content);
             }
           });
@@ -164,7 +169,8 @@
           if (prevSelectedOccurence.length !== 0) {
             prevSelectedOccurence.removeClass('selected');
           }
-          var newSelectedOccurrence = $('#occurrence-' + selectedOccurrenceIndex);
+          var newSelectedOccurrence = $(highlighterElement).find(
+                  '#occurrence-' + selectedOccurrenceIndex);
           if (newSelectedOccurrence.length === 0) {
             return;
           }
@@ -193,13 +199,30 @@
           });
         }
 
+        function createChapterMap(parts) {
+          chapterMap = {};
+
+          if (!parts) {
+            return;
+          }
+
+          for (var pIndex = 0, pLength = parts.length; pIndex < pLength; pIndex++) {
+            var chapters = parts[pIndex].chapters;
+            for (var cIndex = 0, cLength = chapters.length; cIndex < cLength; cIndex++) {
+              var chapter = chapters[cIndex];
+              chapterMap[chapter.id] = chapter;
+            }
+          }
+        }
+
         return {
           restrict: 'A',
           scope: {
             occurrences: '=',
             documentId: '=',
             entities: '=',
-            selectedOccurrenceIndex: '='
+            selectedOccurrenceIndex: '=',
+            parts: '='
           },
           link: link
         };

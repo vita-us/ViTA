@@ -1,38 +1,30 @@
 describe('documentHighlighter', function() {
-  var scope, element, $httpBackend;
+  var scope, element;
 
   beforeEach(module('vita','templates'));
 
-  beforeEach(inject(function($rootScope, $compile, TestData, _$httpBackend_) {
+  beforeEach(inject(function($rootScope, $compile, TestData, $httpBackend) {
 
     scope = $rootScope.$new();
-    $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-1').respond(TestData.singleChapter);
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-2').respond(TestData.secondChapter);
     $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-3').respond(TestData.thirdChapter);
 
-    element = '<div data-document-view-highlighter data-document-id="documentId"  data-entities="entities"'
+    element = '<div data-document-view-highlighter data-document-id="documentId" data-entities="entities"'
             + ' data-selected-occurrence-index="selectedOccurrenceIndex"'
-            + ' data-occurrences="occurrences" class="col-sm-9 document-view-text"><div id="part-{{part.number}}"' 
-            + ' data-part data-ng-repeat="part in parts" data-part-data="part"'
-            + ' data-document-id="documentId"></div></div>';
+            + ' data-occurrences="occurrences" data-parts="parts" class="col-sm-9 document-view-text">'
+            + ' <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"'
+            + ' data-part-data="part" data-document-id="documentId"></div></div>';
+
     scope.documentId = TestData.singleDocument.id;
     scope.parts = TestData.parts.parts;
     element = $compile(element)(scope);
-    scope.$digest();
     $httpBackend.flush();
+    scope.$digest();
 
-    // atm no clue why it is just working with multiple expected requests
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-1').respond(TestData.singleChapter);
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-2').respond(TestData.secondChapter);
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-3').respond(TestData.thirdChapter);
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-1').respond(TestData.singleChapter);
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-2').respond(TestData.secondChapter);
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-3').respond(TestData.thirdChapter);
     scope.occurrences = TestData.relationOccurrences.occurrences;
     scope.entities = TestData.entities;
     scope.$digest();
-    $httpBackend.flush();
   }));
 
   it('should highlight correct number of occurrences', inject(function(TestData) {
@@ -55,10 +47,8 @@ describe('documentHighlighter', function() {
   });
 
   it('should change highlight when data changes', inject(function(TestData) {
-    $httpBackend.expectGET('webapi/documents/doc13a/chapters/1-1').respond(TestData.singleChapter);
     scope.occurrences = TestData.relationOccurrences.occurrences.slice(0, 3);
     scope.$digest();
-    $httpBackend.flush();
     expect(element.find('span.occurrence').length).toBe(3);
   }));
 

@@ -21,6 +21,7 @@
         DocumentViewReceiver.onOccurrences(function(messageData) {
           $scope.occurrences = messageData.message;
           $scope.selectedOccurrenceIndex = 0;
+          $scope.resultCount = $scope.occurrences.length;
           $scope.$digest();
         });
 

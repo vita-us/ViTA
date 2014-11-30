@@ -53,14 +53,20 @@
     });
   }]);
 
-  app.factory('Page', function() {
+  app.factory('Page', ['DocumentViewSender', function(DocumentViewSender) {
     return {
       setUpForDocument: function(document) {
+        var oldId = this.documentId;
+
         // TODO Don't pass the id through the Page
         this.documentId = document.id;
         this.title = document.metadata.title;
         this.tab = 1;
         this.showMenu = true;
+
+        if (oldId !== document.id) {
+          DocumentViewSender.sendDocumentId(document.id);
+        }
       },
       setUp: function(title, tab) {
         this.title = title;
@@ -69,7 +75,7 @@
         this.breadcrumbs = null;
       }
     };
-  });
+  }]);
 
   app.controller('PageCtrl', [
       '$scope',
