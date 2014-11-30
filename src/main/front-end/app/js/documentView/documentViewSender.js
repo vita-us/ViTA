@@ -58,12 +58,18 @@
       sendMessage(constants.ENTITIES, entities);
     };
 
-    this.open = function() {
+    this.open = function(onOpenCallback) {
       if (!windowObject || windowObject.closed) {
         windowObject = window.open('documentview.html', 'documentView',
                 'width=0,height=0,left=0,alwaysRaised=yes');
+        if (onOpenCallback) {
+          $timeout(onOpenCallback, 1500);
+        }
       } else {
         windowObject.focus();
+        if (onOpenCallback instanceof Function) {
+          onOpenCallback();
+        }
       }
     };
 
