@@ -16,6 +16,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.TextMetrics;
 import de.unistuttgart.vis.vita.importer.output.ImportResultImpl;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
@@ -29,13 +30,14 @@ public class TextFeatureModuleTest {
   private static final String CHAPTER_1_1_TITLE = "Chapter 1.1";
   private static final String DOCUMENT_TITLE = "The Book";
   private static final String DOCUMENT_AUTHOR = "The Famous Author";
-  
+  private static final int WORD_COUNT = 459;
+
   private Document document;
   private TextFeatureModule module;
   private EntityManager em;
   private ModuleResultProvider resultProvider;
   private ProgressListener listener;
-  
+
   @Before
   public void setUp() throws Exception {
     UnitTestModel.startNewSession();
@@ -45,17 +47,20 @@ public class TextFeatureModuleTest {
     ImportResult result = createImportResult();
     DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
     when(context.getDocumentId()).thenReturn(document.getId());
-    
+    TextMetrics metrics = mock(TextMetrics.class);
+    when(metrics.getWordCount()).thenReturn(WORD_COUNT);
+
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(result);
-    
+    when(resultProvider.getResultFor(TextMetrics.class)).thenReturn(metrics);
+
     listener = mock(ProgressListener.class);
-    
+
     module = new TextFeatureModule();
   }
-  
+
   @Test
   public void testPartsAndChaptersArePersisted() throws Exception {
     module.execute(resultProvider, listener);
@@ -107,10 +112,10 @@ public class TextFeatureModuleTest {
     em.persist(document);
     em.getTransaction().commit();
   }
-  
+
   private ImportResult createImportResult() {
     final List<DocumentPart> parts = new ArrayList<>();
-    
+
     DocumentPart part1 = new DocumentPart();
     part1.setTitle(PART_1_TITLE);
     parts.add(part1);
@@ -126,11 +131,11 @@ public class TextFeatureModuleTest {
     Chapter chapter13 = new Chapter();
     chapter13.setTitle(CHAPTER_1_1_TITLE);
     part1.getChapters().add(chapter13);
-    
+
     DocumentPart part2 = new DocumentPart();
     part2.setTitle(PART_1_TITLE);
     parts.add(part2);
-    
+
     DocumentMetadata metadata = new DocumentMetadata(DOCUMENT_TITLE, DOCUMENT_AUTHOR);
 
     return new ImportResultImpl(parts, metadata);
