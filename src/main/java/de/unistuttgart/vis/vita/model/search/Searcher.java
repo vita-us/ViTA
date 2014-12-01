@@ -22,7 +22,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 
-import com.google.common.base.Joiner;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -31,7 +30,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * This class performs the searching for a word or phrase in a document
- *
+ * 
  *
  */
 
@@ -78,11 +77,11 @@ public class Searcher {
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
       List<TextSpan> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits) throws IOException {
     for (int i = 0; i < hits.length; i++) {
-      StringReader reader =
-          new StringReader(indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue());
-
+      
+      String chapterText = indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue();
+      StringReader reader = 
+          new StringReader(chapterText);
       String[] words = searchString.split(" ");
-
       Tokenizer tokenizer;
 
       if (searchString.matches(NO_SPECIAL_CHARACTERS)) {
@@ -97,13 +96,14 @@ public class Searcher {
         continue;
       }
 
-      addTextSpansToList(tokenizer, searchString, words, chapter, textSpans);
+      addTextSpansToList(tokenizer, searchString, words,
+          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText);
     }
   }
 
   /**
    * Returns the correct chapter regarding the current hit document
-   *
+   * 
    * @param document
    * @param chapters
    * @return
@@ -120,7 +120,7 @@ public class Searcher {
 
   /**
    * Produces the textspans and them to textSpans list
-   *
+   * 
    * @param tokenizer
    * @param searchString
    * @param words
@@ -129,7 +129,7 @@ public class Searcher {
    * @throws IOException
    */
   private void addTextSpansToList(Tokenizer tokenizer, String searchString, String[] words,
-      Chapter currentChapter, List<TextSpan> textSpans) throws IOException {
+      Chapter currentChapter, List<TextSpan> textSpans, String chapterText) throws IOException {
 
     // if it is a single word
     if (words != null && words.length == 1) {
@@ -158,14 +158,20 @@ public class Searcher {
 
       List<String> tokens = new ArrayList<String>();
       tokenizer.reset();
+      int position = -1;
       while (tokenizer.incrementToken()) {
+        position++;
+
         if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           tokens.add(charTermAttrib.toString());
 
-          String sentence = extractSentence(words, charTermAttrib, tokens, tokenizer);
-          if (sentence.toLowerCase().equals(searchString.toLowerCase())) {
-            int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+          PhraseExtractor phraseExtracter = new PhraseExtractor();
+          Phrase tokenInfo = phraseExtracter.extractPhrase(words, tokens,position,chapterText,tokenizer.getClass().toString());
+          String phrase = tokenInfo.getPhrase();
+
+          if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
+            int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
             textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
                 TextPosition.fromGlobalOffset(currentChapter, endOffset)));
@@ -177,27 +183,5 @@ public class Searcher {
       tokenizer.close();
     }
 
-  }
-
-  /**
-   * Returns the phrase(searchString) of the hit document, which is build in this method
-   *
-   * @param words
-   * @param charTermAttrib
-   * @param tokens
-   * @param tokenizer
-   * @return
-   * @throws IOException
-   */
-  private String extractSentence(String[] words, CharTermAttribute charTermAttrib,
-      List<String> tokens, Tokenizer tokenizer) throws IOException {
-    int i = 0;
-    while (i != words.length - 1 && tokenizer.incrementToken()) {
-      tokens.add(charTermAttrib.toString());
-      i++;
-    }
-    Joiner joiner = Joiner.on(" ");
-
-    return joiner.join(tokens);
   }
 }
