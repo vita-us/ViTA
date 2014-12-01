@@ -9,12 +9,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -28,6 +30,9 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  * ranking value, occurrences, fingerprint and relations to other entities.
  */
 @javax.persistence.Entity
+@Table(indexes={
+    @Index(columnList="rankingValue")
+  })
 @NamedQueries(
   @NamedQuery(name = "Entity.findEntityById",
           query = "SELECT e "

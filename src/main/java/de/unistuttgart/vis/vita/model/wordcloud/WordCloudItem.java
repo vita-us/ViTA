@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.model.wordcloud;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -12,6 +14,9 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * document.
  */
 @Entity
+@Table(indexes={
+    @Index(columnList="frequency")
+  })
 public class WordCloudItem extends AbstractEntityBase implements Comparable<WordCloudItem> {
 
   // constants
