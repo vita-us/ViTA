@@ -77,7 +77,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
       entity.setWordCloud(wordClouds.getWordCloudForEntity(basicEntity));
 
       DocumentMetrics metrics = document.getMetrics();
-      metrics.setCharacterCount(document.getContent().getPersons().size());
+      metrics.setPersonCount(document.getContent().getPersons().size());
       metrics.setPlaceCount(document.getContent().getPlaces().size());
 
       em.persist(entity);
