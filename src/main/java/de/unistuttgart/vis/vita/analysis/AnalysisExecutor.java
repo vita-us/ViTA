@@ -21,12 +21,12 @@ public class AnalysisExecutor {
    * Stores the modules that have not yet been started, with the modules they are waiting for
    */
   private List<ModuleExecutionState> scheduledModules;
-  
+
   /**
    * Stores the modules that are currently executing
    */
   private List<ModuleExecutionState> runningModules;
-  
+
   /**
    * Stores the modules that have encountered an exception and their exception
    */
@@ -38,6 +38,8 @@ public class AnalysisExecutor {
 
   private static final Logger LOGGER = Logger.getLogger(AnalysisExecutor.class.getName());
 
+  private static final long MIN_MILLISECONDS_BETWEEN_PROGRESS_REPORTS = 1000;
+
   /**
    * Creates an executor for the scheduled modules
    * @param scheduledModules the modules to execute
@@ -46,10 +48,10 @@ public class AnalysisExecutor {
     this.scheduledModules = Lists.newArrayList(scheduledModules);
     runningModules = new ArrayList<>();
   }
-  
+
   /**
    * Adds an observer that will be notified when the analysis fails or succeeds
-   * 
+   *
    * @param observer
    */
   public synchronized void addObserver(AnalysisObserver observer) {
@@ -58,7 +60,7 @@ public class AnalysisExecutor {
 
   /**
    * Gets the status of this executor
-   * 
+   *
    * @return the status
    */
   public synchronized AnalysisStatus getStatus() {
@@ -80,7 +82,7 @@ public class AnalysisExecutor {
         break;
     }
   }
-  
+
   /**
    * Starts all modules whose dependencies are finished
    */
@@ -93,7 +95,7 @@ public class AnalysisExecutor {
         it.remove();
       }
     }
-    
+
     // Check if there is a dependency deadlock (there are remaining modules, but none could execute)
     if (runningModules.isEmpty() && !scheduledModules.isEmpty()) {
       Exception ex =
@@ -105,10 +107,10 @@ public class AnalysisExecutor {
       setStatus(AnalysisStatus.FAILED);
     }
   }
-  
+
   /**
    * Sets the status and notifies the observers in certain statuses
-   * 
+   *
    * @param status the new status
    */
   private synchronized void setStatus(AnalysisStatus status) {
@@ -133,7 +135,7 @@ public class AnalysisExecutor {
 
   /**
    * Starts a thread executing the module
-   * 
+   *
    * @param moduleState the module to execute
    */
   private synchronized void startModuleExecution(final ModuleExecutionState moduleState) {
@@ -169,7 +171,7 @@ public class AnalysisExecutor {
     moduleState.setThread(thread);
     runningModules.add(moduleState);
   }
-  
+
   private synchronized void onModuleFinished(ModuleExecutionState moduleState, Object result) {
     // Ignore results produced after failure / cancel
     if (status != AnalysisStatus.RUNNING) {
@@ -185,12 +187,17 @@ public class AnalysisExecutor {
     startExecutableModules();
     checkFinished();
   }
-  
+
   private synchronized void onModuleProgress(ModuleExecutionState moduleState, double progress) {
     // Ignore calls after failure / cancel
     if (status != AnalysisStatus.RUNNING) {
       return;
     }
+
+    if (moduleState.getLastProgressReport() < MIN_MILLISECONDS_BETWEEN_PROGRESS_REPORTS) {
+      return;
+    }
+    moduleState.resetLastProgressReportTime();
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleProgress(moduleState.getModuleClass(), progress);
@@ -210,7 +217,7 @@ public class AnalysisExecutor {
     removeModuleAndDependencies(moduleState);
     checkFinished();
   }
-  
+
   /**
    * Gets the scheduled and running modules
    * @return an iterable
@@ -228,7 +235,7 @@ public class AnalysisExecutor {
   /**
    * Recursively removes the module and all modules that depend on it. Will notify the dependent
    * modules that their dependency has failed
-   * 
+   *
    * @param moduleToRemove the module to remove
    */
   private synchronized void removeModuleAndDependencies(ModuleExecutionState moduleToRemove) {
@@ -241,7 +248,7 @@ public class AnalysisExecutor {
       }
     }
   }
-  
+
   /**
    * Stops the execution, interrupting all running modules and preventing scheduled modules from
    * starting
@@ -259,7 +266,7 @@ public class AnalysisExecutor {
 
   /**
    * Gets a map of objects that have failed and the exceptions they have thrown
-   * 
+   *
    * @return the failed exceptions; is empty if successful
    */
   public synchronized Map<ModuleClass, Exception> getFailedModules() {

@@ -21,10 +21,11 @@ public class ModuleExecutionState {
   private Map<ModuleClass, Double> progressMap;
   private Set<ModuleClass> directAndIndirectDependencies;
   private double currentProgress;
+  private long lastProgressReport;
 
   /**
    * Constructs a new execution state from a module class and its dependencies
-   * 
+   *
    * @param clazz the module class
    * @param optionalInstance an instance of the module, or {@code null} to construct a new one
    * @param dependencies the direct dependencies
@@ -50,7 +51,7 @@ public class ModuleExecutionState {
 
   /**
    * Gets the dependencies of this module and its dependencies, recursively
-   * 
+   *
    * @return the dependencies as unmodifiable set
    */
   public Set<ModuleClass> getDirectAndIndirectDependencies() {
@@ -59,7 +60,7 @@ public class ModuleExecutionState {
 
   /**
    * Indicates whether all dependencies have been finished and this module can execute
-   * 
+   *
    * @return true, if this module can execute, false if it must wait for dependencies
    */
   public boolean isExecutable() {
@@ -68,7 +69,7 @@ public class ModuleExecutionState {
 
   /**
    * Get the instance of this execution for the module
-   * 
+   *
    * @return the instance
    */
   public Module<?> getInstance() {
@@ -80,7 +81,7 @@ public class ModuleExecutionState {
 
   /**
    * Gets the ModuleClasses that are blocking this module from being executable
-   * 
+   *
    * @return an unmodifiable view to the set.
    */
   public Set<ModuleClass> getRemainingDependencies() {
@@ -93,7 +94,7 @@ public class ModuleExecutionState {
 
   /**
    * Should be called when the module itself, a direct or indirect dependency has successfully finished
-   * 
+   *
    * @param module the module which has finished
    * @param result the result of the module
    */
@@ -102,7 +103,7 @@ public class ModuleExecutionState {
       throw new IllegalArgumentException(
           "The provided result is not assignable to the claimed module's result type");
     }
-    
+
     putProgress(module, 1.0);
 
     synchronized (remainingDependencies) {
@@ -123,7 +124,7 @@ public class ModuleExecutionState {
 
   /**
    * Should be called when a the module itself, a direct or indirect dependency reports its progress
-   * 
+   *
    * @param module the module whose progress has changed
    * @param progress the new progress of that module
    */
@@ -133,7 +134,7 @@ public class ModuleExecutionState {
 
   /**
    * Should be called when a dependency module has failed
-   * 
+   *
    * @param module the module that has failed
    */
   public void notifyModuleFailed(ModuleClass module) {
@@ -151,7 +152,7 @@ public class ModuleExecutionState {
    * Gets a ModuleResultProvider that should be given to the instance
    * <p>
    * Contains all the results gathered by calls to notifyDependencyFinished
-   * 
+   *
    * @return the ModelResultProvider
    * @throws IllegalStateException if this module is not yet executable (and thus has not yet all
    *         results gathered)
@@ -201,16 +202,16 @@ public class ModuleExecutionState {
 
     getInstance().observeProgress(currentProgress);
   }
-  
+
   /**
    * Gets the progress of this module and its direct and indirect dependencies
-   * 
+   *
    * @return a value between 0 and 1
    */
   public double getProgress() {
     return currentProgress;
   }
-  
+
   private double calculateProgress() {
     double sum = 0;
     double sumWeights = 0;
@@ -263,5 +264,22 @@ public class ModuleExecutionState {
       }
       return (T) results.get(resultClass);
     }
+  }
+
+  /**
+   * Gets the time in milliseconds since {@link #resetLastProgressReportTime()}
+   * has been called last
+   * @return the time, or {@link Integer#MAX_VALUE} if never set
+   */
+  public long getLastProgressReport() {
+    if (lastProgressReport == 0) {
+      return Integer.MAX_VALUE;
+    }
+
+    return System.currentTimeMillis() - lastProgressReport;
+  }
+
+  public void resetLastProgressReportTime() {
+    this.lastProgressReport = System.currentTimeMillis();
   }
 }
