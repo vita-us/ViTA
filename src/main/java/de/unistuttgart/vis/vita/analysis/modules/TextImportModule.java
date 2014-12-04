@@ -12,6 +12,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.importer.output.BookBuilder;
 import de.unistuttgart.vis.vita.importer.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.AutomatedChapterDetection;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.FullTextChapterAnalyzer;
@@ -59,26 +60,9 @@ public class TextImportModule extends Module<ImportResult> {
     ImportResult importResult;
     TextSplitter textSplitter = new TextSplitter(importLines(filePath));
     DocumentMetadata documentMetadata = extractMetadata(textSplitter.getMetadataList(), filePath);
-    DocumentPart documentPart = extractChapters(textSplitter.getTextList());
-    setChapterRanges(documentPart);
+    List<DocumentPart> documentPart = extractChapters(textSplitter.getTextList());
     importResult = buildImportResult(documentMetadata, documentPart);
     return importResult;
-  }
-  
-  /**
-   * Sets the {@link Chapter#getRange()} property of all the chapters in the part, assuming the
-   * document consists only of the one given part.
-   * 
-   * @param part the parts whose chapters to modify
-   */
-  private void setChapterRanges(DocumentPart part) {
-    int currentPosition = 0;
-    for (Chapter chapter : part.getChapters()) {
-      chapter.setRange(new TextSpan(
-          TextPosition.fromGlobalOffset(chapter, currentPosition),
-          TextPosition.fromGlobalOffset(chapter, currentPosition + chapter.getLength())));
-      currentPosition += chapter.getLength();
-    }
   }
 
   /**
@@ -119,7 +103,7 @@ public class TextImportModule extends Module<ImportResult> {
    * @param textLines ArrayList of Line - The lines containing the text area of the file.
    * @return DocumentPart - Contains ALL Chapters of the file.
    */
-  private DocumentPart extractChapters(List<Line> textLines) {
+  private List<DocumentPart> extractChapters(List<Line> textLines) {
     ChapterPosition chapterPosition;
     if (detectChapters) {
       AutomatedChapterDetection automatedChapterDetection =
@@ -129,8 +113,18 @@ public class TextImportModule extends Module<ImportResult> {
       FullTextChapterAnalyzer fullText = new FullTextChapterAnalyzer(textLines);
       chapterPosition = fullText.call();
     }
-    DocumentPartBuilder documentPartBuilder = new DocumentPartBuilder(textLines, chapterPosition);
-    return documentPartBuilder.call();
+    
+    // create a list with one element - the only part available
+    List<List<Line>> partLines = new ArrayList<List<Line>>();
+    partLines.add(textLines);
+    
+    // create a list for all parts - there is only one
+    List<ChapterPosition> partChapterPositions = new ArrayList<ChapterPosition>();
+    partChapterPositions.add(chapterPosition);
+    
+    // extract Chapters
+    BookBuilder bookBuilder = new BookBuilder(partLines, partChapterPositions);
+    return bookBuilder.call();
   }
 
   /**
@@ -140,9 +134,7 @@ public class TextImportModule extends Module<ImportResult> {
    * @param chapters DocumentPart - All extracted Chapters of the file in one DocumentPart.
    * @return ImportResult - The required ImportResult.
    */
-  private ImportResult buildImportResult(DocumentMetadata metadata, DocumentPart chapters) {
-    List<DocumentPart> list = new ArrayList<DocumentPart>();
-    list.add(chapters);
-    return new TextImportResult(list, metadata);
+  private ImportResult buildImportResult(DocumentMetadata metadata, List<DocumentPart> parts) {
+    return new TextImportResult(parts, metadata);
   }
 }
