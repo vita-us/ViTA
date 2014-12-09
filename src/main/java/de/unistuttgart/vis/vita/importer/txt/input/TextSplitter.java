@@ -70,7 +70,7 @@ public class TextSplitter {
       line.computeType();
       if (startPattern.matcher(line.getText()).find() && containsDatadividerEnding(index)) {
         while ((index + 1 <= this.textList.size() - 1)
-            && !line.getType().equals(LineType.DATADIVIDER)) {
+            && !line.isType(LineType.DATADIVIDER)) {
           line.setText(line.getText().concat(this.textList.get(index + 1).getText()));
           this.textList.remove(index + 1);
         }
@@ -87,7 +87,7 @@ public class TextSplitter {
     Iterator<Line> linesIterator = lines.iterator();
     while (linesIterator.hasNext()) {
       Line line = linesIterator.next();
-      if (line.getType().equals(LineType.DATADIVIDER)) {
+      if (line.isType(LineType.DATADIVIDER)) {
         linesIterator.remove();
       }
     }
@@ -114,8 +114,8 @@ public class TextSplitter {
         Line line = linesIterator.next();
         if (endPattern.matcher(line.getText()).find()) {
           // in any case the loop will break because datadivider is found
-          found = !line.getType().equals(LineType.DATADIVIDER);
-          datadividerFound = line.getType().equals(LineType.DATADIVIDER);
+          found = !line.isType(LineType.DATADIVIDER);
+          datadividerFound = line.isType(LineType.DATADIVIDER);
         }
       }
     }

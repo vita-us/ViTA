@@ -22,12 +22,21 @@ public interface Line {
   public void setText(String text);
 
   /**
-   * Gets the type of the set text.
-   *
-   * @return The type of the text.
+   * Checks if the line-text fits to the given type.
+   * 
+   * @param type The given type.
+   * @return true: type fits to text; false: does not fit to the text
    */
-  public LineType getType();
-
+  public boolean isType(LineType type);
+  
+  /**
+   * Checks if the line-text fits to one of the given types.
+   * 
+   * @param types The given types.
+   * @return true: at least one type fits to text; false: none of the types fits to the text
+   */
+  public boolean isType(Iterable<LineType> types);
+  
   /**
    * Sets the type of the text. Should only be used if automated type computation is deactivated. To
    * set the type manually should be an exception, if it is impossible for the line to compute its

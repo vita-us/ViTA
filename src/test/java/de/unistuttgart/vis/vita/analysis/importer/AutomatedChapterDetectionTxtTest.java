@@ -169,12 +169,12 @@ public class AutomatedChapterDetectionTxtTest {
 
   private void testBigFifthChapter(ChapterPosition position) {
     int chapterNumber = 5;
-
+    
     assertTrue(position.getStartOfHeading(chapterNumber) >= 1067);
     assertTrue(position.getStartOfHeading(chapterNumber) <= 1069);
 
-    assertTrue(position.getStartOfText(chapterNumber) >= 1070);
-    assertTrue(position.getStartOfText(chapterNumber) <= 1073);
+    assertTrue(position.getStartOfText(chapterNumber) >= 1084);
+    assertTrue(position.getStartOfText(chapterNumber) <= 1085);
 
     assertTrue(position.getEndOfText(chapterNumber) >= 1140);
     assertTrue(position.getEndOfText(chapterNumber) <= 1141);

@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
  */
 public class ManualImportModuleTest {
   // ImportType
-  private final static ImportType IMPORT_TYPE = ImportType.EPUB;
+  private final static ImportType IMPORT_TYPE = ImportType.TXT;
 
   // Folder Paths
   private static final String TXT_FOLDER_PATH =

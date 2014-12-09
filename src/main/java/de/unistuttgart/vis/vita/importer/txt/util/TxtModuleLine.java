@@ -33,33 +33,35 @@ public class TxtModuleLine extends AbstractLine {
   @Override
   public void computeType() {
     if (automatedTypeComputation) {
-      // a lower type will be overwritten
-      LineType highestType = LineType.TEXT;
+      this.type.clear();
       if (matchesPattern(SMALLHEADINGPATTERN)) {
-        highestType = LineType.SMALLHEADING;
+        this.type.add(LineType.SMALLHEADING);
       }
       if (matchesPattern(BIGHEADINGPATTERN)) {
-        highestType = LineType.BIGHEADING;
+        this.type.add(LineType.BIGHEADING);
       }
       if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
-        highestType = LineType.TABLEOFCONTENTS;
+        this.type.add(LineType.TABLEOFCONTENTS);
       }
       if (matchesPattern(PREFACEPATTERN)) {
-        highestType = LineType.PREFACE;
+        this.type.add(LineType.PREFACE);
       }
       if (!containsPattern(NOSPECIALSIGNSPATTERN) && !text.contains("...")) {
-        highestType = LineType.SPECIALSIGNS;
+        this.type.add(LineType.SPECIALSIGNS);
       }
       if (matchesPattern(MARKEDHEADINGPATTERN)) {
-        highestType = LineType.MARKEDHEADING;
+        this.type.add(LineType.MARKEDHEADING);
       }
       if (matchesPattern(DATADIVIDERPATTERN)) {
-        highestType = LineType.DATADIVIDER;
+        this.type.add(LineType.DATADIVIDER);
       }
       if (matchesPattern(WHITESPACEPATTERN)) {
-        highestType = LineType.WHITELINE;
+        this.type.clear();
+        this.type.add(LineType.WHITELINE);
       }
-      this.type = highestType;
+      if(type.isEmpty()){
+        this.type.add(LineType.TEXT);
+      }
     }
   }
 }

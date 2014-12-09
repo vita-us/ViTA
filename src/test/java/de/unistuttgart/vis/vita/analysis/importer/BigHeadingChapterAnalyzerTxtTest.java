@@ -104,8 +104,8 @@ public class BigHeadingChapterAnalyzerTxtTest {
     assertTrue(chapterPosition.getStartOfHeading(chapterNumber) >= 1067);
     assertTrue(chapterPosition.getStartOfHeading(chapterNumber) <= 1069);
 
-    assertTrue(chapterPosition.getStartOfText(chapterNumber) >= 1070);
-    assertTrue(chapterPosition.getStartOfText(chapterNumber) <= 1073);
+    assertTrue(chapterPosition.getStartOfText(chapterNumber) >= 1084);
+    assertTrue(chapterPosition.getStartOfText(chapterNumber) <= 1085);
 
     assertTrue(chapterPosition.getEndOfText(chapterNumber) >= 1140);
     assertTrue(chapterPosition.getEndOfText(chapterNumber) <= 1141);
