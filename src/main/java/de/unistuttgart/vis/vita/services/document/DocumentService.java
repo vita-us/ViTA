@@ -26,6 +26,7 @@ import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
 import de.unistuttgart.vis.vita.services.entity.PlacesService;
+import de.unistuttgart.vis.vita.services.entity.PlotViewService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
 
@@ -34,12 +35,12 @@ import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
  */
 @ManagedBean
 public class DocumentService {
-  
+
   private String id;
 
   @Inject
   private EntityManager em;
-  
+
   @Inject
   private AnalysisController analysisController;
 
@@ -70,9 +71,12 @@ public class DocumentService {
   @Inject
   WordCloudService wordCloudService;
 
+  @Inject
+  PlotViewService plotViewService;
+
   /**
    * Sets the id of the document this resource should represent
-   * 
+   *
    * @param id the id
    */
   public DocumentService setId(String id) {
@@ -82,7 +86,7 @@ public class DocumentService {
 
   /**
    * Reads the requested document from the database and returns it in JSON using the REST.
-   * 
+   *
    * @return the document with the current id in JSON
    */
   @GET
@@ -101,7 +105,7 @@ public class DocumentService {
 
   /**
    * Reads the document from the database and returns it.
-   * 
+   *
    * @return the document with the current id
    */
   private Document readDocumentFromDatabase() {
@@ -112,7 +116,7 @@ public class DocumentService {
 
   /**
    * Renames the current document to the given name.
-   * 
+   *
    * @param renameRequest - the renaming request including id and new name.
    * @return a response with no content if renaming was successful, HTTP 404 if document was not
    *         found or 500 if an error occurred.
@@ -139,18 +143,18 @@ public class DocumentService {
 
   /**
    * Deletes the document with the current id.
-   * 
+   *
    * @return a response with no content if removal was successful, status 404 if document was not
    *         found
    */
   @DELETE
   public Response deleteDocument() {
     Response response = null;
-    
+
     try {
       // first cancel a running analysis
       analysisController.cancelAnalysis(id);
-      
+
       // then remove it from the database
       em.getTransaction().begin();
       Document docToDelete = readDocumentFromDatabase();
@@ -162,14 +166,14 @@ public class DocumentService {
     } catch (NoResultException nre) {
       throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
     }
-    
+
     // send response
     return response;
   }
 
   /**
    * Returns the ProgressService for the current document.
-   * 
+   *
    * @return progress service which answers this request
    */
   @Path("/progress")
@@ -179,7 +183,7 @@ public class DocumentService {
 
   /**
    * Returns the ChapterService for the current document and given chapter id.
-   * 
+   *
    * @param chapterId - the chapter id given in the path
    * @return the chapter service which answers this request
    */
@@ -190,7 +194,7 @@ public class DocumentService {
 
   /**
    * Returns the PersonsService for the current document.
-   * 
+   *
    * @return the PersonsService which answers this request
    */
   @Path("/persons")
@@ -200,7 +204,7 @@ public class DocumentService {
 
   /**
    * Returns the PlacesService for the current document.
-   * 
+   *
    * @return the PlacesService which answers this request
    */
   @Path("/places")
@@ -210,7 +214,7 @@ public class DocumentService {
 
   /**
    * Returns the EntitiesService for the current document.
-   * 
+   *
    * @return the Entities which answers this request
    */
   @Path("/entities")
@@ -220,7 +224,7 @@ public class DocumentService {
 
   /**
    * Returns the PartsService for the current document.
-   * 
+   *
    * @return the PartsService which answers this request
    */
   @Path("/parts")
@@ -230,32 +234,42 @@ public class DocumentService {
 
   /**
    * Return the AnalysisService for the current document.
-   * 
+   *
    * @return the AnalysisService which answers this request
    */
   @Path("/analysis")
   public AnalysisService stopAnalysis() {
     return analysisService.setDocumentId(id);
   }
-  
+
   /**
    * Return the SearchInDocumentService for the current document.
-   * 
+   *
    * @return the SearchInDocumentService which answers this request
    */
   @Path("/search")
   public SearchInDocumentService getSearch() {
     return searchInDocumentService.setDocumentId(id);
   }
-  
+
   /**
    * Return the WordCloudService for the current document.
-   * 
+   *
    * @return the WordCloudService which answers this request
    */
   @Path("/wordcloud")
   public WordCloudService getWordcloud() {
     return wordCloudService.setDocumentId(id);
+  }
+
+  /**
+   * Return the PlotViewService for the current document.
+   *
+   * @return the PlotViewService which answers this request
+   */
+  @Path("/plotview")
+  public PlotViewService getPlotView() {
+    return plotViewService.setDocumentId(id);
   }
 
 }

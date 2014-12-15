@@ -105,6 +105,18 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           // Null checks
           + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
 
+  // gets the entities that occur within a given range
+  @NamedQuery(name = "TextSpan.getOccurringEntities",
+    query = "SELECT DISTINCT e "
+          + "FROM Entity e "
+          + "INNER JOIN e.occurrences ts "
+          + "WHERE e IN :entities "
+          // range checks
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          // Null checks
+                + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
+
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
       + "FROM TextSpan ts "
       + "WHERE ts.id = :textSpanId")
