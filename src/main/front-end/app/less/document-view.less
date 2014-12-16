@@ -97,9 +97,25 @@ body#document-view {
   }
  
   .document-view-text {
+    background-color: @light-grey-background-color;
+  
+    .chapter-headline, .part-headline {
+      font-weight: bold;
+    }
+    
+    .chapter-headline {
+      padding: 5px;
+      border-bottom: 1px solid @border-color;
+      border-top: 1px solid @border-color;
+      background-color: white;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    
     span {
       background: @default-character-ranking-color;
     }
+    
     span.occurrence {
       background: @document-view-occurrence-color;
     }
@@ -131,6 +147,7 @@ body#document-view {
     span.ranking-7 {
       background: @character-ranking-color-7;
     }
+    
     span.selected {
       background: black;
       color: white;
@@ -153,7 +170,6 @@ body#document-view {
     }
     
     .document-view-text {
-      background-color: @light-grey-background-color;
       border-left: 1px dashed @border-color;
       min-height: 100%;
     }
