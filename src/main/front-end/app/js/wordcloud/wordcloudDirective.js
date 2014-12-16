@@ -6,7 +6,9 @@
   vitaDirectives.directive('wordcloud', ['DocumentSearch',
                                          'DocumentViewSender',
                                          '$routeParams',
-                                         function(DocumentSearch, DocumentViewSender, $routeParams) {
+                                         'Entity',
+                                         'CssClass',
+                                         function(DocumentSearch, DocumentViewSender, $routeParams, Entity, CssClass) {
 
     function link(scope, element, attrs) {
 
@@ -78,9 +80,9 @@
 
       function styleWords(words) {
         words.style('font-size', getFontSize)
-            .style('fill', getFill)
             .attr('transform', getTransform)
             .text(getText)
+            .each(setClass)
             .on('click', onClick);
       }
 
@@ -101,7 +103,7 @@
        * @param {object[]} array of word data
        */
       function itemsToCloudData(items) {
-        return items.map(function(item) {
+        return items.map(function(item, i) {
           return {
             text: item.word,
             size: wordSizeScale(item.frequency)
@@ -125,8 +127,19 @@
         return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
       }
 
-      function getFill(d, i) {
-        return fill(i);
+      function setClass(word) {
+        var wordNode = d3.select(this);
+        if(!word.entityId) {
+          return;
+        }
+        Entity.get({
+          documentId: $routeParams.documentId,
+          entityId: word.entityId
+        }, function(entity) {
+          if(entity.type === 'person') {
+            wordNode.attr('class', CssClass.forRankingValue(entity.rankingValue));
+          }
+        });
       }
     }
 
