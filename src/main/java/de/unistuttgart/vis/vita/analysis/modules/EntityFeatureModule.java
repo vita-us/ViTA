@@ -56,7 +56,6 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
           document.getContent().getPersons().add(person);
           entity = person;
           entity.setRankingValue(currentPersonRanking);
-          entity.setId(basicEntity.getEntityId());
           currentPersonRanking++;
           break;
         case PLACE:
@@ -64,13 +63,12 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
           document.getContent().getPlaces().add(place);
           entity = place;
           entity.setRankingValue(currentPlaceRanking);
-          entity.setId(basicEntity.getEntityId());
           currentPlaceRanking++;
           break;
         default:
           continue;
       }
-
+      entity.setId(basicEntity.getEntityId());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());
