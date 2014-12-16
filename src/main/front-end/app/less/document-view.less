@@ -18,10 +18,18 @@ body#document-view {
   top: 0;
   
   .document-title {
-    line-height: 1.1em;
-    max-height: 2.2em;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+#chapters-toggle-button {
+  float: right;
+  margin-top: 12px;
+  
+  @media (min-width: 768px) {
+    display: none;
   }
 }
 
@@ -154,18 +162,34 @@ body#document-view {
     }
   }
 
+  .dv-menu-fixed-wrap {
+    display: none;
+    position: fixed;
+    width: 50%;
+    overflow-y: auto;
+    background: white;
+    border-left: 1px solid @border-color;
+    border-right: 1px solid @border-color;
+    top: @document-view-header-height;
+    bottom: @document-view-footer-height;
+    right: 0;
+    padding-left: 10px;
+  }
+
   @media (min-width: 768px) {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;
       
       .dv-menu-fixed-wrap {
-        position: fixed;
+        display: block !important;
         width: inherit;
+        max-height: none;
+        border: 0;
         border-right: 20px solid transparent;
-        top: @document-view-header-height;
-        bottom: @document-view-footer-height;
-        overflow-y: auto;
+        background: none;
+        right: initial;
+        padding-left: 0;
       }
     }
     
