@@ -44,7 +44,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity));
+      wordClouds.put(entity, getWordCloudForEntity(entity, new ArrayList<BasicEntity>(entities)));
     }
 
     return new EntityWordCloudResult() {
@@ -55,7 +55,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity) throws IOException {
+  private WordCloud getWordCloudForEntity(BasicEntity entity, List<BasicEntity> entities) throws IOException {
     List<TextSpan> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
 
@@ -91,6 +91,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     for (Map.Entry<String, Integer> entry : frequencies.entrySet()) {
       items.add(new WordCloudItem(entry.getKey(), entry.getValue()));
     }
+    
+    setWordCloudItemsEntitiyId(items, entities);
+    
     Collections.sort(items, Collections.reverseOrder());
     if (items.size() > MAX_COUNT)
       items = items.subList(0, MAX_COUNT);
@@ -107,5 +110,23 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       spans.add(span.widen(100));
     }
     return TextSpan.normalizeOverlaps(spans);
+  }
+  
+  /**
+   * Sets the entity id of the word cloud item if the entity id for this item is existing
+   * 
+   * @param wordCloud
+   * @param basicEntities
+   */
+  private void setWordCloudItemsEntitiyId(List<WordCloudItem> items, List<BasicEntity> basicEntities) {
+    for (WordCloudItem wordCloudItem : items) {
+      for (BasicEntity basicEntity : basicEntities) {
+        for (Attribute attribute : basicEntity.getNameAttributes()) {
+          if (wordCloudItem.getWord().matches(attribute.getContent())) {
+            wordCloudItem.setEntityId(basicEntity.getEntityId());
+          }
+        }
+      }
+    }
   }
 }
