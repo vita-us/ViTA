@@ -26,6 +26,10 @@
               $scope.activeFingerprints.indexOf(person), 1);
           } else {
             $scope.activeFingerprints.push(person);
+            $scope.activeFingerprints.sort(
+              function(a, b) {
+                return a.rankingValue - b.rankingValue;
+            });
           }
           $scope.activeFingerprintIds = $scope.activeFingerprints.map(function(e) {
             return e.id;
