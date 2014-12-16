@@ -57,8 +57,8 @@ public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntity
     for (WordCloudItem wordCloudItem : wordCloud.getItems()) {
       for (BasicEntity basicEntity : basicEntities) {
         for (Attribute attribute : basicEntity.getNameAttributes()) {
-          if (wordCloudItem.getWord().matches(attribute.getContent())) {
-            wordCloudItem.setEntityId(attribute.getId());
+          if (wordCloudItem.getWord().equalsIgnoreCase(attribute.getContent())) {
+            wordCloudItem.setEntityId(basicEntity.getEntityId());
           }
         }
       }
