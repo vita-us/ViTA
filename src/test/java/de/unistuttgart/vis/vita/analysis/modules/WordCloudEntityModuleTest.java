@@ -60,6 +60,7 @@ public class WordCloudEntityModuleTest {
     BasicEntityCollection collection = getBasicEntities();
 
     resultProvider = mock(ModuleResultProvider.class);
+    when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     when(resultProvider.getResultFor(GlobalWordCloudResult.class)).thenReturn(result);
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(collection);
    
