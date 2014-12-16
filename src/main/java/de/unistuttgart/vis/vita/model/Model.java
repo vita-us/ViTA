@@ -65,6 +65,12 @@ public class Model implements Factory<EntityManager> {
     } catch (ClassNotFoundException e) {
       Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load mysql driver", e);
     }
+
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (ClassNotFoundException e) {
+      Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load postgres driver", e);
+    }
   }
 
   /**
