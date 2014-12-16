@@ -32,7 +32,7 @@
           .attr('height', height);
 
       // Add a rectangle for the background
-      svgContainer.append('rect')
+      var backgroundRect = svgContainer.append('rect')
           .attr('width', widthScale(1))
           .attr('height', heightScale(1))
           .classed('background', true)
@@ -42,7 +42,18 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
 
-      var occurrenceSteps = Math.floor(width / minBarWidth);
+      var occurrenceSteps = calculateOccurrenceSteps();
+
+      $(window).resize(function() {
+        width = $(element).width();
+        svgContainer.attr('width', width);
+        widthScale.range([0, width]);
+        backgroundRect.attr('width', widthScale(1));
+        calculateOccurrenceSteps();
+        getRelationOccurrences();
+        removeChapterSeparators();
+        buildChapterSeparators(scope);
+      });
 
       scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
         if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
@@ -50,18 +61,7 @@
             removeFingerPrint();
             return;
           }
-          RelationOccurrences.get({
-            documentId: $routeParams.documentId,
-            entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps,
-            rangeStart: scope.rangeBegin,
-            rangeEnd: scope.rangeEnd
-          }, function(response) {
-            removeFingerPrint();
-            buildFingerPrint(response.occurrences, scope);
-          }, function() {
-            removeFingerPrint();
-          });
+          getRelationOccurrences();
         }
       }, true);
 
@@ -73,6 +73,24 @@
           buildChapterSeparators(scope);
         }
       }, true);
+
+      function getRelationOccurrences() {
+        if (angular.isUndefined(scope.entityIds)) {
+          return;
+        }
+        RelationOccurrences.get({
+          documentId: $routeParams.documentId,
+          entityIds: scope.entityIds.join(','),
+          steps: occurrenceSteps,
+          rangeStart: scope.rangeBegin,
+          rangeEnd: scope.rangeEnd
+        }, function(response) {
+          removeFingerPrint();
+          buildFingerPrint(response.occurrences, scope);
+        }, function() {
+          removeFingerPrint();
+        });
+      }
 
       function buildFingerPrint(occurrences, scope) {
         occurrences = occurrences || [];
@@ -126,31 +144,33 @@
         }
 
         function onClickOccurrence(clickedOccurrence, scope) {
-          RelationOccurrences.get({
-            documentId: $routeParams.documentId,
-            entityIds: scope.entityIds.join(','),
-            rangeStart: clickedOccurrence.start.progress,
-            rangeEnd: clickedOccurrence.end.progress
-          }, function(response) {
-            DocumentViewSender.sendOccurrences(response.occurrences);
-          });
-          var entitiesToSend = [];
-          scope.entityIds.forEach(function(entityId) {
-            Entity.get({
+          DocumentViewSender.open(function() {
+            RelationOccurrences.get({
               documentId: $routeParams.documentId,
-              entityId: entityId
-            }, function(entity) {
-              // Cannot simply push entity as it contains angular promises
-              // which cannot be sent
-              entitiesToSend.push({
-                id: entity.id,
-                displayName: entity.displayName,
-                attributes: entity.attributes,
-                rankingValue: entity.rankingValue
+              entityIds: scope.entityIds.join(','),
+              rangeStart: clickedOccurrence.start.progress,
+              rangeEnd: clickedOccurrence.end.progress
+            }, function(response) {
+              DocumentViewSender.sendOccurrences(response.occurrences);
+            });
+            var entitiesToSend = [];
+            scope.entityIds.forEach(function(entityId) {
+              Entity.get({
+                documentId: $routeParams.documentId,
+                entityId: entityId
+              }, function(entity) {
+                // Cannot simply push entity as it contains angular promises
+                // which cannot be sent
+                entitiesToSend.push({
+                  id: entity.id,
+                  displayName: entity.displayName,
+                  attributes: entity.attributes,
+                  rankingValue: entity.rankingValue
+                });
+                if (entitiesToSend.length === scope.entityIds.length) {
+                  DocumentViewSender.sendEntities(entitiesToSend);
+                }
               });
-              if (entitiesToSend.length === scope.entityIds.length) {
-                DocumentViewSender.sendEntities(entitiesToSend);
-              }
             });
           });
         }
@@ -214,7 +234,6 @@
               });
           return occurrenceRect;
         }
-
       }
 
       function buildChapterSeparators(scope) {
@@ -266,6 +285,10 @@
 
       function removeChapterSeparators() {
         chapterLineGroup.selectAll('line').remove();
+      }
+
+      function calculateOccurrenceSteps() {
+        return Math.floor(width / minBarWidth);
       }
     }
 

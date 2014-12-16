@@ -60,6 +60,10 @@ body#document-view {
       }
     }
   }
+  
+  .up-down-navigation {
+    display: inline-block;
+  }
 }
 
 #document-view-main {
@@ -73,6 +77,12 @@ body#document-view {
     .chapter {
       padding-left: 3px;
       margin-bottom: 5px;
+      
+      .chapter-number {
+        color: grey;
+        display: inline-block;
+        margin-right: 5px;
+      }
     }
     
     .chapter.active-menu {
@@ -120,6 +130,10 @@ body#document-view {
 
     span.ranking-7 {
       background: @character-ranking-color-7;
+    }
+    span.selected {
+      background: black;
+      color: white;
     }
   }
 

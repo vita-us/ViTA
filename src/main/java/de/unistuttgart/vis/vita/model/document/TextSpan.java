@@ -6,8 +6,10 @@ import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -20,6 +22,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  * aware of the actual text within the bounds.
  */
 @Entity
+@Table(indexes={
+  @Index(columnList="start.offset"),
+  @Index(columnList="end.offset")
+})
 @NamedQueries({
   @NamedQuery(name = "TextSpan.findAllTextSpans",
       query = "SELECT ts "
@@ -73,43 +79,31 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
         + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
         + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
-  // for returning the exact spans for an relation in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForRelations",
-    query = "SELECT DISTINCT ts1 "
-          + "FROM TextSpan ts1, Entity e "
-          + "INNER JOIN e.occurrences ts2 "
+  // gets the occurrences of all entities
+  @NamedQuery(name = "TextSpan.findTextSpansForEntities",
+    query = "SELECT ts "
+          + "FROM TextSpan ts, Entity e "
           + "WHERE e.id IN :entityIds "
+          + "AND ts MEMBER OF e.occurrences "
           // range checks
-          + "AND ts1.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // intervals have an overlap
-          + "AND ((ts2.start.offset > ts1.start.offset " + "AND ts2.start.offset < ts1.end.offset) "
-            + "OR (ts1.start.offset > ts2.start.offset " + "AND ts1.start.offset < ts2.end.offset)) "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL "
-          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL "
+          + "AND ts.start.chapter IS NOT NULL "
           // right ordering
-          + "ORDER BY ts1.start.offset"),
+          + "ORDER BY ts.start.offset"),
 
-  // for checking the amount of spans for a relation in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForRelations",
-    query = "SELECT DISTINCT COUNT(ts1) "
-          + "FROM TextSpan ts1, Entity e "
-          + "INNER JOIN e.occurrences ts2 "
+  // checks whether a set of entities occur in a range (for relation occurrences)
+  @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
+    query = "SELECT COUNT(DISTINCT e.id) "
+          + "FROM Entity e "
+          + "INNER JOIN e.occurrences ts "
           + "WHERE e.id IN :entityIds "
           // range checks
-          + "AND ts1.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts1.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts2.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // intervals have an overlap
-          + "AND ((ts2.start.offset > ts1.start.offset " + "AND ts2.start.offset < ts1.end.offset) "
-            + "OR (ts1.start.offset > ts2.start.offset " + "AND ts1.start.offset < ts2.end.offset)) "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts1.start.chapter IS NOT NULL " + "AND ts2.start.chapter IS NOT NULL "
-          + "AND ts1.end.chapter IS NOT NULL " + "AND ts2.end.chapter IS NOT NULL"),
+          + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
 
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
       + "FROM TextSpan ts "
@@ -355,5 +349,15 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
     }
 
     return newSpans;
+  }
+
+  /**
+   * Intersects multiple text span lists
+   *
+   * @param list of span lists. The spans in each list must not be overlapping
+   * @return the text spans that are included in all given lists of text spans
+   */
+  public static List<TextSpan> intersect(List<List<TextSpan>> lists) {
+    return TextSpanIntersector.intersect(lists);
   }
 }

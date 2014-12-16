@@ -8,81 +8,40 @@
       '$scope',
       'Document',
       'Page',
-      'FileUpload',
       '$interval',
-      'ChapterText',
-      function($scope, Document, Page, FileUpload, $interval, ChapterText) {
+      function($scope, Document, Page, $interval) {
         Page.setUp('Documents', 1);
-
-        var allowedExtensions = ['.txt', '.epub'];
-        $scope.allowedExtensions = allowedExtensions.join(',');
-
-        // Validate the file selection
-        $scope.$watch('file', function() {
-          if (!$scope.file) {
-            return;
-          }
-
-          var isValid = false;
-
-          for (var i = 0, l = allowedExtensions.length; i < l; i++) {
-            var extension = allowedExtensions[i], name = $scope.file.name.toLowerCase();
-
-            if (name.indexOf(extension, name.length - extension.length) !== -1) {
-              isValid = true;
-              break;
-            }
-          }
-
-          if (!isValid) {
-            alert('Invalid file selection. Only the following extensions are allowed: '
-                    + $scope.allowedExtensions);
-            resetUploadField();
-          }
-        });
-
-        $scope.uploading = false;
 
         $scope.loadDocuments = function() {
           Document.get(function(response) {
             $scope.documents = response.documents;
+
+            /*
+             * Update the selected document because the stored object might
+             * be different from the object in the (reloaded) listing.
+             */
+            for (var i = 0, l = $scope.documents.length; i < l; i++) {
+              var document = $scope.documents[i];
+
+              if ($scope.isDocumentSelected(document)) {
+                $scope.setSelectedDocument(document);
+              }
+            }
           });
         };
 
         $scope.loadDocuments();
-        var timerId = $interval($scope.loadDocuments, 5000);
-
-        $scope.uploadSelectedFile = function() {
-          // allow only a single upload simultaneously
-          if ($scope.uploading) {
-            return;
-          }
-
-          if ($scope.file) {
-            $scope.uploading = true;
-
-            FileUpload.uploadFileToUrl($scope.file, 'webapi/documents', function() {
-              // nothing to do: we poll the documents every X seconds
-              resetUploadField();
-              $scope.uploading = false;
-            }, function() {
-              $scope.uploading = false;
-              alert('Upload of ' + $scope.file.name + ' failed.');
-            });
-          } else {
-            alert('Please select a document first.');
-          }
-        };
-
-        function resetUploadField() {
-          document.getElementById('document-input').value = '';
-        }
+        var timerId = $interval($scope.loadDocuments, 1000);
 
         $scope.isDocumentSelected = function(document) {
-          return angular.equals($scope.selectedDocument, document);
+          if (!$scope.selectedDocument || !document) {
+            return false;
+          }
+
+          return angular.equals($scope.selectedDocument.id, document.id);
         };
 
-        $scope.updateSelection = function(selectedDocument) {
+        $scope.setSelectedDocument = function(selectedDocument) {
           $scope.selectedDocument = selectedDocument;
         };
 
@@ -98,6 +57,8 @@
             }, function() {
               $scope.loadDocuments();
             });
+          } else if (newName === '') {
+            alert('The document name must not be empty!');
           }
         };
 

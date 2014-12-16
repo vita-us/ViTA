@@ -16,6 +16,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -129,13 +130,17 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
       }
     }
     maxDocuments = corpus.size();
-    progressSteps = 1 / maxDocuments;
+    if (maxDocuments > 0) {
+      progressSteps = 1 / maxDocuments;
+    } else {
+      progressSteps = 0;
+    }
   }
 
   /**
    * Initialize the Gate library once.
    */
-  private void initializeGate() throws GateException {
+  private void initializeGate() throws GateException, URISyntaxException {
     if (Gate.isInitialised()) {
       return;
     }
@@ -145,7 +150,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
     File fileToHome = new File("");
 
     if (pathToHome != null) {
-      fileToHome = new File(pathToHome.getFile());
+      fileToHome = new File(pathToHome.toURI());
     }
 
     File pluginsHome =
