@@ -34,7 +34,7 @@ public class Main {
   }
 
   private static URI getBaseURI() {
-    return UriBuilder.fromUri("http://localhost/webapi").port(getPort()).build();
+    return UriBuilder.fromUri("http://0.0.0.0/webapi").port(getPort()).build();
   }
 
   private static HttpServer startServer() throws IOException {
@@ -58,7 +58,7 @@ public class Main {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     final HttpServer server = startServer();
-    System.out.println("server started at http://localhost:" + getPort());
+    System.out.println("server started at http://localhost:" + getPort() + "/");
 
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         @Override
