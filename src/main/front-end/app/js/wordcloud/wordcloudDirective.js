@@ -106,7 +106,8 @@
         return items.map(function(item) {
           return {
             text: item.word,
-            size: wordSizeScale(item.frequency)
+            size: wordSizeScale(item.frequency),
+            entityId: item.entityId
           };
         });
       }
