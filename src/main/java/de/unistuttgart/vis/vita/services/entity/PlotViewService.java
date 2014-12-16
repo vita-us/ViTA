@@ -78,7 +78,8 @@ public class PlotViewService {
             index,//chapter.getRange().getStart().getOffset(),
             1,//chapter.getRange().getLength(),
             index++,
-            entityIds));
+            entityIds,
+            chapter.getNumber() + " - " + chapter.getTitle()));
       }
     }
     response.setPanels(index);

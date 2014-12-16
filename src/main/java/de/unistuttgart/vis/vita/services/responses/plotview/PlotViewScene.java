@@ -16,15 +16,19 @@ public class PlotViewScene {
   @XmlElement(name="chars")
   private List<String> chars;
 
+  @XmlElement
+  private String title;
+
   public PlotViewScene() {
 
   }
 
-  public PlotViewScene(int start, int duration, int id, List<String> chars) {
+  public PlotViewScene(int start, int duration, int id, List<String> chars, String title) {
     this.start = start;
     this.duration = duration;
     this.id = id;
     this.chars = chars;
+    this.title = title;
   }
 
   public int getStart() {
@@ -38,5 +42,9 @@ public class PlotViewScene {
   }
   public List<String> getChars() {
     return chars;
+  }
+
+  public String getTitle() {
+    return title;
   }
 }
