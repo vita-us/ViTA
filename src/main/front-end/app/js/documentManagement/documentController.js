@@ -15,6 +15,18 @@
         $scope.loadDocuments = function() {
           Document.get(function(response) {
             $scope.documents = response.documents;
+
+            /*
+             * Update the selected document because the stored object might
+             * be different from the object in the (reloaded) listing.
+             */
+            for (var i = 0, l = $scope.documents.length; i < l; i++) {
+              var document = $scope.documents[i];
+
+              if ($scope.isDocumentSelected(document)) {
+                $scope.setSelectedDocument(document);
+              }
+            }
           });
         };
 
@@ -25,6 +37,7 @@
           if (!$scope.selectedDocument || !document) {
             return false;
           }
+
           return angular.equals($scope.selectedDocument.id, document.id);
         };
 
