@@ -11,6 +11,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.reflections.Reflections;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.model.HerokuModel;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.StandaloneModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
@@ -34,7 +35,12 @@ public class StandaloneApplication extends ResourceConfig {
         bind(service).to(service);
       }
 
-      Model model = new StandaloneModel();
+      Model model;
+      if (System.getenv("DATABASE_URL") != null) {
+        model = new HerokuModel();
+      } else {
+        model = new StandaloneModel();
+      }
       bind(model).to(Model.class);
       bindFactory(model).to(EntityManager.class);
       bind(AnalysisController.class).in(Singleton.class).to(AnalysisController.class);

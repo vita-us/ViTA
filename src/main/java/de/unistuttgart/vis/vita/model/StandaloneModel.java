@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
  * Uses a h2 database on the local file system
  */
 public class StandaloneModel extends Model {
-  private static final String STANDALONE_PERSISTENCE_UNIT_NAME =
+  public static final String STANDALONE_PERSISTENCE_UNIT_NAME =
       "de.unistuttgart.vis.vita.standalone";
   
   public StandaloneModel() {

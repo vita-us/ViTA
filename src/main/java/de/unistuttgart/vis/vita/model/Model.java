@@ -25,7 +25,7 @@ import javax.persistence.Persistence;
 @ApplicationScoped
 public class Model implements Factory<EntityManager> {
 
-  private static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
+  public static final String PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita";
 
   static {
     /*
