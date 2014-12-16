@@ -103,7 +103,7 @@
        * @param {object[]} array of word data
        */
       function itemsToCloudData(items) {
-        return items.map(function(item, i) {
+        return items.map(function(item) {
           return {
             text: item.word,
             size: wordSizeScale(item.frequency)
