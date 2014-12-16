@@ -8,7 +8,7 @@
       <div class="list-group">
         <a data-document-list-item class="list-group-item" href="" ng-repeat="document in documents"
           data-document="document" ng-class="{active: isDocumentSelected(document)}"
-          data-reload-documents="loadDocuments()" ng-click="updateSelection(document)"></a>
+          data-reload-documents="loadDocuments()" ng-click="setSelectedDocument(document)"></a>
       </div>
     </div>
   </div>

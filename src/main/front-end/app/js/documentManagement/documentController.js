@@ -9,8 +9,7 @@
       'Document',
       'Page',
       '$interval',
-      'ChapterText',
-      function($scope, Document, Page, $interval, ChapterText) {
+      function($scope, Document, Page, $interval) {
         Page.setUp('Documents', 1);
 
         $scope.loadDocuments = function() {
@@ -29,7 +28,7 @@
           return angular.equals($scope.selectedDocument.id, document.id);
         };
 
-        $scope.updateSelection = function(selectedDocument) {
+        $scope.setSelectedDocument = function(selectedDocument) {
           $scope.selectedDocument = selectedDocument;
         };
 
