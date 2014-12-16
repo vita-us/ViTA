@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntity
 
   @Override
   protected Iterable<FeatureProgress> getProgresses(AnalysisProgress progress) {
-    return Arrays.asList(new FeatureProgress());
+    return new ArrayList<FeatureProgress>();
   }
 
   /**
