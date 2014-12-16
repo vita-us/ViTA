@@ -113,9 +113,18 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "WHERE e IN :entities "
           // range checks
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          // Null checks
-                + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
+          + "GROUP BY e "
+          + "HAVING COUNT(ts) > 0.25 * ("
+            + "SELECT COUNT(ts2) "
+            + "FROM Person p "
+            + "INNER JOIN p.occurrences ts2 "
+            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + ") / ("
+            + "SELECT COUNT(DISTINCT p) "
+            + "FROM Person p "
+            + "INNER JOIN p.occurrences ts2 "
+            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + ")"),
 
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
       + "FROM TextSpan ts "
