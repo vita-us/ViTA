@@ -8,8 +8,10 @@ import java.util.Map;
 import javax.persistence.Persistence;
 
 public class HerokuModel extends Model {
+  private static final String HEROKU_PERSISTENCE_UNIT_NAME = "de.unistuttgart.vis.vita.heroku";
+  
   public HerokuModel() {
-    super(Persistence.createEntityManagerFactory(StandaloneModel.STANDALONE_PERSISTENCE_UNIT_NAME,
+    super(Persistence.createEntityManagerFactory(HEROKU_PERSISTENCE_UNIT_NAME,
         getProperties()), new TextRepository(new DefaultDirectoryFactory()));
     // TODO: the text repository will not be shared like this
   }
@@ -24,14 +26,12 @@ public class HerokuModel extends Model {
     }
     String userName = dbUri.getUserInfo().split(":")[0];
     String password = dbUri.getUserInfo().split(":")[1];
-    String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+    String dbUrl = "jdbc:" + dbUri.getScheme() + "://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
 
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("javax.persistence.jdbc.url", dbUrl);
     properties.put("javax.persistence.jdbc.user", userName);
     properties.put("javax.persistence.jdbc.password", password);
-    properties.put("javax.persistence.jdbc.driver", "org.postgresql.Driver");
-    properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
     return properties;
   }
 }

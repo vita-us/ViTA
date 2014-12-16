@@ -49,4 +49,16 @@
       <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
     </properties>
   </persistence-unit>
+  
+  <persistence-unit name="de.unistuttgart.vis.vita.heroku">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <properties>
+      <property name="connection.driver_class" value="com.mysql.jdbc.Driver" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+    </properties>
+  </persistence-unit>
 </persistence>
