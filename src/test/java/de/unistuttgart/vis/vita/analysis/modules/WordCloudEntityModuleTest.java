@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.*;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
+import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.GlobalWordCloudResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
@@ -58,9 +59,11 @@ public class WordCloudEntityModuleTest {
     
     GlobalWordCloudResult result = getGlobalWordCloud(wordCloud);
     BasicEntityCollection collection = getBasicEntities();
-
+    DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
+    
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
+    when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
     when(resultProvider.getResultFor(GlobalWordCloudResult.class)).thenReturn(result);
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(collection);
    

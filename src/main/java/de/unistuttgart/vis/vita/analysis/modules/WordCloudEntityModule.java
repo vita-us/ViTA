@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
+import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.GlobalWordCloudResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -26,7 +27,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * word cloud and basic entities must have been build so the entities ids can be searched in the
  * global word cloud
  */
-@AnalysisModule(dependencies = {GlobalWordCloudResult.class, BasicEntityCollection.class, Model.class})
+@AnalysisModule(dependencies = {GlobalWordCloudResult.class, BasicEntityCollection.class,DocumentPersistenceContext.class, Model.class})
 public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntityModule> {
 
   @Override
@@ -37,7 +38,7 @@ public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntity
     Collection<BasicEntity> basicEntitiyCollection =
         result.getResultFor(BasicEntityCollection.class).getEntities();
     setWordCloudItemsEntitiyId(wordCloud, new ArrayList<BasicEntity>(basicEntitiyCollection));
-    em.persist(wordCloud);
+    em.merge(wordCloud);
     return this;
   }
 
