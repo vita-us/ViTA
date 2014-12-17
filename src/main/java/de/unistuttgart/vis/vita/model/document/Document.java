@@ -1,5 +1,8 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -11,9 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
-
-import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
-import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 /**
  * Represents an eBook file being imported into the software. Includes the id, metadata, metrics and
@@ -50,6 +50,8 @@ public class Document extends AbstractEntityBase {
   
   @Column(length = 1000)
   private Date uploadDate;
+
+  private String fileName;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -159,5 +161,13 @@ public class Document extends AbstractEntityBase {
    */
   public void setUploadDate(Date uploadDate) {
     this.uploadDate = uploadDate;
-  } 
+  }
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
 }

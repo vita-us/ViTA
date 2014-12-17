@@ -11,6 +11,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
+import de.unistuttgart.vis.vita.analysis.results.EntityAttributes;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
@@ -34,7 +35,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * This depends on the text feature module because the chapters must have been stored for the
  * TextSpans to be persistable
  */
-@AnalysisModule(dependencies = {EntityRanking.class, EntityRelations.class,
+@AnalysisModule(dependencies = {EntityAttributes.class, EntityRanking.class, EntityRelations.class,
                                 BasicEntityCollection.class, DocumentPersistenceContext.class,
                                 Model.class, TextFeatureModule.class, EntityWordCloudResult.class},
                                 weight = 0.1)
@@ -45,6 +46,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     List<BasicEntity> basicEntities =
         result.getResultFor(EntityRanking.class).getRankedEntities();
     EntityRelations relations = result.getResultFor(EntityRelations.class);
+    EntityAttributes entityAttributes = result.getResultFor(EntityAttributes.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     EntityWordCloudResult wordClouds = result.getResultFor(EntityWordCloudResult.class);
 
@@ -70,10 +72,12 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         default:
           continue;
       }
-      
+
+      entity.setId(basicEntity.getEntityId());  
       entity.setFrequency(basicEntity.getOccurences().size());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
+      entity.getAttributes().addAll(entityAttributes.getAttributesForEntity(basicEntity));
       entity.getOccurrences().addAll(basicEntity.getOccurences());
       entity.setWordCloud(wordClouds.getWordCloudForEntity(basicEntity));
 
