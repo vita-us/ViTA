@@ -92,8 +92,8 @@
           .size([width, height])
           .charge(-800)
           .gravity(0.04)
-          .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
+          .linkStrength(0.2)
           .on('tick', setNewPositions);
     }
 
@@ -213,7 +213,11 @@
 
     function calculateLinkDistance(link) {
       var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
-      return MAXIMUM_LINK_DISTANCE - variableDistance * link.weight;
+      var visibleLinkLength = MAXIMUM_LINK_DISTANCE - variableDistance * link.weight;
+
+      /* The links start from the center of a node.
+       * That's why we add the radius of both nodes to let them look equally long. */
+      return link.source.radius + visibleLinkLength + link.target.radius;
     }
 
     function setNewPositions() {
