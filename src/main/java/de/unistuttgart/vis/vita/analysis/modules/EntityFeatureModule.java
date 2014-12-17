@@ -35,15 +35,13 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * TextSpans to be persistable
  */
 @AnalysisModule(dependencies = {EntityRanking.class, EntityRelations.class,
-                                BasicEntityCollection.class, DocumentPersistenceContext.class,
-                                Model.class, TextFeatureModule.class, EntityWordCloudResult.class},
-                                weight = 0.1)
+    BasicEntityCollection.class, DocumentPersistenceContext.class, Model.class,
+    TextFeatureModule.class, EntityWordCloudResult.class}, weight = 0.1)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
       EntityManager em) throws Exception {
-    List<BasicEntity> basicEntities =
-        result.getResultFor(EntityRanking.class).getRankedEntities();
+    List<BasicEntity> basicEntities = result.getResultFor(EntityRanking.class).getRankedEntities();
     EntityRelations relations = result.getResultFor(EntityRelations.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     EntityWordCloudResult wordClouds = result.getResultFor(EntityWordCloudResult.class);
@@ -70,7 +68,8 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         default:
           continue;
       }
-      
+
+      entity.setId(basicEntity.getEntityId());  
       entity.setFrequency(basicEntity.getOccurences().size());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
