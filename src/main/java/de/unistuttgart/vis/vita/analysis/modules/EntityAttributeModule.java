@@ -54,8 +54,6 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
 
     startAnalysis();
 
-    System.out.println(entities.getEntities());
-
     return new EntityAttributes() {
       @Override
       public Set<Attribute> getAttributesForEntity(BasicEntity entity) {
