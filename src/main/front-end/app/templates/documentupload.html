@@ -1,0 +1,9 @@
+<form role="form" class="text-upload-form">
+  <div class="form-group">
+    <label for="document-input">Import a new document</label> <input type="file"
+      id="document-input" accept="{{allowedExtensionsString}}" data-file-model="file">
+  </div>
+  <button ng-class="{active: uploading}" class="btn btn-default" ng-click="uploadSelectedFile()">
+    <span ng-show="uploading" class="glyphicon glyphicon-refresh spin"></span> Import
+  </button>
+</form>
