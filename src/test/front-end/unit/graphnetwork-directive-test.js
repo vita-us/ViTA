@@ -6,6 +6,7 @@ describe('Graph-Network Directive', function() {
     "displayName": "Hugo",
     "type": "person",
     "rankingValue": 6,
+    "frequency": 312
   };
   var additionalRelation = {
     "entityAId": "person8Hugo",
