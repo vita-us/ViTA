@@ -43,10 +43,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
         results.getResultFor(BasicEntityCollection.class).getEntities();
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
-    List<BasicEntity> basicEntities = new ArrayList<>(entities);
 
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity, basicEntities));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
     }
 
     return new EntityWordCloudResult() {
@@ -57,7 +56,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity, List<BasicEntity> entities)
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
       throws IOException {
     List<TextSpan> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
@@ -121,7 +120,8 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
    * @param wordCloud
    * @param basicEntities
    */
-  private void setWordCloudItemsEntitiyId(List<WordCloudItem> items, List<BasicEntity> basicEntities) {
+  private void setWordCloudItemsEntitiyId(List<WordCloudItem> items,
+      Collection<BasicEntity> basicEntities) {
     for (WordCloudItem wordCloudItem : items) {
       for (BasicEntity basicEntity : basicEntities) {
         for (Attribute attribute : basicEntity.getNameAttributes()) {
