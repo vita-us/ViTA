@@ -70,7 +70,8 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         default:
           continue;
       }
-
+      
+      entity.setFrequency(basicEntity.getOccurences().size());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());

@@ -89,11 +89,13 @@ public class EntityFeatureModuleTest {
     Person person = document.getContent().getPersons().get(0);
     assertThat(person.getDisplayName(), is(NAME1_1));
     assertThat(person.getType(), is(EntityType.PERSON));
+    assertThat(person.getFrequency(), is(2));
 
     assertThat(document.getContent().getPlaces(), hasSize(1));
     Place place = document.getContent().getPlaces().get(0);
     assertThat(place.getDisplayName(), is(NAME2));
     assertThat(place.getType(), is(EntityType.PLACE));
+    assertThat(place.getFrequency(), is(1));
   }
 
   @Test
@@ -155,6 +157,8 @@ public class EntityFeatureModuleTest {
     assertThat(document.getProgress().getPersonsProgress().isReady(), is(false));
     assertThat(document.getProgress().getPlacesProgress().isReady(), is(false));
   }
+  
+
 
   private void prepareDatabase() {
     document = new Document();
@@ -183,6 +187,8 @@ public class EntityFeatureModuleTest {
     entity2.getOccurences().add(new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END));
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
+    
+    
 
     return new EntityRanking() {
       @Override
