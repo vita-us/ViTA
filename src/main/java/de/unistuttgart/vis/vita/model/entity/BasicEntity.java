@@ -26,13 +26,11 @@ public class BasicEntity {
   private String entityId;
 
   private SortedSet<Attribute> nameAttributes;
-  private Set<Attribute> attributes;
   private SortedSet<TextSpan> occurrences;
 
   public BasicEntity() {
     nameAttributes = new TreeSet<>(new AttributeComaparator());
     occurrences = new TreeSet<>();
-    attributes = new HashSet<>();
     entityId = UUID.randomUUID().toString();
   }
 
@@ -125,16 +123,7 @@ public class BasicEntity {
            ", displayName='" + displayName + '\'' +
            ", occurrences=" + StringUtils.join(occurrences, ", ") +
            ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
-           ", attributes=" + StringUtils.join(attributes, ", ") +
            '}';
-  }
-
-  public Set<Attribute> getAttributes() {
-    return attributes;
-  }
-
-  public void setAttributes(Set<Attribute> attributes) {
-    this.attributes = attributes;
   }
 }
 

@@ -194,7 +194,6 @@ public class EntityFeatureModuleTest {
     entity1.getOccurences().add(new TextSpan(chapter, OCCURANCE2_START, OCCURANCE2_END));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
-    entity1.getAttributes().add(new Attribute(AttributeType.GENDER, GENDER1));
     list.add(entity1);
 
     entity2 = new BasicEntity();
