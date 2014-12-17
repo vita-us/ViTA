@@ -210,7 +210,10 @@
 
     function redrawElements(graphData, showFingerprint) {
       links = graph.select('#linkGroup').selectAll('.link')
-          .data(graphData.links);
+          .data(graphData.links, function(link) {
+            // Links are uniquely identified by these three attributes
+            return link.source.id + link.target.id + link.weight;
+          });
 
       links.exit().remove();
       links.enter().append('line')
