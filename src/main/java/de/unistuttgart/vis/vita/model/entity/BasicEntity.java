@@ -117,7 +117,6 @@ class AttributeComaparator implements Comparator<Attribute> {
 
   @Override
   public int compare(Attribute o1, Attribute o2) {
-    return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : (
-        o1.getOccurrences().size() == o2.getOccurrences().size() ? 0 : 1));
+    return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1);
   }
 }
