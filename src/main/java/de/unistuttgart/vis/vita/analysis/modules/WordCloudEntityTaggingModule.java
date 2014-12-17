@@ -28,10 +28,10 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * global word cloud
  */
 @AnalysisModule(dependencies = {GlobalWordCloudResult.class, BasicEntityCollection.class,DocumentPersistenceContext.class, Model.class})
-public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntityModule> {
+public class WordCloudEntityTaggingModule extends AbstractFeatureModule<WordCloudEntityTaggingModule> {
 
   @Override
-  protected WordCloudEntityModule storeResults(ModuleResultProvider result, Document document,
+  protected WordCloudEntityTaggingModule storeResults(ModuleResultProvider result, Document document,
       EntityManager em) throws Exception {
 
     WordCloud wordCloud = result.getResultFor(GlobalWordCloudResult.class).getGlobalWordCloud();
@@ -54,6 +54,7 @@ public class WordCloudEntityModule extends AbstractFeatureModule<WordCloudEntity
    * @param basicEntities
    */
   private void setWordCloudItemsEntitiyId(WordCloud wordCloud, List<BasicEntity> basicEntities) {
+   
     for (WordCloudItem wordCloudItem : wordCloud.getItems()) {
       for (BasicEntity basicEntity : basicEntities) {
         for (Attribute attribute : basicEntity.getNameAttributes()) {

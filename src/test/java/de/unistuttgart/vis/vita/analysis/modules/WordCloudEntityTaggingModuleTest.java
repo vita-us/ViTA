@@ -34,9 +34,9 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Junit test on WordCloudEntityModule
  *
  */
-public class WordCloudEntityModuleTest {
+public class WordCloudEntityTaggingModuleTest {
 
-  private WordCloudEntityModule module;
+  private WordCloudEntityTaggingModule module;
   private EntityManager em;
   private ModuleResultProvider resultProvider;
   private ProgressListener progressListener;
@@ -69,7 +69,7 @@ public class WordCloudEntityModuleTest {
    
     progressListener = mock(ProgressListener.class);
     
-    module = new WordCloudEntityModule();
+    module = new WordCloudEntityTaggingModule();
   }
 
   private WordCloud createWordCloud() {

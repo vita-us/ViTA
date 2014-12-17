@@ -44,7 +44,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
     List<BasicEntity> basicEntities = new ArrayList<>(entities);
-    
+
     for (BasicEntity entity : entities) {
       wordClouds.put(entity, getWordCloudForEntity(entity, basicEntities));
     }
