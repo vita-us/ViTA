@@ -94,11 +94,12 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       items.add(new WordCloudItem(entry.getKey(), entry.getValue()));
     }
 
-    setWordCloudItemsEntitiyId(items, entities);
-
     Collections.sort(items, Collections.reverseOrder());
     if (items.size() > MAX_COUNT)
       items = items.subList(0, MAX_COUNT);
+
+    setWordCloudItemsEntitiyId(items, entities);
+
     return new WordCloud(items);
   }
 
