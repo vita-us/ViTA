@@ -40,6 +40,9 @@
       }
     };
 
+    var radiusScale = d3.scale.linear()
+        .range([20, 40]);
+
     var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
@@ -124,6 +127,7 @@
     }
 
     function parseEntitiesToGraphData(entities, relationData) {
+      updateRadiusScale(entities);
       updateEntityNodeMap(entities, relationData.entityIds);
 
       var links = [];
@@ -175,8 +179,19 @@
           entityNode.displayName = entity.displayName;
           entityNode.rankingValue = entity.rankingValue;
           entityNode.type = entity.type;
+          entityNode.radius = radiusScale(avoidVisualLie(entity.frequency));
         }
       }
+    }
+
+    /**
+     * Take the square root because otherwise we would create a visual lie.
+     * Double frequency means double area but not double radius.
+     * @param frequency
+     * @returns {number}
+     */
+    function avoidVisualLie(frequency) {
+      return Math.sqrt(frequency);
     }
 
     function createLinkFromRelation(relation) {
@@ -185,6 +200,15 @@
         target: entityIdNodeMap.get(relation.entityBId),
         weight: relation.weight
       };
+    }
+
+    function updateRadiusScale(entities) {
+      var minAndMaxFrequencies = d3.extent(entities, function(entity) {
+        return entity.frequency;
+      });
+      var min = avoidVisualLie(minAndMaxFrequencies[0]);
+      var max = avoidVisualLie(minAndMaxFrequencies[1]);
+      radiusScale.domain([min, max]);
     }
 
     function calculateLinkDistance(link) {
@@ -236,7 +260,9 @@
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
-          .attr('r', 20);
+          .attr('r', function(d) {
+            return d.radius;
+          });
 
       var labelGroups = newNodes.append('g').classed('node-label', true);
 
