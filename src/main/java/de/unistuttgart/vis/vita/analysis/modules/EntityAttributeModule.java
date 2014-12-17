@@ -39,6 +39,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
   private AnnieNLPResult annieNLPResult;
   private BasicEntityCollection entities;
   private Map<BasicEntity, Set<AttributeType>> containedTypes;
+  private Map<BasicEntity, Set<Attribute>> entityToAttribute;
 
   @Override
   public EntityAttributes execute(ModuleResultProvider results, ProgressListener progressListener)
@@ -47,9 +48,11 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
     annieNLPResult = results.getResultFor(AnnieNLPResult.class);
     entities = results.getResultFor(BasicEntityCollection.class);
     containedTypes = new HashMap<>();
+    entityToAttribute = new HashMap<>();
 
     for (BasicEntity basicEntity : entities.getEntities()) {
       containedTypes.put(basicEntity, new HashSet<AttributeType>());
+      entityToAttribute.put(basicEntity, new HashSet<Attribute>());
     }
 
     startAnalysis();
@@ -57,7 +60,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
     return new EntityAttributes() {
       @Override
       public Set<Attribute> getAttributesForEntity(BasicEntity entity) {
-        return entity.getAttributes();
+        return entityToAttribute.get(entity);
       }
     };
   }
@@ -100,7 +103,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
         Object gender = annieAnnotation.getFeatures().get("gender");
 
         if (gender != null) {
-          theEntity.getAttributes().add(new Attribute(AttributeType.GENDER, gender.toString()));
+          entityToAttribute.get(theEntity).add(new Attribute(AttributeType.GENDER, gender.toString()));
           containedTypes.get(theEntity).add(AttributeType.GENDER);
         }
       }

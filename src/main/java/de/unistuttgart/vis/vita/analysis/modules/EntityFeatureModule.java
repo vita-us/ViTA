@@ -46,6 +46,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     List<BasicEntity> basicEntities =
         result.getResultFor(EntityRanking.class).getRankedEntities();
     EntityRelations relations = result.getResultFor(EntityRelations.class);
+    EntityAttributes entityAttributes = result.getResultFor(EntityAttributes.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     EntityWordCloudResult wordClouds = result.getResultFor(EntityWordCloudResult.class);
 
@@ -75,7 +76,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
       entity.setFrequency(basicEntity.getOccurences().size());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
-      entity.getAttributes().addAll(basicEntity.getAttributes());
+      entity.getAttributes().addAll(entityAttributes.getAttributesForEntity(basicEntity));
       entity.getOccurrences().addAll(basicEntity.getOccurences());
       entity.setWordCloud(wordClouds.getWordCloudForEntity(basicEntity));
 
