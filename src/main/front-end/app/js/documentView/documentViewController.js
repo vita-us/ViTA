@@ -21,6 +21,7 @@
         DocumentViewReceiver.onOccurrences(function(messageData) {
           $scope.occurrences = messageData.message;
           $scope.selectedOccurrenceIndex = 0;
+          $scope.resultCount = $scope.occurrences.length;
           $scope.$digest();
         });
 
@@ -49,6 +50,12 @@
             $scope.occurrences = occurrences;
             $scope.selectedOccurrenceIndex = 0;
           });
+        };
+
+        $scope.reset = function() {
+          $scope.resultCount = -1;
+          $scope.occurrences = [];
+          $scope.entities = [];
         };
 
         $scope.down = function() {

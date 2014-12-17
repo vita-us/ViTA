@@ -6,6 +6,8 @@
   vitaDirectives.directive('documentPreview', ['DocumentParts', 'ChapterText',
       function(DocumentParts, ChapterText) {
 
+        var lastPreviewedDocumentId;
+
         function link(scope) {
           scope.$watch('document', function(newValue) {
             if (!newValue) {
@@ -14,10 +16,17 @@
 
             scope.documentTitle = scope.document.metadata.title;
 
+            var documentId = scope.document.id;
+            if (lastPreviewedDocumentId === documentId) {
+              // Don't load the same text multiple times
+              return;
+            }
+
             DocumentParts.get({
-              documentId: scope.document.id
+              documentId: documentId
             }, function(structure) {
               previewFirstChapter(scope, structure.parts);
+              lastPreviewedDocumentId = documentId;
             });
           });
         }

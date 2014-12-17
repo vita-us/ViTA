@@ -24,13 +24,13 @@
             <div class="chapter" data-ng-class="{'active-menu': $parent.$first && $first}"
                 data-ng-repeat="chapter in part.chapters">
               <a href="#chapter-{{chapter.id}}">
-                Chapter {{chapter.number}} {{chapter.title ? ' - ' + chapter.title : ''}}
+                <span class="chapter-number">({{chapter.number}})</span>{{chapter.title}}
               </a>
             </div>
           </div>
         </div>
       </div>
-      <div data-document-view-highlighter data-document-id="document.id"
+      <div data-document-view-highlighter data-parts="parts" data-document-id="document.id"
         data-selected-occurrence-index="selectedOccurrenceIndex"
         data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
@@ -55,6 +55,9 @@
           <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
         </button>
       </div>
+      <button type="reset" class="btn btn-warning pull-right" ng-click="reset()">
+        <span>Reset Highlighting</span>
+      </button>
     </form>
   </div>
 

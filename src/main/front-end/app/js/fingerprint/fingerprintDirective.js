@@ -144,31 +144,33 @@
         }
 
         function onClickOccurrence(clickedOccurrence, scope) {
-          RelationOccurrences.get({
-            documentId: $routeParams.documentId,
-            entityIds: scope.entityIds.join(','),
-            rangeStart: clickedOccurrence.start.progress,
-            rangeEnd: clickedOccurrence.end.progress
-          }, function(response) {
-            DocumentViewSender.sendOccurrences(response.occurrences);
-          });
-          var entitiesToSend = [];
-          scope.entityIds.forEach(function(entityId) {
-            Entity.get({
+          DocumentViewSender.open(function() {
+            RelationOccurrences.get({
               documentId: $routeParams.documentId,
-              entityId: entityId
-            }, function(entity) {
-              // Cannot simply push entity as it contains angular promises
-              // which cannot be sent
-              entitiesToSend.push({
-                id: entity.id,
-                displayName: entity.displayName,
-                attributes: entity.attributes,
-                rankingValue: entity.rankingValue
+              entityIds: scope.entityIds.join(','),
+              rangeStart: clickedOccurrence.start.progress,
+              rangeEnd: clickedOccurrence.end.progress
+            }, function(response) {
+              DocumentViewSender.sendOccurrences(response.occurrences);
+            });
+            var entitiesToSend = [];
+            scope.entityIds.forEach(function(entityId) {
+              Entity.get({
+                documentId: $routeParams.documentId,
+                entityId: entityId
+              }, function(entity) {
+                // Cannot simply push entity as it contains angular promises
+                // which cannot be sent
+                entitiesToSend.push({
+                  id: entity.id,
+                  displayName: entity.displayName,
+                  attributes: entity.attributes,
+                  rankingValue: entity.rankingValue
+                });
+                if (entitiesToSend.length === scope.entityIds.length) {
+                  DocumentViewSender.sendEntities(entitiesToSend);
+                }
               });
-              if (entitiesToSend.length === scope.entityIds.length) {
-                DocumentViewSender.sendEntities(entitiesToSend);
-              }
             });
           });
         }

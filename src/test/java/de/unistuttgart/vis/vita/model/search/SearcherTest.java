@@ -31,7 +31,8 @@ public class SearcherTest {
           "The two boys had started from their cabin home, just outside a small Virginia town, determined to secure fresh food for the family, at that time facing unusual privation. At home sitting. He is at school sitting.",
           "Bob at that time looks. Already smarting at that time of many who had called themselves friends in times past, at that time facing aroused all the Scotch combativeness in their natures.",
           "This is the text of the chapter three.",
-          "This is the .text. of chapter four. But at that time more than once a ghost of a smile would chase across his jovial face. Evidently Pat O'Mara was thinking of the plans which he had been forming.",};
+          "This is the .text. of chapter four. But at that time more than once a ghost of a smile would chase across his jovial face. Evidently Pat O'Mara was thinking of the plans which he had been forming.",
+          "\"Goodluck, Harry,\" he murmured. He turned on his heel and with a swish of his cloak, he was gone."};
 
   private UnitTestModel model;
   private List<Chapter> chapters = new ArrayList<Chapter>();
@@ -131,14 +132,14 @@ public class SearcherTest {
         .getStart().getOffset());
     assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, spansSmallCases.get(0)
         .getEnd().getOffset());
-    
+
     String atThatTime1 = "";
     for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
         .getRange().getStart().getOffset() + 145; i++) {
       atThatTime1 += allChapters.charAt(i);
     }
     assertEquals("at that time ", atThatTime1);
-    
+
     assertEquals(chapterIds.get(1), spansSmallCases.get(1).getStart().getChapter().getId());
     assertEquals(chapterIds.get(1), spansSmallCases.get(1).getEnd().getChapter().getId());
     assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, spansSmallCases.get(1)
@@ -181,7 +182,7 @@ public class SearcherTest {
     }
 
     assertEquals("at that time ", atThatTime4);
-  
+
     assertEquals(chapterIds.get(3), spansSmallCases.get(4).getStart().getChapter().getId());
     assertEquals(chapterIds.get(3), spansSmallCases.get(4).getEnd().getChapter().getId());
     assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, spansSmallCases.get(4)
@@ -216,14 +217,14 @@ public class SearcherTest {
         .getStart().getOffset());
     assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, spansSmallCases.get(0)
         .getEnd().getOffset());
-    
+
     String atThatTime1 = "";
     for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
         .getRange().getStart().getOffset() + 145; i++) {
       atThatTime1 += allChapters.charAt(i);
     }
     assertEquals("at that time ", atThatTime1);
-    
+
     assertEquals(chapterIds.get(1), spansSmallCases.get(1).getStart().getChapter().getId());
     assertEquals(chapterIds.get(1), spansSmallCases.get(1).getEnd().getChapter().getId());
     assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, spansSmallCases.get(1)
@@ -266,7 +267,7 @@ public class SearcherTest {
     }
 
     assertEquals("at that time ", atThatTime4);
-  
+
     assertEquals(chapterIds.get(3), spansSmallCases.get(4).getStart().getChapter().getId());
     assertEquals(chapterIds.get(3), spansSmallCases.get(4).getEnd().getChapter().getId());
     assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, spansSmallCases.get(4)
@@ -281,7 +282,26 @@ public class SearcherTest {
     }
     assertEquals("at that time ", atThatTime5);
   }
-  
+
+  /**
+   * Tests the results regarding the searching for a phrase
+   *
+   * @throws IOException
+   * @throws ParseException
+   */
+  @Test
+  public void testPhrase3() throws IOException, ParseException {
+    List<TextSpan> textSpans = searcher.searchString(documentId, "he turned on his", chapters, model);
+   
+    assertEquals(1, textSpans.size());
+    assertEquals(chapterIds.get(4), textSpans.get(0).getStart().getChapter().getId());
+    assertEquals(chapterIds.get(4), textSpans.get(0).getEnd().getChapter().getId());
+    assertEquals(chapters.get(4).getRange().getStart().getOffset() + 32, textSpans.get(0)
+        .getStart().getOffset());
+    assertEquals(chapters.get(4).getRange().getStart().getOffset() + 48, textSpans.get(0).getEnd()
+        .getOffset());
+  }
+
   /**
    * Tests failure of the results regarding the searching for a subphrase
    *
@@ -296,7 +316,7 @@ public class SearcherTest {
 
   /**
    * Tests the results regarding the searching for a stop word
-   * 
+   *
    * @throws IOException
    * @throws ParseException
    */
@@ -305,7 +325,7 @@ public class SearcherTest {
 
     List<TextSpan> spansStopWords = searcher.searchString(documentId, "this", chapters, model);
     assertEquals(2, spansStopWords.size());
-   
+
     assertEquals(chapterIds.get(2), spansStopWords.get(0).getStart().getChapter().getId());
     assertEquals(chapterIds.get(2), spansStopWords.get(0).getEnd().getChapter().getId());
     assertEquals(chapters.get(2).getRange().getStart().getOffset(), spansStopWords.get(0)

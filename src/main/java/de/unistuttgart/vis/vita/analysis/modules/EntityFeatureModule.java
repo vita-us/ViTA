@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -70,12 +71,17 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         default:
           continue;
       }
-
+      
+      entity.setFrequency(basicEntity.getOccurences().size());
       entity.setDisplayName(basicEntity.getDisplayName());
       entity.getAttributes().addAll(basicEntity.getNameAttributes());
       entity.getAttributes().addAll(basicEntity.getAttributes());
       entity.getOccurrences().addAll(basicEntity.getOccurences());
       entity.setWordCloud(wordClouds.getWordCloudForEntity(basicEntity));
+
+      DocumentMetrics metrics = document.getMetrics();
+      metrics.setPersonCount(document.getContent().getPersons().size());
+      metrics.setPlaceCount(document.getContent().getPlaces().size());
 
       em.persist(entity);
       em.persist(entity.getWordCloud());

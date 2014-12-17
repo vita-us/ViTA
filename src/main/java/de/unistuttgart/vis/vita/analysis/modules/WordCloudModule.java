@@ -46,6 +46,11 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
   private WordCloud getGlobalWordCloud(IndexSearcher searcher) throws IOException {
     Terms terms = SlowCompositeReaderWrapper.wrap(searcher.getIndexReader())
         .terms(TextRepository.CHAPTER_TEXT_FIELD);
+    if (terms == null) {
+      // This means that there are no chapters
+      return new WordCloud();
+    }
+
     TermsEnum enumerator = terms.iterator(null);
     BytesRef term = enumerator.next();
     List<WordCloudItem> items = new ArrayList<WordCloudItem>();

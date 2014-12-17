@@ -14,6 +14,8 @@ public class FlatEntityRelation {
   private String relatedEntityId;
   @XmlElement
   private double weight;
+  @XmlElement(name = "relatedEntityType")
+  private String relatedEntityType;
   
   public FlatEntityRelation() {
     // zero argument constructor needed
@@ -26,9 +28,10 @@ public class FlatEntityRelation {
    * @param relEntityId
    * @param relWeight
    */
-  public FlatEntityRelation(String relEntityId, double relWeight) {
+  public FlatEntityRelation(String relEntityId, double relWeight, EntityType relEntityType) {
     relatedEntityId = relEntityId;
     weight = relWeight;
+    relatedEntityType = relEntityType.toString().toLowerCase();
   }
 
   /**
@@ -61,6 +64,22 @@ public class FlatEntityRelation {
    */
   public void setWeight(double relWeight) {
     this.weight = relWeight;
+  }
+
+  /**
+   * @return the type of the related entity
+   */
+  public String getRelatedEntityType() {
+    return relatedEntityType;
+  }
+
+  /**
+   * Sets the type of the related entity.
+   *
+   * @param relatedEntityType - the textual representation of the related entity type
+   */
+  public void setRelatedEntityType(String relatedEntityType) {
+    this.relatedEntityType = relatedEntityType;
   }
 
 }
