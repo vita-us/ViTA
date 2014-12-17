@@ -40,7 +40,9 @@
       }
     };
 
-    var MAXIMUM_LINK_WIDTH = 16, MINIMUM_LINK_WIDTH = 4;
+    var linkWidthScale = d3.scale.linear()
+        .domain([0, 1])
+        .range([4, 16]);
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -187,11 +189,6 @@
       };
     }
 
-    function calculateLinkWidth(link) {
-      var variableWidth = MAXIMUM_LINK_WIDTH - MINIMUM_LINK_WIDTH;
-      return MAXIMUM_LINK_WIDTH - variableWidth * link.weight;
-    }
-
     function setNewPositions() {
       nodes.attr('transform', function(d) {
         return 'translate(' + d.x + ',' + d.y + ')';
@@ -216,7 +213,7 @@
       links.enter().append('line')
           .classed('link', true)
           .style('stroke-width', function(d) {
-            return calculateLinkWidth(d) + "px";
+            return linkWidthScale(d.weight) + "px";
           })
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
