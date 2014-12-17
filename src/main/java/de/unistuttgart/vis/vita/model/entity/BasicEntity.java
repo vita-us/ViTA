@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 
@@ -22,15 +23,17 @@ import org.apache.commons.lang.StringUtils;
 public class BasicEntity {
   private String displayName;
   private EntityType type;
+  private String entityId;
 
   private SortedSet<Attribute> nameAttributes;
   private Set<Attribute> attributes;
   private SortedSet<TextSpan> occurrences;
-  
+
   public BasicEntity() {
     nameAttributes = new TreeSet<>(new AttributeComaparator());
     occurrences = new TreeSet<>();
     attributes = new HashSet<>();
+    entityId = UUID.randomUUID().toString();
   }
 
   /**
@@ -106,6 +109,15 @@ public class BasicEntity {
     this.type = type;
   }
 
+  /**
+   * Gets the entityId under which this entity is known
+   * 
+   * @return the entityId under which this entity is known
+   */
+  public String getEntityId() {
+    return entityId;
+  }
+
   @Override
   public String toString() {
     return "BasicEntity{" +
@@ -126,6 +138,7 @@ public class BasicEntity {
   }
 }
 
+
 /**
  * Comparator for the names of the entity. Sorts them by the size.
  */
@@ -134,5 +147,6 @@ class AttributeComaparator implements Comparator<Attribute> {
   @Override
   public int compare(Attribute o1, Attribute o2) {
     return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1);
+
   }
 }
