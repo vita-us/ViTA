@@ -24,7 +24,7 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
     @NamedQuery(name = "Document.findAllDocuments",
                 query = "SELECT d "
                       + "FROM Document d "
-                      + "ORDER BY d.uploadDate"),
+                      + "ORDER BY d.uploadDate DESC"),
 
     @NamedQuery(name = "Document.findDocumentById",
                 query = "SELECT d "
