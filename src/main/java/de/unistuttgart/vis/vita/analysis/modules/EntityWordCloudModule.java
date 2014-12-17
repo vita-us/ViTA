@@ -124,7 +124,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     for (WordCloudItem wordCloudItem : items) {
       for (BasicEntity basicEntity : basicEntities) {
         for (Attribute attribute : basicEntity.getNameAttributes()) {
-          if (wordCloudItem.getWord().matches(attribute.getContent())) {
+          if (wordCloudItem.getWord().equalsIgnoreCase(attribute.getContent())) {
             wordCloudItem.setEntityId(basicEntity.getEntityId());
           }
         }
