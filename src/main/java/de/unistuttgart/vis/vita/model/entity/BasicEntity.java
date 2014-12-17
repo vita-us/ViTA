@@ -5,10 +5,15 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The information about an entity that can be collected in the first pass
@@ -113,9 +118,12 @@ public class BasicEntity {
 
   @Override
   public String toString() {
-    return "BasicEntity{" + "type=" + type + ", displayName='" + displayName + '\''
-        + ", occurrences=" + StringUtils.join(occurrences, ", ") + ", namedAttributes="
-        + StringUtils.join(nameAttributes, ", ") + '}';
+    return "BasicEntity{" +
+           "type=" + type +
+           ", displayName='" + displayName + '\'' +
+           ", occurrences=" + StringUtils.join(occurrences, ", ") +
+           ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
+           '}';
   }
 }
 

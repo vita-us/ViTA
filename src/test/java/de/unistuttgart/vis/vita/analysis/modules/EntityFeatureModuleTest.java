@@ -1,24 +1,11 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.common.collect.ImmutableMap;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
+import de.unistuttgart.vis.vita.analysis.results.EntityAttributes;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
@@ -30,15 +17,37 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class EntityFeatureModuleTest {
   private static final String NAME1_1 = "Frodo";
   private static final String NAME1_2 = "Mr. Frodo";
+  private static final String GENDER1 = "male";
   private static final String NAME2 = "Hobbiton";
   private static final int OCCURANCE1_START = 10;
   private static final int OCCURANCE1_END = 20;
@@ -67,6 +76,7 @@ public class EntityFeatureModuleTest {
     DocumentPersistenceContext context = mock(DocumentPersistenceContext.class);
     when(context.getDocumentId()).thenReturn(document.getId());
     EntityWordCloudResult wordClouds = getWordClouds();
+    EntityAttributes entityAttributes = createEntityAttributes();
 
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
@@ -74,6 +84,7 @@ public class EntityFeatureModuleTest {
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(context);
     when(resultProvider.getResultFor(EntityRelations.class)).thenReturn(relations);
     when(resultProvider.getResultFor(EntityWordCloudResult.class)).thenReturn(wordClouds);
+    when(resultProvider.getResultFor(EntityAttributes.class)).thenReturn(entityAttributes);
 
     listener = mock(ProgressListener.class);
 
@@ -108,6 +119,10 @@ public class EntityFeatureModuleTest {
     Attribute attribute = place.getAttributes().iterator().next();
     assertThat(attribute.getContent(), is(NAME2));
     assertThat(attribute.getType(), is(AttributeType.NAME));
+
+    Person person1 = document.getContent().getPersons().get(0);
+    Attribute gender1 = getGenderAttribute(person1);
+    assertThat(gender1.getContent(), is("male"));
   }
 
   @Test
@@ -221,5 +236,30 @@ public class EntityFeatureModuleTest {
     when(result.getWordCloudForEntity(entity2)).thenReturn(wordCloud);
 
     return result;
+  }
+
+  private EntityAttributes createEntityAttributes() {
+    final Map<BasicEntity, Set<Attribute>> entityToAttributes = new HashMap<>();
+    Set<Attribute> forEntity1 = new HashSet<>();
+    forEntity1.add(new Attribute(AttributeType.GENDER, GENDER1));
+    entityToAttributes.put(entity1, forEntity1);
+
+    EntityAttributes result = mock(EntityAttributes.class);
+    when(result.getAttributesForEntity(entity1)).thenReturn(forEntity1);
+    when(result.getAttributesForEntity(entity2)).thenReturn(new HashSet<Attribute>());
+
+    return result;
+  }
+
+  private Attribute getGenderAttribute(Entity entity) {
+    Set<Attribute> attributesForEntity = entity.getAttributes();
+
+    for (Attribute attribute : attributesForEntity) {
+      if (attribute.getType() == AttributeType.GENDER) {
+        return attribute;
+      }
+    }
+
+    return null;
   }
 }
