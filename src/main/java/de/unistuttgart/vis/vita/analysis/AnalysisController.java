@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
+
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -68,10 +69,11 @@ public class AnalysisController {
    * cores the CPU has and optimize it for multi-threading.
    *
    * @param filePath The path to the document.
+   * @param fileName The original document name.
    * @return The document id.
    */
-  public synchronized String scheduleDocumentAnalysis(Path filePath) {
-    Document document = createDocument(filePath);
+  public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName) {
+    Document document = createDocument(filePath, fileName);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
@@ -108,9 +110,10 @@ public class AnalysisController {
     });
   }
 
-  private Document createDocument(Path filePath) {
+  private Document createDocument(Path filePath, String fileName) {
     Document document = new Document();
-    document.getMetadata().setTitle(filePath.getFileName().toString());
+    document.getMetadata().setTitle(fileName);
+    document.setFileName(fileName);
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
     EntityManager em = null;
