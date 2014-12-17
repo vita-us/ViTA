@@ -18,10 +18,18 @@ body#document-view {
   top: 0;
   
   .document-title {
-    line-height: 1.1em;
-    max-height: 2.2em;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+#chapters-toggle-button {
+  float: right;
+  margin-top: 12px;
+  
+  @media (min-width: 768px) {
+    display: none;
   }
 }
 
@@ -97,9 +105,25 @@ body#document-view {
   }
  
   .document-view-text {
+    background-color: @light-grey-background-color;
+  
+    .chapter-headline, .part-headline {
+      font-weight: bold;
+    }
+    
+    .chapter-headline {
+      padding: 5px;
+      border-bottom: 1px solid @border-color;
+      border-top: 1px solid @border-color;
+      background-color: white;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    
     span {
       background: @default-character-ranking-color;
     }
+    
     span.occurrence {
       background: @document-view-occurrence-color;
     }
@@ -131,10 +155,25 @@ body#document-view {
     span.ranking-7 {
       background: @character-ranking-color-7;
     }
+    
     span.selected {
       background: black;
       color: white;
     }
+  }
+
+  .dv-menu-fixed-wrap {
+    display: none;
+    position: fixed;
+    width: 50%;
+    overflow-y: auto;
+    background: white;
+    border-left: 1px solid @border-color;
+    border-right: 1px solid @border-color;
+    top: @document-view-header-height;
+    bottom: @document-view-footer-height;
+    right: 0;
+    padding-left: 10px;
   }
 
   @media (min-width: 768px) {
@@ -143,17 +182,18 @@ body#document-view {
       height: 100%;
       
       .dv-menu-fixed-wrap {
-        position: fixed;
+        display: block !important;
         width: inherit;
+        max-height: none;
+        border: 0;
         border-right: 20px solid transparent;
-        top: @document-view-header-height;
-        bottom: @document-view-footer-height;
-        overflow-y: auto;
+        background: none;
+        right: initial;
+        padding-left: 0;
       }
     }
     
     .document-view-text {
-      background-color: @light-grey-background-color;
       border-left: 1px dashed @border-color;
       min-height: 100%;
     }
