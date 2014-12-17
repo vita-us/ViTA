@@ -1,19 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.common.collect.ImmutableMap;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -30,15 +16,35 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class EntityFeatureModuleTest {
   private static final String NAME1_1 = "Frodo";
   private static final String NAME1_2 = "Mr. Frodo";
+  private static final String GENDER1 = "male";
   private static final String NAME2 = "Hobbiton";
   private static final int OCCURANCE1_START = 10;
   private static final int OCCURANCE1_END = 20;
@@ -106,6 +112,10 @@ public class EntityFeatureModuleTest {
     Attribute attribute = place.getAttributes().iterator().next();
     assertThat(attribute.getContent(), is(NAME2));
     assertThat(attribute.getType(), is(AttributeType.NAME));
+
+    Person person1 = document.getContent().getPersons().get(0);
+    Attribute gender1 = getGenderAttribute(person1);
+    assertThat(gender1.getContent(), is("male"));
   }
 
   @Test
@@ -175,6 +185,7 @@ public class EntityFeatureModuleTest {
     entity1.getOccurences().add(new TextSpan(chapter, OCCURANCE2_START, OCCURANCE2_END));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
+    entity1.getAttributes().add(new Attribute(AttributeType.GENDER, GENDER1));
     list.add(entity1);
 
     entity2 = new BasicEntity();
@@ -215,5 +226,17 @@ public class EntityFeatureModuleTest {
     when(result.getWordCloudForEntity(entity2)).thenReturn(wordCloud);
 
     return result;
+  }
+
+  private Attribute getGenderAttribute(Entity entity) {
+    Set<Attribute> attributesForEntity = entity.getAttributes();
+
+    for (Attribute attribute : attributesForEntity) {
+      if (attribute.getType() == AttributeType.GENDER) {
+        return attribute;
+      }
+    }
+
+    return null;
   }
 }
