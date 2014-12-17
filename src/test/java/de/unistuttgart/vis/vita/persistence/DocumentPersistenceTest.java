@@ -1,7 +1,9 @@
 package de.unistuttgart.vis.vita.persistence;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -161,6 +163,7 @@ public class DocumentPersistenceTest extends AbstractPersistenceTest {
   @Test
   public void testNamedQueries() {
     Document doc = testData.createTestDocument(1);
+    doc.setUploadDate(new Date());
 
     em.persist(doc);
     startNewTransaction();
@@ -174,6 +177,9 @@ public class DocumentPersistenceTest extends AbstractPersistenceTest {
     testData.checkData(readDocument, 1);
 
     String id = readDocument.getId();
+
+    // check whether the persisted date is the upload date of the document
+    assertThat(doc.getUploadDate(), is(readDocument.getUploadDate()));
 
     TypedQuery<Document> idQ = em.createNamedQuery("Document.findDocumentById", Document.class);
     idQ.setParameter("documentId", id);
