@@ -9,7 +9,7 @@ describe('Fingerprint Directive', function() {
 
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET(
-            'webapi/documents/123/entities/relations/occurrences?entityIds=456,789&steps=0').respond(
+            new RegExp('webapi/documents/123/entities/relations/occurrences\\?entityIds=456,789.*')).respond(
             TestData.fingerprint);
 
     scope.entityIds = ['456', '789'];
@@ -34,6 +34,11 @@ describe('Fingerprint Directive', function() {
             TestData.parts.parts[0].chapters.length * 2);
   }));
 
+  it('should display the correct amount of part separators', inject(function(TestData) {
+    expect(element.find('.part-separators').children().length).toBe(
+        TestData.parts.parts.length);
+  }));
+
   it('should update the number of occurrence rects when data changes', inject(function(TestData,
           _$httpBackend_) {
     $httpBackend = _$httpBackend_;
@@ -43,7 +48,7 @@ describe('Fingerprint Directive', function() {
     var updatedFingerprintData = TestData.fingerprint;
     updatedFingerprintData.occurrences = newOccurrences;
 
-    $httpBackend.expectGET('webapi/documents/123/entities/relations/occurrences?entityIds=999&steps=0')
+    $httpBackend.expectGET(new RegExp('webapi/documents/123/entities/relations/occurrences\\?entityIds=999.*'))
             .respond(updatedFingerprintData);
 
     scope.entityIds = ['999'];
@@ -76,6 +81,13 @@ describe('Fingerprint Directive', function() {
     element.scope().$apply();
 
     expect(element.find('.chapter-separators').children().length).toBe(0);
+  });
+
+  it('should display no part separator if the parts are undefined', function() {
+    scope.parts = undefined;
+    element.scope().$apply();
+
+    expect(element.find('.part-separators').children().length).toBe(0);
   });
 
 });
