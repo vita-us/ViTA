@@ -40,7 +40,9 @@
       }
     };
 
-    var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
+    var linkWidthScale = d3.scale.linear()
+        .domain([0, 1])
+        .range([4, 16]);
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -89,8 +91,8 @@
           .size([width, height])
           .charge(-800)
           .gravity(0.04)
+          .linkDistance(150)
           .linkStrength(0.2)
-          .linkDistance(calculateLinkDistance)
           .on('tick', setNewPositions);
     }
 
@@ -187,11 +189,6 @@
       };
     }
 
-    function calculateLinkDistance(link) {
-      var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
-      return MAXIMUM_LINK_DISTANCE - variableDistance * link.weight;
-    }
-
     function setNewPositions() {
       nodes.attr('transform', function(d) {
         return 'translate(' + d.x + ',' + d.y + ')';
@@ -215,6 +212,9 @@
       links.exit().remove();
       links.enter().append('line')
           .classed('link', true)
+          .style('stroke-width', function(d) {
+            return linkWidthScale(d.weight) + "px";
+          })
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});
