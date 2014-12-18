@@ -30,19 +30,31 @@ public abstract class AbstractLine implements Line {
   protected static final Pattern TABLEOFCONTENTSPATTERN = Pattern.compile(TABLEOFCONTENTS,
       Pattern.CASE_INSENSITIVE);
 
-  private static final String NUMBER = "(" + WHITESPACE + "((\\d+)|([IVXML]+))" + WHITESPACE
-      + "\\p{Punct}?" + WHITESPACE + ")";
+  private static final String ARABICNUMBER = "(\\d+)";
+  private static final String ROMANNUMBER = "([IVXML]+)";
+  private static final String NUMBER = "(" + WHITESPACE + "(" + ARABICNUMBER + "|" + ROMANNUMBER
+      + ")" + WHITESPACE + "\\p{Punct}?" + WHITESPACE + ")";
   private static final String CHAPTER = "(" + WHITESPACE + "(?i)Chapter(?-i)" + WHITESPACE + ")";
   private static final String ONEQUOTE = WHITESPACE + "(((\").*(\"))|((\').*(\')))" + WHITESPACE;
-  private static final String PRECHAPTER = "(" + CHAPTER + NUMBER + "?" + "|" + NUMBER + CHAPTER
-      + "?" + ")";
-
+  private static final String RESTRICTIVEPRECHAPTER = "(" +"("+ CHAPTER + NUMBER + "?"+ ")"+ "|"
+      +"(" + NUMBER  + CHAPTER +")"+ "(" + ROMANNUMBER + ")"+ ")";;
+  private static final String PRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" +")"+ "|" + "("+ NUMBER + CHAPTER
+      + "?" + ")"+")";
+  protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + CHAPTER + ".*");
+  protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + CHAPTER + NUMBER
+      + ".*");
+  protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + "(" + ROMANNUMBER + "|" + "(" + ARABICNUMBER +"|" + "("
+      + ROMANNUMBER + "([^\\S\\p{Graph}])"+")" + ")" + ".*"+ ")");
+  protected static final Pattern SUBTYPENUMBERCHAPTERPATTERN = Pattern.compile(NUMBER + CHAPTER
+      + ".*");
+  protected static final Pattern ARABICNUMBERPATTERN = Pattern.compile(WHITESPACE + ARABICNUMBER + WHITESPACE);
+  
   private static final String SIMPLEBIGHEADING = "(" + WHITESPACE
       + "([\\p{Upper}\\d][^\\p{Lower}]*)" + WHITESPACE + ")";
   private static final String BIGHEADINGQUOTES = "(" + WHITESPACE + "((\"" + SIMPLEBIGHEADING
       + "\")" + "|" + "(\'" + WHITESPACE + SIMPLEBIGHEADING + WHITESPACE + "\'))" + WHITESPACE
       + ")";
-  private static final String BIGHEADING = "(" + PRECHAPTER + "|" + "(" + PRECHAPTER+ "?" + "("
+  private static final String BIGHEADING = "(" + RESTRICTIVEPRECHAPTER + "|" + "(" + PRECHAPTER + "?" + "("
       + SIMPLEBIGHEADING + "|" + BIGHEADINGQUOTES + ")" + ")" + ")";
   private static final String EXTENDEDBIGHEADING = WHITESPACE + "_" + "(" + BIGHEADING + "|"
       + BIGHEADINGQUOTES + ")" + "_" + WHITESPACE;
@@ -54,7 +66,8 @@ public abstract class AbstractLine implements Line {
   private static final String SIMPLESMALLHEADINGLESSRESTRICTED = "(" + WHITESPACE + "\\p{Upper}.*"
       + WHITESPACE + ")";
   private static final String SMALLHEADING = "(" + PRECHAPTER + "|" + "(" + PRECHAPTER + "("
-      + SIMPLESMALLHEADINGLESSRESTRICTED + "|" + ONEQUOTE + ")" + ")" + "|" + SIMPLESMALLHEADING + "|" + ONEQUOTE + ")";
+      + SIMPLESMALLHEADINGLESSRESTRICTED + "|" + ONEQUOTE + ")" + ")" + "|" + SIMPLESMALLHEADING
+      + "|" + ONEQUOTE + ")";
   private static final String EXTENDEDSMALLHEADING = WHITESPACE + "_" + SMALLHEADING + "_"
       + WHITESPACE;
   protected static final Pattern SMALLHEADINGPATTERN = Pattern.compile(SMALLHEADING + "|"
@@ -65,7 +78,9 @@ public abstract class AbstractLine implements Line {
 
   protected String text;
   protected Set<LineType> type;
+  protected LineSubType subType;
   protected boolean automatedTypeComputation;
+  protected boolean hasSubtype;
 
   /**
    * Creates a simple Line with activated type computation.
@@ -87,7 +102,8 @@ public abstract class AbstractLine implements Line {
   public AbstractLine(String text, Boolean automatedTypeComputation) {
     super();
     this.type = new HashSet<LineType>();
-    type.add(LineType.UNKNOWN);
+    this.type.add(LineType.UNKNOWN);
+    this.hasSubtype = false;
     this.text = text;
     this.automatedTypeComputation = automatedTypeComputation;
     computeType();
@@ -136,6 +152,16 @@ public abstract class AbstractLine implements Line {
   public void setAutomatedTypeComputation(boolean automatedTypeComputation) {
     this.automatedTypeComputation = automatedTypeComputation;
     computeType();
+  }
+
+  @Override
+  public boolean hasSubType() {
+    return this.isType(LineSubType.getTypesWithSubtypes()) && this.hasSubtype;
+  }
+
+  @Override
+  public boolean isSubType(LineSubType subType) {
+    return this.hasSubType() && this.subType.equals(subType);
   }
 
   @Override

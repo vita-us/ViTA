@@ -35,7 +35,7 @@ public class ManualImportModuleTest {
 
   // Folder Paths
   private static final String TXT_FOLDER_PATH =
-      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergtxts\\";
+      "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergtxts\\new books\\";
   private static final String EPUB_FOLDER_PATH =
       "C:\\users\\sebastian\\dropbox\\uni-privat\\gutenbergepubs\\";
 

@@ -6,6 +6,7 @@ package de.unistuttgart.vis.vita.importer.util;
  * for further analysis of the text.
  */
 public interface Line {
+
   /**
    * Gets the text of the Line.
    *
@@ -28,7 +29,7 @@ public interface Line {
    * @return true: type fits to text; false: does not fit to the text
    */
   public boolean isType(LineType type);
-  
+
   /**
    * Checks if the line-text fits to one of the given types.
    * 
@@ -36,7 +37,7 @@ public interface Line {
    * @return true: at least one type fits to text; false: none of the types fits to the text
    */
   public boolean isType(Iterable<LineType> types);
-  
+
   /**
    * Sets the type of the text. Should only be used if automated type computation is deactivated. To
    * set the type manually should be an exception, if it is impossible for the line to compute its
@@ -47,11 +48,29 @@ public interface Line {
   public void setType(LineType type);
 
   /**
+   * Checks whether this line has a subtype or not.
+   * 
+   * @return true: has a subtype; false: has no subtype.
+   */
+  public boolean hasSubType();
+
+  /**
+   * Checks if the line-text fits to the given subtype.
+   * 
+   * @param subType the given subtype
+   * @return true: fits to the given subtype; false: fits not to the given subtype, also if there is
+   *         none.
+   */
+  public boolean isSubType(LineSubType subType);
+
+
+  /**
    * Checks if the automated type computation is activated.
    *
    * @return true: is activated. false: is deactivated.
    */
   public boolean isAutomatedTypeComputation();
+
   /**
    * Activates/Deactivates the automated type computation. If activated, will compute the current
    * type instantly.

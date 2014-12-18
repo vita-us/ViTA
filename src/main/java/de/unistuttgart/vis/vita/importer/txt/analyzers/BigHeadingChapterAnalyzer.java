@@ -12,7 +12,7 @@ import de.unistuttgart.vis.vita.importer.util.LineType;
  * 'chapters' will be attached to the Chapters before. Preface and Contents will be eliminated from
  * the analysis.
  */
-public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
+public class BigHeadingChapterAnalyzer extends AbstractSubtypeExtendedChapterAnalyzer {
 
   private int startOfAnalysis;
 
@@ -38,6 +38,7 @@ public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
     useTwoWhitelinesBeforeRule(true);
     useEmptyChapterRule(true);
     useLittleChapterRule(minimumChapterSize, false);
+    useSubtypeReductionRule();
     return this.chapterPositions;
   }
 }

@@ -426,7 +426,7 @@ public class LineTxtTest {
   }
 
   @Test
-  public void testSmallHeadingTypeExtended() {
+  public void testSmallHeadingTypeExtended() {   
     String lineText = "_13. The \"Agiasmo\":_";
     Line testLine = new TxtModuleLine(lineText, true);
     assertTrue(testLine.isType(LineType.SMALLHEADING));
@@ -436,6 +436,10 @@ public class LineTxtTest {
     assertTrue(testLine.isType(LineType.SMALLHEADING));
 
     lineText = "_13. Maria's Wedding:_ ";
+    testLine = new TxtModuleLine(lineText, true);
+    assertTrue(testLine.isType(LineType.SMALLHEADING));
+    
+    lineText = "_The Marriage of King Arthur and Queen Guinevere, and the Founding of the Round Table--The Adventure of the Hart and Hound_";
     testLine = new TxtModuleLine(lineText, true);
     assertTrue(testLine.isType(LineType.SMALLHEADING));
   }

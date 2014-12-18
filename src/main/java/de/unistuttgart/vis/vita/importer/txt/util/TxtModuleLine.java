@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.util;
 
 import de.unistuttgart.vis.vita.importer.util.AbstractLine;
+import de.unistuttgart.vis.vita.importer.util.LineSubType;
 import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
@@ -34,11 +35,14 @@ public class TxtModuleLine extends AbstractLine {
   public void computeType() {
     if (automatedTypeComputation) {
       this.type.clear();
+      this.hasSubtype = false;
       if (matchesPattern(SMALLHEADINGPATTERN)) {
         this.type.add(LineType.SMALLHEADING);
+        computeSubtype();
       }
-      if (matchesPattern(BIGHEADINGPATTERN)) {
+      if (matchesPattern(BIGHEADINGPATTERN) && !matchesPattern(ARABICNUMBERPATTERN)) {
         this.type.add(LineType.BIGHEADING);
+        computeSubtype();
       }
       if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
         this.type.add(LineType.TABLEOFCONTENTS);
@@ -57,11 +61,29 @@ public class TxtModuleLine extends AbstractLine {
       }
       if (matchesPattern(WHITESPACEPATTERN)) {
         this.type.clear();
+        this.hasSubtype = false;
         this.type.add(LineType.WHITELINE);
       }
       if(type.isEmpty()){
         this.type.add(LineType.TEXT);
       }
+    }
+  }
+  
+  // TODO:
+  private void computeSubtype(){
+    if(matchesPattern(SUBTYPECHAPTERNUMBERPATTERN)){
+      this.hasSubtype = true;
+      this.subType = LineSubType.CHAPTER_NUMBER;
+    }else if(matchesPattern(SUBTYPENUMBERCHAPTERPATTERN)){
+      this.hasSubtype = true;
+      this.subType = LineSubType.NUMBER_CHAPTER;
+    }else if(matchesPattern(SUBTYPENUMBERPATTERN)){
+      this.hasSubtype = true;
+      this.subType = LineSubType.NUMBER;
+    }else if(matchesPattern(SUBTYPECHAPTERPATTERN)){
+      this.hasSubtype = true;
+      this.subType = LineSubType.CHAPTER;
     }
   }
 }
