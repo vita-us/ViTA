@@ -46,15 +46,15 @@ public abstract class AbstractLine implements Line {
       + "|" + "(" + NUMBER + CHAPTER + ")" + "(" + ROMANNUMBER + ")" + ")";
   private static final String PRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" + ")" + "|" + "("
       + NUMBER + CHAPTER + "?" + ")" + ")";
-  protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
+  private static final String POSSIBLESTARTSIGNS = "(_|\"|')*";
+  protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + POSSIBLESTARTSIGNS + WHITESPACE + CHAPTER
       + ".*");
-  protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
+  protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + POSSIBLESTARTSIGNS + WHITESPACE + CHAPTER
       + NUMBER + ".*");
-  protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + "("
-      + ROMANNUMBER + "|" + "(" + ARABICNUMBER + "|" + "(" + ROMANNUMBER
-      + "(([^\\S\\p{Graph}])|\\p{Punct})"
+  protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + POSSIBLESTARTSIGNS + WHITESPACE + "("
+      + ROMANNUMBER + "|" + "(" + ARABICNUMBER + "|" + "(" + ROMANNUMBER + "(([^\\S\\p{Graph}])|\\p{Punct})"
       + ")" + ")" + ".*" + ")");
-  protected static final Pattern SUBTYPENUMBERCHAPTERPATTERN = Pattern.compile(NUMBER + CHAPTER
+  protected static final Pattern SUBTYPENUMBERCHAPTERPATTERN = Pattern.compile(WHITESPACE + POSSIBLESTARTSIGNS + NUMBER + CHAPTER
       + ".*");
   protected static final Pattern ARABICNUMBERPATTERN = Pattern.compile(WHITESPACE + ARABICNUMBER
       + WHITESPACE);
