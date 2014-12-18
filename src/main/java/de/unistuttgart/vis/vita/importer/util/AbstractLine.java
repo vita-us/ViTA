@@ -51,7 +51,8 @@ public abstract class AbstractLine implements Line {
   protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
       + NUMBER + ".*");
   protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + "("
-      + ROMANNUMBER + "|" + "(" + ARABICNUMBER + "|" + "(" + ROMANNUMBER + "([^\\S\\p{Graph}])"
+      + ROMANNUMBER + "|" + "(" + ARABICNUMBER + "|" + "(" + ROMANNUMBER
+      + "(([^\\S\\p{Graph}])|\\p{Punct})"
       + ")" + ")" + ".*" + ")");
   protected static final Pattern SUBTYPENUMBERCHAPTERPATTERN = Pattern.compile(NUMBER + CHAPTER
       + ".*");
