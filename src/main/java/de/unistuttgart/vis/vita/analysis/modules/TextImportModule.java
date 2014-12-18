@@ -13,7 +13,6 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.importer.output.BookBuilder;
-import de.unistuttgart.vis.vita.importer.output.DocumentPartBuilder;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.AutomatedChapterDetection;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.FullTextChapterAnalyzer;
 import de.unistuttgart.vis.vita.importer.txt.analyzers.MetadataAnalyzer;
@@ -23,11 +22,8 @@ import de.unistuttgart.vis.vita.importer.txt.input.TextSplitter;
 import de.unistuttgart.vis.vita.importer.txt.util.TextImportResult;
 import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.util.Line;
-import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 @AnalysisModule(weight = 0.1)
 public class TextImportModule extends Module<ImportResult> {

@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.importer.util.LineSubType;
@@ -23,7 +24,7 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
   private static final float MINIMAL_STRONG_OCCURENCE_PERCENTAGE = 0.8f;
 
   private int numberOfChapters;
-  private HashMap<LineSubType, Integer> numberOfOccurenceMap = new HashMap<LineSubType, Integer>();
+  private Map<LineSubType, Integer> numberOfOccurenceMap = new HashMap<LineSubType, Integer>();
 
   /**
    * Initialize the Extended Abstract Chapter Analyzer and set the lines to analyze.
@@ -55,7 +56,7 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
     float maxCountPercentage = computeMaxCountPercentage();
     if (useWeakRule(maxCountPercentage)) {
       if (useStrongRule(maxCountPercentage)) {
-        LineSubType maxSubType = GetSubTypeWithHighestCount();
+        LineSubType maxSubType = getSubTypeWithHighestCount();
         reduceChapterPosition(true, maxSubType);
       } else {
         reduceChapterPosition(false, null);
@@ -85,9 +86,8 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
       } else {
         isBadChapter = !linesHaveSubtype(headingLines);
       }
-      if (isBadChapter) {
-        // Do not delete first chapter
-        if (chapterNumber != 1) {
+      // Do not delete first chapter
+      if (isBadChapter && (chapterNumber != 1)) {
           changedChapterPosition = true;
           // delete chapter and add as text of previous chapter
           int previousChapterNumber = chapterNumber - 1;
@@ -97,7 +97,6 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
           this.chapterPositions.deleteChapter(chapterNumber);
           this.chapterPositions.changeChapterData(previousChapterNumber, newStartOfHeading,
               newStartOfText, newEndOfText);
-        }
       }
       // when a chapter has been deleted, the next chapter is at the old position.
       if (!changedChapterPosition) {
@@ -129,7 +128,7 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
    * 
    * @return the subtype.
    */
-  private LineSubType GetSubTypeWithHighestCount() {
+  private LineSubType getSubTypeWithHighestCount() {
     int maxCount = 0;
     LineSubType maxType = null;
     for (LineSubType subType : numberOfOccurenceMap.keySet()) {
@@ -172,7 +171,7 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
    * @return true: At least weak rule should be used. false: Condition for weak rule not fulfilled.
    */
   private boolean useWeakRule(float maxCountPercentage) {
-    return (MINIMAL_WEAK_OCCURENCE_PERCENTAGE <= maxCountPercentage);
+    return MINIMAL_WEAK_OCCURENCE_PERCENTAGE <= maxCountPercentage;
   }
 
   /**
@@ -183,7 +182,7 @@ public abstract class AbstractSubtypeExtendedChapterAnalyzer extends AbstractCha
    * @return true: Strong rule should be used. false: Condition for strong rule not fulfilled.
    */
   private boolean useStrongRule(float maxCountPercentage) {
-    return (MINIMAL_STRONG_OCCURENCE_PERCENTAGE <= maxCountPercentage);
+    return MINIMAL_STRONG_OCCURENCE_PERCENTAGE <= maxCountPercentage;
   }
 
   /**

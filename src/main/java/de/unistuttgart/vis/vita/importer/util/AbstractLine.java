@@ -43,7 +43,7 @@ public abstract class AbstractLine implements Line {
   private static final String CHAPTER = "(" + WHITESPACE + "(?i)Chapter(?-i)" + WHITESPACE + ")";
   private static final String ONEQUOTE = WHITESPACE + "(((\").*(\"))|((\').*(\')))" + WHITESPACE;
   private static final String RESTRICTIVEPRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" + ")"
-      + "|" + "(" + NUMBER + CHAPTER + ")" + "(" + ROMANNUMBER + ")" + ")";;
+      + "|" + "(" + NUMBER + CHAPTER + ")" + "(" + ROMANNUMBER + ")" + ")";
   private static final String PRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" + ")" + "|" + "("
       + NUMBER + CHAPTER + "?" + ")" + ")";
   protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
@@ -140,8 +140,8 @@ public abstract class AbstractLine implements Line {
   @Override
   public boolean isType(Iterable<LineType> types) {
     boolean found = false;
-    for (LineType type : types) {
-      if (this.isType(type)) {
+    for (LineType currentType : types) {
+      if (this.isType(currentType)) {
         found = true;
         break;
       }
