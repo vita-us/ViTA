@@ -43,7 +43,11 @@
     var radiusScale = d3.scale.linear()
         .range([20, 40]);
 
-    var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
+    var linkWidthScale = d3.scale.linear()
+        .domain([0, 1])
+        .range([4, 16]);
+
+    var VISIBLE_LINK_LENGTH = 160;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -212,12 +216,9 @@
     }
 
     function calculateLinkDistance(link) {
-      var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
-      var visibleLinkLength = MAXIMUM_LINK_DISTANCE - variableDistance * link.weight;
-
       /* The links start from the center of a node.
        * That's why we add the radius of both nodes to let them look equally long. */
-      return link.source.radius + visibleLinkLength + link.target.radius;
+      return link.source.radius + VISIBLE_LINK_LENGTH + link.target.radius;
     }
 
     function setNewPositions() {
@@ -238,11 +239,17 @@
 
     function redrawElements(graphData, showFingerprint) {
       links = graph.select('#linkGroup').selectAll('.link')
-          .data(graphData.links);
+          .data(graphData.links, function(link) {
+            // Links are uniquely identified by these three attributes
+            return link.source.id + link.target.id + link.weight;
+          });
 
       links.exit().remove();
       links.enter().append('line')
           .classed('link', true)
+          .style('stroke-width', function(d) {
+            return linkWidthScale(d.weight) + "px";
+          })
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});

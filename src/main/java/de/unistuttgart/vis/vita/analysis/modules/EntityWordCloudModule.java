@@ -36,15 +36,16 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int MAX_COUNT = 100;
 
   @Override
-  public EntityWordCloudResult execute(ModuleResultProvider results, ProgressListener progressListener)
-      throws IOException {
+  public EntityWordCloudResult execute(ModuleResultProvider results,
+      ProgressListener progressListener) throws IOException {
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
+
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
     }
 
     return new EntityWordCloudResult() {
@@ -55,7 +56,8 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity) throws IOException {
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
+      throws IOException {
     List<TextSpan> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
 
@@ -67,17 +69,16 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
     for (TextSpan span : spans) {
       String text = span.getStart().getChapter().getText();
-      String substr = text.substring(span.getStart().getLocalOffset(), span.getEnd().getLocalOffset());
+      String substr =
+          text.substring(span.getStart().getLocalOffset(), span.getEnd().getLocalOffset());
 
       String[] tokens = tokenize(substr);
 
       // Do not include first and last token, they may not be complete
       for (int i = 1; i < tokens.length - 1; i++) {
         String token = tokens[i].trim();
-        if (!StringUtils.isEmpty(token)
-            && token.length() > 1 // additional "stop words"
-            && !entityNameTokens.contains(token)
-            && !StopWordList.getStopWords().contains(token)) {
+        if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
+            && !entityNameTokens.contains(token) && !StopWordList.getStopWords().contains(token)) {
           if (frequencies.containsKey(token)) {
             frequencies.put(token, frequencies.get(token) + 1);
           } else {
@@ -91,9 +92,13 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     for (Map.Entry<String, Integer> entry : frequencies.entrySet()) {
       items.add(new WordCloudItem(entry.getKey(), entry.getValue()));
     }
+
     Collections.sort(items, Collections.reverseOrder());
     if (items.size() > MAX_COUNT)
       items = items.subList(0, MAX_COUNT);
+
+    setWordCloudItemsEntitiyId(items, entities);
+
     return new WordCloud(items);
   }
 
@@ -107,5 +112,24 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       spans.add(span.widen(100));
     }
     return TextSpan.normalizeOverlaps(spans);
+  }
+
+  /**
+   * Sets the entity id of the word cloud item if the entity id for this item is existing
+   * 
+   * @param wordCloud
+   * @param basicEntities
+   */
+  private void setWordCloudItemsEntitiyId(List<WordCloudItem> items,
+      Collection<BasicEntity> basicEntities) {
+    for (WordCloudItem wordCloudItem : items) {
+      for (BasicEntity basicEntity : basicEntities) {
+        for (Attribute attribute : basicEntity.getNameAttributes()) {
+          if (wordCloudItem.getWord().equalsIgnoreCase(attribute.getContent())) {
+            wordCloudItem.setEntityId(basicEntity.getEntityId());
+          }
+        }
+      }
+    }
   }
 }

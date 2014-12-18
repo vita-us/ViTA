@@ -9,7 +9,8 @@ public enum AttributeType {
   
   @XmlEnumValue("age") AGE, 
   @XmlEnumValue("name") NAME, 
-  @XmlEnumValue("size") SIZE, 
+  @XmlEnumValue("size") SIZE,
+  @XmlEnumValue("gender") GENDER,
   @XmlEnumValue("unknown") UNKNOWN;
 
   @Override
@@ -24,6 +25,9 @@ public enum AttributeType {
         break;
       case SIZE:
         textualRepresentation = "Size";
+        break;
+      case GENDER:
+        textualRepresentation = "Gender";
         break;
       default:
         textualRepresentation = "Unknown";

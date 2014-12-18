@@ -14,9 +14,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * document.
  */
 @Entity
-@Table(indexes={
-    @Index(columnList="frequency")
-  })
+@Table(indexes = {@Index(columnList = "frequency")})
 public class WordCloudItem extends AbstractEntityBase implements Comparable<WordCloudItem> {
 
   // constants
@@ -29,6 +27,9 @@ public class WordCloudItem extends AbstractEntityBase implements Comparable<Word
   @XmlElement
   private int frequency;
 
+  @XmlElement
+  private String entityId;
+
   /**
    * Creates a new item of a WordCloud without a word and frequency 0.
    */
@@ -39,7 +40,7 @@ public class WordCloudItem extends AbstractEntityBase implements Comparable<Word
   /**
    * Creates a new item of a WordCloud with given word and frequency of usage.
    *
-   * @param pWord      - the word which should be shown in the WordCloud
+   * @param pWord - the word which should be shown in the WordCloud
    * @param pFrequency - how often this word occurs in the document
    */
   public WordCloudItem(String pWord, int pFrequency) {
@@ -88,7 +89,7 @@ public class WordCloudItem extends AbstractEntityBase implements Comparable<Word
       return false;
     }
 
-    WordCloudItem other = (WordCloudItem)obj;
+    WordCloudItem other = (WordCloudItem) obj;
     return other.word.equals(word) && other.frequency == frequency;
   }
 
@@ -111,4 +112,23 @@ public class WordCloudItem extends AbstractEntityBase implements Comparable<Word
 
     return Integer.compare(frequency, o.frequency);
   }
+
+  /**
+   * Gets the entity id of this WordCloud item
+   * 
+   * @return the entity id of this WordCloud item
+   */
+  public String getEntityId() {
+    return entityId;
+  }
+
+  /**
+   * Sets the entity id for this item of the WordCloud.
+   *
+   * @param entityId - the entity id for this item of the WordCloud
+   */
+  public void setEntityId(String entityId) {
+    this.entityId = entityId;
+  }
+
 }
