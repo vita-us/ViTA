@@ -11,56 +11,67 @@ import java.util.regex.Pattern;
 public abstract class AbstractLine implements Line {
   // Patterns for Types - static so only one has to be compiled for all existing Lines.
 
+  // pattern for whitespace-type
   private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
   protected static final Pattern WHITESPACEPATTERN = Pattern.compile(WHITESPACE);
 
+  // pattern for datadivider-type
   private static final String DATADIVIDER = WHITESPACE + "(\\*\\*\\*)(.*)(\\*\\*\\*)" + WHITESPACE;
   protected static final Pattern DATADIVIDERPATTERN = Pattern.compile(DATADIVIDER);
 
+  // pattern for markedheading-type
   private static final String MARKEDHEADING = WHITESPACE + "#.*";
   protected static final Pattern MARKEDHEADINGPATTERN = Pattern.compile(MARKEDHEADING);
 
+  // pattern for preface-type
   private static final String PREFACE = WHITESPACE + "((Preface)|(To\\s*the\\s*Reader))([\\.:])?"
       + WHITESPACE;
   protected static final Pattern PREFACEPATTERN = Pattern
       .compile(PREFACE, Pattern.CASE_INSENSITIVE);
 
+  // pattern for tableofcontents-type
   private static final String TABLEOFCONTENTS = WHITESPACE
       + "((Index)|(Contents)|(Table\\s*of\\s*Contents))([\\.:])?" + WHITESPACE;
   protected static final Pattern TABLEOFCONTENTSPATTERN = Pattern.compile(TABLEOFCONTENTS,
       Pattern.CASE_INSENSITIVE);
 
+  // pattern for subtypes
   private static final String ARABICNUMBER = "(\\d+)";
   private static final String ROMANNUMBER = "([IVXML]+)";
   private static final String NUMBER = "(" + WHITESPACE + "(" + ARABICNUMBER + "|" + ROMANNUMBER
       + ")" + WHITESPACE + "\\p{Punct}?" + WHITESPACE + ")";
   private static final String CHAPTER = "(" + WHITESPACE + "(?i)Chapter(?-i)" + WHITESPACE + ")";
   private static final String ONEQUOTE = WHITESPACE + "(((\").*(\"))|((\').*(\')))" + WHITESPACE;
-  private static final String RESTRICTIVEPRECHAPTER = "(" +"("+ CHAPTER + NUMBER + "?"+ ")"+ "|"
-      +"(" + NUMBER  + CHAPTER +")"+ "(" + ROMANNUMBER + ")"+ ")";;
-  private static final String PRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" +")"+ "|" + "("+ NUMBER + CHAPTER
-      + "?" + ")"+")";
-  protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + CHAPTER + ".*");
-  protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + CHAPTER + NUMBER
+  private static final String RESTRICTIVEPRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" + ")"
+      + "|" + "(" + NUMBER + CHAPTER + ")" + "(" + ROMANNUMBER + ")" + ")";;
+  private static final String PRECHAPTER = "(" + "(" + CHAPTER + NUMBER + "?" + ")" + "|" + "("
+      + NUMBER + CHAPTER + "?" + ")" + ")";
+  protected static final Pattern SUBTYPECHAPTERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
       + ".*");
-  protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + "(" + ROMANNUMBER + "|" + "(" + ARABICNUMBER +"|" + "("
-      + ROMANNUMBER + "([^\\S\\p{Graph}])"+")" + ")" + ".*"+ ")");
+  protected static final Pattern SUBTYPECHAPTERNUMBERPATTERN = Pattern.compile(WHITESPACE + CHAPTER
+      + NUMBER + ".*");
+  protected static final Pattern SUBTYPENUMBERPATTERN = Pattern.compile(WHITESPACE + "("
+      + ROMANNUMBER + "|" + "(" + ARABICNUMBER + "|" + "(" + ROMANNUMBER + "([^\\S\\p{Graph}])"
+      + ")" + ")" + ".*" + ")");
   protected static final Pattern SUBTYPENUMBERCHAPTERPATTERN = Pattern.compile(NUMBER + CHAPTER
       + ".*");
-  protected static final Pattern ARABICNUMBERPATTERN = Pattern.compile(WHITESPACE + ARABICNUMBER + WHITESPACE);
-  
+  protected static final Pattern ARABICNUMBERPATTERN = Pattern.compile(WHITESPACE + ARABICNUMBER
+      + WHITESPACE);
+
+  // pattern for bigheading-type
   private static final String SIMPLEBIGHEADING = "(" + WHITESPACE
       + "([\\p{Upper}\\d][^\\p{Lower}]*)" + WHITESPACE + ")";
   private static final String BIGHEADINGQUOTES = "(" + WHITESPACE + "((\"" + SIMPLEBIGHEADING
       + "\")" + "|" + "(\'" + WHITESPACE + SIMPLEBIGHEADING + WHITESPACE + "\'))" + WHITESPACE
       + ")";
-  private static final String BIGHEADING = "(" + RESTRICTIVEPRECHAPTER + "|" + "(" + PRECHAPTER + "?" + "("
-      + SIMPLEBIGHEADING + "|" + BIGHEADINGQUOTES + ")" + ")" + ")";
+  private static final String BIGHEADING = "(" + RESTRICTIVEPRECHAPTER + "|" + "(" + PRECHAPTER
+      + "?" + "(" + SIMPLEBIGHEADING + "|" + BIGHEADINGQUOTES + ")" + ")" + ")";
   private static final String EXTENDEDBIGHEADING = WHITESPACE + "_" + "(" + BIGHEADING + "|"
       + BIGHEADINGQUOTES + ")" + "_" + WHITESPACE;
   protected static final Pattern BIGHEADINGPATTERN = Pattern.compile(BIGHEADING + "|"
       + EXTENDEDBIGHEADING);
 
+  // pattern for smallheading-type
   private static final String SIMPLESMALLHEADING = "(" + WHITESPACE + "\\p{Upper}[^\\.\\?\\!]*.?"
       + WHITESPACE + ")";
   private static final String SIMPLESMALLHEADINGLESSRESTRICTED = "(" + WHITESPACE + "\\p{Upper}.*"
@@ -73,6 +84,7 @@ public abstract class AbstractLine implements Line {
   protected static final Pattern SMALLHEADINGPATTERN = Pattern.compile(SMALLHEADING + "|"
       + EXTENDEDSMALLHEADING);
 
+  // pattern for nospecialsigns-type
   private static final String NOSPECIALSIGNS = "\\p{Alnum}";
   protected static final Pattern NOSPECIALSIGNSPATTERN = Pattern.compile(NOSPECIALSIGNS);
 
@@ -156,7 +168,7 @@ public abstract class AbstractLine implements Line {
 
   @Override
   public boolean hasSubType() {
-    return this.isType(LineSubType.getTypesWithSubtypes()) && this.hasSubtype;
+    return this.hasSubtype;
   }
 
   @Override

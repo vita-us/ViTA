@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.importer.util.LineType;
  * Chapters will be built every time a Smallheading is found and there are at least two Whitelines
  * in front of it, and one Whiteline behind. The heading contains only one line and very small
  * 'chapters' will be attached to the Chapters before. Preface and Contents will be eliminated from
- * the analysis.
+ * the analysis. Tries to ignore false positive results depending on subtypes of heading lines.
  */
 public class SmallHeadingChapterAnalyzer extends AbstractSubtypeExtendedChapterAnalyzer {
 

@@ -2,8 +2,8 @@ package de.unistuttgart.vis.vita.importer.util;
 
 
 /**
- * A Line contains a text-line of the imported file. The Line class can compute a type for the line
- * for further analysis of the text.
+ * A Line contains a text-line of the imported file. The Line class can compute a type (and a
+ * subtype) for the line for further analysis of the text.
  */
 public interface Line {
 
@@ -63,7 +63,6 @@ public interface Line {
    */
   public boolean isSubType(LineSubType subType);
 
-
   /**
    * Checks if the automated type computation is activated.
    *
@@ -78,7 +77,6 @@ public interface Line {
    * @param automatedTypeComputation true: activate. false: deactivate.
    */
   public void setAutomatedTypeComputation(boolean automatedTypeComputation);
-
 
   /**
    * Computes the type for the text.
