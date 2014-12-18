@@ -4,6 +4,7 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -116,6 +117,8 @@ public class AnalysisController {
     document.setFileName(fileName);
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
+    document.setUploadDate(new Date());
+    
     EntityManager em = null;
     try {
       em = model.getEntityManager();

@@ -5,8 +5,10 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -21,7 +23,8 @@ import javax.persistence.OneToOne;
 @NamedQueries({
     @NamedQuery(name = "Document.findAllDocuments",
                 query = "SELECT d "
-                      + "FROM Document d"),
+                      + "FROM Document d "
+                      + "ORDER BY d.uploadDate DESC"),
 
     @NamedQuery(name = "Document.findDocumentById",
                 query = "SELECT d "
@@ -44,6 +47,9 @@ public class Document extends AbstractEntityBase {
   private AnalysisProgress progress;
 
   private String filePath;
+  
+  @Column(length = 1000)
+  private Date uploadDate;
 
   private String fileName;
 
@@ -138,6 +144,23 @@ public class Document extends AbstractEntityBase {
    */
   public void setFilePath(Path filePath) {
     this.filePath = filePath.toString();
+  }
+
+  /**
+   * Gets the upload date to the uploaded file
+   * @return the upload date to the uploaded file
+   */
+  public Date getUploadDate() {
+    return uploadDate;
+  }
+  
+  /**
+   * Sets the upload date of the uploaded file
+   * 
+   * @param uploadDate
+   */
+  public void setUploadDate(Date uploadDate) {
+    this.uploadDate = uploadDate;
   }
 
   public String getFileName() {
