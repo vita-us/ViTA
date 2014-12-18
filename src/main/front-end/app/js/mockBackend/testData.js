@@ -292,12 +292,14 @@
           'id': 'place10Paris',
           'displayName': 'Paris',
           'type': 'place',
-          'rankingValue': 1
+          'rankingValue': 1,
+          'frequency': 400
         }, {
           'id': 'place6Hamburg',
           'displayName': 'Hamburg',
           'type': 'place',
-          'rankingValue': 2
+          'rankingValue': 2,
+          'frequency': 20
         }]
       },
 
@@ -315,6 +317,7 @@
           'type': 'state'
         }],
         'rankingValue': 3,
+        'frequency': 20,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -664,6 +667,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 3,
+        'frequency': 301,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -679,12 +683,14 @@
           'id': 'person8Hugo',
           'displayName': 'Hugo',
           'type': 'person',
-          'rankingValue': 3
+          'rankingValue': 3,
+          'frequency': 301
         }, {
           'id': 'person10Bert',
           'displayName': 'Bert',
           'type': 'person',
-          'rankingValue': 7
+          'rankingValue': 7,
+          'frequency': 153
         }]
       },
 
@@ -706,6 +712,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 3,
+        'frequency': 914,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -719,6 +726,7 @@
         'type': 'person',
         'attributes': [],
         'rankingValue': 2,
+        'frequency': 1052,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -736,6 +744,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 7,
+        'frequency': 321,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -749,6 +758,7 @@
         'type': 'person',
         'attributes': [],
         'rankingValue': 70,
+        'frequency': 65,
         'entityRelations': [{
           'relatedEntity': 'person10Ben',
           'weight': 0.81234
@@ -772,6 +782,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 3,
+        'frequency': 300,
         'entityRelations': [{
           'relatedEntity': 'person10Bert',
           'weight': 0.81234
@@ -793,6 +804,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 2,
+        'frequency': 59,
         'entityRelations': [{
           'relatedEntity': 'person8Hugo',
           'weight': 0.222
@@ -807,6 +819,7 @@
           'attributetype': 'name'
         }],
         'rankingValue': 25,
+        'frequency': 192,
         'entityRelations': []
       }],
 

@@ -72,7 +72,7 @@
                   ? $scope.occurrences.length - 1 : $scope.selectedOccurrenceIndex;
         }
       }]);
-  
+
       $("#chapters-toggle-button").click(function() {
         var menu = $(".dv-menu-fixed-wrap");
         menu.toggle();
