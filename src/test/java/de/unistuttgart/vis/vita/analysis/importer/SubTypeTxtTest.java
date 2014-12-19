@@ -78,9 +78,6 @@ public class SubTypeTxtTest {
   public void testBigWeak() {
     assertEquals(7, chapterPositionBigWeak.size());
 
-    // TODO:
-    System.out.println(chapterPositionBigWeak.getEndOfText(4));
-
     int chapterNumber = 4;
 
     assertTrue(chapterPositionBigWeak.getStartOfHeading(chapterNumber) >= 61);
@@ -89,8 +86,8 @@ public class SubTypeTxtTest {
     assertTrue(chapterPositionBigWeak.getStartOfText(chapterNumber) >= 64);
     assertTrue(chapterPositionBigWeak.getStartOfText(chapterNumber) <= 65);
 
-    assertTrue(chapterPositionBigWeak.getEndOfText(chapterNumber) >= 102);
-    assertTrue(chapterPositionBigWeak.getEndOfText(chapterNumber) <= 104);
+    assertTrue(chapterPositionBigWeak.getEndOfText(chapterNumber) >= 81);
+    assertTrue(chapterPositionBigWeak.getEndOfText(chapterNumber) <= 83);
 
     chapterNumber = 5;
 
@@ -110,14 +107,14 @@ public class SubTypeTxtTest {
 
     int chapterNumber = 4;
 
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) >= 61);
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) <= 63);
+    assertTrue(chapterPositionSmallStrong.getStartOfHeading(chapterNumber) >= 61);
+    assertTrue(chapterPositionSmallStrong.getStartOfHeading(chapterNumber) <= 63);
 
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) >= 64);
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) <= 65);
+    assertTrue(chapterPositionSmallStrong.getStartOfText(chapterNumber) >= 64);
+    assertTrue(chapterPositionSmallStrong.getStartOfText(chapterNumber) <= 65);
 
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) >= 102);
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) <= 104);
+    assertTrue(chapterPositionSmallStrong.getEndOfText(chapterNumber) >= 102);
+    assertTrue(chapterPositionSmallStrong.getEndOfText(chapterNumber) <= 104);
   }
 
   @Test
@@ -126,25 +123,25 @@ public class SubTypeTxtTest {
 
     int chapterNumber = 4;
 
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) >= 61);
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) <= 63);
+    assertTrue(chapterPositionSmallWeak.getStartOfHeading(chapterNumber) >= 61);
+    assertTrue(chapterPositionSmallWeak.getStartOfHeading(chapterNumber) <= 63);
 
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) >= 64);
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) <= 65);
+    assertTrue(chapterPositionSmallWeak.getStartOfText(chapterNumber) >= 64);
+    assertTrue(chapterPositionSmallWeak.getStartOfText(chapterNumber) <= 65);
 
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) >= 102);
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) <= 104);
+    assertTrue(chapterPositionSmallWeak.getEndOfText(chapterNumber) >= 81);
+    assertTrue(chapterPositionSmallWeak.getEndOfText(chapterNumber) <= 83);
 
     chapterNumber = 5;
 
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) >= 82);
-    assertTrue(chapterPositionBigStrong.getStartOfHeading(chapterNumber) <= 84);
+    assertTrue(chapterPositionSmallWeak.getStartOfHeading(chapterNumber) >= 82);
+    assertTrue(chapterPositionSmallWeak.getStartOfHeading(chapterNumber) <= 84);
 
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) >= 85);
-    assertTrue(chapterPositionBigStrong.getStartOfText(chapterNumber) <= 86);
+    assertTrue(chapterPositionSmallWeak.getStartOfText(chapterNumber) >= 85);
+    assertTrue(chapterPositionSmallWeak.getStartOfText(chapterNumber) <= 86);
 
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) >= 123);
-    assertTrue(chapterPositionBigStrong.getEndOfText(chapterNumber) <= 125);
+    assertTrue(chapterPositionSmallWeak.getEndOfText(chapterNumber) >= 123);
+    assertTrue(chapterPositionSmallWeak.getEndOfText(chapterNumber) <= 125);
   }
 
 }
