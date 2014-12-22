@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -130,6 +132,32 @@ public class Attribute extends AbstractEntityBase {
    */
   public BasicAttribute toBasicAttribute() {
     return new BasicAttribute(getId(), type.toString(), content);
+  }
+
+  /**
+   * Merges the occurrences of all attributes with the same type and content
+   * @param attributes
+   * @return
+   */
+  public static Set<Attribute> merge(Iterable<Attribute> attributes) {
+    Set<Attribute> result = new HashSet<>();
+    for (Attribute attr : attributes) {
+      boolean exists = false;
+      for (Attribute existing : result) {
+        if (existing.getType() == attr.getType()
+            && existing.getContent().equals(attr.getContent())) {
+          existing.getOccurrences().addAll(attr.getOccurrences());
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        Attribute newAttr = new Attribute(attr.getType(), attr.getContent());
+        newAttr.getOccurrences().addAll(attr.getOccurrences());
+        result.add(newAttr);
+      }
+    }
+    return result;
   }
 
 }
