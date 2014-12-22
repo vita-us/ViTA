@@ -94,6 +94,10 @@
         }, function(response) {
           $scope.parts = response.parts;
         });
+        
+        $("#fp-separator-toggle-button").click(function() {
+          Page.toggleFingerprintSeparators();
+        });
       }]);
 
 })(angular);

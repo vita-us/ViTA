@@ -52,6 +52,10 @@
           $scope.activeFingerprints = [];
           $scope.activeFingerprintIds = [];
         };
+        
+        $("#fp-separator-toggle-button").click(function() {
+          Page.toggleFingerprintSeparators();
+        });
       }]);
 
 })(angular);
