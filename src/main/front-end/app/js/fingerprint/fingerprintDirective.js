@@ -6,8 +6,9 @@
   vitaDirectives.directive('fingerprint', ['DocumentViewSender',
                                            'RelationOccurrences',
                                            'Entity',
+                                           'FingerprintSynchronizer',
                                            '$routeParams',
-                          function(DocumentViewSender, RelationOccurrences, Entity, $routeParams) {
+                          function(DocumentViewSender, RelationOccurrences, Entity, FingerprintSynchronizer, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -52,6 +53,8 @@
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
 
       var occurrenceSteps = calculateOccurrenceSteps();
+      
+      FingerprintSynchronizer();
 
       $(window).resize(function() {
         width = $(element).width() - margin.left - margin.right;
