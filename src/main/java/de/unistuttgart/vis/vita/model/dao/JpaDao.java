@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 /**
@@ -15,7 +16,7 @@ import javax.persistence.TypedQuery;
  */
 public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
   
-  private Class<T> persistentClass;
+  private final Class<T> persistentClass;
   
   @Inject
   protected EntityManager em;
@@ -34,6 +35,13 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    */
   public Class<T> getPersistentClass() {
     return persistentClass;
+  }
+
+  /**
+   * @return the prefix for named queries
+   */
+  public String getNamedQueryPrefix() {
+    return persistentClass.getSimpleName();
   }
 
   /**
@@ -78,6 +86,16 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
   @Override
   public void remove(T entity) {
     em.remove(entity);
+  }
+
+  protected int performNamedCountQuery(String queryName, Object... queryParams) {
+    Query numberQuery = em.createNamedQuery(queryName);
+    int pos = 0;
+    for (Object parameter : queryParams) {
+      numberQuery.setParameter(pos, parameter);
+      pos++;
+    }
+    return (int) numberQuery.getSingleResult();
   }
   
 }
