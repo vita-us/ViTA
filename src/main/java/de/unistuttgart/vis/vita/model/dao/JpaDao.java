@@ -40,7 +40,7 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
   /**
    * @return the prefix for named queries
    */
-  public String getNamedQueryPrefix() {
+  public String getPersistentClassName() {
     return persistentClass.getSimpleName();
   }
 
