@@ -16,7 +16,7 @@
 
       var minBarWidth = 5;
 
-      // Defines how far the separators go above the fingerpint
+      // Defines how far the separators go above the fingerprint
       var partSeparatorTopLength = 10;
       var chapterSeparatorTopLength = 5;
 
@@ -37,7 +37,7 @@
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)
           .append('g')
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");;
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Add a rectangle for the background
       var backgroundRect = svgContainer.append('rect')
@@ -212,13 +212,13 @@
         }
 
         function onMouseWheel(event, delta) {
-          var selectedOccurence = getSelectedOccurrence();
-          if (!selectedOccurence.empty()) {
+          var selectedOccurrence = getSelectedOccurrence();
+          if (!selectedOccurrence.empty()) {
 
-            deselectOccurrence(selectedOccurence);
+            deselectOccurrence(selectedOccurrence);
 
             // Read the index from the data
-            var oldIndex = selectedOccurence.datum().index;
+            var oldIndex = selectedOccurrence.datum().index;
             // find the index of the next occurrence to select
             var newIndex = (oldIndex + delta) % occurrenceCount;
 
