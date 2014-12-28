@@ -20,6 +20,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -30,10 +31,10 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class})
+@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class, AnalysisParameters.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int RADIUS = 100;
-  private static final int MAX_COUNT = 100;
+  private int count;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
@@ -41,7 +42,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
-
+    count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
 
     for (BasicEntity entity : entities) {
@@ -94,8 +95,8 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     }
 
     Collections.sort(items, Collections.reverseOrder());
-    if (items.size() > MAX_COUNT)
-      items = items.subList(0, MAX_COUNT);
+    if (items.size() > count)
+      items = items.subList(0, count);
 
     setWordCloudItemsEntitiyId(items, entities);
 
