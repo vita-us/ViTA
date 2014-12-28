@@ -3,8 +3,10 @@ package de.unistuttgart.vis.vita.analysis.modules;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import gate.Annotation;
+import gate.LanguageResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,9 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -36,14 +40,29 @@ public class ANNIEModuleTest {
   private List<Chapter> chapterObjects;
 
   @Before
-  public void setUp() {
-    module = new ANNIEModule();
-    resultProvider = mock(ModuleResultProvider.class);
+  public void setUp() throws Exception {
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    GateInitializeModule initializeModule = new GateInitializeModule();
+    initializeModule.execute(resultProvider, progressListener);
+    DocumentPersistenceContext testingID = new DocumentPersistenceContext() {
+      @Override
+      public String getDocumentId() {
+        return "testID123";
+      }
+    };
+    AnnieDatastore datastore = mock(AnnieDatastore.class);
+    when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
+
+    resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
+    when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+    when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(testingID);
+
     progressListener = mock(ProgressListener.class, withSettings());
     fillText();
+
+    module = new ANNIEModule();
   }
 
   private void fillText() {
