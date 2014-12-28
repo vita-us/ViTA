@@ -5,6 +5,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
+import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -54,8 +55,13 @@ public class EntityRecognitionModuleTest {
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
+    DocumentPersistenceContext docId = mock(DocumentPersistenceContext.class);
+    when(docId.getDocumentId()).thenReturn("");
+    when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(docId);
+
     AnnieDatastore datastore = mock(AnnieDatastore.class);
     when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
+    when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
