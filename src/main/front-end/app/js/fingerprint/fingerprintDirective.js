@@ -50,8 +50,7 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var toolTip = svgContainer.append('text').classed('chapter-tooltip', true)
-          .text('Tooltip').attr('y', 10);
+      var toolTip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', 10);
 
       svgContainer.on('mouseover', function() {
             toolTip.style('visibility', 'visible');
@@ -60,10 +59,27 @@
             toolTip.style('visibility', null);
           })
           .on('mousemove', function () {
-            toolTip.attr('x', d3.mouse(this)[0]);
+            if (!scope.parts) {
+              return;
+            }
+            var chapters = getChaptersFromParts(scope.parts);
+
+            var xPosition = d3.mouse(this)[0];
+            var progressOnMousePosition = widthScale.invert(xPosition);
+            for (var i = 0, l = chapters.length; i < l; i++) {
+              var chapter = chapters[i];
+              if (chapter.range.end.progress > progressOnMousePosition) {
+                showTooltipForHoveredChapter(chapter);
+                return;
+              }
+            }
           });
 
-      var occurrenceSteps = calculateOccurrenceSteps();
+      function showTooltipForHoveredChapter(chapter) {
+        var centerOfChapter = (chapter.range.start.progress + chapter.range.end.progress) / 2;
+        var toolTipPosition = widthScale(centerOfChapter);
+        toolTip.attr('x', toolTipPosition).text(chapter.title);
+      }
 
       $(window).resize(function() {
         width = $(element).width() - margin.left - margin.right;
@@ -107,7 +123,7 @@
         RelationOccurrences.get({
           documentId: $routeParams.documentId,
           entityIds: scope.entityIds.join(','),
-          steps: occurrenceSteps,
+          steps: calculateOccurrenceSteps(),
           rangeStart: scope.rangeBegin,
           rangeEnd: scope.rangeEnd
         }, function(response) {
