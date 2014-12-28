@@ -11,4 +11,9 @@ public interface DocumentPersistenceContext {
    * @return the document id
    */
   public String getDocumentId();
+
+  /**
+   * @return The name of the document/file.
+   */
+  public String getFileName();
 }
