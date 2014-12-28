@@ -259,10 +259,6 @@
           return widthScale(chapter.range.start.progress);
         }
 
-        function getChapterEndX(chapter) {
-          return widthScale(chapter.range.end.progress);
-        }
-
         // Build the lines that indicate the start of a chapter
         chapterLineGroupEnter.append('line')
             .attr('x1', getChapterStartX)
@@ -271,16 +267,6 @@
               return heightScale(0) - chapterSeparatorTopLength;
             })
             .attr('y2', function() {
-              return heightScale(1);
-            });
-
-        // Build the lines that indicate the end of a chapter
-        chapterLineGroupEnter.append('line')
-            .attr('x1', getChapterEndX)
-            .attr('x2', getChapterEndX)
-            .attr('y1', function() {
-              return heightScale(0) - chapterSeparatorTopLength;
-            }).attr('y2', function() {
               return heightScale(1);
             });
       }
