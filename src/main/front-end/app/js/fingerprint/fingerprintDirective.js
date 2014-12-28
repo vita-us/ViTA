@@ -50,6 +50,18 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
+      var toolTip = svgContainer.append('text').classed('chapter-tooltip', true)
+          .text('Tooltip').attr('y', 10);
+
+      svgContainer.on('mouseover', function() {
+            toolTip.style('visibility', 'visible');
+          })
+          .on('mouseout', function() {
+            toolTip.style('visibility', null);
+          })
+          .on('mousemove', function () {
+            toolTip.attr('x', d3.mouse(this)[0]);
+          });
 
       var occurrenceSteps = calculateOccurrenceSteps();
 
