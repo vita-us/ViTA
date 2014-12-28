@@ -21,7 +21,8 @@
       var chapterSeparatorTopLength = 5;
 
       // This is the convention for margins http://bl.ocks.org/mbostock/3019563
-      var margin = {top: 10, right: 5, bottom: 0, left: 5};
+      var margin = {top: 20, right: 5, bottom: 0, left: 5};
+
       var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
@@ -50,7 +51,7 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', 10);
+      var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
       svgContainer.on('mouseover', function() {
             tooltip.style('visibility', 'visible');
