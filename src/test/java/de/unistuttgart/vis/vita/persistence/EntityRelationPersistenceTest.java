@@ -20,15 +20,15 @@ import de.unistuttgart.vis.vita.model.entity.Place;
  * Performs tests whether instances of EntityRelation can be persisted correctly.
  */
 public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
-    
+
   private PersonTestData personTestData;
   private PlaceTestData placeTestData;
   private EntityRelationTestData relationTestData;
-  
+
   @Override
   public void setUp() {
     super.setUp();
-    
+
     // set up test data
     this.personTestData = new PersonTestData();
     this.placeTestData = new PlaceTestData();
@@ -37,7 +37,7 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
 
   /**
    * Reads EntityRelations from database and returns them.
-   * 
+   *
    * @return list of entity relations
    */
   private List<?> readEntityRelationsFromDb() {
@@ -108,28 +108,30 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     Person relatedPerson = personTestData.createTestPerson(2);
     EntityRelation rel = relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(rel);
-    
+    EntityRelation backRel = relationTestData.createTestRelation(relatedPerson, testPerson);
+    testPerson.getEntityRelations().add(backRel);
+
     // persist entities and their relation
     em.persist(testPerson);
     em.persist(relatedPerson);
     em.persist(rel);
     startNewTransaction();
-    
+
     // check Named Query finding all entity relations
     Query allQ = em.createNamedQuery("EntityRelation.findAllEntityRelations");
     List<EntityRelation> allEntityRelations = allQ.getResultList();
-    
+
     assertTrue(allEntityRelations.size() > 0);
     EntityRelation readRelation = allEntityRelations.get(0);
     relationTestData.checkData(readRelation);
-    
+
     String id = readRelation.getId();
-    
+
     // check Named Query finding entity relation for entities
     List<String> entityIdList = new ArrayList<>();
     entityIdList.add(testPerson.getId());
     entityIdList.add(relatedPerson.getId());
-    
+
     Query entQ = em.createNamedQuery("EntityRelation.findRelationsForEntities");
     entQ.setParameter("entityIds", entityIdList);
     List<EntityRelation> relations = entQ.getResultList();
@@ -143,13 +145,13 @@ public class EntityRelationPersistenceTest extends AbstractPersistenceTest {
     List<EntityRelation> entTypeRelations = entityTypeQ.getResultList();
     assertEquals(1, entTypeRelations.size());
     relationTestData.checkData(entTypeRelations.get(0));
-    
+
     // check Named Query finding entity relation by id
     Query idQ = em.createNamedQuery("EntityRelation.findEntityRelationById");
     idQ.setParameter("entityRelationId", id);
     EntityRelation idRelation = (EntityRelation) idQ.getSingleResult();
-    
+
     relationTestData.checkData(idRelation);
   }
-  
+
 }
