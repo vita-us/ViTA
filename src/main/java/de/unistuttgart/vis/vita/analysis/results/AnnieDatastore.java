@@ -16,12 +16,12 @@ import gate.persist.PersistenceException;
 public interface AnnieDatastore {
 
   /**
-   * Returns the Gate Corpus with given document id.
+   * Returns the Gate Corpus with given document name.
    *
-   * @param documentID The desired document id.
+   * @param documentName The desired document name.
    * @return The correct corpus or if not found null.
    */
-  public Corpus getStoredAnalysis(String documentID) throws PersistenceException;
+  public Corpus getStoredAnalysis(String documentName) throws PersistenceException;
 
   /**
    * Datastore have to be opened and closed to be operated correctly.
@@ -30,20 +30,20 @@ public interface AnnieDatastore {
   public DataStore getDatastore();
 
   /**
-   * Stores the desired resource with the linked document id.
+   * Stores the desired resource with the linked document name.
    *
    * @param resource   The corpus.
-   * @param documentID The document id.
+   * @param documentName The document name.
    * @throws PersistenceException If any problems with the persisting happens.
    */
-  public void storeResult(LanguageResource resource, String documentID)
+  public void storeResult(LanguageResource resource, String documentName)
       throws PersistenceException;
 
   /**
    * Removes a resource from the datastore.
    *
-   * @param documentID The desired id.
+   * @param documentName The desired name.
    * @throws PersistenceException If any problems with the persisting happens.
    */
-  public void removeResult(String documentID) throws PersistenceException;
+  public void removeResult(String documentName) throws PersistenceException;
 }

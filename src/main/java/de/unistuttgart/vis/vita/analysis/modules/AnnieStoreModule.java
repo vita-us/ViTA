@@ -56,10 +56,10 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
   private AnnieDatastore buildResult() {
     return new AnnieDatastore() {
       @Override
-      public Corpus getStoredAnalysis(String documentID) throws PersistenceException {
+      public Corpus getStoredAnalysis(String documentName) throws PersistenceException {
         serialDataStore.open();
         FeatureMap corpFeatures = Factory.newFeatureMap();
-        corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, documentID);
+        corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, documentName);
         corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, serialDataStore);
 
         try {
@@ -83,13 +83,13 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       }
 
       @Override
-      public void storeResult(LanguageResource resource, String documentID)
+      public void storeResult(LanguageResource resource, String documentName)
           throws PersistenceException {
         serialDataStore.open();
 
         try {
           LanguageResource adopt = serialDataStore.adopt(resource);
-          adopt.setLRPersistenceId(documentID);
+          adopt.setLRPersistenceId(documentName);
           serialDataStore.sync(adopt);
           LOGGER.info("Corpus saved in datastore!");
         } finally {
@@ -98,12 +98,12 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       }
 
       @Override
-      public void removeResult(String documentID) throws PersistenceException {
+      public void removeResult(String documentName) throws PersistenceException {
         serialDataStore.open();
 
         try {
-          serialDataStore.delete(LR_TYPE_CORP, documentID);
-          LOGGER.info("Corpus with ID: " + documentID + " removed!");
+          serialDataStore.delete(LR_TYPE_CORP, documentName);
+          LOGGER.info("Corpus with ID: " + documentName + " removed!");
         } finally {
           serialDataStore.close();
         }
