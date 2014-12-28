@@ -1,20 +1,5 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import gate.Annotation;
-import gate.LanguageResource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
@@ -23,6 +8,29 @@ import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import gate.Annotation;
+
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.doubleThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 public class ANNIEModuleTest {
 
@@ -48,6 +56,11 @@ public class ANNIEModuleTest {
     DocumentPersistenceContext testingID = new DocumentPersistenceContext() {
       @Override
       public String getDocumentId() {
+        return "testID123";
+      }
+
+      @Override
+      public String getFileName() {
         return "testID123";
       }
     };

@@ -62,16 +62,16 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
     documentIdModule = result.getResultFor(DocumentPersistenceContext.class);
     AnnieDatastore storeModule = result.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
-    String documentId = documentIdModule.getDocumentId();
+    String documentName = documentIdModule.getFileName();
 
-    corpus = storeModule.getStoredAnalysis(documentId);
+    corpus = storeModule.getStoredAnalysis(documentName);
 
     // Persist the annie analysis into the datastore with the document id
     if (corpus == null) {
       loadAnnie();
       createCorpus();
       startAnnie();
-      storeModule.storeResult(corpus, documentId);
+      storeModule.storeResult(corpus, documentName);
     }
 
     createResultMap();
