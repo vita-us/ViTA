@@ -35,22 +35,23 @@ import static org.mockito.Mockito.mock;
  * Integration test for the analysis
  */
 public class MainAnalysisModuleTest {
-  private Document document;
+
   private Model model;
+  private Document document;
   private EntityManager em;
   private AnalysisExecutor executor;
-  
+
   @Before
   public void setUp() throws Exception {
     UnitTestModel.startNewSession();
     model = new UnitTestModel();
     document = new Document();
     em = model.getEntityManager();
-    
+
     em.getTransaction().begin();
     em.persist(document);
     em.getTransaction().commit();
-    
+
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
     AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
     Path docPath = Paths.get(getClass().getResource("LOTR_CP1.txt").toURI());
@@ -60,7 +61,6 @@ public class MainAnalysisModuleTest {
   @Test
   public void test() {
     execute();
-    System.out.println(document.getContent().getPersons());
 
     Person bilbo = getPerson("Bilbo");
     assertThat(bilbo.getOccurrences().size(), greaterThanOrEqualTo(10));
