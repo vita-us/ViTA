@@ -7,7 +7,6 @@ import javax.persistence.DiscriminatorValue;
  */
 @javax.persistence.Entity
 @DiscriminatorValue(Place.DISCRIMINATOR_VALUE)
-
 public class Place extends Entity {
 
   // constants

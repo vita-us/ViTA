@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewCharacter;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewResponse;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
@@ -58,11 +59,23 @@ public class PlotViewService {
   public PlotViewResponse getPlotView() {
     PlotViewResponse response = new PlotViewResponse();
 
+    List<Entity> entities = new ArrayList<>();
+    
     int personIndex = 0;
     List<Person> persons = personDao.findInDocument(documentId, 0, 10);
     for (Person person : persons) {
       response.getCharacters().add(new PlotViewCharacter(person.getDisplayName(),
           person.getId(), personIndex++));
+      entities.add(person);
+    }
+    
+    int placeIndex = 0;
+    List<Place> places = placeDao.findInDocument(documentId, 0, 5);
+    for (Entity place : places) {
+      response.getCharacters().add(new PlotViewCharacter("@ " + place.getDisplayName(), 
+          place.getId(), 
+          placeIndex++));
+      entities.add(place);
     }
 
     Document document = documentDao.findById(documentId);
@@ -72,7 +85,7 @@ public class PlotViewService {
       for (Chapter chapter: part.getChapters()) {
         List<Entity> occurringEntities = entityDao.findOccurringPersons(
             chapter.getRange().getStart().getOffset(),
-            chapter.getRange().getEnd().getOffset(), persons);
+            chapter.getRange().getEnd().getOffset(), entities);
 
         List<String> entityIds = new ArrayList<String>();
         for (Entity entity : occurringEntities) {

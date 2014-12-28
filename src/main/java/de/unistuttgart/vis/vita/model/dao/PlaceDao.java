@@ -35,7 +35,19 @@ import de.unistuttgart.vis.vita.model.entity.Place;
   @NamedQuery(name = "Place.findPlaceByName",
               query = "SELECT pl "
                     + "FROM Place pl "
-                    + "WHERE pl.displayName = :placeName")
+                    + "WHERE pl.displayName = :placeName"),
+
+  @NamedQuery(name = "Place.findSpecialPlacesInDocument",
+              query = "SELECT DISTINCT pl "
+                    + "FROM Place pl, Document d  "
+                    + "INNER JOIN pl.occurrences ts "
+                    + "WHERE d.id = :documentId "
+                    + "AND pl MEMBER OF d.content.places "
+                    + "GROUP BY pl.id "
+                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) "
+                    + "BETWEEN :minRange AND :maxRange "
+                    + "AND COUNT(ts) > 3 " // lower threshold: at least 4 occurrences
+                    + "ORDER BY pl.rankingValue")
 })
 public class PlaceDao extends JpaDao<Place, String> {
 
