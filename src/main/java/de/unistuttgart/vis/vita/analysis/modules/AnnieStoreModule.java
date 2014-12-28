@@ -10,6 +10,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
+import de.unistuttgart.vis.vita.model.Model;
 
 import java.io.File;
 import java.net.URI;
@@ -27,21 +28,18 @@ import gate.persist.SerialDataStore;
 /**
  *
  */
-@AnalysisModule(dependencies = {GateInitializeModule.class})
+@AnalysisModule(dependencies = {GateInitializeModule.class, Model.class})
 public class AnnieStoreModule extends Module<AnnieDatastore> {
 
   private static final Logger LOGGER = Logger.getLogger(AnnieStoreModule.class.getName());
   private static final String LR_TYPE_CORP = "gate.corpora.SerialCorpusImpl";
   private SerialDataStore serialDataStore;
-  private URI location = null;
 
   @Override
   public AnnieDatastore execute(ModuleResultProvider results, ProgressListener progressListener)
       throws Exception {
-    if (location == null) {
-      String home = System.getProperty("user.home");
-      location = new URI(home + File.separator + ".vita" + File.separator + "gate_datastore");
-    }
+    Model model = results.getResultFor(Model.class);
+    URI location = model.getGateDatastoreLocation().getLocation();
 
     File datastoreDIR = new File(location);
 
@@ -52,18 +50,7 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       serialDataStore = new SerialDataStore(location.toString());
     }
 
-    LOGGER.info("Datastore in " + location.toString() + " opened ...");
-
     return buildResult();
-  }
-
-  /**
-   * Used for testing. Must be called before execution.
-   *
-   * @param location The location of the datastore.
-   */
-  void changeLocation(URI location) {
-    this.location = location;
   }
 
   private AnnieDatastore buildResult() {
