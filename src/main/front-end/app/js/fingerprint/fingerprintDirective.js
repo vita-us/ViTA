@@ -70,13 +70,13 @@
             for (var i = 0, l = chapters.length; i < l; i++) {
               var chapter = chapters[i];
               if (chapter.range.end.progress > progressOnMousePosition) {
-                showTooltipForHoveredChapter(chapter);
+                showTooltipForChapter(chapter);
                 return;
               }
             }
           });
 
-      function showTooltipForHoveredChapter(chapter) {
+      function showTooltipForChapter(chapter) {
         var centerOfChapter = (chapter.range.start.progress + chapter.range.end.progress) / 2;
         var tooltipPosition = widthScale(centerOfChapter);
 
@@ -229,10 +229,6 @@
         function selectOccurrence(occurrenceRect) {
           if (occurrenceRect) {
             occurrenceRect.classed('selected', true);
-            // Foreground each selected rectangle
-            occurrenceRect.each(function() {
-              this.parentNode.appendChild(this);
-            });
           }
         }
 
