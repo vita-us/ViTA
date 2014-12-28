@@ -19,11 +19,12 @@ public interface AnnieDatastore {
    * Returns the Gate Corpus with given document id.
    *
    * @param documentID The desired document id.
-   * @retur The correct corpus or if not found null.
+   * @return The correct corpus or if not found null.
    */
-  public Corpus getStoredAnalysis(String documentID);
+  public Corpus getStoredAnalysis(String documentID) throws PersistenceException;
 
   /**
+   * Datastore have to be opened and closed to be operated correctly.
    * @return The datastore.
    */
   public DataStore getDatastore();

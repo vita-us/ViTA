@@ -52,7 +52,6 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       serialDataStore = new SerialDataStore(location.toString());
     }
 
-    serialDataStore.open();
     LOGGER.info("Datastore in " + location.toString() + " opened ...");
 
     return buildResult();
@@ -70,7 +69,8 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
   private AnnieDatastore buildResult() {
     return new AnnieDatastore() {
       @Override
-      public Corpus getStoredAnalysis(String documentID) {
+      public Corpus getStoredAnalysis(String documentID) throws PersistenceException {
+        serialDataStore.open();
         FeatureMap corpFeatures = Factory.newFeatureMap();
         corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, documentID);
         corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, serialDataStore);
@@ -79,9 +79,12 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
           Corpus resource =
               (Corpus) Factory.createResource("gate.corpora.SerialCorpusImpl", corpFeatures);
           LOGGER.info("Corpus loaded from datastore!");
+          serialDataStore.close();
           return resource;
         } catch (ResourceInstantiationException e) {
           // Resource could not be created so it possibly doesn't exists.
+        } finally {
+          serialDataStore.close();
         }
 
         return null;
@@ -95,16 +98,28 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       @Override
       public void storeResult(LanguageResource resource, String documentID)
           throws PersistenceException {
-        LanguageResource adopt = serialDataStore.adopt(resource);
-        adopt.setLRPersistenceId(documentID);
-        serialDataStore.sync(adopt);
-        LOGGER.info("Corpus saved in datastore!");
+        serialDataStore.open();
+
+        try {
+          LanguageResource adopt = serialDataStore.adopt(resource);
+          adopt.setLRPersistenceId(documentID);
+          serialDataStore.sync(adopt);
+          LOGGER.info("Corpus saved in datastore!");
+        } finally {
+          serialDataStore.close();
+        }
       }
 
       @Override
       public void removeResult(String documentID) throws PersistenceException {
-        serialDataStore.delete(LR_TYPE_CORP, documentID);
-        LOGGER.info("Corpus with ID: " + documentID + " removed!");
+        serialDataStore.open();
+
+        try {
+          serialDataStore.delete(LR_TYPE_CORP, documentID);
+          LOGGER.info("Corpus with ID: " + documentID + " removed!");
+        } finally {
+          serialDataStore.close();
+        }
       }
     };
   }
