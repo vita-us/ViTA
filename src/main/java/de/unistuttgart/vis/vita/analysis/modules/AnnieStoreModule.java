@@ -40,7 +40,7 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       throws Exception {
     if (location == null) {
       String home = System.getProperty("user.home");
-      location = new URI(home + File.separator + "gate_datastore");
+      location = new URI(home + File.separator + ".vita" + File.separator + "gate_datastore");
     }
 
     File datastoreDIR = new File(location);
