@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.analysis.modules;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
+import de.unistuttgart.vis.vita.model.GateDatastoreLocation;
+import de.unistuttgart.vis.vita.model.Model;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AnnieStoreModuleTest {
 
@@ -41,7 +44,13 @@ public class AnnieStoreModuleTest {
     module = new AnnieStoreModule();
     String userDir = System.getProperty("user.dir");
     File testDir = new File(userDir + File.separator + "testDS");
-    module.changeLocation(testDir.toURI());
+
+    GateDatastoreLocation location = mock(GateDatastoreLocation.class);
+    when(location.getLocation()).thenReturn(testDir.toURI());
+
+    Model model = mock(Model.class);
+    when(model.getGateDatastoreLocation()).thenReturn(location);
+    when(resultProvider.getResultFor(Model.class)).thenReturn(model);
 
     storeModule = module.execute(resultProvider, progressListener);
     dataStore = storeModule.getDatastore();
