@@ -18,6 +18,7 @@ public class UnitTestModel extends Model {
 
   public UnitTestModel() {
     super(getEntityManagerFactory(), new TextRepository(new UnitTestDirectoryFactory()));
+    setGateDatastoreLocation(new UnitTestGateDatastoreLocation());
   }
 
   private static EntityManagerFactory getEntityManagerFactory() {
@@ -38,6 +39,7 @@ public class UnitTestModel extends Model {
     }
     try {
       FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
+
     } catch (IOException e) {
       throw new RuntimeException("Unable to delete lucene index", e);
     }
