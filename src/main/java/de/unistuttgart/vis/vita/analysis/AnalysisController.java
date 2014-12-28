@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 import java.nio.file.Path;
@@ -22,25 +23,25 @@ import javax.persistence.TypedQuery;
 public class AnalysisController {
   @Inject
   private Model model;
-  
+
   private AnalysisExecutorFactory executorFactory;
-  
+
   private Queue<Document> analysisQueue = new PriorityQueue<>();
   private boolean isAnalysisRunning;
   private AnalysisExecutor currentExecuter;
   private Document currentDocument;
-  
+
   /**
    * New instance of the controller with given model. It will be created a new empty module
    * registry.
-   * 
+   *
    * @param model The model with data.
    */
   @Inject
   public AnalysisController(Model model) {
     this(model, ModuleRegistry.getDefaultRegistry());
   }
-  
+
   /**
    * This constructor should not be used manually, only by the CDI framework
    */
@@ -51,7 +52,7 @@ public class AnalysisController {
 
   /**
    * New instance of the controller with given model and registry.
-   * 
+   *
    * @param model The model to use.
    * @param moduleRegistry The registry to use.
    */
@@ -73,12 +74,28 @@ public class AnalysisController {
    * @param fileName The original document name.
    * @return The document id.
    */
-  public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName) {
+  public String scheduleDocumentAnalysis(Path filePath, String fileName) {
+    return scheduleDocumentAnalysis(filePath, fileName, new AnalysisParameters());
+  }
+
+  /**
+   * Starts the schedule of all modules registered in the registry. It calculates which modules can
+   * be started first and which have to wait for other modules. This algorithm also checks how many
+   * cores the CPU has and optimize it for multi-threading.
+   *
+   * @param filePath The path to the document.
+   * @param fileName The original document name.
+   * @param parameters parametrization of the analysis
+   * @return The document id.
+   */
+  public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName,
+      AnalysisParameters parameters) {
     Document document = createDocument(filePath, fileName);
+    document.setParameters(parameters);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
-  
+
   private synchronized void scheduleDocumentAnalyisis(Document document) {
     if (isAnalysisRunning) {
       analysisQueue.add(document);
@@ -92,7 +109,8 @@ public class AnalysisController {
     Path path = document.getFilePath();
     if (path == null)
       throw new UnsupportedOperationException("There is no file associated with the document");
-    currentExecuter = executorFactory.createExecutor(document.getId(), path);
+    currentExecuter = executorFactory.createExecutor(document.getId(), path,
+        document.getParameters());
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
@@ -118,7 +136,7 @@ public class AnalysisController {
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
     document.setUploadDate(new Date());
-    
+
     EntityManager em = null;
     try {
       em = model.getEntityManager();
@@ -135,7 +153,7 @@ public class AnalysisController {
 
   /**
    * Cancels the analysis if necessary. The process will be canceled as soon as possible.
-   * 
+   *
    * @param documentID The document which is analyzed.
    */
   public synchronized void cancelAnalysis(String documentID) {
@@ -172,7 +190,7 @@ public class AnalysisController {
 
   /**
    * Restarts a previously cancelled or failed document analysis
-   * 
+   *
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
@@ -196,11 +214,11 @@ public class AnalysisController {
 
     scheduleDocumentAnalyisis(document);
   }
-  
+
   /**
    * Gets the number of documents that are currently waiting for being analyzed. The document
    * currently being analyzed does not count to this value.
-   * 
+   *
    * @return the number of documents in queue
    */
   public synchronized int documentsInQueue() {
@@ -209,7 +227,7 @@ public class AnalysisController {
 
   /**
    * Indicates whether a document is being analyzed at the moment
-   * 
+   *
    * @return true, if an analysis is in process, false otherwise
    */
   public synchronized boolean isWorking() {
@@ -228,9 +246,9 @@ public class AnalysisController {
         throw new IllegalArgumentException("No such document found");
       }
       Document document = documents.get(0);
-  
+
       document.getProgress().setStatus(status);
-  
+
       em.merge(document);
       em.getTransaction().commit();
     } finally {
