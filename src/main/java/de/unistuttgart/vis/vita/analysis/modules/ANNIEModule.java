@@ -9,15 +9,15 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,11 +39,12 @@ import gate.util.persistence.PersistenceManager;
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
-@AnalysisModule(dependencies = {ImportResult.class}, weight = 500)
+@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
+                                ImportResult.class}, weight = 500)
 public class ANNIEModule extends Module<AnnieNLPResult> {
   private static final int PROGRESS_RESET_SPAN = 20;
-
   private ImportResult importResult;
+  private DocumentPersistenceContext documentIdModule;
   private ProgressListener progressListener;
   private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
@@ -58,13 +59,37 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
   public AnnieNLPResult execute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception {
     importResult = result.getResultFor(ImportResult.class);
+    documentIdModule = result.getResultFor(DocumentPersistenceContext.class);
+    AnnieDatastore storeModule = result.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
-    initializeGate();
-    loadAnnie();
-    createCorpus();
-    startAnnie();
+    String documentId = documentIdModule.getDocumentId();
+
+    corpus = storeModule.getStoredAnalysis(documentId);
+
+    // Persist the annie analysis into the datastore with the document id
+    if (corpus == null) {
+      loadAnnie();
+      createCorpus();
+      startAnnie();
+      storeModule.storeResult(corpus, documentId);
+    }
+
+    createResultMap();
+
     progressListener.observeProgress(1);
     return buildResult();
+  }
+
+  private void createResultMap() {
+    for (Object docObj : corpus) {
+      Document doc = (Document) docObj;
+      AnnotationSet defaultAnnotSet = doc.getAnnotations();
+      Set<String> annotTypesRequired = new HashSet<>();
+      annotTypesRequired.add(ANNIEConstants.PERSON_ANNOTATION_TYPE);
+      annotTypesRequired.add(ANNIEConstants.LOCATION_ANNOTATION_TYPE);
+      Set<Annotation> peopleAndPlaces = new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
+      chapterToAnnotation.put(docToChapter.get(doc), peopleAndPlaces);
+    }
   }
 
   /**
@@ -91,16 +116,6 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
     });
 
     controller.execute();
-
-    for (Object docObj : corpus) {
-      Document doc = (Document) docObj;
-      AnnotationSet defaultAnnotSet = doc.getAnnotations();
-      Set<String> annotTypesRequired = new HashSet<>();
-      annotTypesRequired.add(ANNIEConstants.PERSON_ANNOTATION_TYPE);
-      annotTypesRequired.add(ANNIEConstants.LOCATION_ANNOTATION_TYPE);
-      Set<Annotation> peopleAndPlaces = new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
-      chapterToAnnotation.put(docToChapter.get(doc), peopleAndPlaces);
-    }
   }
 
   private void calcProgress(int i) {
@@ -135,32 +150,6 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
     } else {
       progressSteps = 0;
     }
-  }
-
-  /**
-   * Initialize the Gate library once.
-   */
-  private void initializeGate() throws GateException, URISyntaxException {
-    if (Gate.isInitialised()) {
-      return;
-    }
-
-    // Path to the gate_home resource
-    URL pathToHome = this.getClass().getResource("/gate_home");
-    File fileToHome = new File("");
-
-    if (pathToHome != null) {
-      fileToHome = new File(pathToHome.toURI());
-    }
-
-    File pluginsHome =
-        new File(fileToHome.getAbsolutePath() + File.separator + "plugins" + File.separator);
-    File siteConfig = new File(fileToHome.getAbsolutePath() + File.separator + "gate.xml");
-
-    Gate.setGateHome(fileToHome);
-    Gate.setPluginsHome(pluginsHome);
-    Gate.setSiteConfigFile(siteConfig);
-    Gate.init();
   }
 
   /**
