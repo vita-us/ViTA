@@ -20,6 +20,17 @@ import javax.persistence.NamedQuery;
                     + "WHERE d.id = :documentId "
                     + "AND pl MEMBER OF d.content.places "
                     + "ORDER BY pl.rankingValue"),
+                    
+  @NamedQuery(name = "Place.findSpecialPlacesInDocument",
+              query = "SELECT DISTINCT pl "
+                    + "FROM Place pl, Document d "
+                    + "INNER JOIN pl.occurrences ts "
+                    + "WHERE d.id = :documentId "
+                    + "AND pl MEMBER OF d.content.places "
+                    + "GROUP BY pl.id "
+                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) < "
+                    + "(3 * (SELECT AVG(c.length) FROM Chapter c)) "
+                    + "ORDER BY pl.rankingValue"),
       
   @NamedQuery(name = "Place.findPlaceById",
               query = "SELECT pl "
