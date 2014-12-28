@@ -40,7 +40,7 @@ import gate.util.persistence.PersistenceManager;
  * Gate ANNIE module which searches for persons and locations.
  */
 @AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
-                                ImportResult.class}, weight = 500)
+                                DocumentPersistenceContext.class, ImportResult.class}, weight = 500)
 public class ANNIEModule extends Module<AnnieNLPResult> {
   private static final int PROGRESS_RESET_SPAN = 20;
   private ImportResult importResult;
