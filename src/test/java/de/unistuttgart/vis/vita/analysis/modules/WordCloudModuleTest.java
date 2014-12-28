@@ -18,6 +18,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
@@ -44,6 +45,9 @@ public class WordCloudModuleTest {
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     IndexSearcher searcher = textRepository.getIndexSearcherForDocument(DOCUMENT_ID);
     when(resultProvider.getResultFor(IndexSearcher.class)).thenReturn(searcher);
+    AnalysisParameters parameters = new AnalysisParameters();
+    parameters.setWordCloudItemsCount(100);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     progressListener = mock(ProgressListener.class);
 
     module = new WordCloudModule();

@@ -18,21 +18,22 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.GlobalWordCloudResult;
 import de.unistuttgart.vis.vita.model.TextRepository;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
 /**
  * Calculates the document-wide word cloud using lucene
  */
-@AnalysisModule(dependencies = {IndexSearcher.class})
+@AnalysisModule(dependencies = {IndexSearcher.class, AnalysisParameters.class})
 public class WordCloudModule extends Module<GlobalWordCloudResult> {
-  private static final int MAX_COUNT = 100;
+  private int maxCount;
 
   @Override
   public GlobalWordCloudResult execute(ModuleResultProvider results, ProgressListener progressListener)
       throws IOException {
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
-
+    maxCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
     final WordCloud globalWordCloud = getGlobalWordCloud(searcher);
 
     return new GlobalWordCloudResult() {
@@ -67,8 +68,8 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
 
     // WordCloudItems sort normally, but we want the higher items at the start, thus reversed
     Collections.sort(items, Collections.reverseOrder());
-    if (items.size() > MAX_COUNT)
-      items = items.subList(0, MAX_COUNT);
+    if (items.size() > maxCount)
+      items = items.subList(0, maxCount);
 
     return new WordCloud(items);
   }
