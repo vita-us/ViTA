@@ -46,7 +46,6 @@ public class WordCloudModuleTest {
     IndexSearcher searcher = textRepository.getIndexSearcherForDocument(DOCUMENT_ID);
     when(resultProvider.getResultFor(IndexSearcher.class)).thenReturn(searcher);
     AnalysisParameters parameters = new AnalysisParameters();
-    parameters.setWordCloudItemsCount(100);
     when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     progressListener = mock(ProgressListener.class);
 

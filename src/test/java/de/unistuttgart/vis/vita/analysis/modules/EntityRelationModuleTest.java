@@ -61,7 +61,6 @@ public class EntityRelationModuleTest {
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(entities);
 
     AnalysisParameters parameters = new AnalysisParameters();
-    parameters.setRelationTimeStepCount(20);
     when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     module = new EntityRelationModule();
   }
