@@ -50,13 +50,13 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var toolTip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', 10);
+      var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', 10);
 
       svgContainer.on('mouseover', function() {
-            toolTip.style('visibility', 'visible');
+            tooltip.style('visibility', 'visible');
           })
           .on('mouseout', function() {
-            toolTip.style('visibility', null);
+            tooltip.style('visibility', null);
           })
           .on('mousemove', function () {
             if (!scope.parts) {
@@ -77,8 +77,16 @@
 
       function showTooltipForHoveredChapter(chapter) {
         var centerOfChapter = (chapter.range.start.progress + chapter.range.end.progress) / 2;
-        var toolTipPosition = widthScale(centerOfChapter);
-        toolTip.attr('x', toolTipPosition).text(chapter.title);
+        var tooltipPosition = widthScale(centerOfChapter);
+
+        var tooltipBBox = tooltip.node().getBBox();
+        var centerOfTooltip = tooltipBBox.width / 2;
+
+        // should not be cut off on the left and on the right side
+        tooltipPosition = Math.max(tooltipPosition, centerOfTooltip);
+        tooltipPosition = Math.min(tooltipPosition, width - centerOfTooltip);
+
+        tooltip.attr('x', tooltipPosition).text(chapter.title);
       }
 
       $(window).resize(function() {
