@@ -137,8 +137,6 @@ public class EntityRecognitionModuleRealTest {
     assertThat(person.getType(), is(EntityType.PLACE));
     assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 4103, 4111)));
     assertTrue(checkIfNameExists(person, "Buckland"));
-
-    //System.out.println(StringUtils.join(collection.getEntities(), "\n"));
   }
 
   @Test
