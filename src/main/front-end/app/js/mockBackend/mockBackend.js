@@ -7,6 +7,7 @@
       '$httpBackend',
       'TestData',
       function($httpBackend, TestData) {
+        $httpBackend.whenGET(new RegExp('/documents/[^/]+/plotview')).respond(TestData.plotviewData);
 
         $httpBackend.whenGET(new RegExp('.*')).passThrough();
         $httpBackend.whenPOST(new RegExp('.*')).passThrough();
