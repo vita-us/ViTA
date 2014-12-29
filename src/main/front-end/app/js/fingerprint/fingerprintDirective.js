@@ -17,12 +17,13 @@
 
       var minBarWidth = 5;
 
-      // Defines how far the separators go above the fingerpint
+      // Defines how far the separators go above the fingerprint
       var partSeparatorTopLength = 10;
       var chapterSeparatorTopLength = 5;
 
       // This is the convention for margins http://bl.ocks.org/mbostock/3019563
-      var margin = {top: 10, right: 5, bottom: 0, left: 5};
+      var margin = {top: 20, right: 5, bottom: 0, left: 5};
+
       var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
@@ -38,7 +39,7 @@
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)
           .append('g')
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");;
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Add a rectangle for the background
       var backgroundRect = svgContainer.append('rect')
@@ -51,10 +52,47 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-
       var occurrenceSteps = calculateOccurrenceSteps();
-      
+      var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
+
       FingerprintSynchronizer();
+
+      svgContainer.on('mouseover', function() {
+            tooltip.style('visibility', 'visible');
+          })
+          .on('mouseout', function() {
+            tooltip.style('visibility', null);
+          })
+          .on('mousemove', function () {
+            if (!scope.parts) {
+              return;
+            }
+            var chapters = getChaptersFromParts(scope.parts);
+
+            var xPosition = d3.mouse(this)[0];
+            var progressOnMousePosition = widthScale.invert(xPosition);
+            for (var i = 0, l = chapters.length; i < l; i++) {
+              var chapter = chapters[i];
+              if (chapter.range.end.progress > progressOnMousePosition) {
+                showTooltipForChapter(chapter);
+                return;
+              }
+            }
+          });
+
+      function showTooltipForChapter(chapter) {
+        var centerOfChapter = (chapter.range.start.progress + chapter.range.end.progress) / 2;
+        var tooltipPosition = widthScale(centerOfChapter);
+
+        var tooltipBBox = tooltip.node().getBBox();
+        var centerOfTooltip = tooltipBBox.width / 2;
+
+        // should not be cut off on the left and on the right side
+        tooltipPosition = Math.max(tooltipPosition, centerOfTooltip);
+        tooltipPosition = Math.min(tooltipPosition, width - centerOfTooltip);
+
+        tooltip.attr('x', tooltipPosition).text(chapter.title);
+      }
 
       $(window).resize(function() {
         width = $(element).width() - margin.left - margin.right;
@@ -98,7 +136,7 @@
         RelationOccurrences.get({
           documentId: $routeParams.documentId,
           entityIds: scope.entityIds.join(','),
-          steps: occurrenceSteps,
+          steps: calculateOccurrenceSteps(),
           rangeStart: scope.rangeBegin,
           rangeEnd: scope.rangeEnd
         }, function(response) {
@@ -195,10 +233,6 @@
         function selectOccurrence(occurrenceRect) {
           if (occurrenceRect) {
             occurrenceRect.classed('selected', true);
-            // Foreground each selected rectangle
-            occurrenceRect.each(function() {
-              this.parentNode.appendChild(this);
-            });
           }
         }
 
@@ -215,13 +249,13 @@
         }
 
         function onMouseWheel(event, delta) {
-          var selectedOccurence = getSelectedOccurrence();
-          if (!selectedOccurence.empty()) {
+          var selectedOccurrence = getSelectedOccurrence();
+          if (!selectedOccurrence.empty()) {
 
-            deselectOccurrence(selectedOccurence);
+            deselectOccurrence(selectedOccurrence);
 
             // Read the index from the data
-            var oldIndex = selectedOccurence.datum().index;
+            var oldIndex = selectedOccurrence.datum().index;
             // find the index of the next occurrence to select
             var newIndex = (oldIndex + delta) % occurrenceCount;
 
@@ -262,10 +296,6 @@
           return widthScale(chapter.range.start.progress);
         }
 
-        function getChapterEndX(chapter) {
-          return widthScale(chapter.range.end.progress);
-        }
-
         // Build the lines that indicate the start of a chapter
         chapterLineGroupEnter.append('line')
             .attr('x1', getChapterStartX)
@@ -274,16 +304,6 @@
               return heightScale(0) - chapterSeparatorTopLength;
             })
             .attr('y2', function() {
-              return heightScale(1);
-            });
-
-        // Build the lines that indicate the end of a chapter
-        chapterLineGroupEnter.append('line')
-            .attr('x1', getChapterEndX)
-            .attr('x2', getChapterEndX)
-            .attr('y1', function() {
-              return heightScale(0) - chapterSeparatorTopLength;
-            }).attr('y2', function() {
               return heightScale(1);
             });
       }
