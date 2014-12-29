@@ -1,10 +1,13 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -16,31 +19,40 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
+@Table(indexes={
+  @Index(columnList="number")
+})
 @NamedQueries({
-    @NamedQuery(name = "Chapter.findAllChapters", 
-        query = "SELECT c " 
+    @NamedQuery(name = "Chapter.findAllChapters",
+        query = "SELECT c "
               + "FROM Chapter c"),
 
     @NamedQuery(name = "Chapter.findChapterById",
-      query = "SELECT c " 
+      query = "SELECT c "
             + "FROM Chapter c "
             + "WHERE c.id = :chapterId"),
 
-    @NamedQuery(name = "Chapter.findChapterByTitle", 
-      query = "SELECT c " 
-            + "FROM Chapter c "
-            + "WHERE c.title = :chapterTitle"),
-        
-    @NamedQuery(name = "Chapter.findChapterByOffset", 
+    @NamedQuery(name = "Chapter.findChapterByTitle",
       query = "SELECT c "
             + "FROM Chapter c "
-            + "WHERE :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
+            + "WHERE c.title = :chapterTitle"),
+
+    @NamedQuery(name = "Chapter.findChapterByOffset",
+      query = "SELECT c "
+            + "FROM Document d, DocumentPart dp, Chapter c "
+            + "WHERE d.id = :documentId "
+            + "AND dp MEMBER OF d.content.parts "
+            + "AND c MEMBER OF dp.chapters "
+            + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
-  
+
   private int number;
+
+  @Column(length = 1000)
   private String title;
+
   private int length;
-  
+
   // text attribute is transient, this means it will not be persisted in the database!
   @Transient
   private String text;
@@ -61,7 +73,7 @@ public class Chapter extends AbstractEntityBase {
 
   /**
    * Gets the readable number of this chapter in the context of the document part it belongs to
-   * 
+   *
    * @return the number, starting from 1
    */
   public int getNumber() {
@@ -102,7 +114,7 @@ public class Chapter extends AbstractEntityBase {
 
   /**
    * Sets the text of the Chapter.
-   * 
+   *
    * This property will not be persisted with JPA. It should be stored with {@link TextRepository}
    * instead.
    *
@@ -155,7 +167,7 @@ public class Chapter extends AbstractEntityBase {
   }
 
   /**
-   * 
+   *
    * @param length
    */
   public void setDocumentLength(int length) {

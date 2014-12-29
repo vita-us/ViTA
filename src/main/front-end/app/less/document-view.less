@@ -1,4 +1,4 @@
-@document-view-header-height: 60px;
+@document-view-header-height: 65px;
 @document-view-footer-height: 50px;
 
 body#document-view {
@@ -16,6 +16,21 @@ body#document-view {
   height: @document-view-header-height;
   border-bottom: 1px solid @border-color;
   top: 0;
+  
+  .document-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+#chapters-toggle-button {
+  float: right;
+  margin-top: 12px;
+  
+  @media (min-width: 768px) {
+    display: none;
+  }
 }
 
 #document-view-footer {
@@ -53,6 +68,10 @@ body#document-view {
       }
     }
   }
+  
+  .up-down-navigation {
+    display: inline-block;
+  }
 }
 
 #document-view-main {
@@ -66,26 +85,115 @@ body#document-view {
     .chapter {
       padding-left: 3px;
       margin-bottom: 5px;
+      
+      .chapter-number {
+        color: grey;
+        display: inline-block;
+        margin-right: 5px;
+      }
+    }
+    
+    .chapter.active-menu {
+      background-color: @light-grey-background-color;
+      font-weight: bold;
+      padding: 1px 6px;
+    }
+    
+    .part.active-menu {
+      font-weight: bold;
     }
   }
+ 
+  .document-view-text {
+    background-color: @light-grey-background-color;
   
+    .chapter-headline, .part-headline {
+      font-weight: bold;
+    }
+    
+    .chapter-headline {
+      padding: 5px;
+      border-bottom: 1px solid @border-color;
+      border-top: 1px solid @border-color;
+      background-color: white;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    
+    span {
+      background: @default-character-ranking-color;
+    }
+    
+    span.occurrence {
+      background: @document-view-occurrence-color;
+    }
+
+    span.ranking-1 {
+      background: @character-ranking-color-1;
+    }
+
+    span.ranking-2 {
+      background: @character-ranking-color-2;
+    }
+
+    span.ranking-3 {
+      background: @character-ranking-color-3;
+    }
+
+    span.ranking-4 {
+      background: @character-ranking-color-4;
+    }
+
+    span.ranking-5 {
+      background: @character-ranking-color-5;
+    }
+
+    span.ranking-6 {
+      background: @character-ranking-color-6;
+    }
+
+    span.ranking-7 {
+      background: @character-ranking-color-7;
+    }
+    
+    span.selected {
+      background: black;
+      color: white;
+    }
+  }
+
+  .dv-menu-fixed-wrap {
+    display: none;
+    position: fixed;
+    width: 50%;
+    overflow-y: auto;
+    background: white;
+    border-left: 1px solid @border-color;
+    border-right: 1px solid @border-color;
+    top: @document-view-header-height;
+    bottom: @document-view-footer-height;
+    right: 0;
+    padding-left: 10px;
+  }
+
   @media (min-width: 768px) {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;
       
       .dv-menu-fixed-wrap {
-        position: fixed;
+        display: block !important;
         width: inherit;
+        max-height: none;
+        border: 0;
         border-right: 20px solid transparent;
-        top: @document-view-header-height;
-        bottom: @document-view-footer-height;
-        overflow-y: auto;
+        background: none;
+        right: initial;
+        padding-left: 0;
       }
     }
     
     .document-view-text {
-      background-color: @light-grey-background-color;
       border-left: 1px dashed @border-color;
       min-height: 100%;
     }

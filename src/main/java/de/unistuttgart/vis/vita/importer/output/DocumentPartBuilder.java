@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import de.unistuttgart.vis.vita.analysis.Threads;
 import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 import de.unistuttgart.vis.vita.importer.util.ChapterPosition;
 import de.unistuttgart.vis.vita.importer.util.Line;
@@ -82,7 +83,7 @@ public class DocumentPartBuilder extends AbstractBuilder implements Callable<Doc
    * Starts the Threads for the construction of all Chapters and adds the Objects to futureChapters.
    */
   private void startChapterComputation() {
-    ExecutorService executor = Executors.newCachedThreadPool();
+    ExecutorService executor = Threads.getGlobalExecutorService();
     for (int chapterNumber = 1; chapterNumber <= chapterPositions.size(); chapterNumber++) {
       List<Line> heading = buildHeadingList(chapterNumber);
       List<Line> text = buildTextList(chapterNumber);

@@ -1,13 +1,17 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import javax.xml.bind.annotation.XmlEnumValue;
+
 /**
  * Represents the type of an Attribute.
  */
 public enum AttributeType {
-  AGE, 
-  NAME, 
-  SIZE, 
-  UNKNOWN;
+  
+  @XmlEnumValue("age") AGE, 
+  @XmlEnumValue("name") NAME, 
+  @XmlEnumValue("size") SIZE,
+  @XmlEnumValue("gender") GENDER,
+  @XmlEnumValue("unknown") UNKNOWN;
 
   @Override
   public String toString() {
@@ -21,6 +25,9 @@ public enum AttributeType {
         break;
       case SIZE:
         textualRepresentation = "Size";
+        break;
+      case GENDER:
+        textualRepresentation = "Gender";
         break;
       default:
         textualRepresentation = "Unknown";

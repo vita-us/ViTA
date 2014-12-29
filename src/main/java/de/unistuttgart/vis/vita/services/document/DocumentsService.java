@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -20,13 +21,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
+
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
@@ -78,9 +80,13 @@ public class DocumentsService {
                                         @FormDataParam("file") FormDataContentDisposition fDispo) {
     DocumentIdResponse response = null;
     
-    // set up path
     String fileName = fDispo.getFileName();
-    String filePath = DOCUMENT_PATH + fileName;
+    String baseName = FilenameUtils.getBaseName(fileName);
+    String fileExtension = FilenameUtils.getExtension(fileName);
+    String uuid = UUID.randomUUID().toString();
+    
+    // set up path
+    String filePath = DOCUMENT_PATH + baseName + "_" + uuid + "." + fileExtension;
     
     // check path and save file
     if (!checkAndCreateDir(DOCUMENT_PATH)) {
@@ -90,7 +96,7 @@ public class DocumentsService {
       saveFile(fileInputStream, filePath);
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath());
+      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName);
       
       // set up Response
       response = new DocumentIdResponse(id);
@@ -98,7 +104,7 @@ public class DocumentsService {
 
     return response;
   }
-  
+
   /**
    * Checks whether given path is a directory. Tries to create directory otherwise.
    * 

@@ -8,54 +8,40 @@
       '$scope',
       'Document',
       'Page',
-      'FileUpload',
       '$interval',
-      'ChapterText',
-      function($scope, Document, Page, FileUpload, $interval, ChapterText) {
+      function($scope, Document, Page, $interval) {
         Page.setUp('Documents', 1);
 
-        $scope.uploading = false;
-
-        loadDocuments();
-        var timerId = $interval(loadDocuments, 5000);
-
-        $scope.uploadSelectedFile = function() {
-          // allow only a single upload simultaneously
-          if ($scope.uploading) {
-            return;
-          }
-
-          if ($scope.file) {
-            $scope.uploading = true;
-
-            FileUpload.uploadFileToUrl($scope.file, 'webapi/documents', function() {
-              // nothing to do: we poll the documents every X seconds
-              resetUploadField();
-              $scope.uploading = false;
-            }, function() {
-              $scope.uploading = false;
-              alert('Upload of ' + $scope.file.name + ' failed.');
-            });
-          } else {
-            alert('Please select a document first.');
-          }
-        };
-
-        function loadDocuments() {
+        $scope.loadDocuments = function() {
           Document.get(function(response) {
             $scope.documents = response.documents;
+
+            /*
+             * Update the selected document because the stored object might
+             * be different from the object in the (reloaded) listing.
+             */
+            for (var i = 0, l = $scope.documents.length; i < l; i++) {
+              var document = $scope.documents[i];
+
+              if ($scope.isDocumentSelected(document)) {
+                $scope.setSelectedDocument(document);
+              }
+            }
           });
-        }
-
-        function resetUploadField() {
-          document.getElementById('document-input').value = '';
-        }
-
-        $scope.isDocumentSelected = function(document) {
-          return angular.equals($scope.selectedDocument, document);
         };
 
-        $scope.updateSelection = function(selectedDocument) {
+        $scope.loadDocuments();
+        var timerId = $interval($scope.loadDocuments, 1000);
+
+        $scope.isDocumentSelected = function(document) {
+          if (!$scope.selectedDocument || !document) {
+            return false;
+          }
+
+          return angular.equals($scope.selectedDocument.id, document.id);
+        };
+
+        $scope.setSelectedDocument = function(selectedDocument) {
           $scope.selectedDocument = selectedDocument;
         };
 
@@ -64,10 +50,15 @@
           var newName = prompt('Please enter a new name for document "' + document.metadata.title
                   + '".');
           if (newName) {
+            document.metadata.title = newName;
             Document.rename({
               documentId: document.id,
               name: newName
+            }, function() {
+              $scope.loadDocuments();
             });
+          } else if (newName === '') {
+            alert('The document name must not be empty!');
           }
         };
 

@@ -1,28 +1,20 @@
 <div class="row">
 
   <div class="col-md-6">
-    <form role="form" class="text-upload-form">
-      <div class="form-group">
-        <label for="document-input">Import a new document</label> <input type="file"
-          id="document-input" data-file-model="file">
-      </div>
-      <button ng-class="{active: uploading}" class="btn btn-default" ng-click="uploadSelectedFile()">
-        <span ng-show="uploading" class="glyphicon glyphicon-refresh spin"></span> Import
-      </button>
-    </form>
+    <div data-document-upload></div>
 
     <div>
       <h2>Existing documents</h2>
       <div class="list-group">
         <a data-document-list-item class="list-group-item" href="" ng-repeat="document in documents"
           data-document="document" ng-class="{active: isDocumentSelected(document)}"
-          ng-click="updateSelection(document)"></a>
+          data-reload-documents="loadDocuments()" ng-click="setSelectedDocument(document)"></a>
       </div>
     </div>
   </div>
 
   <div class="col-md-6" ng-show="selectedDocument">
-    <div data-document-preview class="document-text" data-document="selectedDocument"></div>
+    <div data-document-preview data-document="selectedDocument"></div>
     <div>
       <button type="button" class="btn btn-default btn-sm" ng-click="renameDocument()">
         <span class="glyphicon glyphicon-edit"></span> Rename

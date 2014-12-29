@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -10,12 +11,14 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Before;
+
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.EntityRelationTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -46,6 +49,15 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
 
   private static final int OL2_START_OFFSET = 110000;
   private static final int OL2_END_OFFSET   = 120000;
+
+  /*
+   * NEAR for TextSpans that are near to each other
+   */
+  private static final int NEAR1_START_OFFSET = 2000000;
+  private static final int NEAR1_END_OFFSET = 2000100;
+
+  private static final int NEAR2_START_OFFSET = 2000200;
+  private static final int NEAR2_END_OFFSET = 2000300;
 
   private static final int OL_LENGTH = OL1_END_OFFSET - OL2_START_OFFSET;
 
@@ -87,8 +99,14 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition originEnd = TextPosition.fromGlobalOffset(testChapter, OL1_END_OFFSET);
     TextSpan originSpan = new TextSpan(originStart, originEnd);
 
+    // TextSpans next to each other
+    TextPosition originNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR1_START_OFFSET);
+    TextPosition originNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR1_END_OFFSET);
+    TextSpan originNearSpan = new TextSpan(originNearStart, originNearEnd);
+
     originPerson.getOccurrences().add(originSpan);
     originPerson.getOccurrences().add(originSeparateSpan);
+    originPerson.getOccurrences().add(originNearSpan);
 
     // set up second person
     Person targetPerson = personTestData.createTestPerson(2);
@@ -102,32 +120,45 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition targetStart = TextPosition.fromGlobalOffset(testChapter, OL2_START_OFFSET);
     TextPosition targetEnd = TextPosition.fromGlobalOffset(testChapter, OL2_END_OFFSET);
     TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
-    
+
+    // TextSpans next to each other
+    TextPosition targetNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR2_START_OFFSET);
+    TextPosition targetNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR2_END_OFFSET);
+    TextSpan targetNearSpan = new TextSpan(targetNearStart, targetNearEnd);
+
     targetPerson.getOccurrences().add(targetSpan);
     targetPerson.getOccurrences().add(targetSeparateSpan);
-    
+    targetPerson.getOccurrences().add(targetNearSpan);
+
     // set up relation between them
-    EntityRelation testRelation = relationTestData.createTestRelation(originPerson, 
+    EntityRelation testRelation = relationTestData.createTestRelation(originPerson,
                                                                               targetPerson);
-    
+
     // save ids for query
     docId = testDoc.getId();
     addId(originPerson.getId());
     addId(targetPerson.getId());
 
+    DocumentPart testPart = new DocumentPart();
+    testPart.getChapters().add(testChapter);
+    testDoc.getContent().getParts().add(testPart);
+
     // persist test data
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(testDoc);
     em.persist(chapterRange);
     em.persist(testChapter);
     em.persist(originSpan);
     em.persist(originSeparateSpan);
+    em.persist(originNearSpan);
     em.persist(originPerson);
     em.persist(targetSpan);
     em.persist(targetSeparateSpan);
     em.persist(targetPerson);
+    em.persist(targetNearSpan);
     em.persist(testRelation);
+    em.persist(testPart);
+    em.persist(testDoc);
     em.getTransaction().commit();
     em.close();
   }
@@ -158,7 +189,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
   protected String getPath() {
     return "/documents/"+ docId +"/entities/relations/occurrences";
   }
-  
+
   @Override
   protected WebTarget prepareWebTarget(int steps, double rangeStart, double rangeEnd) {
     return super.prepareWebTarget(steps, rangeStart, rangeEnd).queryParam("entityIds", entityIds);
@@ -174,23 +205,24 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
 
-    assertEquals(1, receivedOccurrences.size());
+    assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
     Occurrence receivedOccurrence = receivedOccurrences.get(0);
-    assertEquals(OL_LENGTH, receivedOccurrence.getLength());
+    assertEquals(OL_LENGTH + RelationOccurrencesService.HIGHLIGHT_LENGTH,
+        receivedOccurrence.getLength());
   }
 
   @Override
   public void testGetStepwiseOccurences() {
-    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT, 
-                                                            DEFAULT_RANGE_START, 
+    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT,
+                                                            DEFAULT_RANGE_START,
                                                             DEFAULT_RANGE_END).request()
                                                             .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
 
-    assertEquals(1, receivedOccurrences.size());
+    assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
     Occurrence receivedOccurrence = receivedOccurrences.get(0);

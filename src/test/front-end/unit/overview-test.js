@@ -13,6 +13,7 @@ describe('OverviewCtrl', function() {
 
   beforeEach(inject(function(_$httpBackend_, $rootScope, $controller, $routeParams, TestData) {
     $httpBackend = _$httpBackend_;
+    $httpBackend.expectGET('webapi/documents/123/persons').respond(TestData.persons);
     $httpBackend.expectGET('webapi/documents/123').respond(TestData.singleDocument);
     $httpBackend.expectGET('webapi/documents/123/progress').respond(TestData.analysisProgress);
 
@@ -47,7 +48,7 @@ describe('OverviewCtrl', function() {
       }
     });
     // Simulate the expected time interval
-    $interval.flush(5000);
+    $interval.flush(1000);
     $httpBackend.flush();
 
     expect(scope.progress.graphView.isReady).toBe(true);

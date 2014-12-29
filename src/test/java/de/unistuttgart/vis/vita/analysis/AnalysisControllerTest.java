@@ -1,19 +1,9 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.document.Document;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,10 +11,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
-import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.UnitTestModel;
-import de.unistuttgart.vis.vita.model.document.Document;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RandomBlockJUnit4ClassRunner.class)
 public class AnalysisControllerTest {
@@ -40,6 +41,19 @@ public class AnalysisControllerTest {
     model = new UnitTestModel();
     executorFactory = mock(AnalysisExecutorFactory.class);
     controller = new AnalysisController(model, executorFactory);
+    removeAllDocuments();
+  }
+
+  private void removeAllDocuments() {
+    EntityManager em = model.getEntityManager();
+    em.getTransaction().begin();
+    List<Document> documents =
+        em.createNamedQuery("Document.findAllDocuments", Document.class).getResultList();
+    for (Document document : documents) {
+      em.remove(document);
+    }
+    em.getTransaction().commit();
+    em.close();
   }
 
   @After
@@ -49,7 +63,7 @@ public class AnalysisControllerTest {
   public void testScheduleDocumentAnalysis() {
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
-    String id = controller.scheduleDocumentAnalysis(path);
+    String id = controller.scheduleDocumentAnalysis(path, "file.name");
     verifyExecutorCreated(id, path);
 
     assertThat(controller.documentsInQueue(), is(0)); // nothing queued, just one working
@@ -80,8 +94,8 @@ public class AnalysisControllerTest {
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
 
-    controller.scheduleDocumentAnalysis(path1);
-    controller.scheduleDocumentAnalysis(path2);
+    controller.scheduleDocumentAnalysis(path1, "file.name");
+    controller.scheduleDocumentAnalysis(path2, "file2.name");
 
     assertThat(controller.documentsInQueue(), is(1));
   }
@@ -91,7 +105,7 @@ public class AnalysisControllerTest {
     Path path = Paths.get("correctFilePath");
     prepareExecutor(path);
 
-    String documentId = controller.scheduleDocumentAnalysis(path);
+    String documentId = controller.scheduleDocumentAnalysis(path, "correctFilePath");
 
     assertThat(controller.isWorking(), is(true));
 
@@ -105,9 +119,9 @@ public class AnalysisControllerTest {
     Path path1 = Paths.get("correctFilePath");
     Path path2 = Paths.get("correctFilePath2");
     prepareExecutor(path1);
-    controller.scheduleDocumentAnalysis(path1);
+    controller.scheduleDocumentAnalysis(path1, "correctFilePath1");
     prepareExecutor(path2);
-    String id2 = controller.scheduleDocumentAnalysis(path2);
+    String id2 = controller.scheduleDocumentAnalysis(path2, "correctFilePath2");
 
     assertThat(controller.documentsInQueue(), is(1));
 
@@ -121,9 +135,9 @@ public class AnalysisControllerTest {
     Path path1 = Paths.get("correctFilePath");
     Path path2 = Paths.get("correctFilePath2");
     prepareExecutor(path1);
-    controller.scheduleDocumentAnalysis(path1);
+    controller.scheduleDocumentAnalysis(path1, "correctFilePath1");
     prepareExecutor(path2);
-    controller.scheduleDocumentAnalysis(path2);
+    controller.scheduleDocumentAnalysis(path2, "correctFilePath2");
 
     assertThat(controller.documentsInQueue(), is(1));
 
@@ -138,8 +152,8 @@ public class AnalysisControllerTest {
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
 
-    String id1 = controller.scheduleDocumentAnalysis(path1);
-    String id2 = controller.scheduleDocumentAnalysis(path2);
+    String id1 = controller.scheduleDocumentAnalysis(path1, "file.name");
+    String id2 = controller.scheduleDocumentAnalysis(path2, "file2.name");
 
     verifyExecutorCreated(id1, path1);
     verify(executor).start();
@@ -161,8 +175,8 @@ public class AnalysisControllerTest {
     Path path1 = Paths.get("path/to/file.name");
     Path path2 = Paths.get("path/to/file2.name");
     prepareExecutor(path1);
-    String id1 = controller.scheduleDocumentAnalysis(path1);
-    String id2 = controller.scheduleDocumentAnalysis(path2);
+    String id1 = controller.scheduleDocumentAnalysis(path1, "file.name");
+    String id2 = controller.scheduleDocumentAnalysis(path2, "file2.name");
     verifyExecutorCreated(id1, path1);
     AnalysisExecutor executor1 = executor;
     prepareExecutor(path2);
@@ -181,7 +195,7 @@ public class AnalysisControllerTest {
 
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
-    String id = controller.scheduleDocumentAnalysis(path);
+    String id = controller.scheduleDocumentAnalysis(path, "file.name");
     verifyExecutorCreated(id, path);
 
     controller.cancelAnalysis(id);

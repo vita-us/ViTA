@@ -20,7 +20,11 @@ import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +56,45 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     startAnalysis();
 
     progressListener.observeProgress(1);
+    filterEntities();
+    sortNames();
     return buildResult();
+  }
+
+  /**
+   * Takes the first name of the sorted set and sets it as the displayed name.
+   */
+  private void sortNames() {
+    for (BasicEntity entity : entities) {
+      List<Attribute> bufList = new ArrayList<>(entity.getNameAttributes());
+
+      Collections.sort(bufList, new Comparator<Attribute>() {
+        @Override
+        public int compare(Attribute o1, Attribute o2) {
+          return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : (
+              o1.getOccurrences().size() == o2.getOccurrences().size() ? 0 : 1));
+        }
+      });
+
+      entity.setNameAttributes(new HashSet<>(bufList));
+      entity.setDisplayName(entity.getNameAttributes().iterator().next().getContent());
+    }
+  }
+
+  /**
+   * Removes those entites which has only one or less occurences.
+   * Reduces the chance from getting wrong entities based on NLP failure.
+   */
+  private void filterEntities() {
+      Set<BasicEntity> entityToRemove = new HashSet<>();
+
+      for (BasicEntity entity : entities) {
+        if (entity.getOccurences().size() <= 1) {
+          entityToRemove.add(entity);
+        }
+      }
+
+      entities.removeAll(entityToRemove);
   }
 
   /**

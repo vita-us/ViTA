@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -10,11 +11,21 @@ import javax.persistence.Embeddable;
 public class DocumentMetadata {
   
   // attributes
+  @Column(length = 1000)
   private String title;
+
+  @Column(length = 1000)
   private String author;
+
+  @Column(length = 1000)
   private String publisher;
+
   private int publishYear;
+
+  @Column(length = 1000)
   private String genre;
+
+  @Column(length = 1000)
   private String edition;
   
   /**

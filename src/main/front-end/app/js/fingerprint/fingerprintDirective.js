@@ -3,8 +3,11 @@
 
   var vitaDirectives = angular.module('vitaDirectives');
 
-  vitaDirectives.directive('fingerprint', ['RelationOccurrences', '$routeParams',
-    function(RelationOccurrences, $routeParams) {
+  vitaDirectives.directive('fingerprint', ['DocumentViewSender',
+                                           'RelationOccurrences',
+                                           'Entity',
+                                           '$routeParams',
+                          function(DocumentViewSender, RelationOccurrences, Entity, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -13,7 +16,14 @@
 
       var minBarWidth = 5;
 
-      var width = SVG_WIDTH, height = SVG_HEIGHT;
+      // Defines how far the separators go above the fingerprint
+      var partSeparatorTopLength = 10;
+      var chapterSeparatorTopLength = 5;
+
+      // This is the convention for margins http://bl.ocks.org/mbostock/3019563
+      var margin = {top: 20, right: 5, bottom: 0, left: 5};
+
+      var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
           .domain([0, 1])
@@ -25,11 +35,13 @@
 
       var svgContainer = d3.select(element[0])
           .append('svg')
-          .attr('width', width)
-          .attr('height', height);
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Add a rectangle for the background
-      svgContainer.append('rect')
+      var backgroundRect = svgContainer.append('rect')
           .attr('width', widthScale(1))
           .attr('height', heightScale(1))
           .classed('background', true)
@@ -38,8 +50,58 @@
 
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
+      var partLineGroup = svgContainer.append('g').classed('part-separators', true);
+      var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
-      var occurrenceSteps = Math.floor(width / minBarWidth);
+      svgContainer.on('mouseover', function() {
+            tooltip.style('visibility', 'visible');
+          })
+          .on('mouseout', function() {
+            tooltip.style('visibility', null);
+          })
+          .on('mousemove', function () {
+            if (!scope.parts) {
+              return;
+            }
+            var chapters = getChaptersFromParts(scope.parts);
+
+            var xPosition = d3.mouse(this)[0];
+            var progressOnMousePosition = widthScale.invert(xPosition);
+            for (var i = 0, l = chapters.length; i < l; i++) {
+              var chapter = chapters[i];
+              if (chapter.range.end.progress > progressOnMousePosition) {
+                showTooltipForChapter(chapter);
+                return;
+              }
+            }
+          });
+
+      function showTooltipForChapter(chapter) {
+        var centerOfChapter = (chapter.range.start.progress + chapter.range.end.progress) / 2;
+        var tooltipPosition = widthScale(centerOfChapter);
+
+        var tooltipBBox = tooltip.node().getBBox();
+        var centerOfTooltip = tooltipBBox.width / 2;
+
+        // should not be cut off on the left and on the right side
+        tooltipPosition = Math.max(tooltipPosition, centerOfTooltip);
+        tooltipPosition = Math.min(tooltipPosition, width - centerOfTooltip);
+
+        tooltip.attr('x', tooltipPosition).text(chapter.title);
+      }
+
+      $(window).resize(function() {
+        width = $(element).width() - margin.left - margin.right;
+        svgContainer.attr('width', width + margin.left + margin.right);
+        widthScale.range([0, width]);
+        backgroundRect.attr('width', widthScale(1));
+        calculateOccurrenceSteps();
+        getRelationOccurrences();
+        removeChapterSeparators();
+        buildChapterSeparators(scope);
+        removePartSeparators();
+        buildPartSeparators(scope.parts);
+      });
 
       scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
         if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
@@ -47,18 +109,7 @@
             removeFingerPrint();
             return;
           }
-          RelationOccurrences.get({
-            documentId: $routeParams.documentId,
-            entityIds: scope.entityIds.join(','),
-            steps: occurrenceSteps,
-            rangeStart: scope.rangeBegin,
-            rangeEnd: scope.rangeEnd
-          }, function(response) {
-            removeFingerPrint();
-            buildFingerPrint(response.occurrences);
-          }, function() {
-            removeFingerPrint();
-          });
+          getRelationOccurrences();
         }
       }, true);
 
@@ -66,12 +117,33 @@
         if (!angular.equals(newValue, oldValue)) {
           removeChapterSeparators();
           buildChapterSeparators(scope);
+          removePartSeparators();
+          buildPartSeparators(scope.parts);
         } else if (!angular.isUndefined(newValue)) {
           buildChapterSeparators(scope);
+          buildPartSeparators(scope.parts);
         }
       }, true);
 
-      function buildFingerPrint(occurrences) {
+      function getRelationOccurrences() {
+        if (angular.isUndefined(scope.entityIds)) {
+          return;
+        }
+        RelationOccurrences.get({
+          documentId: $routeParams.documentId,
+          entityIds: scope.entityIds.join(','),
+          steps: calculateOccurrenceSteps(),
+          rangeStart: scope.rangeBegin,
+          rangeEnd: scope.rangeEnd
+        }, function(response) {
+          removeFingerPrint();
+          buildFingerPrint(response.occurrences, scope);
+        }, function() {
+          removeFingerPrint();
+        });
+      }
+
+      function buildFingerPrint(occurrences, scope) {
         occurrences = occurrences || [];
         var occurrenceCount = occurrences.length;
 
@@ -93,7 +165,7 @@
           // group all the occurrence rects together
           var rectGroupEnter = rectGroup.selectAll('rect').data(occurrences).enter();
 
-	        rectGroupEnter.append('rect')
+          rectGroupEnter.append('rect')
              .attr('x', function(occurrence) {
                 // convert progress to actual width
                 return widthScale(occurrence.start.progress);
@@ -117,18 +189,46 @@
                   deselectOccurrence(d3.select(this));
                 }
               })
-              .on('click', function() {
-                // TODO: Show the occurrence in the document view
+              .on('click', function (clickedOccurrence) {
+                onClickOccurrence(clickedOccurrence, scope);
               });
+        }
+
+        function onClickOccurrence(clickedOccurrence, scope) {
+          DocumentViewSender.open(function() {
+            RelationOccurrences.get({
+              documentId: $routeParams.documentId,
+              entityIds: scope.entityIds.join(','),
+              rangeStart: clickedOccurrence.start.progress,
+              rangeEnd: clickedOccurrence.end.progress
+            }, function(response) {
+              DocumentViewSender.sendOccurrences(response.occurrences);
+            });
+            var entitiesToSend = [];
+            scope.entityIds.forEach(function(entityId) {
+              Entity.get({
+                documentId: $routeParams.documentId,
+                entityId: entityId
+              }, function(entity) {
+                // Cannot simply push entity as it contains angular promises
+                // which cannot be sent
+                entitiesToSend.push({
+                  id: entity.id,
+                  displayName: entity.displayName,
+                  attributes: entity.attributes,
+                  rankingValue: entity.rankingValue
+                });
+                if (entitiesToSend.length === scope.entityIds.length) {
+                  DocumentViewSender.sendEntities(entitiesToSend);
+                }
+              });
+            });
+          });
         }
 
         function selectOccurrence(occurrenceRect) {
           if (occurrenceRect) {
             occurrenceRect.classed('selected', true);
-            // Foreground each selected rectangle
-            occurrenceRect.each(function() {
-              this.parentNode.appendChild(this);
-            });
           }
         }
 
@@ -145,13 +245,13 @@
         }
 
         function onMouseWheel(event, delta) {
-          var selectedOccurence = getSelectedOccurrence();
-          if (!selectedOccurence.empty()) {
+          var selectedOccurrence = getSelectedOccurrence();
+          if (!selectedOccurrence.empty()) {
 
-            deselectOccurrence(selectedOccurence);
+            deselectOccurrence(selectedOccurrence);
 
             // Read the index from the data
-            var oldIndex = selectedOccurence.datum().index;
+            var oldIndex = selectedOccurrence.datum().index;
             // find the index of the next occurrence to select
             var newIndex = (oldIndex + delta) % occurrenceCount;
 
@@ -181,7 +281,6 @@
               });
           return occurrenceRect;
         }
-
       }
 
       function buildChapterSeparators(scope) {
@@ -193,28 +292,38 @@
           return widthScale(chapter.range.start.progress);
         }
 
-        function getChapterEndX(chapter) {
-          return widthScale(chapter.range.end.progress);
-        }
-
         // Build the lines that indicate the start of a chapter
         chapterLineGroupEnter.append('line')
             .attr('x1', getChapterStartX)
             .attr('x2', getChapterStartX)
             .attr('y1', function() {
-              return heightScale(0);
+              return heightScale(0) - chapterSeparatorTopLength;
             })
             .attr('y2', function() {
               return heightScale(1);
             });
+      }
 
-        // Build the lines that indicate the end of a chapter
-        chapterLineGroupEnter.append('line')
-            .attr('x1', getChapterEndX)
-            .attr('x2', getChapterEndX)
+      function buildPartSeparators(parts) {
+        if (!parts) {
+          return;
+        }
+        var partLineGroupEnter = partLineGroup.selectAll('line').data(parts).enter();
+
+        function getPartStartX(part) {
+          if (part.chapters.length === 0) {
+            return;
+          }
+          return widthScale(part.chapters[0].range.start.progress) - 2.5;
+        }
+
+        partLineGroupEnter.append('line')
+            .attr('x1', getPartStartX)
+            .attr('x2', getPartStartX)
             .attr('y1', function() {
-              return heightScale(0);
-            }).attr('y2', function() {
+              return heightScale(0) - partSeparatorTopLength;
+            })
+            .attr('y2', function() {
               return heightScale(1);
             });
       }
@@ -233,6 +342,14 @@
 
       function removeChapterSeparators() {
         chapterLineGroup.selectAll('line').remove();
+      }
+
+      function removePartSeparators() {
+        partLineGroup.selectAll('line').remove();
+      }
+
+      function calculateOccurrenceSteps() {
+        return Math.floor(width / minBarWidth);
       }
     }
 

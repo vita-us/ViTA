@@ -23,6 +23,10 @@ public abstract class AbstractEntityBase {
     return id;
   }
 
+  public void setId(String id) {
+    this.id = id;
+  }
+
   /**
    * Indicates whether some object represents the same persistable object as this one. Two objects
    * are considered equal if their ids are the same.

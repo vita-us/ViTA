@@ -7,7 +7,7 @@
                                                 'DocumentViewWorkerConstants',
                                                 function(workerFactory, constants) {
     var worker = workerFactory.create();
-    var onReceiveCallback, onOccurrenceCallback, onDocumentIdCallback;
+    var onReceiveCallback, onOccurrenceCallback, onDocumentIdCallback, onEntitiesCallback;
 
     // Register this port at the shared worker
     worker.port.start();
@@ -27,6 +27,9 @@
       }
       if (onOccurrenceCallback instanceof Function && message.type === constants.OCCURRENCES) {
         onOccurrenceCallback(message);
+      }
+      if (onEntitiesCallback instanceof Function && message.type === constants.ENTITIES) {
+        onEntitiesCallback(message);
       }
     }, false);
 
@@ -48,6 +51,10 @@
 
     this.onOccurrences = function(occurrenceCallback) {
       onOccurrenceCallback = occurrenceCallback;
+    };
+
+    this.onEntities = function(entitiesCallback) {
+      onEntitiesCallback = entitiesCallback;
     };
 
     this.requestDocumentId = function() {

@@ -1,11 +1,16 @@
+#graph-network-wrapper {
+  margin-top: 10px;
+  border: 1px solid @border-color;
+}
+
 .link {
   cursor: pointer;
-  stroke: blue;
-  stroke-width: 10px;
+  stroke: #B0B0B0;
 }
 
 .node {
   fill: @default-character-ranking-color;
+  cursor: pointer;
 }
 
 .node.ranking-1 {
@@ -38,4 +43,19 @@
 
 .graph-network-container {
   display: block;
+}
+
+.node-label {
+  cursor: pointer;
+}
+
+.label-text {
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: white;
+}
+
+.label-background {
+  fill: #333;
+  opacity: 0.8;
 }

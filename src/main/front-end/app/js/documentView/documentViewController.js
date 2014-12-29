@@ -18,6 +18,18 @@
           });
         });
 
+        DocumentViewReceiver.onOccurrences(function(messageData) {
+          $scope.occurrences = messageData.message;
+          $scope.selectedOccurrenceIndex = 0;
+          $scope.resultCount = $scope.occurrences.length;
+          $scope.$digest();
+        });
+
+        DocumentViewReceiver.onEntities(function(messageData) {
+          $scope.entities = messageData.message;
+          $scope.$digest();
+        });
+
         DocumentViewReceiver.requestDocumentId();
 
         function requestParts(document) {
@@ -35,10 +47,35 @@
           }, function(response) {
             var occurrences = response.occurrences;
             $scope.resultCount = occurrences.length;
-            // TODO highlight occurrences
-            // highlightOccurrences(occurrences);
+            $scope.occurrences = occurrences;
+            $scope.selectedOccurrenceIndex = 0;
           });
         };
+
+        $scope.reset = function() {
+          $scope.resultCount = -1;
+          $scope.occurrences = [];
+          $scope.entities = [];
+        };
+
+        $scope.down = function() {
+          $scope.selectedOccurrenceIndex = angular.isUndefined($scope.selectedOccurrenceIndex) ? 0
+                  : $scope.selectedOccurrenceIndex;
+          $scope.selectedOccurrenceIndex += 1;
+          $scope.selectedOccurrenceIndex %= $scope.occurrences.length;
+        }
+        $scope.up = function() {
+          $scope.selectedOccurrenceIndex = angular.isUndefined($scope.selectedOccurrenceIndex) ? 0
+                  : $scope.selectedOccurrenceIndex;
+          $scope.selectedOccurrenceIndex -= 1;
+          $scope.selectedOccurrenceIndex = $scope.selectedOccurrenceIndex < 0
+                  ? $scope.occurrences.length - 1 : $scope.selectedOccurrenceIndex;
+        }
       }]);
+
+      $("#chapters-toggle-button").click(function() {
+        var menu = $(".dv-menu-fixed-wrap");
+        menu.toggle();
+      });
 
 })(angular);

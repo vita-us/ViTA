@@ -46,9 +46,6 @@
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: 'WordcloudCtrl'
-    }).when('/documents/:documentId/documentview', {
-      templateUrl: 'partials/documentview.html',
-      controller: ''
     }).when('/documents/:documentId/', {
       redirectTo: '/documents/:documentId/overview'
     }).otherwise({
@@ -56,14 +53,20 @@
     });
   }]);
 
-  app.factory('Page', function() {
+  app.factory('Page', ['DocumentViewSender', function(DocumentViewSender) {
     return {
       setUpForDocument: function(document) {
+        var oldId = this.documentId;
+
         // TODO Don't pass the id through the Page
         this.documentId = document.id;
         this.title = document.metadata.title;
         this.tab = 1;
         this.showMenu = true;
+
+        if (oldId !== document.id) {
+          DocumentViewSender.sendDocumentId(document.id);
+        }
       },
       setUp: function(title, tab) {
         this.title = title;
@@ -72,7 +75,7 @@
         this.breadcrumbs = null;
       }
     };
-  });
+  }]);
 
   app.controller('PageCtrl', [
       '$scope',
@@ -86,10 +89,7 @@
         Page.tab = 1;
         $scope.Page = Page;
 
-        $scope.openDocumentView = function() {
-          window.open('documentview.html', 'documentView',
-                  'width=0,height=0,left=0,alwaysRaised=yes');
-        };
+        $scope.openDocumentView = DocumentViewSender.open;
 
         DocumentViewSender.onDocumentIdRequest(function() {
           DocumentViewSender.sendDocumentId($routeParams.documentId);
