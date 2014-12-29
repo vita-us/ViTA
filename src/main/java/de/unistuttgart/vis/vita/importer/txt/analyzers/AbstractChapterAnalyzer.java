@@ -88,10 +88,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     boolean behindStartTag = false;
 
     for (Line line : chapterArea) {
-      thisLineIsWhite = line.getType().equals(LineType.WHITELINE);
+      thisLineIsWhite = line.isType(LineType.WHITELINE);
       behindStartTag = behindStartTag && thisLineIsWhite;
       // Recognize Skip Area Start
-      if (skipTags.contains(line.getType())) {
+      if (line.isType(skipTags)) {
         searchingAreaEnd = true;
         behindStartTag = true;
         lastFoundPosition = lineIndex;
@@ -105,7 +105,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
         }
       }
       // Preparing next line data
-      lastLineWasWhite = line.getType().equals(LineType.WHITELINE);
+      lastLineWasWhite = line.isType(LineType.WHITELINE);
       lineIndex++;
     }
     // Check if result is in first half of the text
@@ -207,10 +207,10 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     boolean chapterFits;
     if (startHeading - getStartOfAnalysis() >= 2) {
       chapterFits =
-          chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE)
-          && chapterArea.get(startHeading - 2).getType().equals(LineType.WHITELINE);
+          chapterArea.get(startHeading - 1).isType(LineType.WHITELINE)
+          && chapterArea.get(startHeading - 2).isType(LineType.WHITELINE);
     } else if (startHeading - getStartOfAnalysis() == 1) {
-      chapterFits = chapterArea.get(startHeading - 1).getType().equals(LineType.WHITELINE);
+      chapterFits = chapterArea.get(startHeading - 1).isType(LineType.WHITELINE);
     } else {
       chapterFits = true;
     }
@@ -373,10 +373,9 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     if (!((start < 0) || (start >= chapterArea.size()))) {
       for (int index = start; index < chapterArea.size(); index++) {
         Line line = chapterArea.get(index);
-        LineType lineType = line.getType();
-        if (thisType && type.equals(lineType)) {
+        if (thisType && line.isType(type)) {
           nextPosition = index;
-        } else if (!thisType && !type.equals(lineType)) {
+        } else if (!thisType && !line.isType(type)) {
           nextPosition = index;
         }
 
@@ -401,7 +400,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     int lastLine = this.chapterPositions.getEndOfText(chapterNumber);
     for (int lineNumber = firstLine; lineNumber <= lastLine; lineNumber++) {
       Line line = chapterArea.get(lineNumber);
-      if (line.getType() != LineType.WHITELINE) {
+      if (!line.isType(LineType.WHITELINE)) {
         characterCount += line.getText().length();
       }
     }
@@ -421,8 +420,7 @@ public abstract class AbstractChapterAnalyzer implements Callable<ChapterPositio
     boolean sameType = true;
     for (int index = start + 1; index < end; index++) {
       Line line = chapterArea.get(index);
-      LineType lineType = line.getType();
-      if (!lineType.equals(type)) {
+      if (!line.isType(type)) {
         sameType = false;
         break;
       }

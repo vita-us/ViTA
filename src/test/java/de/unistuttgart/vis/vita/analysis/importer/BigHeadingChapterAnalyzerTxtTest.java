@@ -93,27 +93,13 @@ public class BigHeadingChapterAnalyzerTxtTest {
     assertTrue(chapterPosition.getStartOfText(chapterNumber) >= 573);
     assertTrue(chapterPosition.getStartOfText(chapterNumber) <= 575);
 
-    assertTrue(chapterPosition.getEndOfText(chapterNumber) >= 1066);
-    assertTrue(chapterPosition.getEndOfText(chapterNumber) <= 1068);
-  }
-
-  @Test
-  public void testFifthChapter() {
-    int chapterNumber = 5;
-
-    assertTrue(chapterPosition.getStartOfHeading(chapterNumber) >= 1067);
-    assertTrue(chapterPosition.getStartOfHeading(chapterNumber) <= 1069);
-
-    assertTrue(chapterPosition.getStartOfText(chapterNumber) >= 1070);
-    assertTrue(chapterPosition.getStartOfText(chapterNumber) <= 1073);
-
     assertTrue(chapterPosition.getEndOfText(chapterNumber) >= 1140);
     assertTrue(chapterPosition.getEndOfText(chapterNumber) <= 1141);
   }
 
   @Test
   public void testChapterSize() {
-    assertTrue(chapterPosition.size() == 5);
+    assertEquals(4,chapterPosition.size());
   }
 
   @Test(expected = IllegalArgumentException.class)

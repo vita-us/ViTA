@@ -28,6 +28,7 @@ public class MetadataAnalyzerTxtTest {
   private DocumentMetadata documentMetadataText1 = new DocumentMetadata();
   private DocumentMetadata documentMetadataText2 = new DocumentMetadata();
   private DocumentMetadata documentMetadataText3 = new DocumentMetadata();
+  private DocumentMetadata documentMetadataText4 = new DocumentMetadata();
 
   /**
    * sets the values of documentMetadata after MetadataAnalyzer has analyzed the imported lines
@@ -67,6 +68,14 @@ public class MetadataAnalyzerTxtTest {
       MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
       documentMetadataText3 = metadataAnalyzer.extractMetadata();
     }
+    {
+      Path testPath = Paths.get(getClass().getResource("TooLongData.txt").toURI());
+      TextFileImporter textFileImporter;
+      textFileImporter = new TextFileImporter(testPath);
+      List<Line> testList = textFileImporter.getLines();
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      documentMetadataText4 = metadataAnalyzer.extractMetadata();
+    }
   }
 
   @Test
@@ -74,7 +83,6 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("The Lord of the Rings", documentMetadataText1.getTitle());
     assertEquals("\"Captains # Courageous\"", documentMetadataText2.getTitle());
     assertEquals("The Lord of the Rings", documentMetadataText3.getTitle());
-
   }
 
   @Test
@@ -108,4 +116,19 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("13", documentMetadataText2.getEdition());
     assertEquals("1", documentMetadataText3.getEdition());
   }
+  
+  @Test
+  public void testTooLongData(){
+    String sequence = "abcdefghij";
+    String longText = "";
+    for(int i = 0; i < 100; i++){
+      longText += sequence;
+    }
+    assertEquals(longText, documentMetadataText4.getTitle());
+    assertEquals(longText, documentMetadataText4.getAuthor());
+    assertEquals(longText, documentMetadataText4.getGenre());
+    assertEquals(longText, documentMetadataText4.getEdition());
+    assertEquals(longText, documentMetadataText4.getPublisher());
+  }
+  
 }

@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.importer.txt.util;
 
 import de.unistuttgart.vis.vita.importer.util.AbstractLine;
+import de.unistuttgart.vis.vita.importer.util.LineSubType;
 import de.unistuttgart.vis.vita.importer.util.LineType;
 
 /**
@@ -33,33 +34,59 @@ public class TxtModuleLine extends AbstractLine {
   @Override
   public void computeType() {
     if (automatedTypeComputation) {
-      // a lower type will be overwritten
-      LineType highestType = LineType.TEXT;
+      this.type.clear();
       if (matchesPattern(SMALLHEADINGPATTERN)) {
-        highestType = LineType.SMALLHEADING;
+        this.type.add(LineType.SMALLHEADING);
       }
-      if (matchesPattern(BIGHEADINGPATTERN)) {
-        highestType = LineType.BIGHEADING;
+      if (matchesPattern(BIGHEADINGPATTERN) && !matchesPattern(ARABICNUMBERPATTERN)) {
+        this.type.add(LineType.BIGHEADING);
       }
       if (matchesPattern(TABLEOFCONTENTSPATTERN)) {
-        highestType = LineType.TABLEOFCONTENTS;
+        this.type.add(LineType.TABLEOFCONTENTS);
       }
       if (matchesPattern(PREFACEPATTERN)) {
-        highestType = LineType.PREFACE;
+        this.type.add(LineType.PREFACE);
       }
       if (!containsPattern(NOSPECIALSIGNSPATTERN) && !text.contains("...")) {
-        highestType = LineType.SPECIALSIGNS;
+        this.type.add(LineType.SPECIALSIGNS);
       }
       if (matchesPattern(MARKEDHEADINGPATTERN)) {
-        highestType = LineType.MARKEDHEADING;
+        this.type.add(LineType.MARKEDHEADING);
       }
       if (matchesPattern(DATADIVIDERPATTERN)) {
-        highestType = LineType.DATADIVIDER;
+        this.type.add(LineType.DATADIVIDER);
       }
       if (matchesPattern(WHITESPACEPATTERN)) {
-        highestType = LineType.WHITELINE;
+        this.type.clear();
+        this.type.add(LineType.WHITELINE);
       }
-      this.type = highestType;
+      if (type.isEmpty()) {
+        this.type.add(LineType.TEXT);
+      }
+      // compute subtype if needed
+      this.hasSubtype = false;
+      if (this.isType(LineSubType.getTypesWithSubtypes())) {
+        computeSubtype();
+      }
+    }
+  }
+
+  /**
+   * Computes the subtype of the line. Will only change the value if there is a new one found.
+   */
+  private void computeSubtype() {
+    if (matchesPattern(SUBTYPECHAPTERNUMBERPATTERN)) {
+      this.hasSubtype = true;
+      this.subType = LineSubType.CHAPTER_NUMBER;
+    } else if (matchesPattern(SUBTYPENUMBERCHAPTERPATTERN)) {
+      this.hasSubtype = true;
+      this.subType = LineSubType.NUMBER_CHAPTER;
+    } else if (matchesPattern(SUBTYPENUMBERPATTERN)) {
+      this.hasSubtype = true;
+      this.subType = LineSubType.NUMBER;
+    } else if (matchesPattern(SUBTYPECHAPTERPATTERN)) {
+      this.hasSubtype = true;
+      this.subType = LineSubType.CHAPTER;
     }
   }
 }
