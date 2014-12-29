@@ -74,7 +74,7 @@ public class Model implements Factory<EntityManager> {
     return gateDatastoreLocation;
   }
 
-  public void setGateDatastoreLocation(GateDatastoreLocation gateDatastoreLocation) {
+  protected void setGateDatastoreLocation(GateDatastoreLocation gateDatastoreLocation) {
     this.gateDatastoreLocation = gateDatastoreLocation;
   }
 
