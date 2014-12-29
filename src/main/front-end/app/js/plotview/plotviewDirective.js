@@ -7,10 +7,27 @@
 		function($routeParams, PlotviewService) {
 
 			function link(scope, element) {
-				PlotviewService.get({documentId: $routeParams.documentId}, function(plotviewData) {
-					var container = d3.select(element[0]);
-					draw_chart(container, "plotview", plotviewData, true, false, false);
+				var container = d3.select(element[0]);
+				var plotviewData;
+
+				scope.$watch('[width,height]', function() {
+					raw_chart_width = scope.width || raw_chart_width;
+					raw_chart_height = scope.height || raw_chart_height;
+					redrawPlotview(container, plotviewData);
+				}, true);
+
+				PlotviewService.get({documentId: $routeParams.documentId}, function(data) {
+				  plotviewData = data;
+					redrawPlotview(container, plotviewData);
 				});
+			}
+
+			function redrawPlotview(container, plotviewData) {
+				if (!plotviewData) {
+					return;
+				}
+				container.selectAll('*').remove();
+				draw_chart(container, "plotview", plotviewData, true, false, false);
 			}
 
 			// Link dimensions
@@ -20,6 +37,8 @@
 			var node_width = 10; // Set to panel_width later
 			var color = d3.scale.category10();
 			var raw_chart_width = 1000;
+			var raw_chart_height = 360;
+
 
 			// Height of empty gaps between groups
 			// (Sparse groups and group ordering already
@@ -751,7 +770,6 @@
 				// Calculate chart height based on the number of characters
 				// TODO: Redo this calculation
 				//var raw_chart_height = xchars.length*(link_width + link_gap + group_gap);// - (link_gap + group_gap);
-				var raw_chart_height = 360;
 				var height = raw_chart_height - margin.top - margin.bottom;
 
 				// Insert the collapsable title

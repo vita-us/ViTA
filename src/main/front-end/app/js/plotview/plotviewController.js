@@ -14,6 +14,16 @@
           Page.setUpForDocument(document);
         });
 
+        setPlotviewDimensions();
+        $(window).resize(function() {
+          setPlotviewDimensions();
+          $scope.$apply();
+        });
+
+        function setPlotviewDimensions() {
+          $scope.plotviewWidth = $('#plotview-wrapper').width();
+          $scope.plotviewHeight = $(window).height() * 0.7;
+        }
       }]);
 
 })(angular);
