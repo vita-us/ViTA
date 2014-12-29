@@ -120,6 +120,10 @@
         rangeEnd: rangeEnd,
         type: 'person'
       }, function(relationData) {
+        if (!isEntityRelationResponseValid(entities, relationData)) {
+          return;
+        }
+
         var graphData = parseEntitiesToGraphData(entities, relationData);
 
         redrawElements(graphData, showFingerprint);
@@ -128,6 +132,22 @@
             .links(graphData.links)
             .start();
       });
+    }
+
+    function isEntityRelationResponseValid(entities, relationData) {
+      var receivedEntityIds = relationData.entityIds;
+      if (entities.length !== receivedEntityIds.length) {
+        return false;
+      }
+
+      for (var i = 0, l = entities.length; i < l; i++) {
+        var entityId = entities[i].id;
+        if (receivedEntityIds.indexOf(entityId) < 0) {
+          return false;
+        }
+      }
+
+      return true;
     }
 
     function parseEntitiesToGraphData(entities, relationData) {
