@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -94,9 +95,9 @@ public class MetadataAnalyzerTxtTest {
 
   @Test
   public void testPublisherYear() {
-    assertEquals(2006, documentMetadataText1.getPublishYear());
-    assertEquals(1999, documentMetadataText2.getPublishYear());
-    assertEquals(2010, documentMetadataText3.getPublishYear());
+    assertEquals(2006, documentMetadataText1.getPublishYear().intValue());
+    assertEquals(1999, documentMetadataText2.getPublishYear().intValue());
+    assertThat(documentMetadataText3.getPublishYear(), nullValue());
   }
 
   @Test
