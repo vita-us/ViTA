@@ -36,21 +36,17 @@ public class WordCloudModuleTest {
   private static final String CHAPTER_1_TEXT = "Frodo Bilbo Bilbo Gandalf Gandalf such a";
   private static final String CHAPTER_2_TEXT = "Gandalf Mordor";
   private static boolean setUpIsDone = false;
-  
+
   @Before
   public void setUp() throws IOException {
     model = new UnitTestModel();
     textRepository = model.getTextRepository();
-    
-    if(!setUpIsDone){
-      UnitTestModel.startNewSession();
-      textRepository.storeChaptersTexts(getChapters(), DOCUMENT_ID);
-    }
-    setUpIsDone = true;
+    UnitTestModel.startNewSession();
+    textRepository.storeChaptersTexts(getChapters(), DOCUMENT_ID);
   }
 
   private void createWordCloudModule(boolean stopWordListEnabled) throws IOException {
-   
+
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     IndexSearcher searcher = textRepository.getIndexSearcherForDocument(DOCUMENT_ID);
@@ -59,7 +55,7 @@ public class WordCloudModuleTest {
     parameters.setStopWordListEnabled(stopWordListEnabled);
     when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     progressListener = mock(ProgressListener.class);
-    
+
     module = new WordCloudModule();
 
   }
@@ -67,33 +63,30 @@ public class WordCloudModuleTest {
   @Test
   public void testWordCloud() throws Exception {
     createWordCloudModule(true);
-    Set<WordCloudItem> wordCloud = module.execute(resultProvider, progressListener)
-          .getGlobalWordCloud().getItems();
+    Set<WordCloudItem> wordCloud =
+        module.execute(resultProvider, progressListener).getGlobalWordCloud().getItems();
     // items with same frequency are sorted alphabetically, but backwards
-    assertThat(wordCloud, contains(
-        new WordCloudItem("gandalf", 3),
-        new WordCloudItem("bilbo", 2),
-        new WordCloudItem("mordor", 1),
-        new WordCloudItem("frodo", 1)));
+    assertThat(
+        wordCloud,
+        contains(new WordCloudItem("gandalf", 3), new WordCloudItem("bilbo", 2), new WordCloudItem(
+            "mordor", 1), new WordCloudItem("frodo", 1)));
 
   }
 
   @Test
-  public void testWordCloudWithStopWords() throws IOException{
+  public void testWordCloudWithStopWords() throws IOException {
     createWordCloudModule(false);
-    Set<WordCloudItem> wordCloud = module.execute(resultProvider, progressListener)
-        .getGlobalWordCloud().getItems();
-   // items with same frequency are sorted alphabetically, but backwards
-   assertThat(wordCloud, contains(
-       new WordCloudItem("gandalf", 3),
-       new WordCloudItem("bilbo", 2),
-       new WordCloudItem("such", 1),
-       new WordCloudItem("mordor", 1),
-       new WordCloudItem("frodo", 1),
-       new WordCloudItem("a", 1)));
-    
+    Set<WordCloudItem> wordCloud =
+        module.execute(resultProvider, progressListener).getGlobalWordCloud().getItems();
+    // items with same frequency are sorted alphabetically, but backwards
+    assertThat(
+        wordCloud,
+        contains(new WordCloudItem("gandalf", 3), new WordCloudItem("bilbo", 2), new WordCloudItem(
+            "such", 1), new WordCloudItem("mordor", 1), new WordCloudItem("frodo", 1),
+            new WordCloudItem("a", 1)));
+
   }
-  
+
   private List<Chapter> getChapters() {
     Chapter chapter1 = new Chapter();
     chapter1.setText(CHAPTER_1_TEXT);
