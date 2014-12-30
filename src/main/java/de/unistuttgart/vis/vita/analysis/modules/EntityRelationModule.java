@@ -24,8 +24,8 @@ public class EntityRelationModule extends Module<EntityRelations> {
   /**
    * The distance in characters two entities my occur at to be considered in a relation
    */
-  private int distance;
-
+  private static final int DISTANCE = 50;
+  
   private int timeSteps;
   
   private SortedSet<RelationEvent> events = new TreeSet<>();
@@ -43,7 +43,6 @@ public class EntityRelationModule extends Module<EntityRelations> {
         .getEntities();
     totalLength = results.getResultFor(ImportResult.class).getTotalLength();
     timeSteps = results.getResultFor(AnalysisParameters.class).getRelationTimeStepCount();
-    distance = results.getResultFor(AnalysisParameters.class).getRelationDistanceCount();
     stepMaps = new WeightsMap[timeSteps];
     
     for (BasicEntity entity : entities) {
@@ -142,21 +141,21 @@ public class EntityRelationModule extends Module<EntityRelations> {
   }
   
   /**
-   * Extends the start and the end of the given text span by {@link #distance} / 2 each,
+   * Extends the start and the end of the given text span by {@link #DISTANCE} / 2 each,
    * but not across chapter boundaries
    * @param occurrence the span to widen
    * @return the widened span
    */
   private TextSpan widenOccurrence(TextSpan occurrence) {
     int chapterStart = occurrence.getStart().getChapter().getRange().getStart().getOffset();
-    int start = occurrence.getStart().getOffset() - distance / 2;
+    int start = occurrence.getStart().getOffset() - DISTANCE / 2;
 
     if (start < chapterStart) {
       start = chapterStart;
     }
 
     int chapterEnd = occurrence.getEnd().getChapter().getRange().getEnd().getOffset();
-    int end = occurrence.getEnd().getOffset() + distance / 2;
+    int end = occurrence.getEnd().getOffset() + DISTANCE / 2;
 
     if (end > chapterEnd) {
       end = chapterEnd;
