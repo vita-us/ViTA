@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;

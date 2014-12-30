@@ -84,7 +84,7 @@ public class DocumentTestData {
     assertEquals(DocumentTestData.TEST_DOCUMENT_GENRE, savedMetadata.getGenre());
 
     assertEquals(DocumentTestData.TEST_DOCUMENT_PUBLISHER, savedMetadata.getPublisher());
-    assertEquals(DocumentTestData.TEST_DOCUMENT_PUPLICATION_YEAR, savedMetadata.getPublishYear());
+    assertEquals(DocumentTestData.TEST_DOCUMENT_PUPLICATION_YEAR, savedMetadata.getPublishYear().intValue());
 
     DocumentMetrics savedMetrics = documentToCheck.getMetrics();
     assertNotNull(savedMetrics);
