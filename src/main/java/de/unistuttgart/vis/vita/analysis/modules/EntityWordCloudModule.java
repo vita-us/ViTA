@@ -42,11 +42,13 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
+    boolean stopWordListEnabled =
+        results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
     count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
 
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities, stopWordListEnabled));
     }
 
     return new EntityWordCloudResult() {
@@ -57,11 +59,18 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities, boolean stopWordListEnabled )
       throws IOException {
     List<TextSpan> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
-
+   
+    Set<String> stopWordList;
+    if (stopWordListEnabled) {
+      stopWordList = StopWordList.getStopWords();
+    } else {
+      stopWordList = new HashSet<String>();
+    }
+    
     // The entity name itself should not be included in the word cloud
     Set<String> entityNameTokens = new HashSet<>();
     for (Attribute attr : entity.getNameAttributes()) {
@@ -79,7 +88,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       for (int i = 1; i < tokens.length - 1; i++) {
         String token = tokens[i].trim();
         if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
-            && !entityNameTokens.contains(token) && !StopWordList.getStopWords().contains(token)) {
+            && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
           if (frequencies.containsKey(token)) {
             frequencies.put(token, frequencies.get(token) + 1);
           } else {
