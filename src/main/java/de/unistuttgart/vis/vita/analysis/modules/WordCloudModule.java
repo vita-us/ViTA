@@ -85,6 +85,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     if (items.size() > maxCount)
       items = items.subList(0, maxCount);
 
+    searcher.getIndexReader().close();
     return new WordCloud(items);
   }
 }
