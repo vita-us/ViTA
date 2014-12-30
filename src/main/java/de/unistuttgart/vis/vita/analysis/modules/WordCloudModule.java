@@ -3,7 +3,9 @@ package de.unistuttgart.vis.vita.analysis.modules;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Term;
@@ -30,11 +32,13 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
   private int maxCount;
 
   @Override
-  public GlobalWordCloudResult execute(ModuleResultProvider results, ProgressListener progressListener)
-      throws IOException {
+  public GlobalWordCloudResult execute(ModuleResultProvider results,
+      ProgressListener progressListener) throws IOException {
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
+    boolean stopWordListEnabled =
+        results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
     maxCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
-    final WordCloud globalWordCloud = getGlobalWordCloud(searcher);
+    final WordCloud globalWordCloud = getGlobalWordCloud(searcher, stopWordListEnabled);
 
     return new GlobalWordCloudResult() {
       @Override
@@ -44,12 +48,21 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     };
   }
 
-  private WordCloud getGlobalWordCloud(IndexSearcher searcher) throws IOException {
-    Terms terms = SlowCompositeReaderWrapper.wrap(searcher.getIndexReader())
-        .terms(TextRepository.CHAPTER_TEXT_FIELD);
+  private WordCloud getGlobalWordCloud(IndexSearcher searcher, boolean stopWordListEnabled)
+      throws IOException {
+    Terms terms =
+        SlowCompositeReaderWrapper.wrap(searcher.getIndexReader()).terms(
+            TextRepository.CHAPTER_TEXT_FIELD);
     if (terms == null) {
       // This means that there are no chapters
       return new WordCloud();
+    }
+
+    Set<String> stopWordList;
+    if (stopWordListEnabled) {
+      stopWordList = StopWordList.getStopWords();
+    } else {
+      stopWordList = new HashSet<String>();
     }
 
     TermsEnum enumerator = terms.iterator(null);
@@ -58,9 +71,10 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     while (term != null) {
       String termText = term.utf8ToString();
 
-      if (!StopWordList.getStopWords().contains(termText)) {
-        long frequency = searcher.getIndexReader()
-            .totalTermFreq(new Term(TextRepository.CHAPTER_TEXT_FIELD, term));
+      if (!stopWordList.contains(termText)) {
+        long frequency =
+            searcher.getIndexReader().totalTermFreq(
+                new Term(TextRepository.CHAPTER_TEXT_FIELD, term));
         items.add(new WordCloudItem(termText, (int) frequency));
       }
       term = enumerator.next();
