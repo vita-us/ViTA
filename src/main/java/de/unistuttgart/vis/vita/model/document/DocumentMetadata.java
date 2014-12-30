@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class DocumentMetadata {
-  
+
   // attributes
   @Column(length = 1000)
   private String title;
@@ -20,20 +20,21 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String publisher;
 
-  private int publishYear;
+  private Integer publishYear;
 
   @Column(length = 1000)
   private String genre;
 
   @Column(length = 1000)
   private String edition;
-  
+
   /**
    * Creates a new instance of DocumentMetadata, setting all attributes to default values.
    */
   public DocumentMetadata() {
     // do nothing
   }
+
   /**
    * Creates a new instance of DocumentMetadata, setting title and author to the given values.
    * 
@@ -44,14 +45,14 @@ public class DocumentMetadata {
     this.title = pTitle;
     this.author = pAuthor;
   }
-  
+
   /**
    * @return the title under which the Document is published
    */
   public String getTitle() {
     return title;
   }
-  
+
   /**
    * Sets the title for the Document.
    *
@@ -60,14 +61,14 @@ public class DocumentMetadata {
   public void setTitle(String newTitle) {
     this.title = newTitle;
   }
-  
+
   /**
    * @return the author of the Document
    */
   public String getAuthor() {
     return author;
   }
-  
+
   /**
    * Set the author of the Document.
    * 
@@ -76,14 +77,14 @@ public class DocumentMetadata {
   public void setAuthor(String newAuthor) {
     this.author = newAuthor;
   }
-  
+
   /**
    * @return the name of the publisher of this Document
    */
   public String getPublisher() {
     return publisher;
   }
-  
+
   /**
    * Sets the name of the publisher of this Document.
    * 
@@ -92,30 +93,31 @@ public class DocumentMetadata {
   public void setPublisher(String newPublisher) {
     this.publisher = newPublisher;
   }
-  
+
   /**
    * @return year when the Document was published
    */
-  public int getPublishYear() {
+  public Integer getPublishYear() {
     return publishYear;
   }
-  
+
   /**
    * Sets the year of publication.
    * 
    * @param newPublishYear - the year when the document was published
    */
-  public void setPublishYear(int newPublishYear) {
-    this.publishYear = newPublishYear;
+
+  public void setPublishYear(Integer publishYear) {
+    this.publishYear = publishYear;
   }
-  
+
   /**
    * @return the name of the genre
    */
   public String getGenre() {
     return genre;
   }
-  
+
   /**
    * Sets the genre for the Document.
    * 
@@ -124,14 +126,14 @@ public class DocumentMetadata {
   public void setGenre(String newGenre) {
     this.genre = newGenre;
   }
-  
+
   /**
    * @return the edition name of the Document
    */
   public String getEdition() {
     return edition;
   }
-  
+
   /**
    * Sets the edition name of the document.
    * 
@@ -140,5 +142,5 @@ public class DocumentMetadata {
   public void setEdition(String edition) {
     this.edition = edition;
   }
-  
+
 }
