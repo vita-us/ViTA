@@ -22,8 +22,10 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String publisher;
 
-  // Prevent that Hibernate sets documentmetadata to null, by not creating a column for this attribute
+  // Prevent that Hibernate sets documentmetadata and the attributes to null, by not creating a column for this documentmetadata object
   @Formula("0")
+  private int dummy;
+  
   private Integer publishYear;
 
   @Column(length = 1000)
