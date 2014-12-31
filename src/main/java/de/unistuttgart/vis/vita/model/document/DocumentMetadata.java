@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.model.document;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.hibernate.annotations.Formula;
+
 /**
  * Represents the meta data of a Document, including information like title, author, publisher, year
  * of publication, genre and edition of the Document.
@@ -20,6 +22,8 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String publisher;
 
+  // Prevent that Hibernate sets documentmetadata to null, by not creating a column for this attribute
+  @Formula("0")
   private Integer publishYear;
 
   @Column(length = 1000)
