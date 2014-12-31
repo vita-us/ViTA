@@ -50,7 +50,7 @@ public class DocumentTestData {
     metaData.setEdition(TEST_DOCUMENT_EDITION);
     metaData.setGenre(TEST_DOCUMENT_GENRE);
     metaData.setPublisher(TEST_DOCUMENT_PUBLISHER);
-    metaData.setPublishYear(TEST_DOCUMENT_PUPLICATION_YEAR);
+    metaData.setPublishYear(new Integer(TEST_DOCUMENT_PUPLICATION_YEAR));
 
     // create and set up metrics
     DocumentMetrics metrics = new DocumentMetrics();
@@ -70,7 +70,7 @@ public class DocumentTestData {
   public void checkData(Document documentToCheck, int number) {
     DocumentMetadata savedMetadata = documentToCheck.getMetadata();
     assertNotNull(savedMetadata);
-    
+
     String savedTitle = savedMetadata.getTitle();
     
     if (number == 1) {
