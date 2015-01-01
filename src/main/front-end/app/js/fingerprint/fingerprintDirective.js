@@ -6,8 +6,9 @@
   vitaDirectives.directive('fingerprint', ['DocumentViewSender',
                                            'RelationOccurrences',
                                            'Entity',
+                                           'FingerprintSynchronizer',
                                            '$routeParams',
-                          function(DocumentViewSender, RelationOccurrences, Entity, $routeParams) {
+                          function(DocumentViewSender, RelationOccurrences, Entity, FingerprintSynchronizer, $routeParams) {
     function link(scope, element, attrs) {
 
       var MINIMUM_SVG_HEIGHT = 40;
@@ -52,6 +53,8 @@
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
+
+      FingerprintSynchronizer.synchronize();
 
       svgContainer.on('mouseover', function() {
             tooltip.style('visibility', 'visible');
