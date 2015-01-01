@@ -6,7 +6,8 @@
   vitaServices.factory('PlotviewService', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/plotview', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);
