@@ -52,10 +52,9 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var occurrenceSteps = calculateOccurrenceSteps();
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
-      FingerprintSynchronizer();
+      FingerprintSynchronizer.synchronize();
 
       svgContainer.on('mouseover', function() {
             tooltip.style('visibility', 'visible');

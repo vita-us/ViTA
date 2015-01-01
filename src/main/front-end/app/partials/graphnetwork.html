@@ -3,7 +3,8 @@
     <div ng-include="'partials/menu.html'"></div>
   </div>
   <div class="col-md-8">
-    <button id="fp-separator-toggle-button" class="btn btn-default">Toggle separators</button>
+    <button id="fp-separator-toggle-button" class="btn btn-default"
+      ng-click="FingerprintSynchronizer.toggle()">Toggle separators</button>
     <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
       data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
     <p>

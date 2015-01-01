@@ -53,11 +53,8 @@
     });
   }]);
 
-  app.factory('Page', ['DocumentViewSender', 'FingerprintSynchronizer',
-      function(DocumentViewSender, FingerprintSynchronizer) {
+  app.factory('Page', ['DocumentViewSender', function(DocumentViewSender) {
             
-    var isSeparatorVisible = true;
-    
     return {
       setUpForDocument: function(document) {
         var oldId = this.documentId;
@@ -77,23 +74,6 @@
         this.showMenu = false;
         this.tab = tab;
         this.breadcrumbs = null;
-      },
-      toggleFingerprintSeparators: function() {
-        var separators = $(".chapter-separators, .part-separators");
-        
-        // we do not use .toggle() here to ensure that every fingerprint on the page has
-        // the same toggle state
-        if (isSeparatorVisible) {
-          separators.hide();
-        } else {
-          separators.show();
-        }
-        
-        // toggle the flag
-        isSeparatorVisible = !isSeparatorVisible;
-        
-        // synchronize flag for fingerprints which might get inserted later
-        FingerprintSynchronizer(isSeparatorVisible);
       }
     };
   }]);
