@@ -14,7 +14,7 @@
     };
 
     this.synchronize = function() {
-      var separators = $(".chapter-separators, .part-separators");
+      var separators = $('.chapter-separators, .part-separators');
       if (isSeparatorVisible) {
         separators.show();
       } else {
