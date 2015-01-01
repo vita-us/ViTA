@@ -7,7 +7,8 @@
   vitaServices.factory('Person', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/persons/:personId', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);

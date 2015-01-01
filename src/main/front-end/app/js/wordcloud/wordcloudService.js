@@ -7,7 +7,8 @@
   vitaServices.factory('Wordcloud', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/wordcloud', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);
