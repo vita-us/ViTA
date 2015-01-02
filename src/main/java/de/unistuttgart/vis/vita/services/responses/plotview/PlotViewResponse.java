@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class PlotViewResponse {
+  
   @XmlElement(name="characters")
   private List<PlotViewCharacter> characters;
 
@@ -16,17 +17,22 @@ public class PlotViewResponse {
 
   @XmlElement
   private List<PlotViewScene> scenes;
+  
+  @XmlElement
+  private List<PlotViewPlace> places;
 
   public PlotViewResponse() {
     characters = new ArrayList<>();
     scenes = new ArrayList<>();
+    places = new ArrayList<>();
   }
 
   public PlotViewResponse(List<PlotViewCharacter> characters, int panels,
-      List<PlotViewScene> scenes) {
+      List<PlotViewScene> scenes, List<PlotViewPlace> places) {
     this.characters = characters;
     this.panels = panels;
     this.scenes = scenes;
+    this.places = places;
   }
 
   public List<PlotViewCharacter> getCharacters() {
@@ -52,4 +58,9 @@ public class PlotViewResponse {
   public void setScenes(List<PlotViewScene> scenes) {
     this.scenes = scenes;
   }
+
+  public List<PlotViewPlace> getPlaces() {
+    return places;
+  }
+
 }

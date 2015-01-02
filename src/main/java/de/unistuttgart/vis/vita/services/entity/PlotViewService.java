@@ -12,13 +12,16 @@ import javax.ws.rs.core.MediaType;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.dao.EntityDao;
 import de.unistuttgart.vis.vita.model.dao.PersonDao;
+import de.unistuttgart.vis.vita.model.dao.PlaceDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewCharacter;
+import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewPlace;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewResponse;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
 
@@ -35,7 +38,11 @@ public class PlotViewService {
   
   @Inject
   private PersonDao personDao;
-  
+
+  @Inject
+  private PlaceDao placeDao;
+
+  @Inject
   private EntityDao entityDao;
 
   /**
@@ -70,8 +77,11 @@ public class PlotViewService {
     }
     
     int placeIndex = 0;
-    List<Place> places = placeDao.findInDocument(documentId, 0, 5);
+    List<Place> places = placeDao.findInDocument(documentId, 0, 10);
     for (Entity place : places) {
+      response.getPlaces().add(new PlotViewPlace(place.getId(), place.getDisplayName()));
+      
+      // TODO this is only for test purposes, to see the places without changing the front end
       response.getCharacters().add(new PlotViewCharacter("@ " + place.getDisplayName(), 
           place.getId(), 
           placeIndex++));
@@ -83,20 +93,34 @@ public class PlotViewService {
     int index = 0;
     for (DocumentPart part : document.getContent().getParts()) {
       for (Chapter chapter: part.getChapters()) {
-        List<Entity> occurringEntities = entityDao.findOccurringPersons(
-            chapter.getRange().getStart().getOffset(),
-            chapter.getRange().getEnd().getOffset(), entities);
-
-        List<String> entityIds = new ArrayList<String>();
-        for (Entity entity : occurringEntities) {
+        
+        // fetch range offsets for current chapter
+        int start = chapter.getRange().getStart().getOffset();
+        int end = chapter.getRange().getEnd().getOffset();
+        
+        // get all persons occurring in the current chapter
+        List<Entity> occurringPersons = entityDao.getOccurringEntities(start, end, entities, EntityType.PERSON);
+        
+        List<String> entityIds = new ArrayList<>();
+        for (Entity entity : occurringPersons) {
           entityIds.add(entity.getId());
         }
+        
+        // get all special places occurring in the current chapter
+        List<Entity> occurringPlaces = entityDao.getOccurringEntities(start, end, places, EntityType.PLACE);
+        
+        List<String> placeIds = new ArrayList<>();
+        for (Entity place : occurringPlaces) {
+          placeIds.add(place.getId());
+        }
 
+        // add a new scene for the current chapter
         response.getScenes().add(new PlotViewScene(
             index,//chapter.getRange().getStart().getOffset(),
             1,//chapter.getRange().getLength(),
             index++,
             entityIds,
+            placeIds,
             chapter.getNumber() + " - " + chapter.getTitle()));
       }
     }
@@ -104,5 +128,5 @@ public class PlotViewService {
 
     return  response;
   }
-
+  
 }

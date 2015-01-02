@@ -95,8 +95,8 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
           // Null checks
           + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
 
-  // gets the entities that occur within a given range
-  @NamedQuery(name = "TextSpan.getOccurringEntities",
+  // gets the persons that occur within a given range
+  @NamedQuery(name = "TextSpan.getOccurringPersons",
     query = "SELECT DISTINCT e "
           + "FROM Entity e "
           + "INNER JOIN e.occurrences ts "
@@ -105,15 +105,36 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
           + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
           + "GROUP BY e "
           + "HAVING COUNT(ts) > 0.25 * ("
-            + "SELECT COUNT(ts2) "
-            + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + "SELECT COUNT(ts2) "
+          + "FROM Person p "
+          + "INNER JOIN p.occurrences ts2 "
+          + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
           + ") / ("
-            + "SELECT COUNT(DISTINCT p) "
-            + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + "SELECT COUNT(DISTINCT p) "
+          + "FROM Person p "
+          + "INNER JOIN p.occurrences ts2 "
+          + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + ")"),
+
+  // gets the places that occur within a given range
+  @NamedQuery(name = "TextSpan.getOccurringPlaces",
+    query = "SELECT DISTINCT e "
+          + "FROM Entity e "
+          + "INNER JOIN e.occurrences ts "
+          + "WHERE e IN :entities "
+          // range checks
+          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "GROUP BY e "
+          + "HAVING COUNT(ts) > 0.25 * ("
+          + "SELECT COUNT(ts2) "
+          + "FROM Place pl "
+          + "INNER JOIN pl.occurrences ts2 "
+          + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+          + ") / ("
+          + "SELECT COUNT(DISTINCT pl) "
+          + "FROM Place pl "
+          + "INNER JOIN pl.occurrences ts2 "
+          + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
           + ")"),
 
   @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "

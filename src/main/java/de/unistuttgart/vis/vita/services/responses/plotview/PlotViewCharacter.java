@@ -13,7 +13,7 @@ public class PlotViewCharacter {
   private int group;
 
   public PlotViewCharacter() {
-
+    // zero argument constructor needed
   }
 
   public PlotViewCharacter(String name, String id, int group) {
