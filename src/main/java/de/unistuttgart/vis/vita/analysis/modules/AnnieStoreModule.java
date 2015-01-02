@@ -14,6 +14,7 @@ import de.unistuttgart.vis.vita.model.Model;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import gate.Corpus;
@@ -44,6 +45,8 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
     File datastoreDIR = new File(location);
 
     if (!datastoreDIR.exists()) {
+      // This is necessary because Gate assumes the parent directory already exists
+      datastoreDIR.getParentFile().mkdir();
       serialDataStore = (SerialDataStore) Factory.createDataStore("gate.persist.SerialDataStore",
                                                                   location.toString());
     } else {
