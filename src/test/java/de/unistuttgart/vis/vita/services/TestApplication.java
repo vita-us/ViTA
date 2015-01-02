@@ -14,12 +14,8 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
-public class TestApplication extends ResourceConfig {
-  private static String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
-
+public class TestApplication extends BaseApplication {
   public TestApplication() {
-    super(MultiPartFeature.class, DocumentsService.class);
-    packages(true, SERVICES_PACKAGE);
     register(new MyApplicationBinder());
     register(ServiceLocatorUtilities.createAndPopulateServiceLocator());
   }
