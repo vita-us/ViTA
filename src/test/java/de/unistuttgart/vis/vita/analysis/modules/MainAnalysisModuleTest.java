@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class MainAnalysisModuleTest {
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
     AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
     Path docPath = Paths.get(getClass().getResource("LOTR_CP1.txt").toURI());
-    executor = factory.createExecutor(document.getId(), docPath);
+    executor = factory.createExecutor(document.getId(), docPath, new AnalysisParameters());
   }
 
   @Test
