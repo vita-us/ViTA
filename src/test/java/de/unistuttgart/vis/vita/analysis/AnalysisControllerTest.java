@@ -218,7 +218,7 @@ public class AnalysisControllerTest {
   }
 
   private void verifyExecutorCreated(String id, Path path) {
-    verify(executorFactory).createExecutor(id, path, Matchers.any(AnalysisParameters.class));
+    verify(executorFactory).createExecutor(eq(id), eq(path), Matchers.any(AnalysisParameters.class));
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());
