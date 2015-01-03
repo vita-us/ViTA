@@ -90,8 +90,7 @@ public class AnalysisController {
    */
   public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName,
       AnalysisParameters parameters) {
-    Document document = createDocument(filePath, fileName);
-    document.setParameters(parameters);
+    Document document = createDocument(filePath, fileName, parameters);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
@@ -129,19 +128,21 @@ public class AnalysisController {
     });
   }
 
-  private Document createDocument(Path filePath, String fileName) {
+  private Document createDocument(Path filePath, String fileName, AnalysisParameters parameters) {
     Document document = new Document();
     document.getMetadata().setTitle(fileName);
     document.setFileName(fileName);
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
     document.setUploadDate(new Date());
+    document.setParameters(parameters);
 
     EntityManager em = null;
     try {
       em = model.getEntityManager();
       em.getTransaction().begin();
       em.persist(document);
+      em.persist(document.getParameters());
       em.getTransaction().commit();
     } finally {
       if (em != null) {
