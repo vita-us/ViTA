@@ -74,4 +74,19 @@ public class PlaceDao extends JpaDao<Place, String> {
     return className + "." + "find" + className + "s" + "InDocument";
   }
 
+  /**
+   * Reads a given number of special places occurring in the current Document from the database and
+   * returns them. Special means that these places do NOT occur widespread over the whole Document.
+   *
+   * @param count - the amount of places to be returned
+   * @return list of places occurring in the current Document
+   */
+  public List<Place> readSpecialPlacesFromDatabase(String documentId, int count) {
+    TypedQuery<Place> placeQuery = em.createNamedQuery("Place.findSpecialPlacesInDocument",
+        Place.class);
+    placeQuery.setParameter("documentId", documentId);
+    placeQuery.setMaxResults(count);
+    return placeQuery.getResultList();
+  }
+
 }

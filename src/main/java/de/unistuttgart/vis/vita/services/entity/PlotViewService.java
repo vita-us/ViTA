@@ -26,7 +26,8 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewResponse;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
 
 /**
- * Redirects entity and relations requests for the current Document to the right sub service.
+ * Represents a service sending scenes, persons and places for the current document to the client 
+ * in order to give an overview of the document plot.
  */
 @ManagedBean
 public class PlotViewService {
@@ -77,19 +78,12 @@ public class PlotViewService {
     }
     
     int placeIndex = 0;
-    List<Place> places = placeDao.findInDocument(documentId, 0, 10);
+    List<Place> places = placeDao.readSpecialPlacesFromDatabase(documentId, 10);
     for (Entity place : places) {
       response.getPlaces().add(new PlotViewPlace(place.getId(), place.getDisplayName()));
-      
-      // TODO this is only for test purposes, to see the places without changing the front end
-      response.getCharacters().add(new PlotViewCharacter("@ " + place.getDisplayName(), 
-          place.getId(), 
-          placeIndex++));
-      entities.add(place);
     }
 
     Document document = documentDao.findById(documentId);
-    response.setPanels(document.getMetrics().getCharacterCount());
     int index = 0;
     for (DocumentPart part : document.getContent().getParts()) {
       for (Chapter chapter: part.getChapters()) {
@@ -110,21 +104,24 @@ public class PlotViewService {
         List<Entity> occurringPlaces = entityDao.getOccurringEntities(start, end, places, EntityType.PLACE);
         
         List<String> placeIds = new ArrayList<>();
+        String placeNames = "";
+        boolean first = true;
         for (Entity place : occurringPlaces) {
           placeIds.add(place.getId());
+          String currentName = place.getDisplayName();
+          placeNames = first ? currentName : placeNames + ", " + currentName; 
+          first = false;
         }
-
-        // add a new scene for the current chapter
-        response.getScenes().add(new PlotViewScene(
-            index,//chapter.getRange().getStart().getOffset(),
-            1,//chapter.getRange().getLength(),
-            index++,
-            entityIds,
-            placeIds,
-            chapter.getNumber() + " - " + chapter.getTitle()));
+        
+        String currentTitle = chapter.getNumber() + " - " + chapter.getTitle() + " @ " + placeNames;
+        
+        // create scene and add it to response
+        PlotViewScene currentScene = new PlotViewScene(index, 1, index++, currentTitle);
+        response.getScenes().add(currentScene);
+        
+        response.setPanels(100);
       }
     }
-    response.setPanels(index);
 
     return  response;
   }
