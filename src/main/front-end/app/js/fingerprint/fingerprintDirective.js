@@ -106,14 +106,19 @@
         buildPartSeparators(scope.parts);
       });
 
-      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
-        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
+      scope.$watch('entityIds', function(newEntityIds, oldEntityIds) {
+        if (!angular.equals(newEntityIds, oldEntityIds) || !angular.isUndefined(newEntityIds)) {
           if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
             removeFingerPrint();
             return;
           }
           getRelationOccurrences();
         }
+      }, true);
+
+      scope.$watch('[rangeBegin,rangeEnd]', function() {
+        var rangeStart = scope.rangeBegin || 0;
+        var rangeEnd = scope.rangeEnd || 1;
       }, true);
 
       scope.$watch('parts', function(newValue, oldValue) {
@@ -135,9 +140,7 @@
         RelationOccurrences.get({
           documentId: $routeParams.documentId,
           entityIds: scope.entityIds.join(','),
-          steps: calculateOccurrenceSteps(),
-          rangeStart: scope.rangeBegin,
-          rangeEnd: scope.rangeEnd
+          steps: calculateOccurrenceSteps()
         }, function(response) {
           removeFingerPrint();
           buildFingerPrint(response.occurrences, scope);
