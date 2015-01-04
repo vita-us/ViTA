@@ -20,7 +20,7 @@
         <div class="dv-menu-fixed-wrap">
           <div data-ng-repeat="part in parts">
             <h3 class="part" data-ng-class="{'active-menu': $first}">
-              <a href="#part-{{part.number}}">
+              <a href="#part-{{part.number}}" ng-show="parts.length > 1">
                 Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
               </a>
             </h3>
