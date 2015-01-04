@@ -1,13 +1,10 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 /**
  * Merges entities with the same names into each other
@@ -31,25 +28,31 @@ public class EntityMerger {
    * @param entity
    */
   public void add(BasicEntity entity) {
-    BasicEntity existing = getEntityCalledAs(entity);
+    Set<BasicEntity> existing = getEntitiesCalledAs(entity);
 
-    if (existing != null) {
-      existing.merge(entity);
-      addEntityNames(existing);
-      return;
+    // Merge all old entities in the new one, and re-point the names to the new one
+    for (BasicEntity existingEntity : existing) {
+      entity.merge(existingEntity);
+      result.remove(existingEntity);
     }
 
     result.add(entity);
     addEntityNames(entity);
   }
 
-  private BasicEntity getEntityCalledAs(BasicEntity entity) {
+  /**
+   * Gets all the entities that have a name the given entity also has
+   * @param entity the entity whose names to look for
+   * @return the set of entities that match
+   */
+  private Set<BasicEntity> getEntitiesCalledAs(BasicEntity entity) {
+    Set<BasicEntity> result = new HashSet<>();
     for (Attribute attr : entity.getNameAttributes()) {
       if (entitiesByName.containsKey(attr.getContent())) {
-        return entitiesByName.get(attr.getContent());
+        result.add(entitiesByName.get(attr.getContent()));
       }
     }
-    return null;
+    return result;
   }
 
   /**
@@ -60,8 +63,13 @@ public class EntityMerger {
     return Collections.unmodifiableList(result);
   }
 
+  /**
+   * Adds references for all the names
+   * @param entity the entity whose names to add
+   */
   private void addEntityNames(BasicEntity entity) {
     for (Attribute attr : entity.getNameAttributes()) {
+      System.out.println(attr.getContent() + " -> " + entity.getEntityId());
       entitiesByName.put(attr.getContent(), entity);
     }
   }
