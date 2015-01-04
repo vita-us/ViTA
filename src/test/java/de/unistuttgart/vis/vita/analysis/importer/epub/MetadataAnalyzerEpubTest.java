@@ -27,7 +27,7 @@ public class MetadataAnalyzerEpubTest {
     Path testPath = Paths.get(getClass().getResource("pg78.epub").toURI());
     EpubFileImporter epubFileImporter = new EpubFileImporter(testPath);
     MetadataAnalyzerEpub metadataAnalyzerEpub =
-        new MetadataAnalyzerEpub(epubFileImporter.getEbook(), testPath);
+        new MetadataAnalyzerEpub(epubFileImporter.getEbook());
     documentMetadata = metadataAnalyzerEpub.extractMetadata();
   }
 
