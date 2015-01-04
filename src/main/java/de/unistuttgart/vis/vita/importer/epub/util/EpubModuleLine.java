@@ -33,12 +33,13 @@ public class EpubModuleLine extends AbstractLine{
   @Override
   public void computeType() {
     if (automatedTypeComputation) {
+      type.clear();
       // a lower type will be overwritten
       LineType highestType = LineType.TEXT;
       if (matchesPattern(WHITESPACEPATTERN)) {
         highestType = LineType.WHITELINE;
       }
-      this.type = highestType;
+      this.type.add(highestType);
     }
   }
 

@@ -35,7 +35,7 @@ public class MetadataAnalyzerEpubTest {
   public void testMetadata() {
     assertEquals("Edgar Rice Burroughs", documentMetadata.getAuthor());
     assertEquals("Tarzan of the Apes", documentMetadata.getTitle());
-    assertEquals(1993, documentMetadata.getPublishYear());
+    assertEquals(1993, documentMetadata.getPublishYear().intValue());
     assertEquals("", documentMetadata.getPublisher());
     assertEquals("", documentMetadata.getEdition());
     assertEquals("", documentMetadata.getGenre());

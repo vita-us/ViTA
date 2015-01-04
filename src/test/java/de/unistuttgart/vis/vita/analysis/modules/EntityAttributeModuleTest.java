@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityAttributes;
@@ -31,6 +32,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -56,9 +58,16 @@ public class EntityAttributeModuleTest {
     loadText();
     fillText();
 
+    GateInitializeModule initializeModule = new GateInitializeModule();
+    initializeModule.execute(resultProvider, progressListener);
+
+    AnnieDatastore datastore = mock(AnnieDatastore.class);
+    when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
+
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
+    when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
