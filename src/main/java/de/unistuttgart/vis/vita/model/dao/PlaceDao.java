@@ -39,14 +39,13 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 
   @NamedQuery(name = "Place.findSpecialPlacesInDocument",
               query = "SELECT DISTINCT pl "
-                    + "FROM Place pl, Document d  "
+                    + "FROM Place pl, Document d "
                     + "INNER JOIN pl.occurrences ts "
                     + "WHERE d.id = :documentId "
                     + "AND pl MEMBER OF d.content.places "
                     + "GROUP BY pl.id "
-                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) "
-                    + "BETWEEN :minRange AND :maxRange "
-                    + "AND COUNT(ts) > 3 " // lower threshold: at least 4 occurrences
+                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) < "
+                    + "(4 * (SELECT AVG(c.length) FROM Chapter c)) "
                     + "ORDER BY pl.rankingValue")
 })
 public class PlaceDao extends JpaDao<Place, String> {
@@ -78,14 +77,18 @@ public class PlaceDao extends JpaDao<Place, String> {
    * Reads a given number of special places occurring in the current Document from the database and
    * returns them. Special means that these places do NOT occur widespread over the whole Document.
    *
-   * @param count - the amount of places to be returned
    * @return list of places occurring in the current Document
    */
-  public List<Place> readSpecialPlacesFromDatabase(String documentId, int count) {
+  public List<Place> readSpecialPlacesFromDatabase(String documentId, long averageChapterLength) {
     TypedQuery<Place> placeQuery = em.createNamedQuery("Place.findSpecialPlacesInDocument",
         Place.class);
+    int minRange = (int) (0.1 * averageChapterLength);
+    int maxRange = (int) (5 * averageChapterLength);
+
     placeQuery.setParameter("documentId", documentId);
-    placeQuery.setMaxResults(count);
+    placeQuery.setParameter("minRange", minRange);
+    placeQuery.setParameter("maxRange", maxRange);
+
     return placeQuery.getResultList();
   }
 

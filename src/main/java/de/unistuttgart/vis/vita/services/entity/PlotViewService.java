@@ -9,10 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.dao.DocumentDao;
-import de.unistuttgart.vis.vita.model.dao.EntityDao;
-import de.unistuttgart.vis.vita.model.dao.PersonDao;
-import de.unistuttgart.vis.vita.model.dao.PlaceDao;
+import de.unistuttgart.vis.vita.model.dao.*;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -33,9 +30,12 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
 public class PlotViewService {
 
   private String documentId;
-  
+
   @Inject
   private DocumentDao documentDao;
+
+  @Inject
+  private ChapterDao chapterDao;
   
   @Inject
   private PersonDao personDao;
@@ -78,7 +78,7 @@ public class PlotViewService {
     }
     
     int placeIndex = 0;
-    List<Place> places = placeDao.readSpecialPlacesFromDatabase(documentId, 10);
+    List<Place> places = placeDao.readSpecialPlacesFromDatabase(documentId, chapterDao.getAverageChapterLength(documentId));
     for (Entity place : places) {
       response.getPlaces().add(new PlotViewPlace(place.getId(), place.getDisplayName()));
     }
@@ -92,33 +92,34 @@ public class PlotViewService {
         int start = chapter.getRange().getStart().getOffset();
         int end = chapter.getRange().getEnd().getOffset();
         
-        // get all persons occurring in the current chapter
-        List<Entity> occurringPersons = entityDao.getOccurringEntities(start, end, entities, EntityType.PERSON);
+        // create scene and add it to response
+        PlotViewScene currentScene = new PlotViewScene(index, 1, index++, "");
         
-        List<String> entityIds = new ArrayList<>();
+        // get all persons occurring in the current chapter and add them to the scene
+        List<Entity> occurringPersons = entityDao.getOccurringEntities(start, end, entities, EntityType.PERSON);
         for (Entity entity : occurringPersons) {
-          entityIds.add(entity.getId());
+          currentScene.getChars().add(entity.getId());
         }
         
         // get all special places occurring in the current chapter
         List<Entity> occurringPlaces = entityDao.getOccurringEntities(start, end, places, EntityType.PLACE);
         
-        List<String> placeIds = new ArrayList<>();
         String placeNames = "";
         boolean first = true;
         for (Entity place : occurringPlaces) {
-          placeIds.add(place.getId());
+          currentScene.getPlaces().add(place.getId());
+          
+          // save names for scene title
           String currentName = place.getDisplayName();
-          placeNames = first ? currentName : placeNames + ", " + currentName; 
+          placeNames = first ? " @ " + currentName : placeNames + ", " + currentName; 
           first = false;
         }
         
-        String currentTitle = chapter.getNumber() + " - " + chapter.getTitle() + " @ " + placeNames;
+        // create and set title of the scene
+        String currentTitle = chapter.getNumber() + " - " + chapter.getTitle() + placeNames;
+        currentScene.setTitle(currentTitle);
         
-        // create scene and add it to response
-        PlotViewScene currentScene = new PlotViewScene(index, 1, index++, currentTitle);
         response.getScenes().add(currentScene);
-        
         response.setPanels(100);
       }
     }

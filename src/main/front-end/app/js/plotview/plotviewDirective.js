@@ -764,6 +764,8 @@
         var panel_shift = Math.round(longest_name / panel_width);
         total_panels += panel_shift;
         panel_width = Math.min(width / total_panels, 15);
+        
+        console.log("" + panel_width);
 
         var xchars = data.characters;
 
