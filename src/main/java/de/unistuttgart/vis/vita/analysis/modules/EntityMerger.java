@@ -10,8 +10,40 @@ import de.unistuttgart.vis.vita.model.entity.EntityType;
  * Merges entities with the same names into each other
  */
 public class EntityMerger {
-  private Map<String, BasicEntity> entitiesByName = new HashMap<String, BasicEntity>();
+  private Map<EntityIdentifier, BasicEntity> entitiesByName = new HashMap<>();
   private List<BasicEntity> result = new ArrayList<BasicEntity>();
+
+  private static class EntityIdentifier {
+    public String name;
+    public EntityType type;
+
+    public EntityIdentifier(String name, EntityType type) {
+      this.name = name;
+      this.type = type;
+    }
+
+    @Override public boolean equals(Object o) {
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
+
+      EntityIdentifier that = (EntityIdentifier) o;
+
+      if (!name.equals(that.name))
+        return false;
+      if (type != that.type)
+        return false;
+
+      return true;
+    }
+
+    @Override public int hashCode() {
+      int result = name.hashCode();
+      result = 31 * result + type.hashCode();
+      return result;
+    }
+  }
 
   /**
    * Adds all the entities
@@ -48,8 +80,9 @@ public class EntityMerger {
   private Set<BasicEntity> getEntitiesCalledAs(BasicEntity entity) {
     Set<BasicEntity> result = new HashSet<>();
     for (Attribute attr : entity.getNameAttributes()) {
-      if (entitiesByName.containsKey(attr.getContent())) {
-        result.add(entitiesByName.get(attr.getContent()));
+      EntityIdentifier identifier = new EntityIdentifier(attr.getContent(), entity.getType());
+      if (entitiesByName.containsKey(identifier)) {
+        result.add(entitiesByName.get(identifier));
       }
     }
     return result;
@@ -70,7 +103,7 @@ public class EntityMerger {
   private void addEntityNames(BasicEntity entity) {
     for (Attribute attr : entity.getNameAttributes()) {
       System.out.println(attr.getContent() + " -> " + entity.getEntityId());
-      entitiesByName.put(attr.getContent(), entity);
+      entitiesByName.put(new EntityIdentifier(attr.getContent(), entity.getType()), entity);
     }
   }
 }
