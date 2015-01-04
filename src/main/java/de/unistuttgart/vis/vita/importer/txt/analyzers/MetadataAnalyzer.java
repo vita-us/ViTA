@@ -1,14 +1,12 @@
 package de.unistuttgart.vis.vita.importer.txt.analyzers;
 
 import de.unistuttgart.vis.vita.importer.output.MetadataBuilder;
-import de.unistuttgart.vis.vita.importer.txt.util.TxtModuleLine;
 import de.unistuttgart.vis.vita.importer.util.Line;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.io.File;
-import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +29,6 @@ public class MetadataAnalyzer {
       "RELEASE DATE:", "Publisher:", "PUBLISHER:", "Genre:", "GENRE:", "Edition:", "EDITION:",
       "Language:", "LANGUAGE:", "Last updated:", "LAST UPDATED:", "Illustrator:", "ILLUSTRATOR:",
       "Posting Date:", "POSTING DATE:"};
-  private Path path;
 
   /**
    * The commited lines and path will be used in the methods of this class
@@ -39,9 +36,8 @@ public class MetadataAnalyzer {
    * @param newMetadataList
    * @param newPath
    */
-  public MetadataAnalyzer(List<Line> newMetadataList, Path newPath) {
+  public MetadataAnalyzer(List<Line> newMetadataList) {
     this.metadataList = newMetadataList;
-    this.path = newPath;
   }
 
   /**
@@ -73,10 +69,6 @@ public class MetadataAnalyzer {
           metadataBuilder.setEdition(buildMetadataTypeList(line));
         }
       }
-    } else {
-      List<Line> title = new ArrayList<Line>();
-      title.add(new TxtModuleLine(new File(path.toString()).getName()));
-      metadataBuilder.setTitle(title);
     }
     return metadataBuilder.getMetadata();
   }

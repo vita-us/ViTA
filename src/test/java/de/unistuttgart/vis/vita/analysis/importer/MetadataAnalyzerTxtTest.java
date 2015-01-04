@@ -48,7 +48,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText1 = metadataAnalyzer.extractMetadata();
     }
 
@@ -57,7 +57,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText2 = metadataAnalyzer.extractMetadata();
     }
     {
@@ -65,7 +65,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText3 = metadataAnalyzer.extractMetadata();
     }
     {
@@ -73,7 +73,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText4 = metadataAnalyzer.extractMetadata();
     }
   }
