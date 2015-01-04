@@ -3,11 +3,10 @@ describe('Fingerprint Directive', function() {
 
   beforeEach(module('vita'));
 
-  beforeEach(inject(function($rootScope, $compile, _$httpBackend_, TestData, $routeParams) {
+  beforeEach(inject(function($rootScope, $compile, $httpBackend, TestData, $routeParams) {
 
     scope = $rootScope.$new();
 
-    $httpBackend = _$httpBackend_;
     $httpBackend.expectGET(
             new RegExp('webapi/documents/123/entities/relations/occurrences\\?entityIds=456,789.*')).respond(
             TestData.fingerprint);
@@ -31,7 +30,7 @@ describe('Fingerprint Directive', function() {
 
   it('should create correct number of chapter separators', inject(function(TestData) {
     expect(element.find('.chapter-separators').children().length).toBe(
-            TestData.parts.parts[0].chapters.length * 2);
+            TestData.parts.parts[0].chapters.length);
   }));
 
   it('should display the correct amount of part separators', inject(function(TestData) {
@@ -40,8 +39,7 @@ describe('Fingerprint Directive', function() {
   }));
 
   it('should update the number of occurrence rects when data changes', inject(function(TestData,
-          _$httpBackend_) {
-    $httpBackend = _$httpBackend_;
+          $httpBackend) {
 
     var newFingerprintLength = 5;
     var newOccurrences = TestData.fingerprint.occurrences.slice(0, newFingerprintLength);
@@ -62,11 +60,10 @@ describe('Fingerprint Directive', function() {
   it('should update the number of chapter separators when parts change', inject(function(TestData) {
     var initialSeparatorCount = element.find('.chapter-separators').children().length;
     var newParts = TestData.parts.parts;
-    newParts[0].chapters = newParts[0].chapters.slice(0, initialSeparatorCount / 2 - 1);
+    newParts[0].chapters = newParts[0].chapters.slice(0, initialSeparatorCount - 1);
     element.scope().$apply();
 
-    // -2 because we create two line for every chapter
-    expect(element.find('.chapter-separators').children().length).toBe(initialSeparatorCount - 2);
+    expect(element.find('.chapter-separators').children().length).toBe(initialSeparatorCount - 1);
   }));
 
   it('should display no occurence rect if the data is undefined', function() {
