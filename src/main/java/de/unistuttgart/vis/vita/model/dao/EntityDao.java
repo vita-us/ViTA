@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -11,20 +12,17 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
  * Represents a generic data access object for entities.
- * 
- * @param <T> - the class of the objects to be accessed via this data access object
  */
-public class EntityDao<T extends Entity> extends JpaDao<T, String> {
-
-  /**
-   * Creates a new data access object for accessing a given Entity class.
-   * 
-   * @param entityClass - the class extending Entity to be accessed by the new data access object
-   */
-  public EntityDao(Class<T> entityClass) {
-    super(entityClass);
-  }
+@Stateless
+public class EntityDao extends JpaDao<Entity, String> {
   
+  /**
+   * Creates a new data access object for Entities.
+   */
+  public EntityDao() {
+    super(Entity.class);
+  }
+
   /**
    * @return the name of the {@link NamedQuery} for searching in a specific Document
    */
@@ -41,8 +39,8 @@ public class EntityDao<T extends Entity> extends JpaDao<T, String> {
    * @param count - the maximum of places to be returned
    * @return list of all Entities occurring in the given document
    */
-  public List<T> findInDocument(String docId, int offset, int count) {
-    TypedQuery<T> docQuery = em.createNamedQuery(getInDocumentQueryName(), getPersistentClass());
+  public List<Entity> findInDocument(String docId, int offset, int count) {
+    TypedQuery<Entity> docQuery = em.createNamedQuery(getInDocumentQueryName(), Entity.class);
     docQuery.setParameter(0, docId);
     return docQuery.getResultList();
   }
@@ -61,8 +59,8 @@ public class EntityDao<T extends Entity> extends JpaDao<T, String> {
    * @param name - the name of the Entity to search for
    * @return the Entity with the given name
    */
-  public T findByName(String name) {
-    TypedQuery<T> nameQuery = em.createNamedQuery(getByNameQueryName(), getPersistentClass());
+  public Entity findByName(String name) {
+    TypedQuery<Entity> nameQuery = em.createNamedQuery(getByNameQueryName(), getPersistentClass());
     nameQuery.setParameter(0, name);
     return nameQuery.getSingleResult();
   }

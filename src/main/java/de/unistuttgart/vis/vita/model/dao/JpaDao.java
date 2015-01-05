@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 /**
  * Generic implementation of a data access object (DAO).
@@ -60,12 +58,10 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    * 
    * @return list of all entities
    */
+  @SuppressWarnings("unchecked")
   @Override
   public List<T> findAll() {
-    TypedQuery<T> query = em.createQuery("SELECT * FROM " + getPersistentClass().getSimpleName(),
-      getPersistentClass());
-    
-    return query.getResultList();
+    return em.createQuery("From " + getPersistentClassName()).getResultList();
   }
 
   /**
@@ -86,16 +82,6 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
   @Override
   public void remove(T entity) {
     em.remove(entity);
-  }
-
-  protected int performNamedCountQuery(String queryName, Object... queryParams) {
-    Query numberQuery = em.createNamedQuery(queryName);
-    int pos = 0;
-    for (Object parameter : queryParams) {
-      numberQuery.setParameter(pos, parameter);
-      pos++;
-    }
-    return (int) numberQuery.getSingleResult();
   }
   
 }

@@ -2,6 +2,8 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -9,6 +11,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents a data access object for accessing TextSpans.
  */
+@Stateless
 public class TextSpanDao extends JpaDao<TextSpan, String> {
 
   /**
@@ -17,7 +20,7 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   public TextSpanDao() {
     super(TextSpan.class);
   }
-  
+
   /**
    * Finds all TextSpans for an Entity with the given id in an also given document range.
    * 
@@ -43,11 +46,12 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Entity in the also given document range
    */
-  public int getNumberOfTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
-    return performNamedCountQuery("TextSpan.getNumberOfTextSpansForEntity",
-                              entityId,
-                              rangeStart, 
-                              rangeEnd);
+  public long getNumberOfTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
+    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
+    numberQuery.setParameter("entityId", entityId);
+    numberQuery.setParameter("rangeStart", rangeStart);
+    numberQuery.setParameter("rangeEnd", rangeEnd);
+    return (long) numberQuery.getSingleResult();
   }
   
   /**
@@ -58,9 +62,10 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return List of TextSpans for the given Attribute in the also given document range
    */
-  public List<TextSpan> findTextSpansForAttribute(String attrId, int rangeStart, int rangeEnd) {
+  public List<TextSpan> findTextSpansForAttribute(String entityId, String attrId, int rangeStart, int rangeEnd) {
     TypedQuery<TextSpan> attributeQuery = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
                                                               TextSpan.class);
+    attributeQuery.setParameter("entityId", entityId);
     attributeQuery.setParameter("attributeId", attrId);
     attributeQuery.setParameter("rangeStart", rangeStart);
     attributeQuery.setParameter("rangeEnd", rangeEnd);
@@ -70,16 +75,19 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   /**
    * Returns the number of TextSpans for a given Attribute in an also given document range.
    * 
+   * @param entityId - the id of the entity with this attribute
    * @param attrId - the id of the attribute which TextSpans should be found
    * @param rangeStart - the start of the document range to search in
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Attribute in the also given document range
    */
-  public int getNumberOfTextSpansForAttribute(String attrId, int rangeStart, int rangeEnd) {
-    return performNamedCountQuery("TextSpan.getNumberOfTextSpansForAttribute", 
-                              attrId, 
-                              rangeStart, 
-                              rangeEnd);
+  public long getNumberOfTextSpansForAttribute(String entityId, String attrId, int rangeStart, int rangeEnd) {
+    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForAttribute");
+    numberQuery.setParameter("entityId", entityId);
+    numberQuery.setParameter("attributeId", attrId);
+    numberQuery.setParameter("rangeStart", rangeStart);
+    numberQuery.setParameter("rangeEnd", rangeEnd);
+    return (long) numberQuery.getSingleResult();
   }
   
   /**
@@ -108,11 +116,12 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    * @return the number of TextSpans for the given list of entities in the also given document 
    *    range
    */
-  public int getNumberOfTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
-    return performNamedCountQuery("TextSpan.getNumberOfOccurringEntities", 
-                                  eIds, 
-                                  rangeStart, 
-                                  rangeEnd);
+  public long getNumberOfTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
+    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
+    numberQuery.setParameter("entityIds", eIds);
+    numberQuery.setParameter("rangeStart", rangeStart);
+    numberQuery.setParameter("rangeEnd", rangeEnd);
+    return (long) numberQuery.getSingleResult();
   }
 
 }

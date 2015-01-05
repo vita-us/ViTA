@@ -1,16 +1,15 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import javax.ejb.EJB;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.PersonDao;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
@@ -21,8 +20,8 @@ public class PersonService {
   
   private String personId;
 
-  @Inject
-  private EntityManager em;
+  @EJB(name = "personDao")
+  private PersonDao personDao;
   
   /**
    * Sets the id of the Person this resource should represent.
@@ -42,21 +41,15 @@ public class PersonService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Person getPerson() {
-    Person readPerson = null;
+    Person readPerson;
     
     try {
-      readPerson = readPersonFromDatabase();
+      readPerson = personDao.findById(personId);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
     
     return readPerson;
-  }
-
-  private Person readPersonFromDatabase() {
-    TypedQuery<Person> query = em.createNamedQuery("Person.findPersonById", Person.class);
-    query.setParameter("personId", personId);
-    return query.getSingleResult();
   }
 
 }

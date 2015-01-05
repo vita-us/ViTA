@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -7,6 +8,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 /**
  * Represents a data access object for accessing WordClouds.
  */
+@Stateless
 public class WordCloudDao extends JpaDao<WordCloud, String> {
 
   /**
@@ -15,7 +17,7 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
   public WordCloudDao() {
     super(WordCloud.class);
   }
-  
+
   /**
    * Finds the global WordCloud for the Document with the given id.
    * 

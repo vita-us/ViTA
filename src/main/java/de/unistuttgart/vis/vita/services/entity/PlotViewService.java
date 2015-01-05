@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.dao.EntityDao;
+import de.unistuttgart.vis.vita.model.dao.PersonDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -28,9 +29,14 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
 public class PlotViewService {
 
   private String documentId;
-
+  
+  @EJB(name = "documentDao")
+  private DocumentDao documentDao;
+  
   @Inject
-  private EntityManager em;
+  private PersonDao personDao;
+  
+  private EntityDao entityDao;
 
   /**
    * Sets the id of the Document this service should refer to
@@ -54,18 +60,18 @@ public class PlotViewService {
     PlotViewResponse response = new PlotViewResponse();
 
     int personIndex = 0;
-    List<Person> persons = readPersonsFromDatabase(10);
+    List<Person> persons = personDao.findInDocument(documentId, 0, 10);
     for (Person person : persons) {
       response.getCharacters().add(new PlotViewCharacter(person.getDisplayName(),
           person.getId(), personIndex++));
     }
 
-    Document document = readDocument();
+    Document document = documentDao.findById(documentId);
     response.setPanels(document.getMetrics().getCharacterCount());
     int index = 0;
     for (DocumentPart part : document.getContent().getParts()) {
       for (Chapter chapter: part.getChapters()) {
-        List<Entity> occurringEntities = getOccuringPersons(
+        List<Entity> occurringEntities = entityDao.findOccurringPersons(
             chapter.getRange().getStart().getOffset(),
             chapter.getRange().getEnd().getOffset(), persons);
 
@@ -87,25 +93,4 @@ public class PlotViewService {
     return  response;
   }
 
-  private Document readDocument() {
-    return em.createNamedQuery("Document.findDocumentById", Document.class)
-      .setParameter("documentId", documentId)
-      .getSingleResult();
-  }
-
-  private List<Person> readPersonsFromDatabase(int count) {
-    TypedQuery<Person> query = em.createNamedQuery("Person.findPersonsInDocument", Person.class);
-    query.setParameter("documentId", documentId);
-    query.setMaxResults(count);
-    return query.getResultList();
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<Entity> getOccuringPersons(int startOffset, int endOffset, List<Person> entities) {
-    Query query = em.createNamedQuery("TextSpan.getOccurringEntities");
-    query.setParameter("entities", entities);
-    query.setParameter("rangeStart", startOffset);
-    query.setParameter("rangeEnd", endOffset);
-    return (List<Entity>)query.getResultList();
-  }
 }

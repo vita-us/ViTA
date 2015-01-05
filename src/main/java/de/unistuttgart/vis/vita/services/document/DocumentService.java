@@ -1,12 +1,11 @@
 package de.unistuttgart.vis.vita.services.document;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
@@ -38,8 +38,8 @@ public class DocumentService {
 
   private String id;
 
-  @Inject
-  private EntityManager em;
+  @EJB(name = "documentDao")
+  private DocumentDao documentDao;
 
   @Inject
   private AnalysisController analysisController;
@@ -95,23 +95,12 @@ public class DocumentService {
     Document readDoc = null;
 
     try {
-      readDoc = readDocumentFromDatabase();
+      readDoc = documentDao.findById(id);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
 
     return readDoc;
-  }
-
-  /**
-   * Reads the document from the database and returns it.
-   *
-   * @return the document with the current id
-   */
-  private Document readDocumentFromDatabase() {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", id);
-    return query.getSingleResult();
   }
 
   /**
@@ -126,11 +115,9 @@ public class DocumentService {
   public Response putDocument(DocumentRenameRequest renameRequest) {
     Response response = null;
     try {
-      em.getTransaction().begin();
-      Document affectedDocument = readDocumentFromDatabase();
+      Document affectedDocument = documentDao.findById(id);
       affectedDocument.getMetadata().setTitle(renameRequest.getName());
-      em.persist(affectedDocument);
-      em.getTransaction().commit();
+      documentDao.save(affectedDocument);
 
       response = Response.noContent().build();
     } catch (EntityNotFoundException enfe) {
@@ -156,10 +143,7 @@ public class DocumentService {
       analysisController.cancelAnalysis(id);
 
       // then remove it from the database
-      em.getTransaction().begin();
-      Document docToDelete = readDocumentFromDatabase();
-      em.remove(docToDelete);
-      em.getTransaction().commit();
+      documentDao.remove(documentDao.findById(id));
 
       // create the response
       response = Response.noContent().build();

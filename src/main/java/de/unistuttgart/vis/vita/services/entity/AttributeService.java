@@ -1,10 +1,9 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -12,6 +11,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.AttributeDao;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
@@ -21,8 +21,9 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
  */
 @ManagedBean
 public class AttributeService {
-  @Inject
-  private EntityManager em;
+  
+  @EJB(name = "attributeDao")
+  private AttributeDao attributeDao;
   
   private String documentId;
   private String entityId;
@@ -75,19 +76,12 @@ public class AttributeService {
     Attribute basicAttribute = null;
     
     try {
-      basicAttribute = readAttributeFromDatabase();
+      basicAttribute = attributeDao.findById(attributeId);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
     
     return basicAttribute.toBasicAttribute();
-  }
-
-  private Attribute readAttributeFromDatabase() {
-    TypedQuery<Attribute> query = em.createNamedQuery("Attribute.findAttributeById", 
-                                                      Attribute.class);
-    query.setParameter("attributeId", attributeId);
-    return query.getSingleResult();
   }
   
   /**

@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -9,6 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 /**
  * Represents a data access object for accessing Attributes.
  */
+@Stateless
 public class AttributeDao extends JpaDao<Attribute, String> {
   
   /**
@@ -17,7 +19,7 @@ public class AttributeDao extends JpaDao<Attribute, String> {
   public AttributeDao() {
     super(Attribute.class);
   }
-  
+
   /**
    * Finds all Attributes for an entity with a given id.
    * 

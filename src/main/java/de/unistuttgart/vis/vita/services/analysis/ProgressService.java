@@ -1,13 +1,12 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import javax.ejb.EJB;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -17,10 +16,11 @@ import javax.ws.rs.core.Response;
  */
 @ManagedBean
 public class ProgressService {
+  
   private String documentId;
-
-  @Inject
-  private EntityManager em;
+  
+  @EJB(name = "documentDao")
+  private DocumentDao documentDao;
   
   /**
    * Sets the id of the document this should represent the progress of
@@ -39,8 +39,9 @@ public class ProgressService {
   public AnalysisProgress getProgress() {
     // Make sure the document exists
     Document doc;
+    
     try {
-      doc = readDocumentFromDatabase();
+      doc = documentDao.findById(documentId);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
@@ -51,17 +52,6 @@ public class ProgressService {
     }
 
     return doc.getProgress();
-  }
-
-  /**
-   * Reads the document from the database and returns it.
-   * 
-   * @return the document with the current id
-   */
-  private Document readDocumentFromDatabase() {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-    query.setParameter("documentId", documentId);
-    return query.getSingleResult();
   }
 
 }

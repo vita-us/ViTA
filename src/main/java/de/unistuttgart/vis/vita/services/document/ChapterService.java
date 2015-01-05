@@ -5,10 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -16,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 /**
@@ -23,11 +23,12 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
  */
 @ManagedBean
 public class ChapterService {
+  
   private String chapterId;
   private String documentId;
 
-  @Inject
-  private EntityManager em;
+  @EJB(name = "chapterDao")
+  private ChapterDao chapterDao;
 
   @Inject
   private Model model;
@@ -63,7 +64,7 @@ public class ChapterService {
     Chapter readChapter = null;
     
     try {
-      readChapter = readChapterFromDatabase();
+      readChapter = chapterDao.findById(chapterId);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
@@ -77,17 +78,6 @@ public class ChapterService {
     }
 
     return readChapter;
-  }
-
-  /**
-   * Reads current chapter from database and returns it.
-   * 
-   * @return current chapter
-   */
-  private Chapter readChapterFromDatabase() {
-    TypedQuery<Chapter> query = em.createNamedQuery("Chapter.findChapterById", Chapter.class);
-    query.setParameter("chapterId", chapterId);
-    return query.getSingleResult();
   }
 
 }

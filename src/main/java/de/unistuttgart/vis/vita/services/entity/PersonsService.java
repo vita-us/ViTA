@@ -1,11 +1,8 @@
 package de.unistuttgart.vis.vita.services.entity;
 
-import java.util.List;
-
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.dao.PersonDao;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
 /**
@@ -24,8 +21,8 @@ public class PersonsService {
 
   private String documentId;
 
-  @Inject
-  private EntityManager em;
+  @EJB(name = "personDao")
+  private PersonDao personDao;
 
   @Inject
   private PersonService personService;
@@ -53,19 +50,7 @@ public class PersonsService {
   @Produces(MediaType.APPLICATION_JSON)
   public PersonsResponse getPersons(@QueryParam("offset") int offset,
                                     @QueryParam("count") int count) {
-    List<Person> persons = readPersonsFromDatabase(offset, count);
-    
-    return new PersonsResponse(persons);
-  }
-
-  private List<Person> readPersonsFromDatabase(int offset, int count) {
-    TypedQuery<Person> query = em.createNamedQuery("Person.findPersonsInDocument", Person.class);
-    query.setParameter("documentId", documentId);
-    
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-
-    return query.getResultList();
+    return new PersonsResponse(personDao.findInDocument(documentId, offset, count));
   }
   
   /**

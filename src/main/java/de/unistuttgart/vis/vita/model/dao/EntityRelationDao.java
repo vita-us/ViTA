@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -9,6 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 /**
  * Represents a data access object for accessing EntityRelations.
  */
+@Stateless
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
   /**

@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -7,6 +8,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 /**
  * Represents a data access object for accessing documents.
  */
+@Stateless
 public class DocumentDao extends JpaDao<Document, String> {
 
   /**
@@ -15,7 +17,7 @@ public class DocumentDao extends JpaDao<Document, String> {
   public DocumentDao() {
     super(Document.class);
   }
-  
+
   /**
    * Finds a document with a given title.
    * 
