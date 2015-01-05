@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import java.util.List;
+
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -37,12 +39,25 @@ public class ChapterDao extends JpaDao<Chapter, String> {
    * @return the surrounding Chapter
    */
   public Chapter findChapterByOffset(String docId, int offset) {
-    TypedQuery<Chapter> offsetQuery = em.createNamedQuery("Chapter.findChapterByOffset", 
-                                                          Chapter.class);
-    offsetQuery.setParameter("documentId", docId);
-    offsetQuery.setParameter("offset", offset);
-    
-    return offsetQuery.getSingleResult();
+    return getChaptersByOffsetQuery(docId, offset).getSingleResult();
+  }
+  
+  /**
+   * Returns the surrounding Chapters of a given offset.
+   * 
+   * @param docId - the id of the Document to search in
+   * @param offset - the offset which lays in the chapters to find
+   * @return list of surrounding chapters
+   */
+  public List<Chapter> findChaptersByOffset(String docId, int offset) {
+    return getChaptersByOffsetQuery(docId, offset).getResultList();
+  }
+  
+  private TypedQuery<Chapter> getChaptersByOffsetQuery(String docId, int offset) {
+    TypedQuery<Chapter> query = em.createNamedQuery("Chapter.findChapterByOffset", Chapter.class);
+    query.setParameter("documentId", docId);
+    query.setParameter("offset", offset);
+    return query;
   }
 
 }
