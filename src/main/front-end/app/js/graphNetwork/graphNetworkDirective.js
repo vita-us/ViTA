@@ -253,6 +253,8 @@
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});
+              d3.select(".link.selected").classed("selected", false);
+              d3.select(this).classed('selected', true);
             }
           });
 
