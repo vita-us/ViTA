@@ -5,6 +5,19 @@
   <div class="col-md-8">
     <button id="fp-separator-toggle-button" class="btn btn-default"
       ng-click="FingerprintSynchronizer.toggle()">Toggle separators</button>
+    <div class="text-center">
+      <span ng-show="!fingerprintEntityIds" class="help-text">
+        Click on a link in the graph to see the fingerprint of the relation</span>
+      <span ng-show="fingerprintEntityIds">
+        <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityA.id}}"
+           class="listed-character {{CssClass.forRankingValue(fingerprintEntityA.rankingValue)}}">
+          {{fingerprintEntityA.displayName}}</a>
+        <span>-</span>
+        <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityB.id}}"
+           class="listed-character {{CssClass.forRankingValue(fingerprintEntityB.rankingValue)}}">
+          {{fingerprintEntityB.displayName}}</a>
+      </span>
+    </div>
     <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
       data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
     <p>
