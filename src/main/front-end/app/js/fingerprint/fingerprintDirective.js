@@ -27,11 +27,12 @@
       var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
-          .domain([0, 1])
           .range([0, width]);
 
+      var totalWidthScale = d3.scale.linear()
+          .range([0, SVG_WIDTH]);
+
       var heightScale = d3.scale.linear()
-          .domain([0, 1])
           .range([0, height]);
 
       var svgContainer = d3.select(element[0])
@@ -49,10 +50,11 @@
           .attr('x', 0)
           .attr('y', 0);
 
+      // This order determines the visual order in the fingerprint (last element is on top)
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var rangeIndicators = svgContainer.append('g').classed('range-indicators', true);
+      createRangeIndicators();
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
       FingerprintSynchronizer.synchronize();
@@ -115,6 +117,7 @@
       scope.$watch('[rangeBegin,rangeEnd]', function() {
         var rangeStart = scope.rangeBegin || 0;
         var rangeEnd = scope.rangeEnd || 1;
+        updateRangeIndicators(rangeStart, rangeEnd);
       }, true);
 
       scope.$watch('parts', function() {
@@ -344,6 +347,32 @@
         var parts = scope.parts || [];
         buildChapterSeparators(parts);
         buildPartSeparators(parts);
+      }
+
+      function createRangeIndicators() {
+        var rangeIndicators = svgContainer.append('g').classed('range-indicators', true);
+
+        rangeIndicators.append('rect')
+            .classed('range-indicator', true)
+            .attr('id', 'range-start-indicator')
+            .attr('x', -margin.left);
+
+        rangeIndicators.append('rect')
+            .classed('range-indicator', true)
+            .attr('id', 'range-end-indicator')
+            .attr('x', totalWidthScale(1) - margin.left);
+
+        rangeIndicators.selectAll('rect')
+            .attr('y', -margin.top)
+            .attr('height', SVG_HEIGHT);
+      }
+
+      function updateRangeIndicators(rangeStart, rangeEnd) {
+        svgContainer.select('#range-start-indicator').attr('width', totalWidthScale(rangeStart));
+
+        svgContainer.select('#range-end-indicator')
+            .attr('x', totalWidthScale(rangeEnd) - margin.left)
+            .attr('width', totalWidthScale(1 - rangeEnd));
       }
     }
 

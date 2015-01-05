@@ -16,7 +16,8 @@ describe('Fingerprint Directive', function() {
     $routeParams.documentId = '123';
 
     element = '<div data-fingerprint class="fingerprint-container" data-entity-ids="entityIds" ' +
-              'data-parts="parts"></div>';
+              'data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd" ' +
+              'style="width: 200px"></div>';
 
     element = $compile(element)(scope);
     scope.$digest();
@@ -85,6 +86,19 @@ describe('Fingerprint Directive', function() {
     element.scope().$apply();
 
     expect(element.find('.part-separators').children().length).toBe(0);
+  });
+
+  it('should update the range indicators', function() {
+    // the + converts the string to a number
+    expect(+element.find('#range-start-indicator').attr('width')).toBe(0);
+    expect(+element.find('#range-end-indicator').attr('width')).toBe(0);
+
+    scope.rangeStart = 0.3;
+    scope.rangeEnd = 0.8;
+    element.scope().$apply();
+
+    expect(+element.find('#range-start-indicator').attr('width')).toBeGreaterThan(0);
+    expect(+element.find('#range-end-indicator').attr('width')).toBeGreaterThan(0);
   });
 
 });
