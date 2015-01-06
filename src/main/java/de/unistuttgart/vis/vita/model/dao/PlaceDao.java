@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
@@ -11,7 +11,7 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 /**
  * Represents a data access object for accessing places.
  */
-@Stateless
+@ManagedBean
 public class PlaceDao extends JpaDao<Place, String> {
 
   /**

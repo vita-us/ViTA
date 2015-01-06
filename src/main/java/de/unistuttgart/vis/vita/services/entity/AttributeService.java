@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
@@ -22,7 +21,7 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 @ManagedBean
 public class AttributeService {
   
-  @EJB(name = "attributeDao")
+  @Inject
   private AttributeDao attributeDao;
   
   private String documentId;

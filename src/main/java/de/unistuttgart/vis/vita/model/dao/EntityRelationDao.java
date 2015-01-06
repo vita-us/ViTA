@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 /**
  * Represents a data access object for accessing EntityRelations.
  */
-@Stateless
+@ManagedBean
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
   /**
@@ -42,7 +42,7 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
    */
   public List<EntityRelation> findRelationsForEntitiesAndType(List<String> entityIds, String type) {
     TypedQuery<EntityRelation> relationTypeQuery =
-        em.createNamedQuery("EntityRelation.findRelationsForEntityAndType", EntityRelation.class);
+        em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType", EntityRelation.class);
     relationTypeQuery.setParameter("entityIds", entityIds);
     relationTypeQuery.setParameter("type", type);
     return relationTypeQuery.getResultList();

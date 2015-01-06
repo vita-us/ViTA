@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -30,7 +29,7 @@ public class PlotViewService {
 
   private String documentId;
   
-  @EJB(name = "documentDao")
+  @Inject
   private DocumentDao documentDao;
   
   @Inject

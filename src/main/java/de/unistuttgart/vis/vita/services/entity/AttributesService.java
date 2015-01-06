@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,7 +26,7 @@ public class AttributesService {
   private String documentId;
   private String entityId;
 
-  @EJB(name="attributeDao")
+  @Inject
   private AttributeDao attributeDao;
 
   @Inject

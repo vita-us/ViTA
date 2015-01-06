@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.document;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -38,7 +37,7 @@ public class DocumentService {
 
   private String id;
 
-  @EJB(name = "documentDao")
+  @Inject
   private DocumentDao documentDao;
 
   @Inject
@@ -92,8 +91,7 @@ public class DocumentService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Document getDocument() {
-    Document readDoc = null;
-
+    Document readDoc;
     try {
       readDoc = documentDao.findById(id);
     } catch (NoResultException e) {
@@ -117,7 +115,7 @@ public class DocumentService {
     try {
       Document affectedDocument = documentDao.findById(id);
       affectedDocument.getMetadata().setTitle(renameRequest.getName());
-      documentDao.save(affectedDocument);
+      documentDao.update(affectedDocument);
 
       response = Response.noContent().build();
     } catch (EntityNotFoundException enfe) {

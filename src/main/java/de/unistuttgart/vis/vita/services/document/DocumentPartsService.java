@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.services.document;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -17,7 +17,7 @@ public class DocumentPartsService {
   
   private String documentId;
 
-  @EJB(name = "documentPartDao")
+  @Inject
   private DocumentPartDao documentPartDao;
 
   /**

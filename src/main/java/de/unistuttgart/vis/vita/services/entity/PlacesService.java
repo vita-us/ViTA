@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,7 +20,7 @@ public class PlacesService {
   
   private String documentId;
 
-  @EJB(name="placeDao")
+  @Inject
   private PlaceDao placeDao;
   
   @Inject

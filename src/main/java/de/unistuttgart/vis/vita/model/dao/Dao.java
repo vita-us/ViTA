@@ -17,6 +17,8 @@ public interface Dao<T, ID extends Serializable> {
   
   void save(T entity);
   
+  void update(T entity);
+  
   void remove(T entity);
   
 }

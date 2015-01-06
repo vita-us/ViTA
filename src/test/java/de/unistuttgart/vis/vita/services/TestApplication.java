@@ -16,9 +16,11 @@ import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
 public class TestApplication extends ResourceConfig {
   private static String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
+  private static String DAO_PACKAGE = "de.unistuttgart.vis.vita.model.dao";
 
   public TestApplication() {
     super(MultiPartFeature.class, DocumentsService.class);
+    packages(true, DAO_PACKAGE);
     packages(true, SERVICES_PACKAGE);
     register(new MyApplicationBinder());
     register(ServiceLocatorUtilities.createAndPopulateServiceLocator());
@@ -27,11 +29,18 @@ public class TestApplication extends ResourceConfig {
   private static class MyApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
+      Iterable<Class<?>> daos = 
+          new Reflections(DAO_PACKAGE).getTypesAnnotatedWith(ManagedBean.class);
+      
+      for (Class<?> daoClass : daos) {
+        bind(daoClass).to(daoClass);
+      }
+      
       Iterable<Class<?>> services =
           new Reflections(SERVICES_PACKAGE).getTypesAnnotatedWith(ManagedBean.class);
       for (Class<?> service : services) {
         bind(service).to(service);
-      }
+      }      
 
       bind(UnitTestModel.class).to(Model.class);
       bindFactory(UnitTestModel.class).to(EntityManager.class);

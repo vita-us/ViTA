@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -20,7 +20,7 @@ public class PersonService {
   
   private String personId;
 
-  @EJB(name = "personDao")
+  @Inject
   private PersonDao personDao;
   
   /**

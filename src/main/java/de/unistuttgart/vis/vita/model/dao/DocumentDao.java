@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -8,7 +8,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 /**
  * Represents a data access object for accessing documents.
  */
-@Stateless
+@ManagedBean
 public class DocumentDao extends JpaDao<Document, String> {
 
   /**

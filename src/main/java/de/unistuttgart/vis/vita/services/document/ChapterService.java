@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
@@ -27,7 +26,7 @@ public class ChapterService {
   private String chapterId;
   private String documentId;
 
-  @EJB(name = "chapterDao")
+  @Inject
   private ChapterDao chapterDao;
 
   @Inject

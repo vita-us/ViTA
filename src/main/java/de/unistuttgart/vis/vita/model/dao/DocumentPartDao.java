@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * Represents a data access object for accessing DocumentParts.
  */
-@Stateless
+@ManagedBean
 public class DocumentPartDao extends JpaDao<DocumentPart, String> {
 
   /**

@@ -5,7 +5,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;
@@ -19,7 +19,7 @@ public class ProgressService {
   
   private String documentId;
   
-  @EJB(name = "documentDao")
+  @Inject
   private DocumentDao documentDao;
   
   /**

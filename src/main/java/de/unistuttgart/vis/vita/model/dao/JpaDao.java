@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
  * Generic implementation of a data access object (DAO).
@@ -50,6 +51,13 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    */
   @Override
   public T findById(ID id) {
+    T result = em.find(getPersistentClass(), id);
+
+    if (result == null) {
+      throw new NoResultException("No entity of type '" + getPersistentClassName()
+                                  + "' found with id '" + id + "'!");
+    }
+    
     return em.find(getPersistentClass(), id);
   }
 
@@ -71,7 +79,15 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    */
   @Override
   public void save(T entity) {
+    em.getTransaction().begin();
     em.persist(entity);
+    em.getTransaction().commit();
+  }
+  
+  public void update(T entity) {
+    em.getTransaction().begin();
+    em.merge(entity);
+    em.getTransaction().commit();
   }
 
   /**
@@ -81,7 +97,9 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    */
   @Override
   public void remove(T entity) {
+    em.getTransaction().begin();
     em.remove(entity);
+    em.getTransaction().commit();
   }
   
 }

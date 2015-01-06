@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -13,7 +13,7 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 /**
  * Represents a generic data access object for entities.
  */
-@Stateless
+@ManagedBean
 public class EntityDao extends JpaDao<Entity, String> {
   
   /**

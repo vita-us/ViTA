@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DefaultValue;
@@ -31,7 +30,7 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 @ManagedBean
 public class EntityRelationsService extends RangeService {
   
-  @EJB(name = "textSpanDao")
+  @Inject
   private TextSpanDao textSpanDao;
   
   @Inject

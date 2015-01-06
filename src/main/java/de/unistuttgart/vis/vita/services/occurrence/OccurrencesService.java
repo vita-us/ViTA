@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
@@ -25,7 +24,7 @@ public abstract class OccurrencesService extends RangeService {
   @Inject
   private ChapterDao chapterDao;
   
-  @EJB(name = "textSpanDao")
+  @Inject
   protected TextSpanDao textSpanDao;
 
   /**

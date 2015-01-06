@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import javax.annotation.ManagedBean;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -39,7 +38,7 @@ public class DocumentsService {
   private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator  
                                               + ".vita" + File.separator + "docs" + File.separator;
 
-  @EJB(name = "documentDao")
+  @Inject
   private DocumentDao documentDao;
   
   @Inject

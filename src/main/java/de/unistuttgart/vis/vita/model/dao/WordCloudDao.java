@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -8,7 +8,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 /**
  * Represents a data access object for accessing WordClouds.
  */
-@Stateless
+@ManagedBean
 public class WordCloudDao extends JpaDao<WordCloud, String> {
 
   /**

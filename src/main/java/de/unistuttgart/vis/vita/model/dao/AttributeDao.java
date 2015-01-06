@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 /**
  * Represents a data access object for accessing Attributes.
  */
-@Stateless
+@ManagedBean
 public class AttributeDao extends JpaDao<Attribute, String> {
   
   /**

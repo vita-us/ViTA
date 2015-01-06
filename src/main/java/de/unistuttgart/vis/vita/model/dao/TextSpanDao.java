@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -11,7 +11,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents a data access object for accessing TextSpans.
  */
-@Stateless
+@ManagedBean
 public class TextSpanDao extends JpaDao<TextSpan, String> {
 
   /**

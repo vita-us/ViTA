@@ -2,7 +2,7 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.annotation.ManagedBean;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 /**
  * Represents a data access object for accessing Chapters.
  */
-@Stateless
+@ManagedBean
 public class ChapterDao extends JpaDao<Chapter, String> {
 
   /**
