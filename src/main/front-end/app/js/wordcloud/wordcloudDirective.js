@@ -27,8 +27,11 @@
       // maps from the frequency of a word to its font size
       var wordSizeScale;
 
-      // TODO: Coloring?
-      var fill = d3.scale.category20();
+      var toolTip = d3.tip()
+          .attr('class', 'wordcloud-tool-tip')
+          .html(function(d) {
+            return 'Frequency: ' + d.frequency;
+          });
 
       var svgContainer = d3.select(element[0])
           .append('svg')
@@ -36,7 +39,8 @@
           .attr('height', SVG_HEIGHT)
           .append('g')
           // >> 1 because we want to start positioning words from the center of the svg
-          .attr('transform', 'translate(' + [SVG_WIDTH / 2, SVG_HEIGHT / 2] + ')');
+          .attr('transform', 'translate(' + [SVG_WIDTH / 2, SVG_HEIGHT / 2] + ')')
+          .call(toolTip);
 
       var cloud = d3.layout.cloud()
           .size([SVG_WIDTH, SVG_HEIGHT])
@@ -83,7 +87,9 @@
             .attr('transform', getTransform)
             .text(getText)
             .each(setClass)
-            .on('click', onClick);
+            .on('click', onClick)
+            .on('mouseover', toolTip.show)
+            .on('mouseout', toolTip.hide);
       }
 
       function onClick(word) {
@@ -107,7 +113,8 @@
           return {
             text: item.word,
             size: wordSizeScale(item.frequency),
-            entityId: item.entityId
+            entityId: item.entityId,
+            frequency: item.frequency
           };
         });
       }
