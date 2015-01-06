@@ -24,7 +24,8 @@
       // This is the convention for margins http://bl.ocks.org/mbostock/3019563
       var margin = {top: 20, right: 5, bottom: 0, left: 5};
 
-      var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
+      var width = SVG_WIDTH - margin.left - margin.right;
+      var height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
           .range([0, width]);
