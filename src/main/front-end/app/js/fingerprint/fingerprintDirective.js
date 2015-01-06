@@ -24,14 +24,16 @@
       // This is the convention for margins http://bl.ocks.org/mbostock/3019563
       var margin = {top: 20, right: 5, bottom: 0, left: 5};
 
-      var width = SVG_WIDTH - margin.left - margin.right, height = SVG_HEIGHT - margin.top - margin.bottom;
+      var width = SVG_WIDTH - margin.left - margin.right;
+      var height = SVG_HEIGHT - margin.top - margin.bottom;
 
       var widthScale = d3.scale.linear()
-          .domain([0, 1])
           .range([0, width]);
 
+      var totalWidthScale = d3.scale.linear()
+          .range([0, SVG_WIDTH]);
+
       var heightScale = d3.scale.linear()
-          .domain([0, 1])
           .range([0, height]);
 
       var svgContainer = d3.select(element[0])
@@ -49,9 +51,11 @@
           .attr('x', 0)
           .attr('y', 0);
 
+      // This order determines the visual order in the fingerprint (last element is on top)
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
+      createRangeIndicators();
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
       FingerprintSynchronizer.synchronize();
@@ -98,46 +102,37 @@
         svgContainer.attr('width', width + margin.left + margin.right);
         widthScale.range([0, width]);
         backgroundRect.attr('width', widthScale(1));
-        calculateOccurrenceSteps();
-        getRelationOccurrences();
-        removeChapterSeparators();
-        buildChapterSeparators(scope);
-        removePartSeparators();
-        buildPartSeparators(scope.parts);
+
+        loadOccurrencesAndDisplay();
+        rebuildSeparators();
       });
 
-      scope.$watch('[entityIds,rangeBegin,rangeEnd]', function(newValues, oldValues) {
-        if (!angular.equals(newValues[0], oldValues[0]) || !angular.isUndefined(newValues[0])) {
-          if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
-            removeFingerPrint();
-            return;
-          }
-          getRelationOccurrences();
+      scope.$watch('entityIds', function() {
+        if (angular.isUndefined(scope.entityIds) || scope.entityIds.length < 1) {
+          removeFingerPrint();
+        } else {
+          loadOccurrencesAndDisplay();
         }
       }, true);
 
-      scope.$watch('parts', function(newValue, oldValue) {
-        if (!angular.equals(newValue, oldValue)) {
-          removeChapterSeparators();
-          buildChapterSeparators(scope);
-          removePartSeparators();
-          buildPartSeparators(scope.parts);
-        } else if (!angular.isUndefined(newValue)) {
-          buildChapterSeparators(scope);
-          buildPartSeparators(scope.parts);
-        }
+      scope.$watch('[rangeBegin,rangeEnd]', function() {
+        var rangeStart = scope.rangeBegin || 0;
+        var rangeEnd = scope.rangeEnd || 1;
+        updateRangeIndicators(rangeStart, rangeEnd);
       }, true);
 
-      function getRelationOccurrences() {
+      scope.$watch('parts', function() {
+        rebuildSeparators();
+      }, true);
+
+      function loadOccurrencesAndDisplay() {
         if (angular.isUndefined(scope.entityIds)) {
           return;
         }
         RelationOccurrences.get({
           documentId: $routeParams.documentId,
           entityIds: scope.entityIds.join(','),
-          steps: calculateOccurrenceSteps(),
-          rangeStart: scope.rangeBegin,
-          rangeEnd: scope.rangeEnd
+          steps: calculateOccurrenceSteps()
         }, function(response) {
           removeFingerPrint();
           buildFingerPrint(response.occurrences, scope);
@@ -286,17 +281,15 @@
         }
       }
 
-      function buildChapterSeparators(scope) {
-        var chapters = angular.isUndefined(scope.parts) ? [] : getChaptersFromParts(scope.parts);
+      function buildChapterSeparators(parts) {
+        var chapters = getChaptersFromParts(parts);
 
-        var chapterLineGroupEnter = chapterLineGroup.selectAll('line').data(chapters).enter();
+        var chapterLineSelection = chapterLineGroup.selectAll('line').data(chapters, function(chapter) {
+          return chapter.id;
+        });
 
-        function getChapterStartX(chapter) {
-          return widthScale(chapter.range.start.progress);
-        }
-
-        // Build the lines that indicate the start of a chapter
-        chapterLineGroupEnter.append('line')
+        chapterLineSelection.exit().remove();
+        chapterLineSelection.enter().append('line')
             .attr('x1', getChapterStartX)
             .attr('x2', getChapterStartX)
             .attr('y1', function() {
@@ -305,22 +298,19 @@
             .attr('y2', function() {
               return heightScale(1);
             });
+
+        function getChapterStartX(chapter) {
+          return widthScale(chapter.range.start.progress);
+        }
       }
 
       function buildPartSeparators(parts) {
-        if (!parts) {
-          return;
-        }
-        var partLineGroupEnter = partLineGroup.selectAll('line').data(parts).enter();
+        var partLineSelection = partLineGroup.selectAll('line').data(parts, function(part) {
+          return part.number;
+        });
 
-        function getPartStartX(part) {
-          if (part.chapters.length === 0) {
-            return;
-          }
-          return widthScale(part.chapters[0].range.start.progress) - 2.5;
-        }
-
-        partLineGroupEnter.append('line')
+        partLineSelection.exit().remove();
+        partLineSelection.enter().append('line')
             .attr('x1', getPartStartX)
             .attr('x2', getPartStartX)
             .attr('y1', function() {
@@ -329,6 +319,13 @@
             .attr('y2', function() {
               return heightScale(1);
             });
+
+        function getPartStartX(part) {
+          if (part.chapters.length === 0) {
+            return;
+          }
+          return widthScale(part.chapters[0].range.start.progress) - 2.5;
+        }
       }
 
       function getChaptersFromParts(parts) {
@@ -343,16 +340,40 @@
         rectGroup.selectAll('rect').remove();
       }
 
-      function removeChapterSeparators() {
-        chapterLineGroup.selectAll('line').remove();
-      }
-
-      function removePartSeparators() {
-        partLineGroup.selectAll('line').remove();
-      }
-
       function calculateOccurrenceSteps() {
         return Math.floor(width / minBarWidth);
+      }
+
+      function rebuildSeparators() {
+        var parts = scope.parts || [];
+        buildChapterSeparators(parts);
+        buildPartSeparators(parts);
+      }
+
+      function createRangeIndicators() {
+        var rangeIndicators = svgContainer.append('g').classed('range-indicators', true);
+
+        rangeIndicators.append('rect')
+            .classed('range-indicator', true)
+            .attr('id', 'range-start-indicator')
+            .attr('x', -margin.left);
+
+        rangeIndicators.append('rect')
+            .classed('range-indicator', true)
+            .attr('id', 'range-end-indicator')
+            .attr('x', totalWidthScale(1) - margin.left);
+
+        rangeIndicators.selectAll('rect')
+            .attr('y', -margin.top)
+            .attr('height', SVG_HEIGHT);
+      }
+
+      function updateRangeIndicators(rangeStart, rangeEnd) {
+        svgContainer.select('#range-start-indicator').attr('width', totalWidthScale(rangeStart));
+
+        svgContainer.select('#range-end-indicator')
+            .attr('x', totalWidthScale(rangeEnd) - margin.left)
+            .attr('width', totalWidthScale(1 - rangeEnd));
       }
     }
 
