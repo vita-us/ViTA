@@ -10,9 +10,9 @@ import de.unistuttgart.vis.vita.importer.util.LineType;
  * Chapters will be built every time a Bigheading is found and there are at least two Whitelines in
  * front of it. The following BigHeadings will be added to the chapters heading and very small
  * 'chapters' will be attached to the Chapters before. Preface and Contents will be eliminated from
- * the analysis.
+ * the analysis. Tries to ignore false positive results depending on subtypes of heading lines.
  */
-public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
+public class BigHeadingChapterAnalyzer extends AbstractSubtypeExtendedChapterAnalyzer {
 
   private int startOfAnalysis;
 
@@ -38,6 +38,7 @@ public class BigHeadingChapterAnalyzer extends AbstractChapterAnalyzer {
     useTwoWhitelinesBeforeRule(true);
     useEmptyChapterRule(true);
     useLittleChapterRule(minimumChapterSize, false);
+    useSubtypeReductionRule();
     return this.chapterPositions;
   }
 }

@@ -4,11 +4,12 @@
   var vitaControllers = angular.module('vitaControllers');
 
   vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      'Document', 'Page', 'Person', 'CssClass',
-      function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass) {
+      'Document', 'Page', 'Person', 'CssClass', 'FingerprintSynchronizer',
+      function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass, FingerprintSynchronizer) {
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
+        $scope.FingerprintSynchronizer = FingerprintSynchronizer;
 
         Document.get({
           documentId: $routeParams.documentId

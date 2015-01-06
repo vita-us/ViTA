@@ -54,6 +54,7 @@
   }]);
 
   app.factory('Page', ['DocumentViewSender', function(DocumentViewSender) {
+            
     return {
       setUpForDocument: function(document) {
         var oldId = this.documentId;

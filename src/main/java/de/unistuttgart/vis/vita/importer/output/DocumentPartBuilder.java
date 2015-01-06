@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import de.unistuttgart.vis.vita.analysis.Threads;
@@ -24,7 +23,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
  * <br>
  * The structure of given List-parameters can be changed by this class.
  */
-public class DocumentPartBuilder implements Callable<DocumentPart> {
+public class DocumentPartBuilder extends AbstractBuilder implements Callable<DocumentPart> {
 
   private List<Future<Chapter>> futureChapters = new ArrayList<>();
   private List<Line> lines;
@@ -156,7 +155,7 @@ public class DocumentPartBuilder implements Callable<DocumentPart> {
     DocumentPart documentPart = new DocumentPart();
     documentPart.getChapters().addAll(chapters);
     documentPart.setNumber(partNumber);
-    documentPart.setTitle(partTitle.trim());
+    documentPart.setTitle(getShortenedString(partTitle.trim()));
     return documentPart;
   }
 

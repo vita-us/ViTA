@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * extracted Lines into String parameters for the Chapter and assures these Strings have the correct
  * text style.<br> <br> The structure of given List-parameters can be changed by this class.
  */
-public class ChapterBuilder implements Callable<Chapter> {
+public class ChapterBuilder extends AbstractBuilder implements Callable<Chapter> {
 
   // Regex for detection of whitespace in a line
   private static final String WHITESPACE = "([^\\S\\p{Graph}])*";
@@ -73,7 +73,7 @@ public class ChapterBuilder implements Callable<Chapter> {
   private Chapter buildChapter(String heading, String text) {
     Chapter chapter = new Chapter();
     chapter.setNumber(chapterNumber);
-    chapter.setTitle(heading);
+    chapter.setTitle(getShortenedString(heading));
     chapter.setText(text);
     chapter.setLength(text.length());
     return chapter;
@@ -148,7 +148,7 @@ public class ChapterBuilder implements Callable<Chapter> {
     boolean lineBeforeWasNotWhiteline = false;
 
     for (int index = lines.size() - 1; index >= 0; index--) {
-      if (!lines.get(index).getType().equals(LineType.WHITELINE)) {
+      if (!lines.get(index).isType(LineType.WHITELINE)) {
         if (lineBeforeWasNotWhiteline) {
           Line lineBefore = lines.get(index + 1);
           Line line = lines.get(index);
@@ -179,7 +179,7 @@ public class ChapterBuilder implements Callable<Chapter> {
   private void reduceWhitelines(List<Line> lines) {
     boolean lineBeforeWasWhiteline = false;
     for (int index = lines.size() - 1; index >= 0; index--) {
-      if (lines.get(index).getType().equals(LineType.WHITELINE)) {
+      if (lines.get(index).isType(LineType.WHITELINE)) {
         if (lineBeforeWasWhiteline) {
           lines.remove(index);
         } else {
@@ -202,7 +202,7 @@ public class ChapterBuilder implements Callable<Chapter> {
     while (!lines.isEmpty() && onlyWhitelinesFound) {
       int firstIndex = 0;
       Line firstLine = lines.get(firstIndex);
-      if (firstLine.getType().equals(LineType.WHITELINE)) {
+      if (firstLine.isType(LineType.WHITELINE)) {
         lines.remove(firstIndex);
       } else {
         onlyWhitelinesFound = false;
@@ -220,7 +220,7 @@ public class ChapterBuilder implements Callable<Chapter> {
     while (!lines.isEmpty() && onlyWhitelinesFound) {
       int lastIndex = lines.size() - 1;
       Line lastLine = lines.get(lastIndex);
-      if (lastLine.getType().equals(LineType.WHITELINE)) {
+      if (lastLine.isType(LineType.WHITELINE)) {
         lines.remove(lastIndex);
       } else {
         onlyWhitelinesFound = false;
@@ -272,7 +272,7 @@ public class ChapterBuilder implements Callable<Chapter> {
    */
   private void deleteMarkedHeadingSymbol(List<Line> lines) {
     for (Line line : lines) {
-      if (line.getType().equals(LineType.MARKEDHEADING)) {
+      if (line.isType(LineType.MARKEDHEADING)) {
         line.setText(line.getText().substring(1));
       }
     }

@@ -38,6 +38,7 @@ public class Model implements Factory<EntityManager> {
   @Inject
   CloseableService closeableService;
   private TextRepository textRepository;
+  private GateDatastoreLocation gateDatastoreLocation;
 
   /**
    * Create a default Model instance
@@ -46,11 +47,13 @@ public class Model implements Factory<EntityManager> {
     entityManagerFactory =
         Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     textRepository = new TextRepository();
+    gateDatastoreLocation = new GateDatastoreLocation();
   }
 
   protected Model(EntityManagerFactory emf, TextRepository textRepository) {
     entityManagerFactory = emf;
     this.textRepository = textRepository;
+    gateDatastoreLocation = new GateDatastoreLocation();
   }
 
   private static void loadDriver() {
@@ -65,6 +68,14 @@ public class Model implements Factory<EntityManager> {
     } catch (ClassNotFoundException e) {
       Logger.getLogger(Model.class.getName()).log(Level.WARNING, "Unable to load mysql driver", e);
     }
+  }
+
+  public GateDatastoreLocation getGateDatastoreLocation() {
+    return gateDatastoreLocation;
+  }
+
+  protected void setGateDatastoreLocation(GateDatastoreLocation gateDatastoreLocation) {
+    this.gateDatastoreLocation = gateDatastoreLocation;
   }
 
   /**

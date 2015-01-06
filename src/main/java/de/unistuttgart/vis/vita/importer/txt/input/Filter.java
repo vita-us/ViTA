@@ -207,7 +207,7 @@ public class Filter {
    */
   private void removeSpecialSigns(List<Line> removeList) {
     for (int index = removeList.size() - 1; index >= 0; index--) {
-      if (removeList.get(index).getType().equals(LineType.SPECIALSIGNS)) {
+      if (removeList.get(index).isType(LineType.SPECIALSIGNS)) {
         if (areWhitelinesAround(index, removeList)) {
           removeList.remove(index + 1);
           removeList.remove(index);
@@ -230,8 +230,8 @@ public class Filter {
     boolean whitelinesAround = false;
     if (index > 0 && index < removeList.size() - 1) {
       whitelinesAround =
-          removeList.get(index + 1).getType().equals(LineType.WHITELINE)
-              && removeList.get(index - 1).getType().equals(LineType.WHITELINE);
+          removeList.get(index + 1).isType(LineType.WHITELINE)
+              && removeList.get(index - 1).isType(LineType.WHITELINE);
     }
     return whitelinesAround;
   }
