@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Place;
 
 public class PlacePersistenceTest extends AbstractPersistenceTest {
@@ -120,9 +120,9 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, 20);
     TextPosition pos3 = TextPosition.fromGlobalOffset(chapter, 30);
     TextPosition pos4 = TextPosition.fromGlobalOffset(chapter, 40);
-    TextSpan span1 = new TextSpan(pos1, pos4);
-    TextSpan span2 = new TextSpan(pos2, pos4);
-    TextSpan span3 = new TextSpan(pos3, pos4);
+    Range span1 = new Range(pos1, pos4);
+    Range span2 = new Range(pos2, pos4);
+    Range span3 = new Range(pos3, pos4);
 
     Place p = new Place();
     // Add the occurrences in an order that is neither the correct one, nor the reverse

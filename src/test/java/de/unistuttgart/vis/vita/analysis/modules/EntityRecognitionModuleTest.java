@@ -20,7 +20,7 @@ import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
@@ -67,7 +67,7 @@ public class EntityRecognitionModuleTest {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
-      chapter.setRange(new TextSpan(TextPosition.fromGlobalOffset(chapter, pos),
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, pos),
           TextPosition.fromGlobalOffset(chapter, pos + chapterText.length())));
       pos += chapterText.length();
       part.getChapters().add(chapter);

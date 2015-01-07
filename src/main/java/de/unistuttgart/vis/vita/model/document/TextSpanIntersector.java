@@ -32,17 +32,17 @@ public class TextSpanIntersector {
    * @param list of span lists. The spans in each list must not be overlapping
    * @return the text spans that are included in all given lists of text spans
    */
-  public static List<TextSpan> intersect(List<List<TextSpan>> lists) {
+  public static List<Range> intersect(List<List<Range>> lists) {
     List<Event> events = new ArrayList<TextSpanIntersector.Event>();
-    for (List<TextSpan> list : lists) {
-      for (TextSpan span : list) {
+    for (List<Range> list : lists) {
+      for (Range span : list) {
         events.add(new Event(span.getStart(), EventType.ENTER));
         events.add(new Event(span.getEnd(), EventType.LEAVE));
       }
     }
     Collections.sort(events);
     TextPosition currentStart = null;
-    List<TextSpan> result = new ArrayList<>();
+    List<Range> result = new ArrayList<>();
     int currentCount = 0;
     for (Event event: events) {
       switch (event.type) {
@@ -57,7 +57,7 @@ public class TextSpanIntersector {
       if (currentCount == lists.size()) {
         currentStart = event.pos;
       } else if (currentStart != null) {
-        result.add(new TextSpan(currentStart, event.pos));
+        result.add(new Range(currentStart, event.pos));
         currentStart = null;
       }
     }

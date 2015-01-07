@@ -13,7 +13,7 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -132,7 +132,7 @@ public class EntityFeatureModuleTest {
 
     Place place = document.getContent().getPlaces().get(0);
     assertThat(place.getOccurrences(), contains(
-        new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END)));
+        new Range(chapter, OCCURANCE3_START, OCCURANCE3_END)));
   }
 
   @Test
@@ -190,8 +190,8 @@ public class EntityFeatureModuleTest {
     entity1 = new BasicEntity();
     entity1.setDisplayName(NAME1_1);
     entity1.setType(EntityType.PERSON);
-    entity1.getOccurences().add(new TextSpan(chapter, OCCURANCE1_START, OCCURANCE1_END));
-    entity1.getOccurences().add(new TextSpan(chapter, OCCURANCE2_START, OCCURANCE2_END));
+    entity1.getOccurences().add(new Range(chapter, OCCURANCE1_START, OCCURANCE1_END));
+    entity1.getOccurences().add(new Range(chapter, OCCURANCE2_START, OCCURANCE2_END));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
     list.add(entity1);
@@ -199,7 +199,7 @@ public class EntityFeatureModuleTest {
     entity2 = new BasicEntity();
     entity2.setType(EntityType.PLACE);
     entity2.setDisplayName(NAME2);
-    entity2.getOccurences().add(new TextSpan(chapter, OCCURANCE3_START, OCCURANCE3_END));
+    entity2.getOccurences().add(new Range(chapter, OCCURANCE3_START, OCCURANCE3_END));
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
     

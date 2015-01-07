@@ -1,11 +1,15 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -13,37 +17,26 @@ import javax.xml.bind.annotation.XmlElement;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
-@Table(indexes={
-  @Index(columnList="number")
-})
+@Table(indexes = {@Index(columnList = "number")})
 @NamedQueries({
-    @NamedQuery(name = "Chapter.findAllChapters",
-        query = "SELECT c "
-              + "FROM Chapter c"),
+    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
 
-    @NamedQuery(name = "Chapter.findChapterById",
-      query = "SELECT c "
-            + "FROM Chapter c "
-            + "WHERE c.id = :chapterId"),
+    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.id = :chapterId"),
 
-    @NamedQuery(name = "Chapter.findChapterByTitle",
-      query = "SELECT c "
-            + "FROM Chapter c "
-            + "WHERE c.title = :chapterTitle"),
+    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
+        + "WHERE c.title = :chapterTitle"),
 
-    @NamedQuery(name = "Chapter.findChapterByOffset",
-      query = "SELECT c "
-            + "FROM Document d, DocumentPart dp, Chapter c "
-            + "WHERE d.id = :documentId "
-            + "AND dp MEMBER OF d.content.parts "
-            + "AND c MEMBER OF dp.chapters "
-            + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
+    @NamedQuery(name = "Chapter.findChapterByOffset", query = "SELECT c "
+        + "FROM Document d, DocumentPart dp, Chapter c " + "WHERE d.id = :documentId "
+        + "AND dp MEMBER OF d.content.parts " + "AND c MEMBER OF dp.chapters "
+        + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
 
   private int number;
@@ -60,15 +53,43 @@ public class Chapter extends AbstractEntityBase {
   // is required for getOccurrence()
   private int documentLength;
 
-  @OneToOne(cascade=CascadeType.ALL)
-  private TextSpan range;
+  @OneToOne(cascade = CascadeType.ALL)
+  private Range range;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy="chapter")
+  private List<Sentence> sentences;
 
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
   public Chapter() {
-    range = new TextSpan(TextPosition.fromGlobalOffset(this, 0),
-        TextPosition.fromGlobalOffset(this, 0));
+    range =
+        new Range(TextPosition.fromGlobalOffset(this, 0), TextPosition.fromGlobalOffset(this, 0));
+    sentences = new ArrayList<Sentence>();
+  }
+
+  /**
+   * Get a list of all sentences in this chapter. The sentences are sorted, so the n-th sentence in
+   * the chapter is the n-th sentence in the list. The sentences don't know their text, only the
+   * position of the text.
+   * 
+   * @return all sentences of this chapter.
+   */
+  public List<Sentence> getSentences() {
+    return sentences;
+  }
+
+  /**
+   * Set the list of sentences. The sentences are sorted, so the n-th sentence in
+   * the chapter is the n-th sentence in the list.
+   * 
+   * @param sentences - all sentences of this chapter.
+   */
+  public void setSentences(List<Sentence> sentences) {
+    if (sentences == null) {
+      throw new IllegalArgumentException("sentences must not be null!");
+    }
+    this.sentences = sentences;
   }
 
   /**
@@ -144,7 +165,7 @@ public class Chapter extends AbstractEntityBase {
   /**
    * @return the range of this Chapter in the whole Document
    */
-  public TextSpan getRange() {
+  public Range getRange() {
     return range;
   }
 
@@ -153,16 +174,16 @@ public class Chapter extends AbstractEntityBase {
    *
    * @param range - the range of this Chapter in the whole Document
    */
-  public void setRange(TextSpan range) {
+  public void setRange(Range range) {
     this.range = range;
   }
 
   /**
-   * Gets the range of this chapter, as an {@link Occurrence} object that contains the progress
+   * Gets the range of this chapter, as an {@link FlatOccurrence} object that contains the progress
    * property. Only exists in persisted objects.
    */
   @XmlElement(name = "range")
-  public Occurrence getRangeAsOccurrence() {
+  public FlatOccurrence getRangeAsOccurrence() {
     return range.toOccurrence(documentLength);
   }
 

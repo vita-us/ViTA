@@ -12,7 +12,7 @@ import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
@@ -30,14 +30,14 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
   public void testPersistOneTextSpan() {
     // first set up a TextSpan
     em.persist(chapter);
-    TextSpan ts = createTestTextSpan();
+    Range ts = createTestTextSpan();
     
     // persist this TextSpan
     em.persist(ts);
     startNewTransaction();
     
     // read persisted TextSpans from database
-    TextSpan readTextSpan = readTextSpanFromDb(ts.getId());
+    Range readTextSpan = readTextSpanFromDb(ts.getId());
     
     // check whether data is correct
     checkData(readTextSpan);
@@ -48,8 +48,8 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * 
    * @return test text span
    */
-  private TextSpan createTestTextSpan() {
-    return new TextSpan(chapter, TEST_TEXT_SPAN_START, TEST_TEXT_SPAN_END);
+  private Range createTestTextSpan() {
+    return new Range(chapter, TEST_TEXT_SPAN_START, TEST_TEXT_SPAN_END);
   }
   
   /**
@@ -57,8 +57,8 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * 
    * @return the text span
    */
-  private TextSpan readTextSpanFromDb(String id) {
-    return em.createNamedQuery("TextSpan.findTextSpanById", TextSpan.class)
+  private Range readTextSpanFromDb(String id) {
+    return em.createNamedQuery("TextSpan.findTextSpanById", Range.class)
         .setParameter("textSpanId", id)
         .getSingleResult();
   }
@@ -68,7 +68,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    * 
    * @param textSpanToCheck - the TextSpan which should be checked
    */
-  private void checkData(TextSpan textSpanToCheck) {
+  private void checkData(Range textSpanToCheck) {
     assertNotNull(textSpanToCheck);
     assertNotNull(textSpanToCheck.getId());
     
@@ -87,26 +87,26 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
    */
   @Test
   public void testFindingAllAndSpecificTextSpans() {
-    TextSpan testTextSpan = createTestTextSpan();
+    Range testTextSpan = createTestTextSpan();
     
     em.persist(chapter);
     em.persist(testTextSpan);
     startNewTransaction();
     
     // check Named Query finding all chapters
-    TypedQuery<TextSpan> allQ = em.createNamedQuery("TextSpan.findAllTextSpans", TextSpan.class);
-    List<TextSpan> allSpans = allQ.getResultList();
+    TypedQuery<Range> allQ = em.createNamedQuery("TextSpan.findAllTextSpans", Range.class);
+    List<Range> allSpans = allQ.getResultList();
     
     assertTrue(allSpans.size() > 0);
-    TextSpan readSpan = allSpans.get(0);
+    Range readSpan = allSpans.get(0);
     checkData(readSpan);
     
     String id = readSpan.getId();
     
     // check Named Query finding text spans by id
-    TypedQuery<TextSpan> idQ = em.createNamedQuery("TextSpan.findTextSpanById", TextSpan.class);
+    TypedQuery<Range> idQ = em.createNamedQuery("TextSpan.findTextSpanById", Range.class);
     idQ.setParameter("textSpanId", id);
-    TextSpan idTextSpan = idQ.getSingleResult();
+    Range idTextSpan = idQ.getSingleResult();
     
     checkData(idTextSpan);
   }
@@ -119,7 +119,7 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     // first set up test data
     TextSpanTestData testData = new TextSpanTestData();
     Chapter c = new ChapterTestData().createTestChapter();
-    TextSpan personTextSpan = testData.createTestTextSpan(c);
+    Range personTextSpan = testData.createTestTextSpan(c);
     Person testPerson = new PersonTestData().createTestPerson(1);
     testPerson.getOccurrences().add(personTextSpan);
     
@@ -134,13 +134,13 @@ public class TextSpanPersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
     
     // read TextSpans from database
-    TypedQuery<TextSpan> personQ = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
-                                                        TextSpan.class);
+    TypedQuery<Range> personQ = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
+                                                        Range.class);
     personQ.setParameter("entityId", personId);
     personQ.setParameter("rangeStart", 0);
     personQ.setParameter("rangeEnd", 200000);
     
-    List<TextSpan> actualPersonTextSpans = personQ.getResultList();
+    List<Range> actualPersonTextSpans = personQ.getResultList();
     
     // finally check read data
     assertEquals(1, actualPersonTextSpans.size());

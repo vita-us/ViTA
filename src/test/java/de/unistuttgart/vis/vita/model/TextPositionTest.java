@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Performs some simple tests on the TestPosition class.
@@ -43,7 +43,7 @@ public class TextPositionTest {
 
   @Test
   public void testFromLocalOffset() {
-    chapter.setRange(new TextSpan(
+    chapter.setRange(new Range(
         TextPosition.fromGlobalOffset(chapter, 20),
         TextPosition.fromGlobalOffset(chapter, 40)));
     TextPosition pos = TextPosition.fromLocalOffset(chapter, 10);

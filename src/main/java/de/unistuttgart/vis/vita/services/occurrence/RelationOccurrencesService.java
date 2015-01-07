@@ -14,9 +14,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -84,7 +84,7 @@ public class RelationOccurrencesService extends OccurrencesService {
           .getOccurrences(steps, rangeStart, rangeEnd);
     }
 
-    List<Occurrence> occs = null;
+    List<FlatOccurrence> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -95,26 +95,26 @@ public class RelationOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
-    List<List<TextSpan>> spanLists = new ArrayList<>();
+  private List<FlatOccurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+    List<List<Range>> spanLists = new ArrayList<>();
     for (String entityId : entityIds) {
-      List<TextSpan> spans = readTextSpansForEntity(entityId, startOffset, endOffset);
-      List<TextSpan> newSpans = new ArrayList<>();
-      for (TextSpan span : spans) {
+      List<Range> spans = readTextSpansForEntity(entityId, startOffset, endOffset);
+      List<Range> newSpans = new ArrayList<>();
+      for (Range span : spans) {
         newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
       }
-      spanLists.add(TextSpan.normalizeOverlaps(newSpans));
+      spanLists.add(Range.normalizeOverlaps(newSpans));
     }
 
-    List<TextSpan> intersectSpans = TextSpan.intersect(spanLists);
+    List<Range> intersectSpans = Range.intersect(spanLists);
 
     // convert TextSpans into Occurrences and return them
     return convertSpansToOccurrences(intersectSpans);
   }
 
-  private List<TextSpan> readTextSpansForEntity(String entityId, int startOffset, int endOffset) {
-    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForEntity",
-                                                      TextSpan.class);
+  private List<Range> readTextSpansForEntity(String entityId, int startOffset, int endOffset) {
+    TypedQuery<Range> query = em.createNamedQuery("TextSpan.findTextSpansForEntity",
+                                                      Range.class);
     query.setParameter("entityId", entityId);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);

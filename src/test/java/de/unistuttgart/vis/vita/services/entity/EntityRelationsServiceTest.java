@@ -22,7 +22,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -80,7 +80,7 @@ public class EntityRelationsServiceTest extends ServiceTest {
     // Set range of the chapter
     TextPosition rangeStartPos = TextPosition.fromGlobalOffset(testChapter, 0);
     TextPosition rangeEndPos = TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
+    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
 
     // set up document part
@@ -103,10 +103,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
     testPerson.getEntityRelations().add(relationTestData.createTestRelation(relatedPerson, testPerson));
 
     // add occurrences
-    TextSpan testPersonOcc = new TextSpan(testChapter, 0, 1000);
+    Range testPersonOcc = new Range(testChapter, 0, 1000);
     testPerson.getOccurrences().add(testPersonOcc);
 
-    TextSpan relatedPersonOcc = new TextSpan(testChapter, 500, 1500);
+    Range relatedPersonOcc = new Range(testChapter, 500, 1500);
     relatedPerson.getOccurrences().add(relatedPersonOcc);
 
     // set up test place and relation
@@ -124,10 +124,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
     testPlace.getEntityRelations().add(relationTestData.createTestRelation(relatedPlace, testPlace));
 
     // add occurrences
-    TextSpan testPlaceOcc = new TextSpan(testChapter, 1500, 2500);
+    Range testPlaceOcc = new Range(testChapter, 1500, 2500);
     testPlace.getOccurrences().add(testPlaceOcc);
 
-    TextSpan relatedPlaceOcc = new TextSpan(testChapter, 2000, 3000);
+    Range relatedPlaceOcc = new Range(testChapter, 2000, 3000);
     relatedPlace.getOccurrences().add(relatedPlaceOcc);
 
     EntityManager em = getModel().getEntityManager();

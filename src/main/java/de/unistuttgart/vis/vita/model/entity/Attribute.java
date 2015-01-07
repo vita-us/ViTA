@@ -13,7 +13,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
@@ -56,7 +56,7 @@ public class Attribute extends AbstractEntityBase {
 
   @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("start.offset ASC")
-  private SortedSet<TextSpan> occurrences;
+  private SortedSet<Range> occurrences;
 
   /**
    * Creates a new attribute, setting all fields to default values.
@@ -119,7 +119,7 @@ public class Attribute extends AbstractEntityBase {
   /**
    * @return a Set of all occurrences in the text which are related to this Attribute
    */
-  public SortedSet<TextSpan> getOccurrences() {
+  public SortedSet<Range> getOccurrences() {
     return occurrences;
   }
 

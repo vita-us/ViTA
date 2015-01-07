@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 /**
@@ -59,7 +59,7 @@ public abstract class Entity extends AbstractEntityBase {
 
   @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("start.offset ASC")
-  private SortedSet<TextSpan> occurrences;
+  private SortedSet<Range> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
   @XmlElement(name = "entityRelations")
@@ -145,7 +145,7 @@ public abstract class Entity extends AbstractEntityBase {
   /**
    * @return Set of all occurrences of this entity in the document
    */
-  public SortedSet<TextSpan> getOccurrences() {
+  public SortedSet<Range> getOccurrences() {
     return occurrences;
   }
 

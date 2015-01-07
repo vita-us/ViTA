@@ -20,7 +20,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -58,7 +58,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
   private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
       throws IOException {
-    List<TextSpan> spans = getTextSpansAroundEntity(entity);
+    List<Range> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
 
     // The entity name itself should not be included in the word cloud
@@ -67,7 +67,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       entityNameTokens.addAll(Arrays.asList(tokenize(attr.getContent())));
     }
 
-    for (TextSpan span : spans) {
+    for (Range span : spans) {
       String text = span.getStart().getChapter().getText();
       String substr =
           text.substring(span.getStart().getLocalOffset(), span.getEnd().getLocalOffset());
@@ -106,12 +106,12 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     return str.toLowerCase().replaceAll("\\W", " ").split("\\s+?");
   }
 
-  private List<TextSpan> getTextSpansAroundEntity(BasicEntity entity) {
-    List<TextSpan> spans = new ArrayList<>(entity.getOccurences().size());
-    for (TextSpan span : entity.getOccurences()) {
+  private List<Range> getTextSpansAroundEntity(BasicEntity entity) {
+    List<Range> spans = new ArrayList<>(entity.getOccurences().size());
+    for (Range span : entity.getOccurences()) {
       spans.add(span.widen(100));
     }
-    return TextSpan.normalizeOverlaps(spans);
+    return Range.normalizeOverlaps(spans);
   }
 
   /**

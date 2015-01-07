@@ -5,7 +5,7 @@ import java.util.List;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Computes the remaining attributes of the book, which are not text or metadata, for example range
@@ -53,7 +53,7 @@ public class BookAttributeBuilder extends AbstractBuilder {
         TextPosition startPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
         currentPosition += chapter.getLength();
         TextPosition endPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
-        chapter.setRange(new TextSpan(startPosition, endPosition));
+        chapter.setRange(new Range(startPosition, endPosition));
       }
     }
   }

@@ -8,9 +8,9 @@ import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.RangeService;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 
 /**
  * Abstract base class of every service dealing with Occurrences. Offers methods to convert
@@ -25,11 +25,11 @@ public abstract class OccurrencesService extends RangeService {
    * @param textSpans - the TextSpans to be converted
    * @return list of Occurrences
    */
-  public List<Occurrence> convertSpansToOccurrences(List<TextSpan> textSpans) {
-    List<Occurrence> occurrences = new ArrayList<>();
+  public List<FlatOccurrence> convertSpansToOccurrences(List<Range> textSpans) {
+    List<FlatOccurrence> occurrences = new ArrayList<>();
     int docLength = getDocumentLength();
 
-    for (TextSpan span : textSpans) {
+    for (Range span : textSpans) {
       occurrences.add(span.toOccurrence(docLength));
     }
 
@@ -62,12 +62,12 @@ public abstract class OccurrencesService extends RangeService {
     return chapters.get(0);
   }
 
-  protected List<Occurrence> getGranularEntityOccurrences(int steps, int startOffset, int endOffset) {
+  protected List<FlatOccurrence> getGranularEntityOccurrences(int steps, int startOffset, int endOffset) {
     // compute sizes of range and steps
     int rangeSize = endOffset - startOffset;
     int stepSize = rangeSize / steps;
 
-    List<TextSpan> stepSpans = new ArrayList<>();
+    List<Range> stepSpans = new ArrayList<>();
 
     TextPosition currentSpanStart = null;
     TextPosition currentSpanEnd = null;
@@ -86,14 +86,14 @@ public abstract class OccurrencesService extends RangeService {
 
       } else if (includesLastStep) {
         // The step is over, add it to the list
-        stepSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
+        stepSpans.add(new Range(currentSpanStart, currentSpanEnd));
         includesLastStep = false;
       }
     }
     
     if (includesLastStep) {
       // There is a step at the very end
-      stepSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
+      stepSpans.add(new Range(currentSpanStart, currentSpanEnd));
     }
 
     return convertSpansToOccurrences(stepSpans);

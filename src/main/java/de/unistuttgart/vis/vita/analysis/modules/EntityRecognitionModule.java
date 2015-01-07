@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -201,7 +201,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       idMap.put(theAnnotation.getId(), entity);
       entities.add(entity);
     }
-    TextSpan textSpan = getTextSpan(theAnnotation, chapter);
+    Range textSpan = getTextSpan(theAnnotation, chapter);
 
     updateNameAttributes(entity, annotatedText, textSpan);
 
@@ -222,7 +222,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * @param annotatedText The extracted name.
    * @param textSpan The position of the name.
    */
-  private void updateNameAttributes(BasicEntity entity, String annotatedText, TextSpan textSpan) {
+  private void updateNameAttributes(BasicEntity entity, String annotatedText, Range textSpan) {
     for (Attribute currentAttribute : entity.getNameAttributes()) {
       if (currentAttribute.getContent().equals(annotatedText)) {
         currentAttribute.getOccurrences().add(textSpan);
@@ -269,8 +269,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * @param chapter The chapter in which the annotation can be found.
    * @return The Textspan of the annotation.
    */
-  private TextSpan getTextSpan(Annotation theAnnotation, Chapter chapter) {
-    return new TextSpan(chapter,
+  private Range getTextSpan(Annotation theAnnotation, Chapter chapter) {
+    return new Range(chapter,
         theAnnotation.getStartNode().getOffset().intValue(),
         theAnnotation.getEndNode().getOffset().intValue());
   }

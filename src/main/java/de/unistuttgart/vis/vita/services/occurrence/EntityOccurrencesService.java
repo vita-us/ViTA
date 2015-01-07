@@ -12,8 +12,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -82,7 +82,7 @@ public class EntityOccurrencesService extends OccurrencesService {
       throw new WebApplicationException(ire);
     }
     
-    List<Occurrence> occs = null;
+    List<FlatOccurrence> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -93,17 +93,17 @@ public class EntityOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+  private List<FlatOccurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
+    List<Range> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
     
     // convert TextSpans into Occurrences and return them
     return convertSpansToOccurrences(readTextSpans);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
-    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
-                                                      TextSpan.class);
+  private List<Range> readTextSpansFromDatabase(int startOffset, int endOffset) {
+    TypedQuery<Range> query = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
+                                                      Range.class);
     query.setParameter("entityId", entityId);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);

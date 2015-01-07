@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
 @AnalysisModule(dependencies = { BasicEntityCollection.class, ImportResult.class }, weight = 0.1)
@@ -80,7 +80,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
   }
   
   private void addEvents(BasicEntity entity) {
-    for (TextSpan occurrence : entity.getOccurences()) {
+    for (Range occurrence : entity.getOccurences()) {
       occurrence = widenOccurrence(occurrence);
       events.add(new RelationEvent(entity, EventType.ENTER, occurrence.getStart()));
       events.add(new RelationEvent(entity, EventType.LEAVE, occurrence.getEnd()));
@@ -143,7 +143,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
    * @param occurrence the span to widen
    * @return the widened span
    */
-  private TextSpan widenOccurrence(TextSpan occurrence) {
+  private Range widenOccurrence(Range occurrence) {
     int chapterStart = occurrence.getStart().getChapter().getRange().getStart().getOffset();
     int start = occurrence.getStart().getOffset() - MAX_DISTANCE / 2;
 
@@ -158,7 +158,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
       end = chapterEnd;
     }
 
-    return new TextSpan(TextPosition.fromGlobalOffset(occurrence.getStart().getChapter(), start),
+    return new Range(TextPosition.fromGlobalOffset(occurrence.getStart().getChapter(), start),
         TextPosition.fromGlobalOffset(occurrence.getEnd().getChapter(), end));
     
   }

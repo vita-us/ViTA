@@ -20,10 +20,10 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.document.DocumentService;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTest;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 
@@ -42,7 +42,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
     testDoc.getContent().getParts().add(testPart);
     Chapter testChapter = new ChapterTestData().createTestChapter();
     testChapter.setLength(testChapter.getText().length());
-    testChapter.setRange(new TextSpan(
+    testChapter.setRange(new Range(
         TextPosition.fromGlobalOffset(testChapter, 0),
         TextPosition.fromGlobalOffset(testChapter, testChapter.getLength())));
     testChapter.setDocumentLength(testChapter.getLength());
@@ -87,7 +87,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    Occurrence occurrence = actualResponse.getOccurrences().get(0);
+    FlatOccurrence occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(10));
     assertThat(occurrence.getEnd().getOffset(), is(13));
   }
@@ -102,7 +102,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    Occurrence occurrence = actualResponse.getOccurrences().get(0);
+    FlatOccurrence occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(0));
     assertThat(occurrence.getEnd().getOffset(), is(14));
   }

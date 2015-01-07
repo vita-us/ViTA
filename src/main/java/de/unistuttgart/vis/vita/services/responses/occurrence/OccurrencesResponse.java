@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class OccurrencesResponse {
 
   @XmlElement(name = "occurrences")
-  private List<Occurrence> occurrences;
+  private List<FlatOccurrence> occurrences;
   
   /**
    * Creates a new instance of OccurrencesResponse, setting all attributes to default values.
@@ -26,14 +26,14 @@ public class OccurrencesResponse {
    * 
    * @param occList - the list of Occurrences to be sent
    */
-  public OccurrencesResponse(List<Occurrence> occList) {
+  public OccurrencesResponse(List<FlatOccurrence> occList) {
     this.occurrences = occList;
   }
 
   /**
    * @return the Occurrences stored in this response
    */
-  public List<Occurrence> getOccurrences() {
+  public List<FlatOccurrence> getOccurrences() {
     return occurrences;
   }
 
@@ -42,7 +42,7 @@ public class OccurrencesResponse {
    * 
    * @param occList - the list of Occurrences to be sent
    */
-  public void setOccurrences(List<Occurrence> occList) {
+  public void setOccurrences(List<FlatOccurrence> occList) {
     this.occurrences = occList;
   }
 

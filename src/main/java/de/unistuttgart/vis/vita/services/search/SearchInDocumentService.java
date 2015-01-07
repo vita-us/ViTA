@@ -21,18 +21,18 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.search.Searcher;
 import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 @ManagedBean
 public class SearchInDocumentService extends OccurrencesService {
   private static final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
-  private List<TextSpan> textSpans;
+  private List<Range> textSpans;
 
   @Inject
   private Model model;
@@ -78,10 +78,10 @@ public class SearchInDocumentService extends OccurrencesService {
       textSpans = searcher.searchString(documentId, query, chapters, model);
     } catch (ParseException e) {
       LOGGER.log(Level.INFO, "Invalid search query: " + query, e);
-      return new OccurrencesResponse(new ArrayList<Occurrence>());
+      return new OccurrencesResponse(new ArrayList<FlatOccurrence>());
     }
 
-    List<Occurrence> occs = null;
+    List<FlatOccurrence> occs = null;
     if (steps == 0) {
       occs = convertSpansToOccurrences(textSpans);
     } else {
@@ -117,7 +117,7 @@ public class SearchInDocumentService extends OccurrencesService {
   @Override
   protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
     int count = 0;
-    for (TextSpan span : textSpans) {
+    for (Range span : textSpans) {
       if (span.getEnd().getOffset() > stepEnd)
         break;
       if (span.getStart().getOffset() >= stepStart)

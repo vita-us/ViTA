@@ -13,7 +13,7 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Tests the creation of TextSpans and the computation of its lengths.
@@ -45,7 +45,7 @@ public class TextSpanTest {
     DocumentMetrics metrics = doc.getMetrics();
     metrics.setCharacterCount(DOCUMENT_LENGTH);
     chapter = new Chapter();
-    chapter.setRange(new TextSpan(
+    chapter.setRange(new Range(
         TextPosition.fromGlobalOffset(chapter, 0),
         TextPosition.fromGlobalOffset(chapter, DOCUMENT_LENGTH)));
 
@@ -57,16 +57,16 @@ public class TextSpanTest {
 
   @Test
   public void testStartAndEnd() {
-    TextSpan span = new TextSpan(pos1, pos2);
+    Range span = new Range(pos1, pos2);
     assertEquals(pos1, span.getStart());
     assertEquals(pos2, span.getEnd());
   }
 
   @Test
   public void testUtilityConstructor() {
-    chapter.setRange(new TextSpan(pos1, pos4));
+    chapter.setRange(new Range(pos1, pos4));
 
-    TextSpan span = new TextSpan(chapter, OFFSET_2, OFFSET_3);
+    Range span = new Range(chapter, OFFSET_2, OFFSET_3);
     assertThat(span.getStart().getOffset(), is(OFFSET_1 + OFFSET_2));
     assertThat(span.getEnd().getOffset(), is(OFFSET_1 + OFFSET_3));
     assertThat(span.getStart().getChapter(), is(chapter));
@@ -78,7 +78,7 @@ public class TextSpanTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testIllegalTextSpan() {
-    new TextSpan(pos2, pos1);
+    new Range(pos2, pos1);
   }
 
   /**
@@ -86,7 +86,7 @@ public class TextSpanTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testFirstNullTextSpan() {
-    new TextSpan(null, pos1);
+    new Range(null, pos1);
   }
 
   /**
@@ -94,7 +94,7 @@ public class TextSpanTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testSecondNullTextSpan() {
-    new TextSpan(pos1, null);
+    new Range(pos1, null);
   }
 
   /**
@@ -102,7 +102,7 @@ public class TextSpanTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testBothNullTextSpan() {
-    new TextSpan(null, null);
+    new Range(null, null);
   }
 
   /**
@@ -110,7 +110,7 @@ public class TextSpanTest {
    */
   @Test
   public void testEmptyTextSpan() {
-    TextSpan emptyTestSpan = new TextSpan(pos2, pos2);
+    Range emptyTestSpan = new Range(pos2, pos2);
     assertEquals(0, emptyTestSpan.getLength());
   }
 
@@ -119,15 +119,15 @@ public class TextSpanTest {
    */
   @Test
   public void testTextSpan() {
-    TextSpan testTextSpan = new TextSpan(pos2, pos3);
+    Range testTextSpan = new Range(pos2, pos3);
     assertEquals(DIFF, testTextSpan.getLength());
   }
 
   @Test
   public void testCompareTo() {
-    TextSpan span1 = new TextSpan(pos1, pos2);
-    TextSpan span2 = new TextSpan(pos2, pos3);
-    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    Range span1 = new Range(pos1, pos2);
+    Range span2 = new Range(pos2, pos3);
+    Range span1Duplicate = new Range(pos1, pos2);
 
     assertEquals(1, span1.compareTo(null));
     assertEquals(-1, span1.compareTo(span2));
@@ -137,8 +137,8 @@ public class TextSpanTest {
 
   @Test
   public void testCompareToWithEqualStartPositions() {
-    TextSpan span1 = new TextSpan(pos1, pos2);
-    TextSpan span2 = new TextSpan(pos1, pos3);
+    Range span1 = new Range(pos1, pos2);
+    Range span2 = new Range(pos1, pos3);
 
     assertEquals(-1, span1.compareTo(span2));
     assertEquals(1, span2.compareTo(span1));
@@ -146,10 +146,10 @@ public class TextSpanTest {
 
   @Test
   public void testEquals() {
-    TextSpan span1 = new TextSpan(pos1, pos2);
-    TextSpan span2 = new TextSpan(pos2, pos3);
-    TextSpan span3 = new TextSpan(pos1, pos3);
-    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    Range span1 = new Range(pos1, pos2);
+    Range span2 = new Range(pos2, pos3);
+    Range span3 = new Range(pos1, pos3);
+    Range span1Duplicate = new Range(pos1, pos2);
 
     assertTrue(span1.equals(span1Duplicate));
     assertFalse(span1.equals(pos2));
@@ -161,10 +161,10 @@ public class TextSpanTest {
 
   @Test
   public void testHashCode() {
-    TextSpan span1 = new TextSpan(pos1, pos2);
-    TextSpan span2 = new TextSpan(pos2, pos3);
-    TextSpan span3 = new TextSpan(pos1, pos3);
-    TextSpan span1Duplicate = new TextSpan(pos1, pos2);
+    Range span1 = new Range(pos1, pos2);
+    Range span2 = new Range(pos2, pos3);
+    Range span3 = new Range(pos1, pos3);
+    Range span1Duplicate = new Range(pos1, pos2);
 
     assertEquals(span1.hashCode(), span1Duplicate.hashCode());
     assertNotEquals(span1.hashCode(), pos2.hashCode());
@@ -173,8 +173,8 @@ public class TextSpanTest {
 
   @Test
   public void testWiden() {
-    TextSpan span = new TextSpan(chapter, 50, 60);
-    TextSpan widened = span.widen(10);
+    Range span = new Range(chapter, 50, 60);
+    Range widened = span.widen(10);
     assertThat(widened.getStart().getOffset(), is(40));
     assertThat(widened.getStart().getChapter(), is(chapter));
     assertThat(widened.getEnd().getOffset(), is(70));
@@ -183,65 +183,65 @@ public class TextSpanTest {
 
   @Test
   public void testWidenLimits() {
-    TextSpan span = new TextSpan(chapter, 50, 60);
-    TextSpan widened = span.widen(70);
+    Range span = new Range(chapter, 50, 60);
+    Range widened = span.widen(70);
     assertThat(widened.getStart().getOffset(), is(0));
     assertThat(widened.getEnd().getOffset(), is(130));
   }
 
   @Test
   public void testNormalizeOverlaps() {
-    TextSpan span1 = new TextSpan(chapter, 50, 70);
-    TextSpan span2 = new TextSpan(chapter, 60, 80);
-    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
-    assertThat(normalized, contains(new TextSpan(chapter, 50,80)));
+    Range span1 = new Range(chapter, 50, 70);
+    Range span2 = new Range(chapter, 60, 80);
+    List<Range> normalized = Range.normalizeOverlaps(Arrays.asList(span1, span2));
+    assertThat(normalized, contains(new Range(chapter, 50,80)));
   }
 
   @Test
   public void testNormalizeOverlapsWithTouching() {
-    TextSpan span1 = new TextSpan(chapter, 50, 70);
-    TextSpan span2 = new TextSpan(chapter, 70, 80);
-    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
-    assertThat(normalized, contains(new TextSpan(chapter, 50,80)));
+    Range span1 = new Range(chapter, 50, 70);
+    Range span2 = new Range(chapter, 70, 80);
+    List<Range> normalized = Range.normalizeOverlaps(Arrays.asList(span1, span2));
+    assertThat(normalized, contains(new Range(chapter, 50,80)));
   }
 
   @Test
   public void testNormalizeOverlapsWithoutOverlap() {
-    TextSpan span1 = new TextSpan(chapter, 50, 70);
-    TextSpan span2 = new TextSpan(chapter, 80, 90);
-    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    Range span1 = new Range(chapter, 50, 70);
+    Range span2 = new Range(chapter, 80, 90);
+    List<Range> normalized = Range.normalizeOverlaps(Arrays.asList(span1, span2));
     assertThat(normalized, contains(
-        new TextSpan(chapter, 50,70),
-        new TextSpan(chapter, 80,90)));
+        new Range(chapter, 50,70),
+        new Range(chapter, 80,90)));
   }
 
   @Test
   public void testNormalizeOverlapsAcrossChapters() {
-    TextSpan span1 = new TextSpan(chapter, 50, 70);
+    Range span1 = new Range(chapter, 50, 70);
     Chapter chapter2 = new Chapter();
-    TextSpan span2 = new TextSpan(chapter2, 60, 80);
-    List<TextSpan> normalized = TextSpan.normalizeOverlaps(Arrays.asList(span1, span2));
+    Range span2 = new Range(chapter2, 60, 80);
+    List<Range> normalized = Range.normalizeOverlaps(Arrays.asList(span1, span2));
     // should not do any merging because these are two different chapters
     assertThat(normalized, contains(
-        new TextSpan(chapter, 50,70),
-        new TextSpan(chapter2, 60,80)));
+        new Range(chapter, 50,70),
+        new Range(chapter2, 60,80)));
   }
 
   @Test
   public void testIntersect() {
-    TextSpan span1 = new TextSpan(chapter, 50, 70);
-    TextSpan span2 = new TextSpan(chapter, 80, 100);
-    List<TextSpan> list1 = Arrays.asList(span1, span2);
+    Range span1 = new Range(chapter, 50, 70);
+    Range span2 = new Range(chapter, 80, 100);
+    List<Range> list1 = Arrays.asList(span1, span2);
 
-    TextSpan span3 = new TextSpan(chapter, 40, 90);
-    TextSpan span4 = new TextSpan(chapter, 95, 110);
-    List<TextSpan> list2 = Arrays.asList(span3, span4);
+    Range span3 = new Range(chapter, 40, 90);
+    Range span4 = new Range(chapter, 95, 110);
+    List<Range> list2 = Arrays.asList(span3, span4);
 
-    List<TextSpan> result = TextSpan.intersect(Arrays.asList(list1, list2));
+    List<Range> result = Range.intersect(Arrays.asList(list1, list2));
     System.out.println(result);
     assertThat(result, contains(
-        new TextSpan(chapter, 50, 70),
-        new TextSpan(chapter, 80, 90),
-        new TextSpan(chapter, 95, 100)));
+        new Range(chapter, 50, 70),
+        new Range(chapter, 80, 90),
+        new Range(chapter, 95, 100)));
   }
 }

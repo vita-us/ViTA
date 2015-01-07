@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Holds data about an Occurrence, including an absolute start and end position and a length.
  */
 @XmlRootElement
-public class Occurrence {
+public class FlatOccurrence {
   
   private AbsoluteTextPosition start;
   private AbsoluteTextPosition end;
@@ -15,7 +15,7 @@ public class Occurrence {
   /**
    * Creates a new instance of Occurrence, setting all attributes to default values.
    */
-  public Occurrence() {
+  public FlatOccurrence() {
     // zero-argument constructor needed 
   }
   
@@ -69,7 +69,7 @@ public class Occurrence {
   
   @Override
   public String toString() {
-    return "Occurrence: " + start.getOffset() + " - " + end.getOffset(); 
+    return "FlatOccurrence: " + start.getOffset() + " - " + end.getOffset(); 
   }
 
 }

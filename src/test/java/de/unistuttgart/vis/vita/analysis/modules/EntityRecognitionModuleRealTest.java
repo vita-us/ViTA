@@ -24,7 +24,7 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
@@ -101,7 +101,7 @@ public class EntityRecognitionModuleRealTest {
 
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PERSON));
-    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 5750, 5759)));
+    assertThat(person.getOccurences(), hasItem(new Range(chapterObjects.get(0), 5750, 5759)));
     assertTrue(checkIfNameExists(person, "Frodo"));
     assertTrue(checkIfNameExists(person, "Mr. Frodo"));
   }
@@ -112,7 +112,7 @@ public class EntityRecognitionModuleRealTest {
 
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PLACE));
-    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 4103, 4111)));
+    assertThat(person.getOccurences(), hasItem(new Range(chapterObjects.get(0), 4103, 4111)));
     assertTrue(checkIfNameExists(person, "Buckland"));
 
     //System.out.println(StringUtils.join(collection.getEntities(), "\n"));

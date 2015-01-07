@@ -15,7 +15,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not
@@ -27,14 +27,14 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
   @Index(columnList="end.offset")
 })
 @NamedQueries({
-  @NamedQuery(name = "TextSpan.findAllTextSpans",
+  @NamedQuery(name = "Range.findAllTextSpans",
       query = "SELECT ts "
-            + "FROM TextSpan ts"),
+            + "FROM Range ts"),
 
   // for returning the exact spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForEntity",
+  @NamedQuery(name = "Range.findTextSpansForEntity",
     query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
+          + "FROM Range ts, Entity e "
           + "WHERE e.id = :entityId "
           + "AND ts MEMBER OF e.occurrences "
           // range checks
@@ -44,9 +44,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "ORDER BY ts.start.offset"),
 
   // for checking the amount of spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForEntity",
+  @NamedQuery(name = "Range.getNumberOfTextSpansForEntity",
   query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e "
+        + "FROM Range ts, Entity e "
         + "WHERE e.id = :entityId "
         + "AND ts MEMBER OF e.occurrences "
         // range checks
@@ -54,9 +54,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
         + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
   // for returning the exact spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForAttribute",
+  @NamedQuery(name = "Range.findTextSpansForAttribute",
     query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e, Attribute a "
+          + "FROM Range ts, Entity e, Attribute a "
           + "WHERE e.id = :entityId "
           + "AND a MEMBER OF e.attributes "
           + "AND a.id = :attributeId "
@@ -68,9 +68,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "ORDER BY ts.start.offset"),
 
   // for checking the amount of spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForAttribute",
+  @NamedQuery(name = "Range.getNumberOfTextSpansForAttribute",
   query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e, Attribute a "
+        + "FROM Range ts, Entity e, Attribute a "
         + "WHERE e.id = :entityId "
         + "AND a MEMBER OF e.attributes "
         + "AND a.id = :attributeId "
@@ -80,9 +80,9 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
         + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
   // gets the occurrences of all entities
-  @NamedQuery(name = "TextSpan.findTextSpansForEntities",
+  @NamedQuery(name = "Range.findTextSpansForEntities",
     query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
+          + "FROM Range ts, Entity e "
           + "WHERE e.id IN :entityIds "
           + "AND ts MEMBER OF e.occurrences "
           // range checks
@@ -94,7 +94,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           + "ORDER BY ts.start.offset"),
 
   // checks whether a set of entities occur in a range (for relation occurrences)
-  @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
+  @NamedQuery(name = "Range.getNumberOfOccurringEntities",
     query = "SELECT COUNT(DISTINCT e.id) "
           + "FROM Entity e "
           + "INNER JOIN e.occurrences ts "
@@ -105,11 +105,11 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
           // Null checks
           + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
 
-  @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
-      + "FROM TextSpan ts "
-      + "WHERE ts.id = :textSpanId")
+  @NamedQuery(name = "Range.findTextSpanById", query = "SELECT ts "
+      + "FROM Range ts "
+      + "WHERE ts.id = :RangeId")
   })
-public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
+public class Range extends AbstractEntityBase implements Comparable<Range> {
 
   // constants
   private static final int MIN_LENGTH = 0;
@@ -123,22 +123,22 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
   private int length;
 
   /**
-   * Creates a new TextSpan.
+   * Creates a new Range.
    */
-  public TextSpan() {
+  public Range() {
     // zero-parameter constructor needed for JPA
   }
 
   /**
-   * Creates a new instance of TextSpan with the given start and end position in
+   * Creates a new instance of Range with the given start and end position in
    * the text.
    *
    * @param pStart
-   *          - the TextPosition where the new TextSpan should begin
+   *          - the TextPosition where the new Range should begin
    * @param pEnd
-   *          - the TextPosiotion where the new TextSpan should end
+   *          - the TextPosiotion where the new Range should end
    */
-  public TextSpan(TextPosition pStart, TextPosition pEnd) {
+  public Range(TextPosition pStart, TextPosition pEnd) {
     if (pStart == null || pEnd == null) {
       throw new IllegalArgumentException("positions must not be null!");
     }
@@ -154,50 +154,50 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
   }
 
   /**
-   * Creates a text span from two offsets within a common chapter
+   * Creates a Range from two offsets within a common chapter
    * @param chapter
-   * @param startOffset the start of the span, relative to the chapter beginning
-   * @param endOffset the end of the span, relative to the chapter end
+   * @param startOffset the start of the range, relative to the chapter beginning
+   * @param endOffset the end of the range, relative to the chapter end
    */
-  public TextSpan(Chapter chapter, int startOffset, int endOffset) {
+  public Range(Chapter chapter, int startOffset, int endOffset) {
     this(TextPosition.fromLocalOffset(chapter, startOffset),
         TextPosition.fromLocalOffset(chapter, endOffset));
   }
 
   /**
-   * @return the start of the TextSpan
+   * @return the start of the Range
    */
   public TextPosition getStart() {
     return start;
   }
 
   /**
-   * @return the end of the TextSpan
+   * @return the end of the Range
    */
   public TextPosition getEnd() {
     return end;
   }
 
   /**
-   * @return the length of the TextSpan in characters
+   * @return the length of the Range in characters
    */
   public int getLength() {
     return length;
   }
 
   /**
-   * Indicates whether this TextSpan has an overlap with another TextSpan.
+   * Indicates whether this Range has an overlap with another Range.
    *
-   * @param other - the other TextSpan
+   * @param other - the other Range
    * @return true if there is an overlap, false otherwise
    */
-  public boolean overlapsWith(TextSpan other) {
+  public boolean overlapsWith(Range other) {
     // this starts before the other one ends and this ends after the other one starts
     return getStart().compareTo(other.getEnd()) <= 0  && getEnd().compareTo(other.getStart()) >= 0;
   }
 
-  public TextSpan getOverlappingSpan(TextSpan other) {
-    TextSpan result = null;
+  public Range getOverlappingSpan(Range other) {
+    Range result = null;
 
     if (overlapsWith(other)) {
       TextPosition latestStart, earliestEnd;
@@ -213,22 +213,22 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
         earliestEnd = other.getEnd();
       }
 
-      result = new TextSpan(latestStart, earliestEnd);
+      result = new Range(latestStart, earliestEnd);
     }
 
     return result;
   }
 
   /**
-   * Converts this TextSpan into an Occurrence.
+   * Converts this Range into an Occurrence.
    *
    * @param docLength
    *          - the length of the whole document in characters
-   * @return an Occurrence equivalent to this TextSpan
+   * @return an Occurrence equivalent to this Range
    */
-  public Occurrence toOccurrence(int docLength) {
+  public FlatOccurrence toOccurrence(int docLength) {
     // create empty Occurrence
-    Occurrence occ = new Occurrence();
+    FlatOccurrence occ = new FlatOccurrence();
 
     // set absolute start position
     int startOffset = start.getOffset();
@@ -253,7 +253,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
    * produce usable results if both TextPositions are in the same document.
    */
   @Override
-  public int compareTo(TextSpan o) {
+  public int compareTo(Range o) {
     if (o == null) {
       return 1;
     }
@@ -267,16 +267,16 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
   }
 
   /**
-   * Indicates if obj is a TextSpan representing the same range as this text
+   * Indicates if obj is a Range representing the same range as this text
    * span
    */
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof TextSpan)) {
+    if (!(obj instanceof Range)) {
       return false;
     }
 
-    TextSpan other = (TextSpan) obj;
+    Range other = (Range) obj;
     return start.equals(other.start) && end.equals(other.end);
   }
 
@@ -296,7 +296,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
    * @param radius the length in characters to be added left and right
    * @return the widened span
    */
-  public TextSpan widen(int radius) {
+  public Range widen(int radius) {
     int chapterStart = getStart().getChapter().getRange().getStart().getOffset();
     int start = getStart().getOffset() - radius;
 
@@ -311,7 +311,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
       end = chapterEnd;
     }
 
-    return new TextSpan(TextPosition.fromGlobalOffset(getStart().getChapter(), start),
+    return new Range(TextPosition.fromGlobalOffset(getStart().getChapter(), start),
         TextPosition.fromGlobalOffset(getEnd().getChapter(), end));
   }
 
@@ -320,13 +320,13 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
    * @param spans the input spans
    * @return the normalized spans
    */
-  public static List<TextSpan> normalizeOverlaps(List<TextSpan> spans) {
+  public static List<Range> normalizeOverlaps(List<Range> spans) {
     spans = new ArrayList<>(spans); // clone
     Collections.sort(spans);
     TextPosition currentSpanStart = null;
     TextPosition currentSpanEnd = null;
-    List<TextSpan> newSpans = new ArrayList<>();
-    for (TextSpan span : spans) {
+    List<Range> newSpans = new ArrayList<>();
+    for (Range span : spans) {
       if (currentSpanStart == null) {
         // this is the first span (after a break or the start)
         currentSpanStart = span.getStart();
@@ -337,7 +337,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
         currentSpanEnd = TextPosition.max(currentSpanEnd, span.getEnd());
       } else {
         // new span, save old first
-        newSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
+        newSpans.add(new Range(currentSpanStart, currentSpanEnd));
         currentSpanStart = span.getStart();
         currentSpanEnd = span.getEnd();
       }
@@ -345,7 +345,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
 
     if (currentSpanStart != null) {
       // There is a step at the end
-      newSpans.add(new TextSpan(currentSpanStart, currentSpanEnd));
+      newSpans.add(new Range(currentSpanStart, currentSpanEnd));
     }
 
     return newSpans;
@@ -357,7 +357,7 @@ public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan>
    * @param list of span lists. The spans in each list must not be overlapping
    * @return the text spans that are included in all given lists of text spans
    */
-  public static List<TextSpan> intersect(List<List<TextSpan>> lists) {
+  public static List<Range> intersect(List<List<Range>> lists) {
     return TextSpanIntersector.intersect(lists);
   }
 }

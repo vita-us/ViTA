@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Holds test data for TextSpans and methods to create test TextSpans and to check whether given 
@@ -22,10 +22,10 @@ public class TextSpanTestData {
    * @param chapter - the chapter in which the test TextSpan should lay in
    * @return a test TextSpan laying in the given chapter
    */
-  public TextSpan createTestTextSpan(Chapter chapter) {
+  public Range createTestTextSpan(Chapter chapter) {
     TextPosition testStartPosition = TextPosition.fromGlobalOffset(chapter, TEST_TEXT_SPAN_START);
     TextPosition testEndPosition = TextPosition.fromGlobalOffset(chapter, TEST_TEXT_SPAN_END);
-    TextSpan testTextSpan = new TextSpan(testStartPosition, testEndPosition);
+    Range testTextSpan = new Range(testStartPosition, testEndPosition);
     return testTextSpan;
   }
   
@@ -35,7 +35,7 @@ public class TextSpanTestData {
    * @param textSpanToCheck - the TextSpan to be checked
    * @param chapterId - the id of the chapter the given TextSpan should lay in
    */
-  public void checkData(TextSpan textSpanToCheck, String chapterId) {
+  public void checkData(Range textSpanToCheck, String chapterId) {
     assertNotNull(textSpanToCheck);
     assertEquals(TEST_TEXT_SPAN_LENGTH, textSpanToCheck.getLength());
     

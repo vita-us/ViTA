@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * 
@@ -60,7 +60,7 @@ public class SearcherTest {
     for (int i = 0; i < CHAPTERS_TEXTS.length; i++) {
       Chapter chapter = new Chapter();
       chapter.setText(CHAPTERS_TEXTS[i]);
-      chapter.setRange(new TextSpan(TextPosition.fromGlobalOffset(chapter, globalOffsetStart),
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, globalOffsetStart),
           TextPosition.fromGlobalOffset(chapter, globalOffsetEnd)));
       chapterIds.add(chapter.getId());
       chapters.add(chapter);
@@ -91,7 +91,7 @@ public class SearcherTest {
    */
   @Test
   public void testCaseInsensitivityWord() throws IOException, ParseException {
-    List<TextSpan> spansSmallCases = searcher.searchString(documentId, "virginia", chapters, model);
+    List<Range> spansSmallCases = searcher.searchString(documentId, "virginia", chapters, model);
 
     assertEquals(1, spansSmallCases.size());
     assertEquals(chapterIds.get(0), spansSmallCases.get(0).getStart().getChapter().getId());
@@ -100,7 +100,7 @@ public class SearcherTest {
     assertEquals(77, spansSmallCases.get(0).getEnd().getOffset());
 
 
-    List<TextSpan> spansMixedCases = searcher.searchString(documentId, "ViRgIniA", chapters, model);
+    List<Range> spansMixedCases = searcher.searchString(documentId, "ViRgIniA", chapters, model);
     assertEquals(1, spansMixedCases.size());
     assertEquals(chapterIds.get(0), spansMixedCases.get(0).getStart().getChapter().getId());
     assertEquals(chapterIds.get(0), spansMixedCases.get(0).getEnd().getChapter().getId());
@@ -122,7 +122,7 @@ public class SearcherTest {
    */
   @Test
   public void testPhrase1() throws IOException, ParseException {
-    List<TextSpan> spansSmallCases =
+    List<Range> spansSmallCases =
         searcher.searchString(documentId, "at that time", chapters, model);
     assertEquals(5, spansSmallCases.size());
 
@@ -207,7 +207,7 @@ public class SearcherTest {
    */
   @Test
   public void testPhrase2() throws IOException, ParseException {
-    List<TextSpan> spansSmallCases =
+    List<Range> spansSmallCases =
         searcher.searchString(documentId, "At ThAt TiMe", chapters, model);
     assertEquals(5, spansSmallCases.size());
 
@@ -291,7 +291,7 @@ public class SearcherTest {
    */
   @Test
   public void testPhrase3() throws IOException, ParseException {
-    List<TextSpan> textSpans = searcher.searchString(documentId, "he turned on his", chapters, model);
+    List<Range> textSpans = searcher.searchString(documentId, "he turned on his", chapters, model);
    
     assertEquals(1, textSpans.size());
     assertEquals(chapterIds.get(4), textSpans.get(0).getStart().getChapter().getId());
@@ -310,7 +310,7 @@ public class SearcherTest {
    */
   @Test
   public void testPhraseFailure() throws IOException, ParseException {
-    List<TextSpan> spans = searcher.searchString(documentId, "at that tim", chapters, model);
+    List<Range> spans = searcher.searchString(documentId, "at that tim", chapters, model);
     assertEquals(0, spans.size());
   }
 
@@ -323,7 +323,7 @@ public class SearcherTest {
   @Test
   public void testStopWords() throws IOException, ParseException {
 
-    List<TextSpan> spansStopWords = searcher.searchString(documentId, "this", chapters, model);
+    List<Range> spansStopWords = searcher.searchString(documentId, "this", chapters, model);
     assertEquals(2, spansStopWords.size());
 
     assertEquals(chapterIds.get(2), spansStopWords.get(0).getStart().getChapter().getId());

@@ -22,11 +22,11 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
@@ -55,10 +55,10 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition rangeEndPos =
         TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
 
-    TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
+    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
 
-    TextSpan attributeTextSpan = testData.createTestTextSpan(testChapter);
+    Range attributeTextSpan = testData.createTestTextSpan(testChapter);
     Person testEntity = new PersonTestData().createTestPerson(1);
     Attribute testAttribute = new AttributeTestData().createTestAttribute(1);
     testEntity.getAttributes().add(testAttribute);
@@ -131,9 +131,9 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     checkOccurrences(actualResponse.getOccurrences(), false);
   }
 
-  private void checkOccurrences(List<Occurrence> occurrences, boolean exact) {
+  private void checkOccurrences(List<FlatOccurrence> occurrences, boolean exact) {
     assertEquals(1, occurrences.size());
-    Occurrence receivedOccurence = occurrences.get(0);
+    FlatOccurrence receivedOccurence = occurrences.get(0);
 
     AbsoluteTextPosition absoluteStart = receivedOccurence.getStart();
     AbsoluteTextPosition absoluteEnd = receivedOccurence.getEnd();

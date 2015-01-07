@@ -20,7 +20,7 @@ import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
 
@@ -45,7 +45,7 @@ public class EntityRelationModuleTest {
   @Before
   public void setUp() {
     chapter = new Chapter();
-    chapter.setRange(new TextSpan(
+    chapter.setRange(new Range(
         TextPosition.fromGlobalOffset(chapter, 0),
         TextPosition.fromGlobalOffset(chapter, DOCUMENT_LENGTH)));
 
@@ -84,17 +84,17 @@ public class EntityRelationModuleTest {
     final List<BasicEntity> list = new ArrayList<>();
 
     entity1 = new BasicEntity();
-    entity1.getOccurences().add(new TextSpan(chapter, 20, 30));
-    entity1.getOccurences().add(new TextSpan(chapter, 680, 690));
+    entity1.getOccurences().add(new Range(chapter, 20, 30));
+    entity1.getOccurences().add(new Range(chapter, 680, 690));
     list.add(entity1);
 
     entity2 = new BasicEntity();
-    entity2.getOccurences().add(new TextSpan(chapter, 40, 50));
+    entity2.getOccurences().add(new Range(chapter, 40, 50));
     list.add(entity2);
 
     entity3 = new BasicEntity();
-    entity3.getOccurences().add(new TextSpan(chapter, 660, 670));
-    entity3.getOccurences().add(new TextSpan(chapter, 710, 720));
+    entity3.getOccurences().add(new Range(chapter, 660, 670));
+    entity3.getOccurences().add(new Range(chapter, 710, 720));
     list.add(entity3);
 
     return new BasicEntityCollection() {

@@ -1,6 +1,6 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -26,7 +26,7 @@ public class BasicEntity {
   private String entityId;
 
   private SortedSet<Attribute> nameAttributes;
-  private SortedSet<TextSpan> occurrences;
+  private SortedSet<Range> occurrences;
 
   public BasicEntity() {
     nameAttributes = new TreeSet<>(new AttributeComaparator());
@@ -76,7 +76,7 @@ public class BasicEntity {
    * 
    * @return Set of all occurrences of this entity in the document
    */
-  public SortedSet<TextSpan> getOccurences() {
+  public SortedSet<Range> getOccurences() {
     return occurrences;
   }
 
@@ -85,7 +85,7 @@ public class BasicEntity {
    * 
    * @param newOccurences - a set of new occurrences for this entity
    */
-  public void setOccurences(SortedSet<TextSpan> newOccurences) {
+  public void setOccurences(SortedSet<Range> newOccurences) {
     this.occurrences = newOccurences;
   }
 
