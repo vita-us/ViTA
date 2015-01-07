@@ -6,8 +6,6 @@ import java.nio.file.Paths;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
@@ -18,20 +16,6 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
  * content of this eBook.
  */
 @Entity
-@NamedQueries({
-    @NamedQuery(name = "Document.findAllDocuments",
-                query = "SELECT d "
-                      + "FROM Document d"),
-
-    @NamedQuery(name = "Document.findDocumentById",
-                query = "SELECT d "
-                      + "FROM Document d "
-                      + "WHERE d.id = :documentId"),
-
-    @NamedQuery(name = "Document.findDocumentByTitle",
-                query = "SELECT d "
-                      + "FROM Document d "
-                      + "WHERE d.metadata.title = :documentTitle")})
 public class Document extends AbstractEntityBase {
 
   @Embedded

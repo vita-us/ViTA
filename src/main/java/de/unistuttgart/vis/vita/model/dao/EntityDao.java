@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -14,6 +16,13 @@ import de.unistuttgart.vis.vita.model.entity.Person;
  * Represents a generic data access object for entities.
  */
 @ManagedBean
+@MappedSuperclass
+@NamedQueries(
+    @NamedQuery(name = "Entity.findEntityById",
+            query = "SELECT e "
+                  + "FROM Entity e "
+                  + "WHERE e.id = :entityId")
+)
 public class EntityDao extends JpaDao<Entity, String> {
   
   private static final String ENTITIES_PARAMETER = "entities";

@@ -6,8 +6,6 @@ import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -24,27 +22,6 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 @Table(indexes={
     @Index(columnList="type")
 })
-@NamedQueries({
-    @NamedQuery(name = "Attribute.findAllAttributes",
-                query = "SELECT a "
-                      + "FROM Attribute a"),
-
-    @NamedQuery(name = "Attribute.findAttributeById",
-                query = "SELECT a "
-                      + "FROM Attribute a "
-                      + "WHERE a.id = :attributeId"),
-
-    @NamedQuery(name = "Attribute.findAttributesForEntity",
-                query = "SELECT a "
-                      + "FROM Attribute a, Entity e "
-                      + "WHERE e.id = :entityId "
-                      + "AND a MEMBER OF e.attributes"),
-
-    @NamedQuery(name = "Attribute.findAttributeByType",
-                query = "SELECT a "
-                      + "FROM Attribute a "
-                      + "WHERE a.type = :attributeType")}
-)
 public class Attribute extends AbstractEntityBase {
 
   // there is another "type" in Entity, so this must be named differently!

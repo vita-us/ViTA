@@ -1,6 +1,9 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
@@ -9,6 +12,23 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
  * Represents a data access object for accessing the progress of the document analysis.
  */
 @ManagedBean
+@MappedSuperclass
+@NamedQueries({
+  @NamedQuery(name = "AnalysisProgress.findAllProgresses",
+              query = "SELECT p "
+                    + "FROM AnalysisProgress p"),
+
+  @NamedQuery(name = "AnalysisProgress.findProgressById",
+              query = "SELECT p "
+                    + "FROM AnalysisProgress p "
+                    + "WHERE p.id = :progressId"),
+
+  @NamedQuery(name = "AnalysisProgress.findProgressByDocumentId",
+              query = "SELECT p "
+                    + "FROM AnalysisProgress p, Document d "
+                    + "WHERE d.id = :documentId "
+                    + "AND d.progress = p")
+})
 public class AnalysisProgressDao extends JpaDao<AnalysisProgress, String> {
 
   private static final String DOC_ID_PARAMETER = "documentId";

@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import org.hibernate.annotations.Target;
 
 /**
@@ -14,27 +12,6 @@ import org.hibernate.annotations.Target;
  * @param <Entity> - the type of the other entity
  */
 @javax.persistence.Entity
-@NamedQueries({
-    @NamedQuery(name = "EntityRelation.findAllEntityRelations", 
-                query = "SELECT er "
-                      + "FROM EntityRelation er"),
-                      
-    @NamedQuery(name = "EntityRelation.findRelationsForEntities",
-                query = "SELECT er "
-                      + "FROM Entity e JOIN e.entityRelations er "
-                      + "WHERE e.id IN :entityIds "),
-        
-    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType",
-                query = "SELECT er "
-                      + "FROM Entity e JOIN e.entityRelations er "
-                      + "WHERE e.id IN :entityIds "
-                      + "AND er.relatedEntity.id IN :entityIds "
-                      + "AND er.relatedEntity.class = :type"),
-
-    @NamedQuery(name = "EntityRelation.findEntityRelationById", 
-                query = "SELECT er "
-                      + "FROM EntityRelation er " 
-                      + "WHERE er.id = :entityRelationId")})
 public class EntityRelation extends AbstractEntityBase {
 
   // constants

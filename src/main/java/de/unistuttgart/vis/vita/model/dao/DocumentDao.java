@@ -1,6 +1,9 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -9,6 +12,21 @@ import de.unistuttgart.vis.vita.model.document.Document;
  * Represents a data access object for accessing documents.
  */
 @ManagedBean
+@MappedSuperclass
+@NamedQueries({
+  @NamedQuery(name = "Document.findAllDocuments",
+              query = "SELECT d "
+                    + "FROM Document d"),
+
+  @NamedQuery(name = "Document.findDocumentById",
+              query = "SELECT d "
+                    + "FROM Document d "
+                    + "WHERE d.id = :documentId"),
+
+  @NamedQuery(name = "Document.findDocumentByTitle",
+              query = "SELECT d "
+                    + "FROM Document d "
+                    + "WHERE d.metadata.title = :documentTitle")})
 public class DocumentDao extends JpaDao<Document, String> {
 
   private static final String DOCUMENT_TITLE_PARAMETER = "title";

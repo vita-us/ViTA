@@ -3,6 +3,9 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -11,6 +14,29 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
  * Represents a data access object for accessing Chapters.
  */
 @ManagedBean
+@MappedSuperclass
+@NamedQueries({
+  @NamedQuery(name = "Chapter.findAllChapters",
+      query = "SELECT c "
+            + "FROM Chapter c"),
+
+  @NamedQuery(name = "Chapter.findChapterById",
+    query = "SELECT c "
+          + "FROM Chapter c "
+          + "WHERE c.id = :chapterId"),
+
+  @NamedQuery(name = "Chapter.findChapterByTitle",
+    query = "SELECT c "
+          + "FROM Chapter c "
+          + "WHERE c.title = :chapterTitle"),
+
+  @NamedQuery(name = "Chapter.findChapterByOffset",
+    query = "SELECT c "
+          + "FROM Document d, DocumentPart dp, Chapter c "
+          + "WHERE d.id = :documentId "
+          + "AND dp MEMBER OF d.content.parts "
+          + "AND c MEMBER OF dp.chapters "
+          + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class ChapterDao extends JpaDao<Chapter, String> {
 
   private static final String DOCUMENT_ID_PARAMETER = "documentId";

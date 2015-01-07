@@ -3,6 +3,9 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -11,6 +14,28 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
  * Represents a data access object for accessing Attributes.
  */
 @ManagedBean
+@MappedSuperclass
+@NamedQueries({
+  @NamedQuery(name = "Attribute.findAllAttributes",
+              query = "SELECT a "
+                    + "FROM Attribute a"),
+
+  @NamedQuery(name = "Attribute.findAttributeById",
+              query = "SELECT a "
+                    + "FROM Attribute a "
+                    + "WHERE a.id = :attributeId"),
+
+  @NamedQuery(name = "Attribute.findAttributesForEntity",
+              query = "SELECT a "
+                    + "FROM Attribute a, Entity e "
+                    + "WHERE e.id = :entityId "
+                    + "AND a MEMBER OF e.attributes"),
+
+  @NamedQuery(name = "Attribute.findAttributeByType",
+              query = "SELECT a "
+                    + "FROM Attribute a "
+                    + "WHERE a.type = :attributeType")}
+)
 public class AttributeDao extends JpaDao<Attribute, String> {
   
   private static final String ATTRIBUTE_TYPE_PARAMETER = "attributeType";

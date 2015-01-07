@@ -7,8 +7,6 @@ import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -26,110 +24,6 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
   @Index(columnList="start.offset"),
   @Index(columnList="end.offset")
 })
-@NamedQueries({
-  @NamedQuery(name = "TextSpan.findAllTextSpans",
-      query = "SELECT ts "
-            + "FROM TextSpan ts"),
-
-  // for returning the exact spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForEntity",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
-          + "WHERE e.id = :entityId "
-          + "AND ts MEMBER OF e.occurrences "
-          // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // right ordering
-          + "ORDER BY ts.start.offset"),
-
-  // for checking the amount of spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForEntity",
-  query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e "
-        + "WHERE e.id = :entityId "
-        + "AND ts MEMBER OF e.occurrences "
-        // range checks
-        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
-
-  // for returning the exact spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForAttribute",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e, Attribute a "
-          + "WHERE e.id = :entityId "
-          + "AND a MEMBER OF e.attributes "
-          + "AND a.id = :attributeId "
-          + "AND ts MEMBER OF a.occurrences "
-          // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // right ordering
-          + "ORDER BY ts.start.offset"),
-
-  // for checking the amount of spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForAttribute",
-  query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e, Attribute a "
-        + "WHERE e.id = :entityId "
-        + "AND a MEMBER OF e.attributes "
-        + "AND a.id = :attributeId "
-        + "AND ts MEMBER OF a.occurrences "
-        // range checks
-        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
-
-  // gets the occurrences of all entities
-  @NamedQuery(name = "TextSpan.findTextSpansForEntities",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
-          + "WHERE e.id IN :entityIds "
-          + "AND ts MEMBER OF e.occurrences "
-          // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
-          // Null checks
-          + "AND ts.start.chapter IS NOT NULL "
-          // right ordering
-          + "ORDER BY ts.start.offset"),
-
-  // checks whether a set of entities occur in a range (for relation occurrences)
-  @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
-    query = "SELECT COUNT(DISTINCT e.id) "
-          + "FROM Entity e "
-          + "INNER JOIN e.occurrences ts "
-          + "WHERE e.id IN :entityIds "
-          // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          // Null checks
-          + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
-
-  // gets the entities that occur within a given range
-  @NamedQuery(name = "TextSpan.getOccurringEntities",
-    query = "SELECT DISTINCT e "
-          + "FROM Entity e "
-          + "INNER JOIN e.occurrences ts "
-          + "WHERE e IN :entities "
-          // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "GROUP BY e "
-          + "HAVING COUNT(ts) > 0.25 * ("
-            + "SELECT COUNT(ts2) "
-            + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
-          + ") / ("
-            + "SELECT COUNT(DISTINCT p) "
-            + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
-          + ")"),
-
-  @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
-      + "FROM TextSpan ts "
-      + "WHERE ts.id = :textSpanId")
-  })
 public class TextSpan extends AbstractEntityBase implements Comparable<TextSpan> {
 
   // constants
