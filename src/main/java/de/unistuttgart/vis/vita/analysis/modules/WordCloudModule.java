@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.util.BytesRef;
 
 import de.unistuttgart.vis.vita.analysis.Module;
@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.GlobalWordCloudResult;
+import de.unistuttgart.vis.vita.analysis.results.LuceneResult;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
@@ -24,16 +25,16 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 /**
  * Calculates the document-wide word cloud using lucene
  */
-@AnalysisModule(dependencies = {IndexSearcher.class})
+@AnalysisModule(dependencies = {LuceneResult.class})
 public class WordCloudModule extends Module<GlobalWordCloudResult> {
   private static final int MAX_COUNT = 100;
 
   @Override
   public GlobalWordCloudResult execute(ModuleResultProvider results, ProgressListener progressListener)
       throws IOException {
-    IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
+    LuceneResult luceneResult = results.getResultFor(LuceneResult.class);
 
-    final WordCloud globalWordCloud = getGlobalWordCloud(searcher);
+    final WordCloud globalWordCloud = getGlobalWordCloud(luceneResult.getIndexReader());
 
     return new GlobalWordCloudResult() {
       @Override
@@ -43,8 +44,8 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     };
   }
 
-  private WordCloud getGlobalWordCloud(IndexSearcher searcher) throws IOException {
-    Terms terms = SlowCompositeReaderWrapper.wrap(searcher.getIndexReader())
+  private WordCloud getGlobalWordCloud(IndexReader reader) throws IOException {
+    Terms terms = SlowCompositeReaderWrapper.wrap(reader)
         .terms(TextRepository.CHAPTER_TEXT_FIELD);
     if (terms == null) {
       // This means that there are no chapters
@@ -58,7 +59,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
       String termText = term.utf8ToString();
 
       if (!StopWordList.getStopWords().contains(termText)) {
-        long frequency = searcher.getIndexReader()
+        long frequency = reader
             .totalTermFreq(new Term(TextRepository.CHAPTER_TEXT_FIELD, term));
         items.add(new WordCloudItem(termText, (int) frequency));
       }
