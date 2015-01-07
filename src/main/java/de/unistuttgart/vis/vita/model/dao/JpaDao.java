@@ -11,9 +11,9 @@ import javax.persistence.NoResultException;
  * Generic implementation of a data access object (DAO).
  * 
  * @param <T> the type of the entities to be accessed via this DAO
- * @param <ID> the type of the entity id field
+ * @param <I> the type of the entity id field
  */
-public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
+public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   
   private final Class<T> persistentClass;
   
@@ -50,7 +50,7 @@ public abstract class JpaDao<T, ID extends Serializable> implements Dao<T, ID> {
    * @return the entity with the given id
    */
   @Override
-  public T findById(ID id) {
+  public T findById(I id) {
     T result = em.find(getPersistentClass(), id);
 
     if (result == null) {

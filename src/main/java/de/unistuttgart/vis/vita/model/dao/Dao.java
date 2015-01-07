@@ -7,11 +7,11 @@ import java.util.List;
  * A generic Interface for a Data Access Object (DAO)
  * 
  * @param <T> the type of entity returned by the DAO
- * @param <ID> the type of the index
+ * @param <I> the type of the index
  */
-public interface Dao<T, ID extends Serializable> {
+public interface Dao<T, I extends Serializable> {
   
-  T findById(ID id);
+  T findById(I id);
   
   List<T> findAll();
   
