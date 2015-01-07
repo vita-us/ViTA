@@ -15,6 +15,7 @@ import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
 public class TestApplication extends ResourceConfig {
+  
   private static String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
   private static String DAO_PACKAGE = "de.unistuttgart.vis.vita.model.dao";
 
@@ -29,22 +30,22 @@ public class TestApplication extends ResourceConfig {
   private static class MyApplicationBinder extends AbstractBinder {
     @Override
     protected void configure() {
-      Iterable<Class<?>> daos = 
-          new Reflections(DAO_PACKAGE).getTypesAnnotatedWith(ManagedBean.class);
-      
-      for (Class<?> daoClass : daos) {
-        bind(daoClass).to(daoClass);
-      }
-      
-      Iterable<Class<?>> services =
-          new Reflections(SERVICES_PACKAGE).getTypesAnnotatedWith(ManagedBean.class);
-      for (Class<?> service : services) {
-        bind(service).to(service);
-      }      
+      bindAllManagedBeans(SERVICES_PACKAGE);
+      bindAllManagedBeans(DAO_PACKAGE);   
 
       bind(UnitTestModel.class).to(Model.class);
       bindFactory(UnitTestModel.class).to(EntityManager.class);
       bind(AnalysisController.class).to(AnalysisController.class);
     }
+    
+    private void bindAllManagedBeans(String packageName) {
+      Iterable<Class<?>> managedBeanClasses =
+          new Reflections(packageName).getTypesAnnotatedWith(ManagedBean.class);
+      
+      for (Class<?> managedBeanClass : managedBeanClasses) {
+        bind(managedBeanClass).to(managedBeanClass);
+      }
+    }
+    
   }
 }
