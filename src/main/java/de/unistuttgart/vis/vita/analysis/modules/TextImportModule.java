@@ -89,7 +89,7 @@ public class TextImportModule extends Module<ImportResult> {
    * @return DocumentMetadata - The metadata extracted from the file.
    */
   private DocumentMetadata extractMetadata(List<Line> metadataLines, Path filePath) {
-    MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(metadataLines, filePath);
+    MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(metadataLines);
     return metadataAnalyzer.extractMetadata();
   }
 
