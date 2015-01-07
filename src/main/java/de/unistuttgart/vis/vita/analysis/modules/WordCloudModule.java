@@ -36,6 +36,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
 
     final WordCloud globalWordCloud = getGlobalWordCloud(luceneResult.getIndexReader());
 
+    luceneResult.getIndexReader().close();
     return new GlobalWordCloudResult() {
       @Override
       public WordCloud getGlobalWordCloud() {
@@ -70,7 +71,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     Collections.sort(items, Collections.reverseOrder());
     if (items.size() > MAX_COUNT)
       items = items.subList(0, MAX_COUNT);
-
+    
     return new WordCloud(items);
   }
 }

@@ -26,7 +26,7 @@ public class MetricsModule extends Module<TextMetrics> {
         .terms(TextRepository.CHAPTER_TEXT_FIELD);
     final int count = (int)(terms.getSumTotalTermFreq());
 
-
+    luceneResult.getIndexReader().close();
     return new TextMetrics() {
       @Override
       public int getWordCount() {
