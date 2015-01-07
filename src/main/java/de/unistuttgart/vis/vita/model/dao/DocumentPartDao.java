@@ -13,6 +13,9 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 @ManagedBean
 public class DocumentPartDao extends JpaDao<DocumentPart, String> {
 
+  private static final String DOCUMENTPART_TITLE_PARAMETER = "partTitle";
+  private static final String DOCUMENT_ID_PARAMETER = "documentId";
+
   /**
    * Creates a new data access object for DocumentParts.
    */
@@ -29,8 +32,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
   public List<DocumentPart> findPartsInDocument(String docId) {
     TypedQuery<DocumentPart> docQuery = em.createNamedQuery("DocumentPart.findPartsInDocument", 
                                                             DocumentPart.class);
-    docQuery.setParameter("documentId", docId);
-    
+    docQuery.setParameter(DOCUMENT_ID_PARAMETER, docId);
     return docQuery.getResultList();
   }
   
@@ -44,7 +46,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     TypedQuery<DocumentPart> partQuery = em.createNamedQuery("DocumentPart.findPartByTitle",
                                                               DocumentPart.class);
     
-    partQuery.setParameter("partTitle", partTitle);
+    partQuery.setParameter(DOCUMENTPART_TITLE_PARAMETER, partTitle);
     
     return partQuery.getSingleResult();
   }

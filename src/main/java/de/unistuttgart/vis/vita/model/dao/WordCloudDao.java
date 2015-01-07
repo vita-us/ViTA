@@ -11,6 +11,9 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 @ManagedBean
 public class WordCloudDao extends JpaDao<WordCloud, String> {
 
+  private static final String ENTITY_ID_PARAMETER = "entityId";
+  private static final String DOCUMENT_ID_PARAMETER = "documentId";
+
   /**
    * Creates a new data access object for accessing WordClouds.
    */
@@ -26,7 +29,7 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
    */
   public WordCloud findByDocument(String docId) {
     TypedQuery<WordCloud> docQuery = em.createNamedQuery("WordCloud.getGlobal", WordCloud.class);
-    docQuery.setParameter("docId", docId);
+    docQuery.setParameter(DOCUMENT_ID_PARAMETER, docId);
     return docQuery.getSingleResult();
   }
   
@@ -38,7 +41,7 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
    */
   public WordCloud findByEntity(String entityId) {
     TypedQuery<WordCloud> entityQuery = em.createNamedQuery("WordCloud.getForEntity", WordCloud.class);
-    entityQuery.setParameter("entityId", entityId);
+    entityQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     return entityQuery.getSingleResult();
   }
 

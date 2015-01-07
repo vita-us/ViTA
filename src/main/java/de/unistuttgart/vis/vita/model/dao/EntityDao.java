@@ -16,6 +16,11 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 @ManagedBean
 public class EntityDao extends JpaDao<Entity, String> {
   
+  private static final String ENTITIES_PARAMETER = "entities";
+  
+  private static final String RANGE_START_PARAMETER = "rangeStart";
+  private static final String RANGE_END_PARAMETER = "rangeEnd";
+
   /**
    * Creates a new data access object for Entities.
    */
@@ -68,10 +73,10 @@ public class EntityDao extends JpaDao<Entity, String> {
   @SuppressWarnings("unchecked")
   public List<Entity> findOccurringPersons(int startOffset, int endOffset, List<Person> entities) {
     Query query = em.createNamedQuery("TextSpan.getOccurringEntities");
-    query.setParameter("entities", entities);
-    query.setParameter("rangeStart", startOffset);
-    query.setParameter("rangeEnd", endOffset);
-    return (List<Entity>)query.getResultList();
+    query.setParameter(ENTITIES_PARAMETER, entities);
+    query.setParameter(RANGE_START_PARAMETER, startOffset);
+    query.setParameter(RANGE_END_PARAMETER, endOffset);
+    return (List<Entity>) query.getResultList();
   }
 
 }

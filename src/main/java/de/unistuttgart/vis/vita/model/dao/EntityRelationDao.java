@@ -13,6 +13,9 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 @ManagedBean
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
+  private static final String ENTITY_IDS_PARAMETER = "entityIds";
+  private static final String TYPE_PARAMETER = "type";
+
   /**
    * Creates a new data access object for accessing  EntityRelations
    */
@@ -29,7 +32,7 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
   public List<EntityRelation> findRelationsForEntities(List<String> entityIds) {
     TypedQuery<EntityRelation> entityQuery =
         em.createNamedQuery("EntityRelation.findRelationsForEntities", EntityRelation.class);
-    entityQuery.setParameter("entityIds", entityIds);
+    entityQuery.setParameter(ENTITY_IDS_PARAMETER, entityIds);
     return entityQuery.getResultList();
   }
 
@@ -43,8 +46,8 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
   public List<EntityRelation> findRelationsForEntitiesAndType(List<String> entityIds, String type) {
     TypedQuery<EntityRelation> relationTypeQuery =
         em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType", EntityRelation.class);
-    relationTypeQuery.setParameter("entityIds", entityIds);
-    relationTypeQuery.setParameter("type", type);
+    relationTypeQuery.setParameter(ENTITY_IDS_PARAMETER, entityIds);
+    relationTypeQuery.setParameter(TYPE_PARAMETER, type);
     return relationTypeQuery.getResultList();
   }
 

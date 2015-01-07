@@ -11,6 +11,8 @@ import de.unistuttgart.vis.vita.model.document.Document;
 @ManagedBean
 public class DocumentDao extends JpaDao<Document, String> {
 
+  private static final String DOCUMENT_TITLE_PARAMETER = "title";
+
   /**
    * Creates a new data access object for Documents.
    */
@@ -27,9 +29,7 @@ public class DocumentDao extends JpaDao<Document, String> {
   public Document findDocumentByTitle(String docTitle) {
     TypedQuery<Document> titleQuery = em.createNamedQuery("Document.findDocumentByTitle", 
                                                           Document.class);
-    
-    titleQuery.setParameter("title", docTitle);
-    
+    titleQuery.setParameter(DOCUMENT_TITLE_PARAMETER, docTitle);
     return titleQuery.getSingleResult();
   }
   

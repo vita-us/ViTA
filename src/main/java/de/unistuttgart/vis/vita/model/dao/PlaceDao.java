@@ -14,6 +14,8 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 @ManagedBean
 public class PlaceDao extends JpaDao<Place, String> {
 
+  private static final String DOCUMENT_ID_PARAMETER = "documentId";
+
   /**
    * Creates a new data access object for accessing places.
    */
@@ -23,7 +25,7 @@ public class PlaceDao extends JpaDao<Place, String> {
 
   public List<Place> findInDocument(String documentId, int offset, int count) {
     TypedQuery<Place> docQuery = em.createNamedQuery(getInDocumentQueryName(), Place.class);
-    docQuery.setParameter("documentId", documentId);
+    docQuery.setParameter(DOCUMENT_ID_PARAMETER, documentId);
     return docQuery.getResultList();
   }
 

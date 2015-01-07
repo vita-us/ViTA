@@ -14,6 +14,12 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 @ManagedBean
 public class TextSpanDao extends JpaDao<TextSpan, String> {
 
+  private static final String ENTITY_ID_PARAMETER = "entityId";
+  private static final String ENTITY_IDS_PARAMETER = "entityIds";
+  private static final String ATTRIBUTE_ID_PARAMETER = "attributeId";
+  private static final String RANGE_END_PARAMETER = "rangeEnd";
+  private static final String RANGE_START_PARAMETER = "rangeStart";
+
   /**
    * Creates a new data access object for TextSpans.
    */
@@ -32,9 +38,9 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   public List<TextSpan> findTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
     TypedQuery<TextSpan> entityQuery = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
                                                             TextSpan.class);
-    entityQuery.setParameter("entityId", entityId);
-    entityQuery.setParameter("rangeStart", rangeStart);
-    entityQuery.setParameter("rangeEnd", rangeEnd);
+    entityQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
+    entityQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    entityQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return entityQuery.getResultList();
   }
   
@@ -48,9 +54,9 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    */
   public long getNumberOfTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
     Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
-    numberQuery.setParameter("entityId", entityId);
-    numberQuery.setParameter("rangeStart", rangeStart);
-    numberQuery.setParameter("rangeEnd", rangeEnd);
+    numberQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
+    numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    numberQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return (long) numberQuery.getSingleResult();
   }
   
@@ -62,13 +68,14 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return List of TextSpans for the given Attribute in the also given document range
    */
-  public List<TextSpan> findTextSpansForAttribute(String entityId, String attrId, int rangeStart, int rangeEnd) {
+  public List<TextSpan> findTextSpansForAttribute(String entityId, String attrId, 
+                                                    int rangeStart, int rangeEnd) {
     TypedQuery<TextSpan> attributeQuery = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
                                                               TextSpan.class);
-    attributeQuery.setParameter("entityId", entityId);
-    attributeQuery.setParameter("attributeId", attrId);
-    attributeQuery.setParameter("rangeStart", rangeStart);
-    attributeQuery.setParameter("rangeEnd", rangeEnd);
+    attributeQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
+    attributeQuery.setParameter(ATTRIBUTE_ID_PARAMETER, attrId);
+    attributeQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    attributeQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return attributeQuery.getResultList();
   }
   
@@ -81,12 +88,13 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Attribute in the also given document range
    */
-  public long getNumberOfTextSpansForAttribute(String entityId, String attrId, int rangeStart, int rangeEnd) {
+  public long getNumberOfTextSpansForAttribute(String entityId, String attrId, 
+                                                int rangeStart, int rangeEnd) {
     Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForAttribute");
-    numberQuery.setParameter("entityId", entityId);
-    numberQuery.setParameter("attributeId", attrId);
-    numberQuery.setParameter("rangeStart", rangeStart);
-    numberQuery.setParameter("rangeEnd", rangeEnd);
+    numberQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
+    numberQuery.setParameter(ATTRIBUTE_ID_PARAMETER, attrId);
+    numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    numberQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return (long) numberQuery.getSingleResult();
   }
   
@@ -101,9 +109,9 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   public List<TextSpan> findTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
     TypedQuery<TextSpan> entitiesQuery = em.createNamedQuery("TextSpan.FindTextSpansForEntities",
                                                               TextSpan.class);
-    entitiesQuery.setParameter("entityIds", eIds);
-    entitiesQuery.setParameter("rangeStart", rangeStart);
-    entitiesQuery.setParameter("rangeEnd", rangeEnd);
+    entitiesQuery.setParameter(ENTITY_IDS_PARAMETER, eIds);
+    entitiesQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    entitiesQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return entitiesQuery.getResultList();
   }
   
@@ -118,9 +126,9 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    */
   public long getNumberOfTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
     Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
-    numberQuery.setParameter("entityIds", eIds);
-    numberQuery.setParameter("rangeStart", rangeStart);
-    numberQuery.setParameter("rangeEnd", rangeEnd);
+    numberQuery.setParameter(ENTITY_IDS_PARAMETER, eIds);
+    numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
+    numberQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
     return (long) numberQuery.getSingleResult();
   }
 

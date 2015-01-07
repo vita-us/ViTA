@@ -13,6 +13,9 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 @ManagedBean
 public class AttributeDao extends JpaDao<Attribute, String> {
   
+  private static final String ATTRIBUTE_TYPE_PARAMETER = "attributeType";
+  private static final String ENTITY_ID_PARAMETER = "entityId";
+
   /**
    * Creates a new data access object for accessing Attributes.
    */
@@ -31,7 +34,7 @@ public class AttributeDao extends JpaDao<Attribute, String> {
   public List<Attribute> findAttributesForEntity(String entityId, int offset, int count) {
     TypedQuery<Attribute> entityQuery = em.createNamedQuery("Attribute.findAttributesForEntity",
                                                             Attribute.class);
-    entityQuery.setParameter("entityId", entityId);
+    entityQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     entityQuery.setFirstResult(offset);
     entityQuery.setMaxResults(count);
     return entityQuery.getResultList();
@@ -48,7 +51,7 @@ public class AttributeDao extends JpaDao<Attribute, String> {
   public List<Attribute> findAttributeForType(String attributeType, int offset, int count) {
     TypedQuery<Attribute> typeQuery = em.createNamedQuery("Attribute.findAttributeByType",
                                                           Attribute.class);
-    typeQuery.setParameter("attributeType", attributeType);
+    typeQuery.setParameter(ATTRIBUTE_TYPE_PARAMETER, attributeType);
     typeQuery.setFirstResult(offset);
     typeQuery.setMaxResults(count);
     return typeQuery.getResultList();

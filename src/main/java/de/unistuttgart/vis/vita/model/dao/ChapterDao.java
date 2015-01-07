@@ -13,6 +13,10 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 @ManagedBean
 public class ChapterDao extends JpaDao<Chapter, String> {
 
+  private static final String DOCUMENT_ID_PARAMETER = "documentId";
+  private static final String OFFSET_PARAMETER = "offset";
+  private static final String CHAPTER_TITLE_PARAMETER = "title";
+
   /**
    * Creates a new data access object to access Chapters.
    */
@@ -29,7 +33,7 @@ public class ChapterDao extends JpaDao<Chapter, String> {
   public Chapter findChapterByTitle(String chapterTitle) {
     TypedQuery<Chapter> titleQuery = em.createNamedQuery("Chapter.findChapterByTitle", 
                                                           Chapter.class);
-    titleQuery.setParameter("title", chapterTitle);
+    titleQuery.setParameter(CHAPTER_TITLE_PARAMETER, chapterTitle);
     return titleQuery.getSingleResult();
   }
   
@@ -57,8 +61,8 @@ public class ChapterDao extends JpaDao<Chapter, String> {
   
   private TypedQuery<Chapter> getChaptersByOffsetQuery(String docId, int offset) {
     TypedQuery<Chapter> query = em.createNamedQuery("Chapter.findChapterByOffset", Chapter.class);
-    query.setParameter("documentId", docId);
-    query.setParameter("offset", offset);
+    query.setParameter(DOCUMENT_ID_PARAMETER, docId);
+    query.setParameter(OFFSET_PARAMETER, offset);
     return query;
   }
 

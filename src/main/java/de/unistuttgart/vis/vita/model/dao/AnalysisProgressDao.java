@@ -11,6 +11,8 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 @ManagedBean
 public class AnalysisProgressDao extends JpaDao<AnalysisProgress, String> {
 
+  private static final String DOC_ID_PARAMETER = "documentId";
+
   /**
    * Creates a new data access object for accessing the progress of the analysis.
    */
@@ -27,7 +29,7 @@ public class AnalysisProgressDao extends JpaDao<AnalysisProgress, String> {
   public AnalysisProgress findByDocumentId(String docId) {
     TypedQuery<AnalysisProgress> docQuery = em.createNamedQuery("AnalysisProgress.findProgressByDocumentId",
         AnalysisProgress.class);
-    docQuery.setParameter("docId", docId);
+    docQuery.setParameter(DOC_ID_PARAMETER, docId);
     return docQuery.getSingleResult();
   }
 
