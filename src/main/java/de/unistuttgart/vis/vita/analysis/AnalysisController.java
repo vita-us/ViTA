@@ -1,7 +1,19 @@
 package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
+import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityRelation;
+import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -22,6 +34,12 @@ import javax.persistence.TypedQuery;
 public class AnalysisController {
   @Inject
   private Model model;
+
+  @Inject
+  private DocumentDao documentDao;
+
+  @Inject
+  private AnalysisResetter analysisResetter;
   
   private AnalysisExecutorFactory executorFactory;
   
@@ -59,41 +77,21 @@ public class AnalysisController {
     this(model, new DefaultAnalysisExecutorFactory(model, moduleRegistry));
   }
 
-  public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
-    this.model = model;
-    this.executorFactory = executorFactory;
-    resetInterruptedDocuments();
-  }
-
   /**
    * Resets all documents which haven't been analysed because program didn't terminate properly.
    * Automatically restarts the analysis.
    */
   private void resetInterruptedDocuments() {
-    EntityManager em = null;
-    List<Document> documents;
-
-    try {
-      em = model.getEntityManager();
-      TypedQuery<Document>
-          query =
-          em.createNamedQuery("Document.findAllDocumentsByStatus", Document.class);
-      query.setParameter("analysisStatus", AnalysisStatus.RUNNING);
-      documents = query.getResultList();
-
-      if (documents.isEmpty()) {
-        // Nothing to do
-        return;
-      }
-
-      for (Document document : documents) {
-        AnalysisResetter.resetAndFail(em, document);
-      }
-    } finally {
-      if (em != null) {
-        em.close();
-      }
+    List<Document> documents = documentDao.findDocumentsByStatus(AnalysisStatus.RUNNING);
+    for (Document document : documents) {
+      analysisResetter.resetAndFail(document);
     }
+  }
+
+  public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
+    this.model = model;
+    this.executorFactory = executorFactory;
+    resetInterruptedDocuments();
   }
 
   /**
@@ -134,6 +132,7 @@ public class AnalysisController {
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
+
     currentExecuter.addObserver(new AnalysisObserver() {
       @Override
       public void onFinish(AnalysisExecutor executor) {
@@ -145,7 +144,6 @@ public class AnalysisController {
       public void onFail(AnalysisExecutor executor) {
         setStatus(document.getId(), AnalysisStatus.FAILED);
         startNextAnalysis();
-
       }
     });
   }
@@ -164,17 +162,7 @@ public class AnalysisController {
   }
 
   private void persistDocument(Document document) {
-    EntityManager em = null;
-    try {
-      em = model.getEntityManager();
-      em.getTransaction().begin();
-      em.persist(document);
-      em.getTransaction().commit();
-    } finally {
-      if (em != null) {
-        em.close();
-      }
-    }
+    documentDao.save(document);
   }
 
   /**
@@ -220,24 +208,8 @@ public class AnalysisController {
    * @param documentId
    */
   public void restartAnalysis(String documentId) {
-    EntityManager em = null;
-    Document document;
-    try {
-      em = model.getEntityManager();
-      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-      query.setParameter("documentId", documentId);
-      List<Document> documents = query.getResultList();
-      if (documents.isEmpty()) {
-        throw new IllegalArgumentException("No such document found");
-      }
-      document = documents.get(0);
-      AnalysisResetter.resetDocument(em, document);
-    } finally {
-      if (em != null) {
-        em.close();
-      }
-    }
-
+    Document document = documentDao.findById(documentId);
+    analysisResetter.resetDocument(document);
     scheduleDocumentAnalyisis(document);
   }
   
@@ -261,26 +233,8 @@ public class AnalysisController {
   }
 
   private void setStatus(String documentId, AnalysisStatus status) {
-    EntityManager em = null;
-    try {
-      em = model.getEntityManager();
-      em.getTransaction().begin();
-      TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
-      query.setParameter("documentId", documentId);
-      List<Document> documents = query.getResultList();
-      if (documents.isEmpty()) {
-        throw new IllegalArgumentException("No such document found");
-      }
-      Document document = documents.get(0);
-  
-      document.getProgress().setStatus(status);
-  
-      em.merge(document);
-      em.getTransaction().commit();
-    } finally {
-      if (em != null) {
-        em.close();
-      }
-    }
+    Document document = documentDao.findById(documentId);
+    document.getProgress().setStatus(status);
+    documentDao.save(document);
   }
 }

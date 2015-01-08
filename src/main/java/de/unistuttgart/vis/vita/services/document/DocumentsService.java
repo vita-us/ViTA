@@ -45,7 +45,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @ManagedBean
 public class DocumentsService {
   
-  private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator  
+  private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator
                                               + ".vita" + File.separator + "docs" + File.separator;
 
   @Inject
