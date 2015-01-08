@@ -1,7 +1,5 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import javax.persistence.EntityManager;
-
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
@@ -14,6 +12,8 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+
+import javax.persistence.EntityManager;
 
 public class AnalysisResetter {
   /**
@@ -46,7 +46,20 @@ public class AnalysisResetter {
     document.setMetrics(new DocumentMetrics());
     em.getTransaction().commit();
   }
-  
+
+  /**
+   * Resets the document and sets the status of the document to failed.
+   *
+   * @param em       The entity manager.
+   * @param document The document to be resetted.
+   */
+  public static void resetAndFail(EntityManager em, Document document) {
+    resetDocument(em, document);
+    em.getTransaction().begin();
+    document.getProgress().setStatus(AnalysisStatus.FAILED);
+    em.getTransaction().commit();
+  }
+
   /**
    * Removes the complete entity
    */
