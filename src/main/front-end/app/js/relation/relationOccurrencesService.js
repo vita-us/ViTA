@@ -7,7 +7,8 @@
   vitaServices.factory('RelationOccurrences', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/entities/relations/occurrences', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);
