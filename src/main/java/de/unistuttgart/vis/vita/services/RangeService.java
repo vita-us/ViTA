@@ -1,9 +1,7 @@
 package de.unistuttgart.vis.vita.services;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 
@@ -14,7 +12,7 @@ import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 public abstract class RangeService {
 
   @Inject
-  protected EntityManager em;
+  protected DocumentDao documentDao;
   
   protected String documentId;
   private int documentLength;
@@ -26,22 +24,10 @@ public abstract class RangeService {
    */
   public int getDocumentLength() {
     if (documentLength <= 0) {
-      Document doc = readDocumentFromDatabase();
+      Document doc = documentDao.findById(documentId);
       documentLength = doc.getMetrics().getCharacterCount();
     }
     return documentLength;
-  }
-
-  /**
-   * Reads the current document from the database and returns it.
-   *
-   * @return current document
-   */
-  private Document readDocumentFromDatabase() {
-    TypedQuery<Document> docQuery = em.createNamedQuery("Document.findDocumentById",
-                                                        Document.class);
-    docQuery.setParameter("documentId", documentId);
-    return docQuery.getSingleResult();
   }
 
   /**

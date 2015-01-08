@@ -8,7 +8,6 @@
     return $resource('webapi/documents/:documentId', {
       documentId: '@documentId'
     }, {
-      // method for retrieving a single document
       get: {
         method: 'GET'
       },

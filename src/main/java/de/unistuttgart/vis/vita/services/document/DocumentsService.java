@@ -19,8 +19,6 @@ import java.util.Date;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,6 +28,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
+
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
@@ -42,7 +49,7 @@ public class DocumentsService {
                                               + ".vita" + File.separator + "docs" + File.separator;
 
   @Inject
-  private EntityManager em;
+  private DocumentDao documentDao;
   
   @Inject
   private AnalysisController analysisController;
@@ -62,11 +69,7 @@ public class DocumentsService {
   @Produces(MediaType.APPLICATION_JSON)
   public DocumentsResponse getDocuments(@QueryParam("offset") int offset,
                                         @QueryParam("count") int count) {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-
-    return new DocumentsResponse(query.getResultList());
+    return new DocumentsResponse(documentDao.findAll());
   }
   
   /**
@@ -100,7 +103,7 @@ public class DocumentsService {
       document.setFilePath(new File(filePath).toPath());
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(document);
+      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName);
       
       // set up Response
       response = new DocumentIdResponse(id);

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.IndexSearcher;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -30,7 +29,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class})
+@AnalysisModule(dependencies = {BasicEntityCollection.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int RADIUS = 100;
   private static final int MAX_COUNT = 100;
@@ -38,7 +37,6 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws IOException {
-    IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
 

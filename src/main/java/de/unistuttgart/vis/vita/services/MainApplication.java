@@ -14,6 +14,7 @@ public class MainApplication extends ResourceConfig {
   public MainApplication() {
     super(MultiPartFeature.class, DocumentsService.class);
     packages(true, "de.unistuttgart.vis.vita.services");
+    packages(true, "de.unistuttgart.vis.vita.model.dao");
     register(new MainApplicationBinder());
   }
   
