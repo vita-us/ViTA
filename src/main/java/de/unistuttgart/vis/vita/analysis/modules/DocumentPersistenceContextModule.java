@@ -7,19 +7,15 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.model.document.Document;
 
-import java.nio.file.Path;
-
 @AnalysisModule(weight = 0.1)
 public class DocumentPersistenceContextModule extends Module<DocumentPersistenceContext> {
 
   private String id;
-  private Path documentPath;
   private Document document;
 
   public DocumentPersistenceContextModule(Document document) {
     this.document = document;
     this.id = document.getId();
-    this.documentPath = document.getFilePath();
   }
 
   @Override
@@ -38,7 +34,7 @@ public class DocumentPersistenceContextModule extends Module<DocumentPersistence
 
       @Override
       public String getFileName() {
-        return documentPath.getFileName().toString();
+        return document.getFileName();
       }
     };
   }
