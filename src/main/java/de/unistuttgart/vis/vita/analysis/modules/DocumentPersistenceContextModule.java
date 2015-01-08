@@ -5,6 +5,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
+import de.unistuttgart.vis.vita.model.document.Document;
 
 import java.nio.file.Path;
 
@@ -13,16 +14,23 @@ public class DocumentPersistenceContextModule extends Module<DocumentPersistence
 
   private String id;
   private Path documentPath;
+  private Document document;
 
-  public DocumentPersistenceContextModule(String id, Path documentPath) {
-    this.id = id;
-    this.documentPath = documentPath;
+  public DocumentPersistenceContextModule(Document document) {
+    this.document = document;
+    this.id = document.getId();
+    this.documentPath = document.getFilePath();
   }
 
   @Override
   public DocumentPersistenceContext execute(ModuleResultProvider result,
                                             ProgressListener progressListener) throws Exception {
     return new DocumentPersistenceContext() {
+      @Override
+      public Document getDocument() {
+        return document;
+      }
+
       @Override
       public String getDocumentId() {
         return id;
