@@ -1,11 +1,21 @@
 package de.unistuttgart.vis.vita.services.document;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
+
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.UUID;
+import java.util.Date;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -20,15 +30,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-
-import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
-import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
-
-import org.apache.commons.io.FilenameUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  * A service offering a list of documents and the possibility to add new Documents.
@@ -83,26 +84,39 @@ public class DocumentsService {
     String fileName = fDispo.getFileName();
     String baseName = FilenameUtils.getBaseName(fileName);
     String fileExtension = FilenameUtils.getExtension(fileName);
-    String uuid = UUID.randomUUID().toString();
+    Document document = createDocument(baseName);
+    String uuid = document.getContentID().toString();
     
     // set up path
     String filePath = DOCUMENT_PATH + baseName + "_" + uuid + "." + fileExtension;
-    
+
     // check path and save file
     if (!checkAndCreateDir(DOCUMENT_PATH)) {
       throw new WebApplicationException("Can not save document!");
     } else {
       // save file on server
       saveFile(fileInputStream, filePath);
+
+      document.setFilePath(new File(filePath).toPath());
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName);
+      String id = analysisController.scheduleDocumentAnalysis(document);
       
       // set up Response
       response = new DocumentIdResponse(id);
     }
 
     return response;
+  }
+
+  private Document createDocument(String fileName) {
+    Document document = new Document();
+    document.getMetadata().setTitle(fileName);
+    document.setFileName(fileName);
+    document.getProgress().setStatus(AnalysisStatus.READY);
+    document.setUploadDate(new Date());
+
+    return document;
   }
 
   /**

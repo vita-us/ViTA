@@ -78,6 +78,12 @@ public class AnalysisController {
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
+
+  public synchronized String scheduleDocumentAnalysis(Document document) {
+    persistDocument(document);
+    scheduleDocumentAnalyisis(document);
+    return document.getId();
+  }
   
   private synchronized void scheduleDocumentAnalyisis(Document document) {
     if (isAnalysisRunning) {
@@ -92,7 +98,7 @@ public class AnalysisController {
     Path path = document.getFilePath();
     if (path == null)
       throw new UnsupportedOperationException("There is no file associated with the document");
-    currentExecuter = executorFactory.createExecutor(document.getId(), path);
+    currentExecuter = executorFactory.createExecutor(document);
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
@@ -105,8 +111,9 @@ public class AnalysisController {
 
       @Override
       public void onFail(AnalysisExecutor executor) {
-        setStatus(document.getId(),  AnalysisStatus.FAILED);
+        setStatus(document.getId(), AnalysisStatus.FAILED);
         startNextAnalysis();
+
       }
     });
   }
@@ -118,7 +125,13 @@ public class AnalysisController {
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
     document.setUploadDate(new Date());
-    
+
+    persistDocument(document);
+
+    return document;
+  }
+
+  private void persistDocument(Document document) {
     EntityManager em = null;
     try {
       em = model.getEntityManager();
@@ -130,7 +143,6 @@ public class AnalysisController {
         em.close();
       }
     }
-    return document;
   }
 
   /**
