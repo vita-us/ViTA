@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.results.LuceneResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
@@ -43,7 +44,9 @@ public class WordCloudModuleTest {
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     IndexSearcher searcher = textRepository.getIndexSearcherForDocument(DOCUMENT_ID);
-    when(resultProvider.getResultFor(IndexSearcher.class)).thenReturn(searcher);
+    LuceneResult luceneResult = mock(LuceneResult.class);
+    when(luceneResult.getIndexReader()).thenReturn(searcher.getIndexReader());
+    when(resultProvider.getResultFor(LuceneResult.class)).thenReturn(luceneResult);
     progressListener = mock(ProgressListener.class);
 
     module = new WordCloudModule();
