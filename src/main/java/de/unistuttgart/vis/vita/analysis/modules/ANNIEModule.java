@@ -62,7 +62,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
     documentIdModule = result.getResultFor(DocumentPersistenceContext.class);
     AnnieDatastore storeModule = result.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
-    String persistID = documentIdModule.getDocument().getContentID().toString();
+    String persistID = documentIdModule.getDocumentContentId();
 
     corpus = storeModule.getStoredAnalysis(persistID);
 

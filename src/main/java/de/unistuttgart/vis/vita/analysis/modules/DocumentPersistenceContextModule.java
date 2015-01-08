@@ -33,6 +33,11 @@ public class DocumentPersistenceContextModule extends Module<DocumentPersistence
       }
 
       @Override
+      public String getDocumentContentId() {
+        return document.getContentID().toString();
+      }
+
+      @Override
       public String getFileName() {
         return document.getFileName();
       }

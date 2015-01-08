@@ -66,6 +66,11 @@ public class ANNIEModuleTest {
       }
 
       @Override
+      public String getDocumentContentId() {
+        return "testID123";
+      }
+
+      @Override
       public String getFileName() {
         return "testID123";
       }

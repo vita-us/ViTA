@@ -22,6 +22,12 @@ public interface DocumentPersistenceContext {
   public String getDocumentId();
 
   /**
+   * Returns the content id which is the same for all analysis with the same document content.
+   * @return Document content id.
+   */
+  public String getDocumentContentId();
+
+  /**
    * @return The name of the document/file.
    */
   public String getFileName();
