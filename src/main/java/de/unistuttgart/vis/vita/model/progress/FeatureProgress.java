@@ -12,6 +12,7 @@ public class FeatureProgress {
   // attributes
   private double progress;
   private boolean isReady;
+  private boolean isFailed;
 
   /**
    * Creates a new instance of Feature Progress, setting the progress to 0 and ready flag to false.
@@ -33,7 +34,7 @@ public class FeatureProgress {
 
   /**
    * Gets the progress of this feature
-   * 
+   *
    * @return a value between 0 (not started) and 1 (finished)
    */
   public double getProgress() {
@@ -55,7 +56,7 @@ public class FeatureProgress {
 
   /**
    * Specifies whether the feature is completely analyzed and read for visualization
-   * 
+   *
    * @return true, if this feature is ready, false otherwise
    */
   @XmlElement(name = "isReady")
@@ -70,6 +71,23 @@ public class FeatureProgress {
    */
   public void setReady(boolean isReady) {
     this.isReady = isReady;
+  }
+
+  /**
+   * Specifies whether this feature has ended unsuccessfully
+   * @return true, if the feature is failed
+   */
+  @XmlElement(name = "isFailed")
+  public boolean isFailed() {
+    return isFailed;
+  }
+
+  /**
+   * Specifies whether this feature has ended unsuccessfully
+   * @param isFailed true, if the feature is failed
+   */
+  public void setFailed(boolean isFailed) {
+    this.isFailed = isFailed;
   }
 
 }

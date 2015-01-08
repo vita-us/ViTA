@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,27 +29,30 @@ import static org.junit.Assert.assertNotNull;
  * Performs tests on DocumentsService.
  */
 public class DocumentsServiceTest extends ServiceTest {
-  
+
   private static final String TEST_FILE_PATH =
       DocumentsServiceTest.class.getResource("test_document.txt").getFile();
-      
+
   private static final int TEST_DOCUMENT_COUNT = 10;
   private static final int TEST_OFFSET = 0;
-  
+
   private DocumentTestData testData;
-  
+
   @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    
+
     EntityManager em = getModel().getEntityManager();
     
     testData = new DocumentTestData();
-    
     em.getTransaction().begin();
-    em.persist(testData.createTestDocument(1));
-    em.persist(testData.createTestDocument(2));
+    Document testDoc1 = testData.createTestDocument(1);
+    testDoc1.setUploadDate(new Date());
+    em.persist(testDoc1);
+    Document testDoc2 = testData.createTestDocument(2);
+    testDoc2.setUploadDate(new Date(System.currentTimeMillis() + 1000));
+    em.persist(testDoc2);
     em.getTransaction().commit();
     em.close();
   }
@@ -57,12 +61,12 @@ public class DocumentsServiceTest extends ServiceTest {
   protected Application configure() {
     return new ResourceConfig(DocumentsService.class);
   }
-  
+
   @Override
   protected void configureClient(ClientConfig config) {
     config.register(MultiPartFeature.class);
   }
-  
+
   /**
    * Tests whether documents can be caught using the REST interface.
    */
@@ -74,10 +78,12 @@ public class DocumentsServiceTest extends ServiceTest {
     assertEquals(2, actualResponse.getTotalCount());
     List<Document> docs = actualResponse.getDocuments();
     assertEquals(2, docs.size());
-    testData.checkData(docs.get(0), 1);
-    testData.checkData(docs.get(1), 2);
+    
+    // the most recently added document comes first
+    testData.checkData(docs.get(0), 2);
+    testData.checkData(docs.get(1), 1);
   }
-  
+
   /**
    * Tests whether a document can be added by uploading it.
    */
@@ -87,8 +93,8 @@ public class DocumentsServiceTest extends ServiceTest {
 
     FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
     formDataMultiPart.bodyPart(dataPart);
-    
-    Entity<FormDataMultiPart> multiPartEntity = Entity.entity(formDataMultiPart, 
+
+    Entity<FormDataMultiPart> multiPartEntity = Entity.entity(formDataMultiPart,
                                                               formDataMultiPart.getMediaType());
 
     DocumentIdResponse actualResponse = target("documents").request()
@@ -100,5 +106,5 @@ public class DocumentsServiceTest extends ServiceTest {
     // the next test empties the database and it fails. It would be better
     // to stop the analysis here
   }
-  
+
 }

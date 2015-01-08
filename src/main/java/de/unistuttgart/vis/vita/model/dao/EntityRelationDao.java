@@ -16,27 +16,29 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 @ManagedBean
 @MappedSuperclass
 @NamedQueries({
-  @NamedQuery(name = "EntityRelation.findAllEntityRelations", 
+  @NamedQuery(name = "EntityRelation.findAllEntityRelations",
               query = "SELECT er "
                     + "FROM EntityRelation er"),
-                    
+
   @NamedQuery(name = "EntityRelation.findRelationsForEntities",
               query = "SELECT er "
                     + "FROM Entity e JOIN e.entityRelations er "
-                    + "WHERE e.id IN :entityIds "),
-      
+                    + "WHERE e.id IN :entityIds "
+                    + "AND er.relatedEntity.id < e.id"), // only one relation per pair
+
   @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType",
               query = "SELECT er "
                     + "FROM Entity e JOIN e.entityRelations er "
                     + "WHERE e.id IN :entityIds "
                     + "AND er.relatedEntity.id IN :entityIds "
-                    + "AND er.relatedEntity.class = :type"),
+                    + "AND er.relatedEntity.class = :type "
+                    + "AND er.relatedEntity.id < e.id"), // only one relation per pair
 
-  @NamedQuery(name = "EntityRelation.findEntityRelationById", 
+  @NamedQuery(name = "EntityRelation.findEntityRelationById",
               query = "SELECT er "
-                    + "FROM EntityRelation er " 
-                    + "WHERE er.id = :entityRelationId")}
-)
+                    + "FROM EntityRelation er "
+                    + "WHERE er.id = :entityRelationId")})
+
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
   private static final String ENTITY_IDS_PARAMETER = "entityIds";

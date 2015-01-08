@@ -73,4 +73,9 @@
         }
       }]);
 
+      $("#chapters-toggle-button").click(function() {
+        var menu = $(".dv-menu-fixed-wrap");
+        menu.toggle();
+      });
+
 })(angular);

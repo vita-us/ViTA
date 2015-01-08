@@ -90,7 +90,7 @@ public class DocumentsService {
       saveFile(fileInputStream, filePath);
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath());
+      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName);
       
       // set up Response
       response = new DocumentIdResponse(id);

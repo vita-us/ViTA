@@ -40,7 +40,23 @@
       }
     };
 
-    var MAXIMUM_LINK_DISTANCE = 200, MINIMUM_LINK_DISTANCE = 80;
+    var radiusScale = d3.scale.linear()
+        .range([20, 40]);
+
+    var linkWidthScale = d3.scale.linear()
+        .domain([0, 1])
+        .range([4, 16]);
+
+    var linkPathGenerator = d3.svg.line()
+        .x(function (d) {
+          return d.x;
+        })
+        .y(function (d) {
+          return d.y;
+        })
+        .interpolate('basis');
+
+    var VISIBLE_LINK_LENGTH = 160, NORMAL_VECTOR_LENGTH = 20;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -89,8 +105,8 @@
           .size([width, height])
           .charge(-800)
           .gravity(0.04)
-          .linkStrength(0.2)
           .linkDistance(calculateLinkDistance)
+          .linkStrength(0.2)
           .on('tick', setNewPositions);
     }
 
@@ -124,6 +140,7 @@
     }
 
     function parseEntitiesToGraphData(entities, relationData) {
+      updateRadiusScale(entities);
       updateEntityNodeMap(entities, relationData.entityIds);
 
       var links = [];
@@ -175,8 +192,19 @@
           entityNode.displayName = entity.displayName;
           entityNode.rankingValue = entity.rankingValue;
           entityNode.type = entity.type;
+          entityNode.radius = radiusScale(avoidVisualLie(entity.frequency));
         }
       }
+    }
+
+    /**
+     * Take the square root because otherwise we would create a visual lie.
+     * Double frequency means double area but not double radius.
+     * @param frequency
+     * @returns {number}
+     */
+    function avoidVisualLie(frequency) {
+      return Math.sqrt(frequency);
     }
 
     function createLinkFromRelation(relation) {
@@ -187,9 +215,19 @@
       };
     }
 
+    function updateRadiusScale(entities) {
+      var minAndMaxFrequencies = d3.extent(entities, function(entity) {
+        return entity.frequency;
+      });
+      var min = avoidVisualLie(minAndMaxFrequencies[0]);
+      var max = avoidVisualLie(minAndMaxFrequencies[1]);
+      radiusScale.domain([min, max]);
+    }
+
     function calculateLinkDistance(link) {
-      var variableDistance = MAXIMUM_LINK_DISTANCE - MINIMUM_LINK_DISTANCE;
-      return MAXIMUM_LINK_DISTANCE - variableDistance * link.weight;
+      /* The links start from the center of a node.
+       * That's why we add the radius of both nodes to let them look equally long. */
+      return link.source.radius + VISIBLE_LINK_LENGTH + link.target.radius;
     }
 
     function setNewPositions() {
@@ -197,24 +235,37 @@
         return 'translate(' + d.x + ',' + d.y + ')';
       });
 
-      links.attr('x1', function(d) {
-        return d.source.x;
-      }).attr('y1', function(d) {
-        return d.source.y;
-      }).attr('x2', function(d) {
-        return d.target.x;
-      }).attr('y2', function(d) {
-        return d.target.y;
+      links.attr('d', function (d) {
+        var dx = d.target.x - d.source.x;
+        var dy = d.target.y - d.source.y;
+
+        var normalX = -dy;
+        var normalY = dx;
+        var ratio = NORMAL_VECTOR_LENGTH / Math.sqrt(dx * dx + dy * dy);
+        var normalVector = {x: normalX * ratio, y: normalY * ratio};
+
+        var cx = (d.target.x + d.source.x) / 2;
+        var cy = (d.target.y + d.source.y) / 2;
+
+        var curvePoint = {x: cx + normalVector.x, y: cy + normalVector.y};
+
+        return linkPathGenerator([d.source, curvePoint, d.target]);
       });
     }
 
     function redrawElements(graphData, showFingerprint) {
       links = graph.select('#linkGroup').selectAll('.link')
-          .data(graphData.links);
+          .data(graphData.links, function(link) {
+            // Links are uniquely identified by these three attributes
+            return link.source.id + link.target.id + link.weight;
+          });
 
       links.exit().remove();
-      links.enter().append('line')
+      links.enter().append('path')
           .classed('link', true)
+          .style('stroke-width', function(d) {
+            return linkWidthScale(d.weight) + "px";
+          })
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});
@@ -236,7 +287,9 @@
             return CssClass.forRankingValue(d.rankingValue);
           })
           .classed('node', true)
-          .attr('r', 20);
+          .attr('r', function(d) {
+            return d.radius;
+          });
 
       var labelGroups = newNodes.append('g').classed('node-label', true);
 

@@ -1,11 +1,7 @@
 package de.unistuttgart.vis.vita.model;
 
-import java.io.IOException;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * A model that uses a h2 database that can be dropped at any time with {@link #startNewSession()}
@@ -15,15 +11,32 @@ public class UnitTestModel extends Model {
       "de.unistuttgart.vis.vita.unittest.drop";
 
   private static EntityManagerFactory emfCache;
+  private static UnitTestDirectoryFactory directoryFactory;
+  private static UnitTestGateDatastoreLocation gateDatastoreLocation;
 
   public UnitTestModel() {
-    super(getEntityManagerFactory(), new TextRepository(new UnitTestDirectoryFactory()));
+    super(getEntityManagerFactory(), new TextRepository(getDirectoryFactory()));
+    setGateDatastoreLocation(getTestGateDatastoreLocation());
   }
 
   private static EntityManagerFactory getEntityManagerFactory() {
     if (emfCache == null)
       emfCache = Persistence.createEntityManagerFactory(UNITTEST_PERSISTENCE_UNIT_DROP_NAME);
     return emfCache;
+  }
+  
+  private static final DirectoryFactory getDirectoryFactory() {
+    if (directoryFactory == null) {
+      directoryFactory = new UnitTestDirectoryFactory();
+    }
+    return directoryFactory;
+  }
+  
+  private static final UnitTestGateDatastoreLocation getTestGateDatastoreLocation() {
+    if (gateDatastoreLocation == null) {
+      gateDatastoreLocation = new UnitTestGateDatastoreLocation();
+    }
+    return gateDatastoreLocation;
   }
 
   /**
@@ -36,10 +49,14 @@ public class UnitTestModel extends Model {
         emfCache.close();
       emfCache = null;
     }
-    try {
-      FileUtils.deleteDirectory(UnitTestDirectoryFactory.getRootPath().toFile());
-    } catch (IOException e) {
-      throw new RuntimeException("Unable to delete lucene index", e);
+    
+    if (directoryFactory != null) {
+      directoryFactory.remove();
+      directoryFactory = null;
+    }
+    if (gateDatastoreLocation != null) {
+      gateDatastoreLocation.remove();
+      gateDatastoreLocation = null;
     }
   }
 }

@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
@@ -16,7 +18,8 @@ import de.unistuttgart.vis.vita.model.document.Document;
 @NamedQueries({
   @NamedQuery(name = "Document.findAllDocuments",
               query = "SELECT d "
-                    + "FROM Document d"),
+                    + "FROM Document d "
+                    + "ORDER BY d.uploadDate DESC"),
 
   @NamedQuery(name = "Document.findDocumentById",
               query = "SELECT d "
@@ -36,6 +39,12 @@ public class DocumentDao extends JpaDao<Document, String> {
    */
   public DocumentDao() {
     super(Document.class);
+  }
+
+  @Override
+  public List<Document> findAll() {
+    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
+    return query.getResultList();
   }
 
   /**

@@ -8,6 +8,9 @@
 </head>
 <body id="document-view">
   <div class="container-fluid" id="document-view-header">
+    <button type="button" id="chapters-toggle-button" class="btn btn-default">
+      Toggle chapters
+    </button>
     <h2 class="document-title">{{document.metadata.title}}</h2>
   </div>
   <div class="container-fluid" id="document-view-main">
@@ -17,7 +20,7 @@
         <div class="dv-menu-fixed-wrap">
           <div data-ng-repeat="part in parts">
             <h3 class="part" data-ng-class="{'active-menu': $first}">
-              <a href="#part-{{part.number}}">
+              <a href="#part-{{part.number}}" ng-show="parts.length > 1">
                 Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
               </a>
             </h3>
@@ -34,7 +37,7 @@
         data-selected-occurrence-index="selectedOccurrenceIndex"
         data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
-          data-part-data="part" data-document-id="document.id"></div>
+          data-part-data="part" data-document-id="document.id" data-is-only-part="parts.length > 1"></div>
       </div>
     </div>
   </div>

@@ -9,9 +9,9 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Computes the remaining attributes of the book, which are not text or metadata, for example range
- * and length.
+ * (@link Chapter#getRange()) and length.
  */
-public class BookAttributeBuilder {
+public class BookAttributeBuilder extends AbstractBuilder {
   private final List<DocumentPart> parts;
 
   /**

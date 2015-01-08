@@ -43,6 +43,7 @@ public abstract class Entity extends AbstractEntityBase {
   private String displayName;
   private boolean[] fingerprint;
   private int rankingValue;
+  private int frequency;
 
   @OneToMany(cascade = CascadeType.ALL)
   @XmlElement(required = true)
@@ -65,7 +66,7 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public Entity() {
     attributes = new HashSet<>();
-    occurrences = new TreeSet<>();
+    occurrences = new TreeSet<>();  
     entityRelations = new HashSet<>();
   }
 
@@ -115,6 +116,22 @@ public abstract class Entity extends AbstractEntityBase {
           + " or greater!");
     }
     this.rankingValue = newRankingValue;
+  }
+  
+  /**
+   * Sets the a new frequency value for the entity
+   *
+   * @param newFrequency - count of occurrences of this entity
+   */
+  public void setFrequency(int newFrequency) {
+    this.frequency = newFrequency;
+  }
+  
+  /**
+   * @return the frequency value of the entity
+   */
+  public int getFrequency() {
+    return frequency;
   }
 
   /**

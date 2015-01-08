@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.analysis.importer.epub.EpubImportTests;
 @SuiteClasses({StanfordNLPModuleTest.class, ANNIEModuleTest.class, ImportTests.class,
     LuceneModuleTest.class, EntityRecognitionModuleRealTest.class, TextFeatureModuleTest.class,
     EntityFeatureModuleTest.class, MainAnalysisModuleTest.class, EntityRecognitionModuleTest.class,
-    EpubImportTests.class})
+    EpubImportTests.class, WordCloudEntityTaggingModuleTest.class})
 public class AnalysisModulesTests {
   // conform checkstyle rule HideUtilityClassConstructor
   private AnalysisModulesTests() {

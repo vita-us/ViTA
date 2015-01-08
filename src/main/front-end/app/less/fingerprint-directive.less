@@ -1,11 +1,13 @@
 @rect-opacity: 0.6;
 @rect-selected-opacity: 0.9;
 @line-stroke-width: 2;
+@part-stroke-width: 3;
 
 @fingerprint-rect-color: rgb(0, 0, 0);
 @fingerprint-rect-highlight-color: rgb(255, 165, 0);
 @fingerprint-rect-background-color: rgb(220, 220, 220);
 @fingerprint-line-color: rgb(250, 88, 88);
+@fingerprint-part-color: rgb(56, 176, 222);
 
 .fingerprint-container {
 
@@ -33,4 +35,25 @@
     }
   }
 
+  .part-separators {
+    line {
+      stroke: @fingerprint-part-color;
+      stroke-width: @part-stroke-width;
+      pointer-events: none;
+    }
+  }
+
+  .chapter-tooltip {
+    dominant-baseline: hanging;
+    font-size: 10px;
+    pointer-events: none;
+    text-anchor: middle;
+    visibility: hidden;
+  }
+
+  .range-indicator {
+    fill: @body-background-color;
+    opacity: 0.6;
+    pointer-events: none;
+  }
 }

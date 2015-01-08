@@ -63,7 +63,7 @@ public class Epub2ImportModuleTest {
   @Test
   public void testMetadataPublishYear() {
     int text = 1993;
-    assertEquals(text, epub2Result.getMetadata().getPublishYear());
+    assertEquals(text, epub2Result.getMetadata().getPublishYear().intValue());
   }
 
   @Test
