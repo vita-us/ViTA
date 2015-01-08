@@ -6,6 +6,7 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,6 +54,8 @@ public class Document extends AbstractEntityBase {
 
   private String fileName;
 
+  private UUID contentID;
+
   /**
    * Creates a new empty document, setting all fields to default values.
    */
@@ -61,6 +64,7 @@ public class Document extends AbstractEntityBase {
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
+    contentID = UUID.randomUUID();
   }
 
   /**
@@ -169,5 +173,9 @@ public class Document extends AbstractEntityBase {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public UUID getContentID() {
+    return contentID;
   }
 }
