@@ -35,7 +35,12 @@ import javax.persistence.OneToOne;
     @NamedQuery(name = "Document.findDocumentByTitle",
                 query = "SELECT d "
                       + "FROM Document d "
-                      + "WHERE d.metadata.title = :documentTitle")})
+                      + "WHERE d.metadata.title = :documentTitle"),
+
+    @NamedQuery(name = "Document.findAllDocumentsByStatus",
+        query = "SELECT d "
+                + "FROM Document d, AnalysisProgress p "
+                + "WHERE d.progress.status = :analysisStatus")})
 public class Document extends AbstractEntityBase {
 
   @Embedded
