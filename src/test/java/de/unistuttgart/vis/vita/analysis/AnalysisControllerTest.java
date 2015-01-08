@@ -10,13 +10,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.print.Doc;
 
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -196,6 +199,10 @@ public class AnalysisControllerTest {
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
     String id = controller.scheduleDocumentAnalysis(path, "file.name");
+    Document document = new Document();
+    document.setId(id);
+    document.setFilePath(path);
+
     verifyExecutorCreated(id, path);
 
     controller.cancelAnalysis(id);
@@ -204,16 +211,21 @@ public class AnalysisControllerTest {
     controller.restartAnalysis(id);
 
     // Make sure it has been called the second time
-    verify(executorFactory, times(2)).createExecutor(id, path);
+    verify(executorFactory, times(2)).createExecutor(document);
   }
 
   private void prepareExecutor(Path path) {
     executor = mock(AnalysisExecutor.class);
-    when(executorFactory.createExecutor(anyString(), eq(path))).thenReturn(executor);
+    Document document = mock(Document.class);
+    when(document.getFilePath()).thenReturn(path);
+    when(executorFactory.createExecutor(Matchers.any(Document.class))).thenReturn(executor);
   }
 
   private void verifyExecutorCreated(String id, Path path) {
-    verify(executorFactory).createExecutor(id, path);
+    Document document = new Document();
+    document.setId(id);
+    document.setFilePath(path);
+    verify(executorFactory).createExecutor(document);
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());

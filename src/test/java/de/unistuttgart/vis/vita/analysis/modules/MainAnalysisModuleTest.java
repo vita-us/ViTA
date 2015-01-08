@@ -55,7 +55,9 @@ public class MainAnalysisModuleTest {
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
     AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
     Path docPath = Paths.get(getClass().getResource("LOTR_CP1.txt").toURI());
-    executor = factory.createExecutor(document.getId(), docPath);
+    document.setFilePath(docPath);
+    document.setFileName("LOTR_CP1.txt");
+    executor = factory.createExecutor(document);
   }
 
   @Test
