@@ -62,6 +62,38 @@ public class AnalysisController {
   public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
     this.model = model;
     this.executorFactory = executorFactory;
+    resetInterruptedDocuments();
+  }
+
+  /**
+   * Resets all documents which haven't been analysed because program didn't terminate properly.
+   * Automatically restarts the analysis.
+   */
+  private void resetInterruptedDocuments() {
+    EntityManager em = null;
+    List<Document> documents;
+
+    try {
+      em = model.getEntityManager();
+      TypedQuery<Document>
+          query =
+          em.createNamedQuery("Document.findAllDocumentsByStatus", Document.class);
+      query.setParameter("analysisStatus", AnalysisStatus.RUNNING);
+      documents = query.getResultList();
+
+      if (documents.isEmpty()) {
+        // Nothing to do
+        return;
+      }
+
+      for (Document document : documents) {
+        AnalysisResetter.resetAndFail(em, document);
+      }
+    } finally {
+      if (em != null) {
+        em.close();
+      }
+    }
   }
 
   /**
