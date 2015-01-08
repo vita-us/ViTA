@@ -136,13 +136,18 @@
 
     function isEntityRelationResponseValid(entities, relationData) {
       var receivedEntityIds = relationData.entityIds;
-      if (entities.length !== receivedEntityIds.length) {
+      var entityIds = entities.map(function(entity) {
+        return entity.id;
+      });
+
+      if (entityIds.length < receivedEntityIds.length) {
         return false;
       }
 
-      for (var i = 0, l = entities.length; i < l; i++) {
-        var entityId = entities[i].id;
-        if (receivedEntityIds.indexOf(entityId) < 0) {
+      // check for received ids that weren't used in the request
+      for (var i = 0, l = receivedEntityIds.length; i < l; i++) {
+        var receivedEntityId = receivedEntityIds[i];
+        if (entityIds.indexOf(receivedEntityId) < 0) {
           return false;
         }
       }
