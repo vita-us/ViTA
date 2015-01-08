@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,7 +20,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 
@@ -41,7 +39,7 @@ public class DocumentsService {
                                               + ".vita" + File.separator + "docs" + File.separator;
 
   @Inject
-  private EntityManager em;
+  private DocumentDao documentDao;
   
   @Inject
   private AnalysisController analysisController;
@@ -61,11 +59,7 @@ public class DocumentsService {
   @Produces(MediaType.APPLICATION_JSON)
   public DocumentsResponse getDocuments(@QueryParam("offset") int offset,
                                         @QueryParam("count") int count) {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-
-    return new DocumentsResponse(query.getResultList());
+    return new DocumentsResponse(documentDao.findAll());
   }
   
   /**
