@@ -72,12 +72,25 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
       createCorpus();
       startAnnie();
       storeModule.storeResult(corpus, persistID);
+    } else {
+      fillCorpusMap();
     }
 
     createResultMap();
 
     progressListener.observeProgress(1);
     return buildResult();
+  }
+
+  private void fillCorpusMap() {
+    int i = 0;
+
+    for (DocumentPart part : importResult.getParts()) {
+      for (Chapter chapter : part.getChapters()){
+        docToChapter.put(corpus.get(i), chapter);
+        i++;
+      }
+    }
   }
 
   private void createResultMap() {
