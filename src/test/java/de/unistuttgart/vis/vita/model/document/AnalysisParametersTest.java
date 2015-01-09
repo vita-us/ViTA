@@ -87,22 +87,55 @@ public class AnalysisParametersTest {
   }
 
   @Test
-  public void testMinParam() {
+  public void testMinWordCloudItemsCount() {
     parameters.setWordCloudItemsCount(10);
     assertThat(parameters.getWordCloudItemsCount(), is(10));
     execute();
   }
   
   @Test
-  public void testMaxParam() {
+  public void testMaxWordCloudItemsCoun() {
     parameters.setWordCloudItemsCount(100);
     assertThat(parameters.getWordCloudItemsCount(), is(100));
     execute();
   }
   
   @Test
-  public void testIllegalParam() {
+  public void testIllegalWordCloudItemsCoun() {
     parameters.setWordCloudItemsCount(-100);
     execute();
   }
+  
+  @Test
+  public void testMinRelationTimeStepCount() {
+    parameters.setRelationTimeStepCount(1);
+    assertThat(parameters.getRelationTimeStepCount(), is(1));
+    execute();
+  }
+  
+  @Test
+  public void testMaxRelationTimeStepCount() {
+    parameters.setRelationTimeStepCount(1000);
+    assertThat(parameters.getRelationTimeStepCount(), is(1000));
+    execute();
+  }
+  
+  @Test
+  public void testIllegalRelationTimeStepCount() {
+    parameters.setRelationTimeStepCount(-10);
+    execute();
+  }
+  
+  @Test
+  public void testStopWordListEnabledTrue() {
+    parameters.setStopWordListEnabled(true);
+    assertEquals(parameters.isStopWordListEnabled(), true);
+  }
+  
+  @Test
+  public void testStopWordListEnabledFalse() {
+    parameters.setStopWordListEnabled(false);
+    assertEquals(parameters.isStopWordListEnabled(), false);
+  }
+  
 }
