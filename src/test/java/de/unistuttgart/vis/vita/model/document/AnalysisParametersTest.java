@@ -94,14 +94,14 @@ public class AnalysisParametersTest {
   }
   
   @Test
-  public void testMaxWordCloudItemsCoun() {
+  public void testMaxWordCloudItemsCount() {
     parameters.setWordCloudItemsCount(100);
     assertThat(parameters.getWordCloudItemsCount(), is(100));
     execute();
   }
   
   @Test
-  public void testIllegalWordCloudItemsCoun() {
+  public void testIllegalWordCloudItemsCount() {
     parameters.setWordCloudItemsCount(-100);
     execute();
   }
@@ -130,12 +130,14 @@ public class AnalysisParametersTest {
   public void testStopWordListEnabledTrue() {
     parameters.setStopWordListEnabled(true);
     assertEquals(parameters.isStopWordListEnabled(), true);
+    execute();
   }
   
   @Test
   public void testStopWordListEnabledFalse() {
     parameters.setStopWordListEnabled(false);
     assertEquals(parameters.isStopWordListEnabled(), false);
+    execute();
   }
   
 }
