@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Terms;
 
@@ -20,13 +21,17 @@ public class MetricsModule extends Module<TextMetrics> {
   @Override
   public TextMetrics execute(ModuleResultProvider results, ProgressListener progressListener)
       throws Exception {
-    
-    LuceneResult luceneResult = results.getResultFor(LuceneResult.class);
-    Terms terms = SlowCompositeReaderWrapper.wrap(luceneResult.getIndexReader())
-        .terms(TextRepository.CHAPTER_TEXT_FIELD);
-    final int count = (int)(terms.getSumTotalTermFreq());
 
-    luceneResult.getIndexReader().close();
+    final int count;
+    IndexReader reader = results.getResultFor(LuceneResult.class).getIndexReader();
+    try {
+      Terms terms = SlowCompositeReaderWrapper.wrap(reader)
+          .terms(TextRepository.CHAPTER_TEXT_FIELD);
+      count = (int) (terms.getSumTotalTermFreq());
+    } finally {
+      reader.close();
+    }
+
     return new TextMetrics() {
       @Override
       public int getWordCount() {

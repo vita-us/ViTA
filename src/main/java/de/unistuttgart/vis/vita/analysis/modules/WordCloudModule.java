@@ -40,17 +40,21 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     boolean stopWordListEnabled =
         results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
     maxCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
-    final WordCloud globalWordCloud =
-        getGlobalWordCloud(luceneResult.getIndexReader(), stopWordListEnabled);
 
+    final WordCloud globalWordCloud;
+    IndexReader reader = luceneResult.getIndexReader();
+    try {
+      globalWordCloud = getGlobalWordCloud(reader, stopWordListEnabled);
+    } finally {
+      reader.close();
+    }
 
-//    luceneResult.getIndexReader().close();
     return new GlobalWordCloudResult() {
-      @Override
-      public WordCloud getGlobalWordCloud() {
-        return globalWordCloud;
-      }
-    };
+        @Override
+        public WordCloud getGlobalWordCloud() {
+          return globalWordCloud;
+        }
+      };
   }
 
   private WordCloud getGlobalWordCloud(IndexReader reader, boolean stopWordListEnabled)
