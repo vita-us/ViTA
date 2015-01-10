@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * occurrences.
  */
 
-@AnalysisModule(dependencies = {BasicEntityCollection.class})
+@AnalysisModule(dependencies = {BasicEntityCollection.class, AnalysisParameters.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int RADIUS = 100;
   private int count;
