@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -19,7 +20,6 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Document extends AbstractEntityBase {
-
   @Embedded
   private DocumentMetadata metadata;
   @Embedded
@@ -29,8 +29,11 @@ public class Document extends AbstractEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  private AnalysisParameters parameters;
+
   private String filePath;
-  
+
   @Column(length = 1000)
   private Date uploadDate;
 
@@ -44,6 +47,7 @@ public class Document extends AbstractEntityBase {
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
+    this.parameters = new AnalysisParameters();
   }
 
   /**
@@ -55,7 +59,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the meta data for this document.
-   * 
+   *
    * @param newMetadata - the meta data for this document
    */
   public void setMetadata(DocumentMetadata newMetadata) {
@@ -71,7 +75,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the metrics for this Document.
-   * 
+   *
    * @param newMetrics - the metrics for this Document
    */
   public void setMetrics(DocumentMetrics newMetrics) {
@@ -87,7 +91,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the content for this Document.
-   * 
+   *
    * @param content - the document content, including text and entities
    */
   public void setContent(DocumentContent content) {
@@ -103,13 +107,13 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the new progress of the analysis of this document.
-   * 
+   *
    * @param newProgress - the new progress of the analysis of this document
    */
   public void setProgress(AnalysisProgress newProgress) {
     this.progress = newProgress;
   }
-  
+
   /**
    * Gets the path to the uploaded file
    * @return the path, or null if the file does not exist anymore
@@ -136,10 +140,10 @@ public class Document extends AbstractEntityBase {
   public Date getUploadDate() {
     return uploadDate;
   }
-  
+
   /**
    * Sets the upload date of the uploaded file
-   * 
+   *
    * @param uploadDate
    */
   public void setUploadDate(Date uploadDate) {
@@ -152,5 +156,21 @@ public class Document extends AbstractEntityBase {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  /**
+   * Gets the parameters that should be used in the analysis of this document
+   * @return
+   */
+  public AnalysisParameters getParameters() {
+    return parameters;
+  }
+
+  /**
+   * Sets the parameters that should be used in the analysis of this document
+   * @param parameters
+   */
+  public void setParameters(AnalysisParameters parameters) {
+    this.parameters = parameters;
   }
 }

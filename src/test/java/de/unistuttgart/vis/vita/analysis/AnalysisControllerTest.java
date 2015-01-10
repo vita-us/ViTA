@@ -1,22 +1,5 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.UnitTestModel;
-import de.unistuttgart.vis.vita.model.document.Document;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -26,6 +9,25 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
+
+import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.Document;
 
 @RunWith(RandomBlockJUnit4ClassRunner.class)
 public class AnalysisControllerTest {
@@ -58,7 +60,7 @@ public class AnalysisControllerTest {
 
   @After
   public void tearDown() throws Exception {}
-  
+
   @Test
   public void testScheduleDocumentAnalysis() {
     Path path = Paths.get("path/to/file.name");
@@ -68,7 +70,7 @@ public class AnalysisControllerTest {
 
     assertThat(controller.documentsInQueue(), is(0)); // nothing queued, just one working
     assertThat(controller.isWorking(), is(true));
-    
+
     Document document = getSingleDocument();
     assertThat(document.getId(), is(id));
     assertThat(document.getMetadata().getTitle(), is("file.name"));
@@ -78,7 +80,7 @@ public class AnalysisControllerTest {
     assertThat(controller.documentsInQueue(), is(0));
     assertThat(controller.isWorking(), is(false));
   }
-  
+
   private Document getSingleDocument() {
     EntityManager em = model.getEntityManager();
     List<Document> documents =
@@ -87,7 +89,7 @@ public class AnalysisControllerTest {
     em.close();
     return documents.get(0);
   }
-  
+
   @Test
   public void testFurtherDocumentAreQueued() {
     Path path1 = Paths.get("path/to/file.name");
@@ -99,7 +101,7 @@ public class AnalysisControllerTest {
 
     assertThat(controller.documentsInQueue(), is(1));
   }
-  
+
   @Test
   public void testCancelAnalysis() {
     Path path = Paths.get("correctFilePath");
@@ -195,7 +197,8 @@ public class AnalysisControllerTest {
 
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
-    String id = controller.scheduleDocumentAnalysis(path, "file.name");
+    AnalysisParameters params = new AnalysisParameters();
+    String id = controller.scheduleDocumentAnalysis(path, "file.name", params);
     verifyExecutorCreated(id, path);
 
     controller.cancelAnalysis(id);
@@ -204,16 +207,18 @@ public class AnalysisControllerTest {
     controller.restartAnalysis(id);
 
     // Make sure it has been called the second time
-    verify(executorFactory, times(2)).createExecutor(id, path);
+    verify(executorFactory, times(2)).createExecutor(id, path, params);
   }
 
   private void prepareExecutor(Path path) {
     executor = mock(AnalysisExecutor.class);
-    when(executorFactory.createExecutor(anyString(), eq(path))).thenReturn(executor);
+    when(executorFactory.createExecutor(anyString(), eq(path),
+        Matchers.any(AnalysisParameters.class)))
+        .thenReturn(executor);
   }
 
   private void verifyExecutorCreated(String id, Path path) {
-    verify(executorFactory).createExecutor(id, path);
+    verify(executorFactory).createExecutor(eq(id), eq(path), Matchers.any(AnalysisParameters.class));
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());
