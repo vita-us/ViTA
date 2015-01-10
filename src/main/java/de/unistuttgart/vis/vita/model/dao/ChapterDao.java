@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,6 +49,15 @@ public class ChapterDao extends JpaDao<Chapter, String> {
    */
   public ChapterDao() {
     super(Chapter.class);
+  }
+
+  /**
+   * Creates a new data access object to access Chapter using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new ChapterDao
+   */
+  public ChapterDao(EntityManager em) {
+    super(Chapter.class, em);
   }
 
   /**

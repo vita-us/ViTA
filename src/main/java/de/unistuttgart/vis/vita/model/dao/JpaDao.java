@@ -28,6 +28,11 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   public JpaDao(Class<T> persClass) {
     this.persistentClass = persClass;
   }
+  
+  public JpaDao(Class<T> persClass, EntityManager em) {
+    this(persClass);
+    this.em = em;
+  }
 
   /**
    * @return the class of the persisted objects

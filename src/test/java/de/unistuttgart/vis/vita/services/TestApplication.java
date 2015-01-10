@@ -18,11 +18,13 @@ public class TestApplication extends ResourceConfig {
   
   private static String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
   private static String DAO_PACKAGE = "de.unistuttgart.vis.vita.model.dao";
+  private static String ANALYSIS_PACKAGE = "de.unistuttgart.vis.vita.analysis";
 
   public TestApplication() {
     super(MultiPartFeature.class, DocumentsService.class);
     packages(true, DAO_PACKAGE);
     packages(true, SERVICES_PACKAGE);
+    packages(true, ANALYSIS_PACKAGE);
     register(new MyApplicationBinder());
     register(ServiceLocatorUtilities.createAndPopulateServiceLocator());
   }
@@ -32,6 +34,7 @@ public class TestApplication extends ResourceConfig {
     protected void configure() {
       bindAllManagedBeans(SERVICES_PACKAGE);
       bindAllManagedBeans(DAO_PACKAGE);   
+      bindAllManagedBeans(ANALYSIS_PACKAGE);
 
       bind(UnitTestModel.class).to(Model.class);
       bindFactory(UnitTestModel.class).to(EntityManager.class);

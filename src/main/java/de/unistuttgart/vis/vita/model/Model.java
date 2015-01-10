@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.model;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.jersey.server.CloseableService;
 
+import de.unistuttgart.vis.vita.model.dao.DaoFactory;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -39,21 +41,20 @@ public class Model implements Factory<EntityManager> {
   CloseableService closeableService;
   private TextRepository textRepository;
   private GateDatastoreLocation gateDatastoreLocation;
+  private DaoFactory daoFactory;
 
   /**
    * Create a default Model instance
    */
   public Model() {
-    entityManagerFactory =
-        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-    textRepository = new TextRepository();
-    gateDatastoreLocation = new GateDatastoreLocation();
+    this(Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME), new TextRepository());
   }
 
   protected Model(EntityManagerFactory emf, TextRepository textRepository) {
-    entityManagerFactory = emf;
+    this.entityManagerFactory = emf;
     this.textRepository = textRepository;
-    gateDatastoreLocation = new GateDatastoreLocation();
+    this.gateDatastoreLocation = new GateDatastoreLocation();
+    this.daoFactory = new DaoFactory(emf);
   }
 
   private static void loadDriver() {
@@ -83,6 +84,10 @@ public class Model implements Factory<EntityManager> {
    */
   public EntityManager getEntityManager() {
     return entityManagerFactory.createEntityManager();
+  }
+  
+  public DaoFactory getDaoFactory() {
+    return daoFactory;
   }
 
   /**

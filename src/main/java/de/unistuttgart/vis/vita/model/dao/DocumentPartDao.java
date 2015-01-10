@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -46,6 +47,15 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
    */
   public DocumentPartDao() {
     super(DocumentPart.class);
+  }
+  
+  /**
+   * Creates a new data access object for DocumentParts using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new DocumentPartDao
+   */
+  public DocumentPartDao(EntityManager em) {
+    super(DocumentPart.class, em);
   }
 
   /**

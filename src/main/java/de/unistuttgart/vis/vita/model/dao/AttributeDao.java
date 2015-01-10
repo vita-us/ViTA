@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -46,6 +47,15 @@ public class AttributeDao extends JpaDao<Attribute, String> {
    */
   public AttributeDao() {
     super(Attribute.class);
+  }
+
+  /**
+   * Creates a new data access object for accessing Attributes using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new AttributeDao
+   */
+  public AttributeDao(EntityManager em) {
+    super(Attribute.class, em);
   }
 
   /**

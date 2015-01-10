@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -133,6 +134,15 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
    */
   public TextSpanDao() {
     super(TextSpan.class);
+  }
+
+  /**
+   * Creates a new data access object for TextSpans using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new TextSpanDao
+   */
+  public TextSpanDao(EntityManager em) {
+    super(TextSpan.class, em);
   }
 
   /**

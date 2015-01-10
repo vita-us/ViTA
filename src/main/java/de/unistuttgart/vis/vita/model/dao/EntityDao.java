@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -35,6 +36,15 @@ public class EntityDao extends JpaDao<Entity, String> {
    */
   public EntityDao() {
     super(Entity.class);
+  }
+
+  /**
+   * Creates a new EntityDao with the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new EntityDao
+   */
+  public EntityDao(EntityManager em) {
+    super(Entity.class, em);
   }
 
   /**

@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.analysis;
 
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.AttributeDao;
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
@@ -12,7 +13,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -20,10 +20,12 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
+import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
+@ManagedBean
 public class AnalysisResetter {
+  
   @Inject DocumentDao documentDao;
   @Inject EntityDao entityDao;
   @Inject TextSpanDao textSpanDao;
@@ -32,7 +34,19 @@ public class AnalysisResetter {
   @Inject EntityRelationDao entityRelationDao;
   @Inject AttributeDao attributeDao;
 
-  protected AnalysisResetter() { }
+  public AnalysisResetter() {
+    // needs zero argument constructor
+  }
+  
+  public AnalysisResetter(Model model) {
+    this.documentDao = model.getDaoFactory().getDocumentDao();
+    this.entityDao = model.getDaoFactory().getEntityDao();
+    this.textSpanDao = model.getDaoFactory().getTextSpanDao();
+    this.partDao = model.getDaoFactory().getDocumentPartDao();
+    this.chapterDao = model.getDaoFactory().getChapterDao();
+    this.entityRelationDao = model.getDaoFactory().getEntityRelationDao();
+    this.attributeDao = model.getDaoFactory().getAttributeDao();
+  }
 
   /**
    * Reverts the complete analysis
@@ -40,18 +54,13 @@ public class AnalysisResetter {
    */
   public void resetDocument(Document document) {
     for (Person person : document.getContent().getPersons()) {
-      removeEntity(person);
+      removeEntityData(person);
     }
+    
     for (Place place : document.getContent().getPlaces()) {
-      removeEntity(place);
+      removeEntityData(place);
     }
-    for (DocumentPart part : document.getContent().getParts()) {
-      for (Chapter chapter : part.getChapters()) {
-        textSpanDao.remove(chapter.getRange());
-        chapterDao.remove(chapter);
-      }
-      partDao.remove(part);
-    }
+    
     document.getContent().getParts().clear();
     document.getContent().getPersons().clear();
     document.getContent().getPlaces().clear();
@@ -62,6 +71,21 @@ public class AnalysisResetter {
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setMetrics(new DocumentMetrics());
     documentDao.save(document);
+    
+    for (DocumentPart part : document.getContent().getParts()) {
+      partDao.remove(part);
+      for (Chapter chapter : part.getChapters()) {
+        chapterDao.remove(chapter);
+      }
+    }
+    
+    for (Person person : document.getContent().getPersons()) {
+      entityDao.remove(person);
+    }
+    for (Place place : document.getContent().getPlaces()) {
+      entityDao.remove(place);
+    }
+    
   }
 
   /**
@@ -76,18 +100,15 @@ public class AnalysisResetter {
   }
 
   /**
-   * Removes the complete entity
+   * Removes all entity data
    */
-  private void removeEntity(Entity entity) {
-    entityDao.remove(entity);
+  private void removeEntityData(Entity entity) {
     for (Attribute attr : entity.getAttributes()) {
       attributeDao.remove(attr);
     }
+    
     for (EntityRelation rel : entity.getEntityRelations()) {
       entityRelationDao.remove(rel);
-    }
-    for (TextSpan span : entity.getOccurrences()) {
-      textSpanDao.remove(span);
     }
   }
 }

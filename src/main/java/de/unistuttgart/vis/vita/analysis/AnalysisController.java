@@ -2,18 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
-import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
-import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.model.entity.Place;
-import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -22,18 +11,15 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
  */
 @ApplicationScoped
 public class AnalysisController {
-  @Inject
-  private Model model;
 
   @Inject
   private DocumentDao documentDao;
@@ -77,21 +63,29 @@ public class AnalysisController {
     this(model, new DefaultAnalysisExecutorFactory(model, moduleRegistry));
   }
 
+  public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
+    this.executorFactory = executorFactory;
+    
+    // only for Unit-tests, otherwise these fields are injected automatically
+    if (model != null) {
+      this.documentDao = model.getDaoFactory().getDocumentDao();
+      this.analysisResetter = new AnalysisResetter(model);
+      
+      // with CDI this method is called automatically (@PostConstruct)
+      resetInterruptedDocuments();
+    }
+  }
+
   /**
-   * Resets all documents which haven't been analysed because program didn't terminate properly.
+   * Resets all documents which haven't been analyzed because program didn't terminate properly.
    * Automatically restarts the analysis.
    */
+  @PostConstruct
   private void resetInterruptedDocuments() {
     List<Document> documents = documentDao.findDocumentsByStatus(AnalysisStatus.RUNNING);
     for (Document document : documents) {
       analysisResetter.resetAndFail(document);
     }
-  }
-
-  public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
-    this.model = model;
-    this.executorFactory = executorFactory;
-    resetInterruptedDocuments();
   }
 
   /**

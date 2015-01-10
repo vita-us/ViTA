@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -45,10 +46,20 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
   private static final String TYPE_PARAMETER = "type";
 
   /**
-   * Creates a new data access object for accessing  EntityRelations
+   * Creates a new data access object for accessing EntityRelations
    */
   public EntityRelationDao() {
     super(EntityRelation.class);
+  }
+
+  /**
+   * Creates a new data access object for accessing EntityRelations using the given 
+   * {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new EntityRelationDao
+   */
+  public EntityRelationDao(EntityManager em) {
+    super(EntityRelation.class, em);
   }
 
   /**

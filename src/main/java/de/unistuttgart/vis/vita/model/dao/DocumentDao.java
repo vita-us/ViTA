@@ -4,10 +4,12 @@ import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
+
 import java.util.List;
 
 /**
@@ -33,6 +35,10 @@ public class DocumentDao extends JpaDao<Document, String> {
    */
   public DocumentDao() {
     super(Document.class);
+  }
+
+  public DocumentDao(EntityManager em) {
+    super(Document.class, em);
   }
 
   @Override public List<Document> findAll() {
