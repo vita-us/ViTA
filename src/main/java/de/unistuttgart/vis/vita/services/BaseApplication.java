@@ -10,9 +10,11 @@ import org.glassfish.jersey.server.validation.ValidationFeature;
  */
 public class BaseApplication extends ResourceConfig {
     protected static final String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
-
+    protected static final String DAO_PACKAGE = "de.unistuttgart.vis.vita.model.dao";
+    
     public BaseApplication() {
         packages(true, SERVICES_PACKAGE);
+        packages(true, DAO_PACKAGE);
         register(MultiPartFeature.class);
         register(ValidationFeature.class);
         register(DocumentsService.class);

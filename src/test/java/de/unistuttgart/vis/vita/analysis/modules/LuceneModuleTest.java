@@ -15,6 +15,7 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.LuceneResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -35,7 +36,7 @@ public class LuceneModuleTest {
   private List<DocumentPart> documentParts = new ArrayList<DocumentPart>();
   private String documentId = "document3";
   private List<Chapter> chapters = new ArrayList<Chapter>();
-  private TextRepository textRepository;
+  private TextRepository providedTextRepository = mock(TextRepository.class);
   private IndexSearcher providedIndexSearcher = mock(IndexSearcher.class);
 
   @Before
@@ -46,9 +47,8 @@ public class LuceneModuleTest {
     Model model = mock(Model.class);
     DocumentPersistenceContext documentPersistenceContext = mock(DocumentPersistenceContext.class);
     when(importResult.getParts()).thenReturn(documentParts);
-    textRepository = mock(TextRepository.class);
-    when(model.getTextRepository()).thenReturn(textRepository);
-    when(textRepository.getIndexSearcherForDocument(documentId)).thenReturn(providedIndexSearcher);
+    when(model.getTextRepository()).thenReturn(providedTextRepository);
+    when(providedTextRepository.getIndexSearcherForDocument(documentId)).thenReturn(providedIndexSearcher);
     when(documentPersistenceContext.getDocumentId()).thenReturn(documentId);
     when(moduleResultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     when(moduleResultProvider.getResultFor(Model.class)).thenReturn(model);
@@ -80,12 +80,12 @@ public class LuceneModuleTest {
   @Test
   public void testStoresChapters() throws Exception {
     luceneModule.execute(moduleResultProvider, progressListener);
-    verify(textRepository).storeChaptersTexts(chapters, documentId);
+    verify(providedTextRepository).storeChaptersTexts(chapters, documentId);
   }
   
   @Test
   public void testReturnsIndexSearcher() throws Exception {
-    IndexSearcher indexSearcher = luceneModule.execute(moduleResultProvider, progressListener);
-    assertEquals(providedIndexSearcher, indexSearcher);
+    LuceneResult luceneResult = luceneModule.execute(moduleResultProvider, progressListener);
+    assertEquals(providedIndexSearcher.getIndexReader(), luceneResult.getIndexReader());
   }
 }

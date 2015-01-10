@@ -11,17 +11,15 @@ import java.util.UUID;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.ws.rs.*;
+
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
-import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 
@@ -37,10 +35,13 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class DocumentsService {
 
   private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator
-                                              + ".vita" + File.separator + "docs" + File.separator;
+      + ".vita" + File.separator + "docs" + File.separator;
 
   @Inject
   private EntityManager em;
+
+  @Inject
+  private DocumentDao documentDao;
 
   @Inject
   private AnalysisController analysisController;
@@ -49,8 +50,8 @@ public class DocumentsService {
   private DocumentService documentService;
 
   /**
-   * Returns a DocumentsResponse including a list of Documents with a given maximum length,
-   * starting at an also given offset.
+   * Returns a DocumentsResponse including a list of Documents with a given maximum length, starting
+   * at an also given offset.
    *
    * @param offset - the first Document to be returned
    * @param count - the maximum amount of Documents to be returned
@@ -59,12 +60,8 @@ public class DocumentsService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public DocumentsResponse getDocuments(@QueryParam("offset") int offset,
-                                        @QueryParam("count") int count) {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-
-    return new DocumentsResponse(query.getResultList());
+      @QueryParam("count") int count) {
+    return new DocumentsResponse(documentDao.findAll());
   }
 
   /**
@@ -83,7 +80,7 @@ public class DocumentsService {
     }
 
     Set<ConstraintViolation<AnalysisParameters>> violations =
-            Validation.buildDefaultValidatorFactory().getValidator().validate(parameters);
+        Validation.buildDefaultValidatorFactory().getValidator().validate(parameters);
     if (!violations.isEmpty()) {
       // TODO this does not work, it produces a generic Bad Request
       throw new ValidationViolationException(violations);
@@ -107,7 +104,9 @@ public class DocumentsService {
       saveFile(fileInputStream, filePath);
 
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName, parameters);
+      String id =
+          analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName,
+              parameters);
 
       // set up Response
       response = new DocumentIdResponse(id);
@@ -160,7 +159,7 @@ public class DocumentsService {
    * @return the DocumentService to access the given Document with the given id
    */
   @Path("{documentId}")
-  public DocumentService  getDocument(@PathParam("documentId") String id) {
+  public DocumentService getDocument(@PathParam("documentId") String id) {
     return documentService.setId(id);
   }
 

@@ -238,7 +238,7 @@ public class TextSpanTest {
     List<TextSpan> list2 = Arrays.asList(span3, span4);
 
     List<TextSpan> result = TextSpan.intersect(Arrays.asList(list1, list2));
-    System.out.println(result);
+
     assertThat(result, contains(
         new TextSpan(chapter, 50, 70),
         new TextSpan(chapter, 80, 90),

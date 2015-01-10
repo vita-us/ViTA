@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.IndexSearcher;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -31,7 +30,8 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class, AnalysisParameters.class})
+
+@AnalysisModule(dependencies = {BasicEntityCollection.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private static final int RADIUS = 100;
   private int count;
@@ -39,7 +39,6 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws IOException {
-    IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
     boolean stopWordListEnabled =
@@ -59,18 +58,18 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities, boolean stopWordListEnabled )
-      throws IOException {
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities,
+      boolean stopWordListEnabled) throws IOException {
     List<TextSpan> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
-   
+
     Set<String> stopWordList;
     if (stopWordListEnabled) {
       stopWordList = StopWordList.getStopWords();
     } else {
       stopWordList = new HashSet<String>();
     }
-    
+
     // The entity name itself should not be included in the word cloud
     Set<String> entityNameTokens = new HashSet<>();
     for (Attribute attr : entity.getNameAttributes()) {

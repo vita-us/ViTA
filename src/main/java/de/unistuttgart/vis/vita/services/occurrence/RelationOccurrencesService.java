@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -98,7 +96,7 @@ public class RelationOccurrencesService extends OccurrencesService {
   private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     List<List<TextSpan>> spanLists = new ArrayList<>();
     for (String entityId : entityIds) {
-      List<TextSpan> spans = readTextSpansForEntity(entityId, startOffset, endOffset);
+      List<TextSpan> spans = textSpanDao.findTextSpansForEntity(entityId, startOffset, endOffset);
       List<TextSpan> newSpans = new ArrayList<>();
       for (TextSpan span : spans) {
         newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
@@ -112,26 +110,9 @@ public class RelationOccurrencesService extends OccurrencesService {
     return convertSpansToOccurrences(intersectSpans);
   }
 
-  private List<TextSpan> readTextSpansForEntity(String entityId, int startOffset, int endOffset) {
-    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForEntity",
-                                                      TextSpan.class);
-    query.setParameter("entityId", entityId);
-    query.setParameter("rangeStart", startOffset);
-    query.setParameter("rangeEnd", endOffset);
-    return query.getResultList();
-  }
-
-  private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
-    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
-    numberOfTextSpansQuery.setParameter("entityIds", entityIds);
-    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
-    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
-    return (long) numberOfTextSpansQuery.getSingleResult() == entityIds.size() ? 1 : 0;
-  }
-
   @Override
   protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return getNumberOfSpansFromDatabase(stepStart, stepEnd);
+    return textSpanDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
   }
 
 }

@@ -29,11 +29,12 @@ public class DefaultAnalysisExecutorFactory implements AnalysisExecutorFactory {
     ImportModule importModule = new ImportModule(documentPath);
     ModelProviderModule modelModule = new ModelProviderModule(model);
     DocumentPersistenceContextModule documentPersistenceContextModule =
-        new DocumentPersistenceContextModule(documentId);
+        new DocumentPersistenceContextModule(documentId, documentPath);
     AnalysisParametersModule analysisParametersModule = new AnalysisParametersModule(parameters);
-    AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry,
-        ModuleClass.get(TARGET_MODULE),
-        importModule, modelModule, documentPersistenceContextModule, analysisParametersModule);
+    AnalysisScheduler scheduler =
+        new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE), importModule,
+            modelModule, documentPersistenceContextModule, analysisParametersModule);
+
     return new AnalysisExecutor(scheduler.getScheduledModules());
   }
 }

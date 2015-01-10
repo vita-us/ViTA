@@ -6,7 +6,8 @@
   vitaServices.factory('DocumentSearch', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/search', {}, {
       search: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);

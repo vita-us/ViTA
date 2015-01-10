@@ -15,7 +15,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ChapterBuilderTxtTest.class, ChapterPositionTxtTest.class, DocumentPartBuilderTxtTest.class,
     FullTextChapterAnalyzerTxtTest.class, MarkedHeadingChapterAnalyzerTxtTest.class,
     SimpleWhitelinesChapterAnalyzerTxtTest.class, SmallHeadingChapterAnalyzerTxtTest.class,
-    TextFileImporterTxtTest.class, TextImportModuleTest.class})
+    TextFileImporterTxtTest.class, TextImportModuleTest.class, SubTypeTxtTest.class})
 public class ImportTests {
 
   // hidden constructor
