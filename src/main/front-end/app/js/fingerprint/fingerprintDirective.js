@@ -55,6 +55,8 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
+      var loadingAnimationRect;
+      createLoadingAnimationRect();
       createRangeIndicators();
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
@@ -129,6 +131,7 @@
         if (angular.isUndefined(scope.entityIds)) {
           return;
         }
+        startLoadingAnimation();
         RelationOccurrences.get({
           documentId: $routeParams.documentId,
           entityIds: scope.entityIds.join(','),
@@ -136,8 +139,10 @@
         }, function(response) {
           removeFingerPrint();
           buildFingerPrint(response.occurrences, scope);
+          finishLoadingAnimation();
         }, function() {
           removeFingerPrint();
+          finishLoadingAnimation();
         });
       }
 
@@ -374,6 +379,23 @@
         svgContainer.select('#range-end-indicator')
             .attr('x', totalWidthScale(rangeEnd) - margin.left)
             .attr('width', totalWidthScale(1 - rangeEnd));
+      }
+
+      function createLoadingAnimationRect() {
+        loadingAnimationRect = svgContainer.append('rect')
+            .classed('loading-rect', true)
+            .attr('width', totalWidthScale(1))
+            .attr('height', SVG_HEIGHT)
+            .attr('x', -margin.left)
+            .attr('y', -margin.top);
+      }
+
+      function startLoadingAnimation() {
+        loadingAnimationRect.transition().style('opacity', 0.8);
+      }
+
+      function finishLoadingAnimation() {
+        loadingAnimationRect.transition().style('opacity', 0);
       }
     }
 
