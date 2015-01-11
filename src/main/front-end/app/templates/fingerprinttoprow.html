@@ -1,0 +1,12 @@
+<div class="fingerprint-top-row">
+  <button id="fp-separator-toggle-button" class="btn btn-default"
+          ng-click="FingerprintSynchronizer.toggle()">Toggle separators</button>
+  <span class="pull-right separators-key" ng-show="FingerprintSynchronizer.isSeparatorVisible()">
+    <span class="part-separator-key" title="Blue lines indicate the beginning of a part">
+      Part = <span class="part-help">|</span>
+    </span>
+    <span class="chapter-separator-key" title="Red lines indicate the beginning of a chapter">
+      Chapter = <span class="chapter-help">|</span>
+    </span>
+  </span>
+</div>

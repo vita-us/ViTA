@@ -3,9 +3,7 @@
     <div ng-include="'partials/menu.html'"></div>
   </div>
   <div class="col-md-8">
-    <button id="fp-separator-toggle-button" class="btn btn-default"
-      ng-click="FingerprintSynchronizer.toggle()">Toggle separators</button>
-    <span class="pull-right" data-separator-key></span>
+    <div data-fingerprint-top-row></div>
     <div class="text-center">
       <span ng-show="!fingerprintEntityIds" class="help-text">
         Click on a link in the graph to see the fingerprint of the relation</span>
