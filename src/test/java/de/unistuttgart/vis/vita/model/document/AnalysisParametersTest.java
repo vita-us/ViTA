@@ -52,15 +52,18 @@ public class AnalysisParametersTest {
     resultProvider = mock(ModuleResultProvider.class);
     progressListener = mock(ProgressListener.class);
     parameters = new AnalysisParameters();
-    
-    em.getTransaction().begin();
-    em.persist(doc);
-    em.getTransaction().commit();
+    doc.setParameters(parameters);
     
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
     AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
     Path docPath = Paths.get(MainAnalysisModule.class.getResource("LOTR_CP1.txt").toURI());
-    executor = factory.createExecutor(doc.getId(), docPath, parameters);
+    doc.setFilePath(docPath);
+
+    em.getTransaction().begin();
+    em.persist(doc);
+    em.getTransaction().commit();
+
+    executor = factory.createExecutor(doc);
     
   }
   

@@ -22,13 +22,12 @@ public class DefaultAnalysisExecutorFactory implements AnalysisExecutorFactory {
   }
 
   @Override
-  public AnalysisExecutor createExecutor(Document document,
-      AnalysisParameters parameters) {
+  public AnalysisExecutor createExecutor(Document document) {
     ImportModule importModule = new ImportModule(document.getFilePath());
     ModelProviderModule modelModule = new ModelProviderModule(model);
     DocumentPersistenceContextModule documentPersistenceContextModule =
         new DocumentPersistenceContextModule(document);
-    AnalysisParametersModule analysisParametersModule = new AnalysisParametersModule(parameters);
+    AnalysisParametersModule analysisParametersModule = new AnalysisParametersModule(document.getParameters());
     AnalysisScheduler scheduler = new AnalysisScheduler(moduleRegistry, ModuleClass.get(TARGET_MODULE),
         importModule, modelModule, documentPersistenceContextModule, analysisParametersModule);
     return new AnalysisExecutor(scheduler.getScheduledModules());

@@ -200,6 +200,7 @@ public class AnalysisControllerTest {
     Document document = new Document();
     document.setId(id);
     document.setFilePath(path);
+    document.setParameters(params);
 
     verifyExecutorCreated(id, path);
 
@@ -209,15 +210,14 @@ public class AnalysisControllerTest {
     controller.restartAnalysis(id);
 
     // Make sure it has been called the second time
-    verify(executorFactory, times(2)).createExecutor(document, params);
+    verify(executorFactory, times(2)).createExecutor(document);
   }
 
   private void prepareExecutor(Path path) {
     executor = mock(AnalysisExecutor.class);
     Document document = mock(Document.class);
     when(document.getFilePath()).thenReturn(path);
-    when(executorFactory.createExecutor(Matchers.any(Document.class),
-                                        Matchers.any(AnalysisParameters.class)))
+    when(executorFactory.createExecutor(Matchers.any(Document.class)))
         .thenReturn(executor);
   }
 
@@ -225,7 +225,7 @@ public class AnalysisControllerTest {
     Document document = new Document();
     document.setId(id);
     document.setFilePath(path);
-    verify(executorFactory).createExecutor(document, Matchers.any(AnalysisParameters.class));
+    verify(executorFactory).createExecutor(document);
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());

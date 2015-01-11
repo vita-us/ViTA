@@ -12,8 +12,7 @@ public interface AnalysisExecutorFactory {
    * Provides the {@link AnalysisExecutor} that will perform the analysis of the given document
    *
    * @param document The document with id and path.
-   * @param parameters the analysis parameters
    * @return the {@link AnalysisExecutor}
    */
-  AnalysisExecutor createExecutor(Document document, AnalysisParameters parameters);
+  AnalysisExecutor createExecutor(Document document);
 }

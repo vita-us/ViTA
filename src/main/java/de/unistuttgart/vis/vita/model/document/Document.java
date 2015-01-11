@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -169,7 +168,6 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Gets the parameters that should be used in the analysis of this document
-   * @return
    */
   public AnalysisParameters getParameters() {
     return parameters;
@@ -177,7 +175,6 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the parameters that should be used in the analysis of this document
-   * @param parameters
    */
   public void setParameters(AnalysisParameters parameters) {
     this.parameters = parameters;
