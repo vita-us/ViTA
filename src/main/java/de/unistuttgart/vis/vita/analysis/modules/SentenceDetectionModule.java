@@ -49,20 +49,39 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
         return new SentenceDetectionResult() {
             @Override
             public List<Sentence> getSentencesInChapter(Chapter chapter) {
-                return new ArrayList<>();
+                return chapterToSentence.get(chapter);
             }
 
             @Override
             public Sentence getSentenceAt(TextPosition pos) {
-                throw new UnsupportedOperationException("to be implemented");
+                for (Sentence sentence : chapterToSentence.get(pos.getChapter())) {
+                    TextPosition start = sentence.getRange().getStart();
+                    TextPosition end = sentence.getRange().getEnd();
+                    boolean overStart = start.getLocalOffset() <= pos.getLocalOffset();
+                    boolean notOverEnd = end.getLocalOffset() >= pos.getLocalOffset();
+
+                    if (overStart && notOverEnd) {
+                        return sentence;
+                    }
+                }
+
+                throw new IllegalArgumentException("No sentence for given position: " + pos);
             }
 
             @Override
             public Occurence createOccurrence(int startOffset, int endOffset) {
-                TextPosition start = null; // TODO
-                TextPosition end = null; // TODO
-                Range range = new Range(start, end);
-                return new Occurence(getSentenceAt(start), range);
+                Sentence sentence;
+
+                if (startOffsetToSentence.containsKey(startOffset)) {
+                    sentence = startOffsetToSentence.get(startOffset);
+                } else {
+                    TreeSet<Integer> test = new TreeSet<>(startOffsetToSentence.keySet());
+                    Integer foundOffset = test.floor(startOffset);
+
+                    sentence = startOffsetToSentence.get(foundOffset);
+                }
+
+                return new Occurence(sentence, sentence.getRange());
             }
         };
     }
