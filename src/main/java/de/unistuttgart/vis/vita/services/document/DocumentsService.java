@@ -100,6 +100,7 @@ public class DocumentsService {
     String baseName = FilenameUtils.getBaseName(fileName);
     String fileExtension = FilenameUtils.getExtension(fileName);
     Document document = createDocument(baseName);
+    document.setParameters(parameters);
     String uuid = document.getContentID().toString();
     
     // set up path
@@ -115,8 +116,7 @@ public class DocumentsService {
       document.setFilePath(new File(filePath).toPath());
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName,
-              parameters);
+      String id = analysisController.scheduleDocumentAnalysis(document);
 
       // set up Response
       response = new DocumentIdResponse(id);
