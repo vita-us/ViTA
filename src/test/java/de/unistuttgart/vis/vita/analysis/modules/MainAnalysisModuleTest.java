@@ -58,7 +58,6 @@ public class MainAnalysisModuleTest {
     Path docPath = Paths.get(getClass().getResource("LOTR_CP1.txt").toURI());
     document.setFilePath(docPath);
     document.setFileName("LOTR_CP1.txt");
-    document.setParameters(new AnalysisParameters());
     executor = factory.createExecutor(document);
   }
 
