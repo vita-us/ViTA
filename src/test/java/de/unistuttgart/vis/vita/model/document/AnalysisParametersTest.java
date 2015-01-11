@@ -55,7 +55,7 @@ public class AnalysisParametersTest {
 
     ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
     AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
-    Path docPath = Paths.get(MainAnalysisModule.class.getResource("LOTR_CP1.txt").toURI());
+    Path docPath = Paths.get(MainAnalysisModule.class.getResource("TestDocument.txt").toURI());
     executor = factory.createExecutor(doc.getId(), docPath, parameters);
 
   }
