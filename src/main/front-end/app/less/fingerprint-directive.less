@@ -57,15 +57,21 @@
   border: 1px solid @border-color;
   padding: 5px;
 
-  .chapter-help {
-    color: @fingerprint-line-color;
-    font-weight: bold;
-    font-size: 17px;
+  .part-separator-key {
+    margin-right: 10px;
+
+    .part-help {
+      color: @fingerprint-part-color;
+      font-weight: bold;
+      font-size: 17px;
+    }
   }
 
-  .part-help {
-    color: @fingerprint-part-color;
-    font-weight: bold;
-    font-size: 20px;
+  .chapter-separator-key {
+    .chapter-help {
+      color: @fingerprint-line-color;
+      font-weight: bold;
+      font-size: 17px;
+    }
   }
 }
