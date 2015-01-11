@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 import java.nio.file.Path;
@@ -98,7 +99,22 @@ public class AnalysisController {
    * @return The document id.
    */
   public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName) {
-    Document document = createDocument(filePath, fileName);
+    return scheduleDocumentAnalysis(filePath, fileName, new AnalysisParameters());
+  }
+
+  /**
+   * Starts the schedule of all modules registered in the registry. It calculates which modules can
+   * be started first and which have to wait for other modules. This algorithm also checks how many
+   * cores the CPU has and optimize it for multi-threading.
+   *
+   * @param filePath The path to the document.
+   * @param fileName The original document name.
+   * @param parameters parametrization of the analysis
+   * @return The document id.
+   */
+  public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName,
+      AnalysisParameters parameters) {
+    Document document = createDocument(filePath, fileName, parameters);
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
@@ -122,7 +138,7 @@ public class AnalysisController {
     Path path = document.getFilePath();
     if (path == null)
       throw new UnsupportedOperationException("There is no file associated with the document");
-    currentExecuter = executorFactory.createExecutor(document);
+    currentExecuter = executorFactory.createExecutor(document, document.getParamters());
     currentExecuter.start();
     currentDocument = document;
     isAnalysisRunning = true;
@@ -142,13 +158,14 @@ public class AnalysisController {
     });
   }
 
-  private Document createDocument(Path filePath, String fileName) {
+  private Document createDocument(Path filePath, String fileName, AnalysisParameters parameters) {
     Document document = new Document();
     document.getMetadata().setTitle(fileName);
     document.setFileName(fileName);
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setFilePath(filePath);
     document.setUploadDate(new Date());
+    document.setParameters(parameters);
 
     persistDocument(document);
 

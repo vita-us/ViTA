@@ -9,6 +9,10 @@
       var fd = new FormData();
       fd.append('file', file);
 
+      // TODO this is how parameters can be passed. They should be taken from the UI
+      var parameters = { relationTimeStepCount: 30, wordCloudItemsCount: 20, stopWordListEnabled: true };
+      fd.append('parameters', new Blob([ JSON.stringify(parameters) ], {type: 'application/json'}));
+
       $http.post(uploadUrl, fd, {
         transformRequest: angular.identity,
         headers: {

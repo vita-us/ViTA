@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.analysis;
 import de.unistuttgart.vis.vita.RandomBlockJUnit4ClassRunner;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 
 import org.junit.After;
@@ -17,14 +18,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.print.Doc;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -198,7 +195,8 @@ public class AnalysisControllerTest {
 
     Path path = Paths.get("path/to/file.name");
     prepareExecutor(path);
-    String id = controller.scheduleDocumentAnalysis(path, "file.name");
+    AnalysisParameters params = new AnalysisParameters();
+    String id = controller.scheduleDocumentAnalysis(path, "file.name", params);
     Document document = new Document();
     document.setId(id);
     document.setFilePath(path);
@@ -211,21 +209,23 @@ public class AnalysisControllerTest {
     controller.restartAnalysis(id);
 
     // Make sure it has been called the second time
-    verify(executorFactory, times(2)).createExecutor(document);
+    verify(executorFactory, times(2)).createExecutor(document, params);
   }
 
   private void prepareExecutor(Path path) {
     executor = mock(AnalysisExecutor.class);
     Document document = mock(Document.class);
     when(document.getFilePath()).thenReturn(path);
-    when(executorFactory.createExecutor(Matchers.any(Document.class))).thenReturn(executor);
+    when(executorFactory.createExecutor(Matchers.any(Document.class),
+                                        Matchers.any(AnalysisParameters.class)))
+        .thenReturn(executor);
   }
 
   private void verifyExecutorCreated(String id, Path path) {
     Document document = new Document();
     document.setId(id);
     document.setFilePath(path);
-    verify(executorFactory).createExecutor(document);
+    verify(executorFactory).createExecutor(document, Matchers.any(AnalysisParameters.class));
     ArgumentCaptor<AnalysisObserver> observerCaptor;
     observerCaptor = ArgumentCaptor.forClass(AnalysisObserver.class);
     verify(executor).addObserver(observerCaptor.capture());

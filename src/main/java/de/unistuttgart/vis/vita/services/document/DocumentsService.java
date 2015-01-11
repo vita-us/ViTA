@@ -16,20 +16,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.ws.rs.*;
+
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
@@ -81,7 +81,19 @@ public class DocumentsService {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Produces(MediaType.APPLICATION_JSON)
   public DocumentIdResponse addDocument(@FormDataParam("file") InputStream fileInputStream,
-                                        @FormDataParam("file") FormDataContentDisposition fDispo) {
+                                        @FormDataParam("file") FormDataContentDisposition fDispo,
+                                        @FormDataParam("parameters") AnalysisParameters parameters) {
+    if (parameters == null) {
+      parameters = new AnalysisParameters();
+    }
+
+    Set<ConstraintViolation<AnalysisParameters>> violations =
+        Validation.buildDefaultValidatorFactory().getValidator().validate(parameters);
+    if (!violations.isEmpty()) {
+      // TODO this does not work, it produces a generic Bad Request
+      throw new ValidationViolationException(violations);
+    }
+
     DocumentIdResponse response = null;
     
     String fileName = fDispo.getFileName();
@@ -103,8 +115,9 @@ public class DocumentsService {
       document.setFilePath(new File(filePath).toPath());
       
       // schedule analysis
-      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName);
-      
+      String id = analysisController.scheduleDocumentAnalysis(new File(filePath).toPath(), baseName,
+              parameters);
+
       // set up Response
       response = new DocumentIdResponse(id);
     }
@@ -166,7 +179,7 @@ public class DocumentsService {
    * @return the DocumentService to access the given Document with the given id
    */
   @Path("{documentId}")
-  public DocumentService  getDocument(@PathParam("documentId") String id) {
+  public DocumentService getDocument(@PathParam("documentId") String id) {
     return documentService.setId(id);
   }
 

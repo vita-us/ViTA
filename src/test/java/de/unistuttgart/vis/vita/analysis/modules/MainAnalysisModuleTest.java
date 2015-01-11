@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -57,7 +58,7 @@ public class MainAnalysisModuleTest {
     Path docPath = Paths.get(getClass().getResource("LOTR_CP1.txt").toURI());
     document.setFilePath(docPath);
     document.setFileName("LOTR_CP1.txt");
-    executor = factory.createExecutor(document);
+    executor = factory.createExecutor(document, new AnalysisParameters());
   }
 
   @Test

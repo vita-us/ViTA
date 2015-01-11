@@ -18,6 +18,7 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -59,6 +60,8 @@ public class EntityRelationModuleTest {
     BasicEntityCollection entities = createBasicEntities();
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(entities);
 
+    AnalysisParameters parameters = new AnalysisParameters();
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     module = new EntityRelationModule();
   }
 

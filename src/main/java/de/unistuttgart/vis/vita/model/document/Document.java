@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -30,6 +31,9 @@ public class Document extends AbstractEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  private AnalysisParameters parameters;
+
   private String filePath;
   
   @Column(length = 1000)
@@ -47,6 +51,7 @@ public class Document extends AbstractEntityBase {
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
+    this.parameters = new AnalysisParameters();
     contentID = UUID.randomUUID();
   }
 
@@ -160,5 +165,21 @@ public class Document extends AbstractEntityBase {
 
   public UUID getContentID() {
     return contentID;
+  }
+
+  /**
+   * Gets the parameters that should be used in the analysis of this document
+   * @return
+   */
+  public AnalysisParameters getParameters() {
+    return parameters;
+  }
+
+  /**
+   * Sets the parameters that should be used in the analysis of this document
+   * @param parameters
+   */
+  public void setParameters(AnalysisParameters parameters) {
+    this.parameters = parameters;
   }
 }
