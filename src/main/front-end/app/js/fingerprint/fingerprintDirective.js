@@ -55,8 +55,7 @@
       var rectGroup = svgContainer.append('g').classed('occurrences', true);
       var chapterLineGroup = svgContainer.append('g').classed('chapter-separators', true);
       var partLineGroup = svgContainer.append('g').classed('part-separators', true);
-      var loadingAnimationRect;
-      createLoadingAnimationRect();
+      var loadingAnimationRect = createLoadingAnimationRect();
       createRangeIndicators();
       var tooltip = svgContainer.append('text').classed('chapter-tooltip', true).attr('y', -margin.top);
 
@@ -382,7 +381,7 @@
       }
 
       function createLoadingAnimationRect() {
-        loadingAnimationRect = svgContainer.append('rect')
+        return svgContainer.append('rect')
             .classed('loading-rect', true)
             .attr('width', totalWidthScale(1))
             .attr('height', SVG_HEIGHT)
