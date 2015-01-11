@@ -1,10 +1,14 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import java.util.Arrays;
+import org.apache.commons.lang.ArrayUtils;
+import org.hibernate.annotations.Target;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import org.hibernate.annotations.Target;
 
 /**
  * Represents a Relation between two Entities.
@@ -20,7 +24,8 @@ public class EntityRelation extends AbstractEntityBase {
 
   private double weight;
 
-  private double[] weightOverTime;
+  @ElementCollection
+  private List<Double> weightOverTime;
 
   @ManyToOne
   @JoinTable(name="OriginId")
@@ -92,13 +97,13 @@ public class EntityRelation extends AbstractEntityBase {
       return weight;
     }
 
-    if (weightOverTime.length == 0) {
+    if (weightOverTime.size() == 0) {
       return 0;
     }
 
-    if (weightOverTime.length == 1) {
+    if (weightOverTime.size() == 1) {
       // would mess up the first/lastIndexFactor
-      return weightOverTime[0];
+      return weightOverTime.get(0);
     }
 
     if (end - start < 0.0001) {
@@ -106,8 +111,8 @@ public class EntityRelation extends AbstractEntityBase {
       return 0;
     }
 
-    double startInSteps = start * weightOverTime.length;
-    double endInSteps = end * weightOverTime.length;
+    double startInSteps = start * weightOverTime.size();
+    double endInSteps = end * weightOverTime.size();
 
     // These are the steps that are used completely
     int startIndex = (int)Math.ceil(startInSteps);
@@ -119,20 +124,20 @@ public class EntityRelation extends AbstractEntityBase {
 
     double value = 0;
     if (startIndex > 0) {
-      value += weightOverTime[startIndex - 1] * firstIndexFactor;
+      value += weightOverTime.get(startIndex - 1) * firstIndexFactor;
     }
-    if (endIndex < weightOverTime.length - 1) {
-      value += weightOverTime[endIndex] * lastIndexFactor;
+    if (endIndex < weightOverTime.size() - 1) {
+      value += weightOverTime.get(endIndex) * lastIndexFactor;
     }
 
     for (int i = startIndex; i < endIndex; i++) {
-      value += weightOverTime[i];
+      value += weightOverTime.get(i);
     }
 
-    return value / (end - start) / weightOverTime.length;
+    return value / (end - start) / weightOverTime.size();
   }
 
   public void setWeightOverTime(double[] steps) {
-    this.weightOverTime = Arrays.copyOf(steps, steps.length);
+    this.weightOverTime = Arrays.asList(ArrayUtils.toObject(steps));
   }
 }
