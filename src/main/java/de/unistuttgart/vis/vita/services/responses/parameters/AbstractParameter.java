@@ -7,25 +7,26 @@ package de.unistuttgart.vis.vita.services.responses.parameters;
 
 import java.lang.reflect.Type;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  *
  */
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({MinMaxParameter.class, BooleanParameter.class})
 public abstract class AbstractParameter {
 
   protected String name;
-  protected Type type;
+  protected Type attributeType;
 
   public AbstractParameter() {
   }
 
-  public AbstractParameter(String name, Type type) {
+  public AbstractParameter(String name, Type attributeType) {
     this.name = name;
-    this.type = type;
+    this.attributeType = attributeType;
   }
 
   public String getName() {
@@ -37,10 +38,10 @@ public abstract class AbstractParameter {
   }
 
   public Type getType() {
-    return type;
+    return attributeType;
   }
 
   public void setType(Type type) {
-    this.type = type;
+    this.attributeType = type;
   }
 }
