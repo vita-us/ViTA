@@ -23,13 +23,14 @@ import java.util.Map;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
+import javax.ws.rs.Produces;
 import javax.persistence.NoResultException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -67,7 +68,7 @@ public class ParametersService {
 
   @GET
   @Path("/available")
-  @Produces()
+  @Produces(MediaType.APPLICATION_JSON)
   public ParametersResponse getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
     List<AbstractParameter> parameterList = new ArrayList<>();
