@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class ParametersServiceTest extends ServiceTest {
+
   private String documentId;
   private EntityManager em;
 
@@ -78,7 +79,6 @@ public class ParametersServiceTest extends ServiceTest {
     assertThat(actualResponse.getRelationTimeStepCount(), is(20));
     assertThat(actualResponse.getWordCloudItemsCount(), is(100));
     assertThat(actualResponse.isStopWordListEnabled(), is(true));
-
   }
 
 }
