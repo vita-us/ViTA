@@ -93,9 +93,7 @@ public class SearchInDocumentService extends OccurrencesService {
   }
 
   private List<Chapter> getChaptersInRange(Chapter startChapter, Chapter endChapter) {
-    Document document =
-        em.createNamedQuery("Document.findDocumentById", Document.class)
-        .setParameter("documentId", documentId).getSingleResult();
+    Document document = documentDao.findById(documentId);
     boolean within = false;
     List<Chapter> chapters = new ArrayList<>();
     for (DocumentPart part : document.getContent().getParts()) {

@@ -62,7 +62,7 @@
       if (!windowObject || windowObject.closed) {
         windowObject = window.open('documentview.html', 'documentView',
                 'width=0,height=0,left=0,alwaysRaised=yes');
-        if (onOpenCallback) {
+        if (onOpenCallback instanceof Function) {
           $timeout(onOpenCallback, 1500);
         }
       } else {

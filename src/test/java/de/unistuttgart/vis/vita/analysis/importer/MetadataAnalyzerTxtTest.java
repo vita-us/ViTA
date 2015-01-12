@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -28,6 +29,7 @@ public class MetadataAnalyzerTxtTest {
   private DocumentMetadata documentMetadataText1 = new DocumentMetadata();
   private DocumentMetadata documentMetadataText2 = new DocumentMetadata();
   private DocumentMetadata documentMetadataText3 = new DocumentMetadata();
+  private DocumentMetadata documentMetadataText4 = new DocumentMetadata();
 
   /**
    * sets the values of documentMetadata after MetadataAnalyzer has analyzed the imported lines
@@ -47,7 +49,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText1 = metadataAnalyzer.extractMetadata();
     }
 
@@ -56,7 +58,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText2 = metadataAnalyzer.extractMetadata();
     }
     {
@@ -64,8 +66,16 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText3 = metadataAnalyzer.extractMetadata();
+    }
+    {
+      Path testPath = Paths.get(getClass().getResource("TooLongData.txt").toURI());
+      TextFileImporter textFileImporter;
+      textFileImporter = new TextFileImporter(testPath);
+      List<Line> testList = textFileImporter.getLines();
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
+      documentMetadataText4 = metadataAnalyzer.extractMetadata();
     }
   }
 
@@ -74,7 +84,6 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("The Lord of the Rings", documentMetadataText1.getTitle());
     assertEquals("\"Captains # Courageous\"", documentMetadataText2.getTitle());
     assertEquals("The Lord of the Rings", documentMetadataText3.getTitle());
-
   }
 
   @Test
@@ -86,9 +95,9 @@ public class MetadataAnalyzerTxtTest {
 
   @Test
   public void testPublisherYear() {
-    assertEquals(2006, documentMetadataText1.getPublishYear());
-    assertEquals(1999, documentMetadataText2.getPublishYear());
-    assertEquals(2010, documentMetadataText3.getPublishYear());
+    assertEquals(2006, documentMetadataText1.getPublishYear().intValue());
+    assertEquals(1999, documentMetadataText2.getPublishYear().intValue());
+    assertThat(documentMetadataText3.getPublishYear(), nullValue());
   }
 
   @Test
@@ -108,4 +117,19 @@ public class MetadataAnalyzerTxtTest {
     assertEquals("13", documentMetadataText2.getEdition());
     assertEquals("1", documentMetadataText3.getEdition());
   }
+  
+  @Test
+  public void testTooLongData(){
+    String sequence = "abcdefghij";
+    String longText = "";
+    for(int i = 0; i < 100; i++){
+      longText += sequence;
+    }
+    assertEquals(longText, documentMetadataText4.getTitle());
+    assertEquals(longText, documentMetadataText4.getAuthor());
+    assertEquals(longText, documentMetadataText4.getGenre());
+    assertEquals(longText, documentMetadataText4.getEdition());
+    assertEquals(longText, documentMetadataText4.getPublisher());
+  }
+  
 }

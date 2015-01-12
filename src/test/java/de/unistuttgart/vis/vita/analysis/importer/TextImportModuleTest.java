@@ -74,7 +74,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("Matilde Serao", metadata.getAuthor());
     assertEquals("The conquest of Rome", metadata.getTitle());
-    assertEquals(2014, metadata.getPublishYear());
+    assertEquals(2014, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());
@@ -84,32 +84,27 @@ public class TextImportModuleTest {
     DocumentPart documentPart = documentParts.get(0);
 
     List<Chapter> chapters = documentPart.getChapters();
-    assertTrue(chapters.size() == 20);
+    assertEquals(17,chapters.size());
 
     testPart1Chapter1(chapters.get(0).getTitle(), chapters.get(0).getText());
-    testPart1ChapterFalseDetection(chapters.get(1).getTitle(), chapters.get(1).getText());
-    testPart1Chapter2(chapters.get(2).getTitle(), chapters.get(2).getText());
-    testPart1Chapter3(chapters.get(3).getTitle(), chapters.get(3).getText());
-    testPart1Chapter4(chapters.get(4).getTitle(), chapters.get(4).getText());
-    testPart1Chapter5(chapters.get(5).getTitle(), chapters.get(5).getText());
-    testPart1Chapter1(chapters.get(0).getTitle(), chapters.get(0).getText());
+    testPart1Chapter2(chapters.get(1).getTitle(), chapters.get(1).getText());
+    testPart1Chapter3(chapters.get(2).getTitle(), chapters.get(2).getText());
+    testPart1Chapter4(chapters.get(3).getTitle(), chapters.get(3).getText());
+    testPart1Chapter5(chapters.get(4).getTitle(), chapters.get(4).getText());
 
-    testPart2Chapter1(chapters.get(6).getTitle(), chapters.get(6).getText());
-    testPart2Chapter2(chapters.get(7).getTitle(), chapters.get(7).getText());
-    testPart2Chapter3(chapters.get(8).getTitle(), chapters.get(8).getText());
-    testPart2Chapter4(chapters.get(9).getTitle(), chapters.get(9).getText());
-    testPart2Chapter5(chapters.get(10).getTitle(), chapters.get(10).getText());
+    testPart2Chapter1(chapters.get(5).getTitle(), chapters.get(5).getText());
+    testPart2Chapter2(chapters.get(6).getTitle(), chapters.get(6).getText());
+    testPart2Chapter3(chapters.get(7).getTitle(), chapters.get(7).getText());
+    testPart2Chapter4(chapters.get(8).getTitle(), chapters.get(8).getText());
+    testPart2Chapter5(chapters.get(9).getTitle(), chapters.get(9).getText());
 
-    testPart3Chapter1(chapters.get(11).getTitle(), chapters.get(11).getText());
-    testPart3Chapter2(chapters.get(12).getTitle(), chapters.get(12).getText());
-    testPart3Chapter3(chapters.get(13).getTitle(), chapters.get(13).getText());
-    testPart3Chapter4(chapters.get(14).getTitle(), chapters.get(14).getText());
-    testPart3Chapter5(chapters.get(15).getTitle(), chapters.get(15).getText());
-    testPart3Chapter6(chapters.get(16).getTitle(), chapters.get(16).getText());
-    testPart3Chapter7(chapters.get(17).getTitle(), chapters.get(17).getText());
-
-    testAdditionalChapter1(chapters.get(18).getTitle(), chapters.get(18).getText());
-    testAdditionalChapter2(chapters.get(19).getTitle(), chapters.get(19).getText());
+    testPart3Chapter1(chapters.get(10).getTitle(), chapters.get(10).getText());
+    testPart3Chapter2(chapters.get(11).getTitle(), chapters.get(11).getText());
+    testPart3Chapter3(chapters.get(12).getTitle(), chapters.get(12).getText());
+    testPart3Chapter4(chapters.get(13).getTitle(), chapters.get(13).getText());
+    testPart3Chapter5(chapters.get(14).getTitle(), chapters.get(14).getText());
+    testPart3Chapter6(chapters.get(15).getTitle(), chapters.get(15).getText());
+    testPart3Chapter7(chapters.get(16).getTitle(), chapters.get(16).getText());
   }
 
   @Test
@@ -122,7 +117,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("John Buchan", metadata.getAuthor());
     assertEquals("The Thirty-nine Steps", metadata.getTitle());
-    assertEquals(1996, metadata.getPublishYear());
+    assertEquals(1996, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());
@@ -151,7 +146,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("Matilde Serao", metadata.getAuthor());
     assertEquals("The conquest of Rome", metadata.getTitle());
-    assertEquals(2014, metadata.getPublishYear());
+    assertEquals(2014, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());
@@ -190,15 +185,6 @@ public class TextImportModuleTest {
   private void testPart1Chapter1(String heading, String text) {
     assertEquals("PART I\n\n\n\n\nCHAPTER I", heading);
     assertTrue(text.startsWith("The train stopped."));
-    assertTrue(text
-        .endsWith("On the reverse were a Christian name and a surname, indicative of the ownership:"));
-    assertFalse(text.contains("*       *       *       *       *"));
-    assertFalse(text.contains("\n\n\n"));
-  }
-
-  private void testPart1ChapterFalseDetection(String heading, String text) {
-    assertEquals("'FRANCESCO SANGIORGIO.'", heading);
-    assertTrue(text.startsWith("His hands were hot, "));
     assertTrue(text
         .endsWith("The Honourable Francesco Sangiorgio was exceedingly pale, and he was cold--in his heart."));
     assertFalse(text.contains("*       *       *       *       *"));
@@ -329,25 +315,6 @@ public class TextImportModuleTest {
   private void testPart3Chapter7(String heading, String text) {
     assertEquals("CHAPTER VII", heading);
     assertTrue(text.startsWith("Sangiorgio was idling under the porch at Montecitorio, "));
-    assertTrue(text.endsWith(" in very truth Rome has conquered him."));
-    assertFalse(text.contains("*       *       *       *       *"));
-    assertFalse(text.contains("\n\n\n"));
-  }
-
-  private void testAdditionalChapter1(String heading, String text) {
-    assertEquals(
-"THE END\n\n\nBILLING AND SONS, LTD., PRINTERS, GUILDFORD\n\n\n\n\n"
-        + "ADVERTISEMENTS\n\n\nTHE LAND OF COCKAYNE\n\nBY MATILDE SERAO",
-        heading);
-    assertTrue(text.startsWith("Some Press Opinions\n\n+The Pall"));
-    assertTrue(text.endsWith("high, middle, and low.'"));
-    assertFalse(text.contains("*       *       *       *       *"));
-    assertFalse(text.contains("\n\n\n"));
-  }
-
-  private void testAdditionalChapter2(String heading, String text) {
-    assertEquals("THE BALLET DANCER\n\nBY MATILDE SERAO", heading);
-    assertTrue(text.startsWith("Some Press Opinions\n\n+The Spectator.+"));
     assertTrue(text.endsWith("by Matilde Serao"));
     assertFalse(text.contains("*       *       *       *       *"));
     assertFalse(text.contains("\n\n\n"));

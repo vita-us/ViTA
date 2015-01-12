@@ -68,6 +68,9 @@ public class TextRepository {
       throw new RuntimeException(e);
     }
     ScoreDoc[] hits = indexSearcher.search(query, 1).scoreDocs;
+    if (hits.length == 0) {
+      throw new IOException("There is no text for the chapter " + chapterToPopulate.getId());
+    }
     Document hitDoc = indexSearcher.doc(hits[0].doc);
     chapterToPopulate.setText(hitDoc.getField(CHAPTER_TEXT_FIELD).stringValue());
   }

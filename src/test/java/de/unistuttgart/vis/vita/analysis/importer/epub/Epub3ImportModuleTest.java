@@ -1,7 +1,9 @@
 package de.unistuttgart.vis.vita.analysis.importer.epub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -64,8 +66,8 @@ public class Epub3ImportModuleTest {
 
   @Test
   public void testMetadataPublishYear(){
-    int text = 0;
-    assertEquals(text,epub3Result.getMetadata().getPublishYear());
+    
+    assertThat(epub3Result.getMetadata().getPublishYear(), nullValue());
   }
   
   @Test

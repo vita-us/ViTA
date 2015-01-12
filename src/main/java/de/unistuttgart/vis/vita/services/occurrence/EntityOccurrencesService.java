@@ -3,8 +3,6 @@ package de.unistuttgart.vis.vita.services.occurrence;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -95,32 +93,16 @@ public class EntityOccurrencesService extends OccurrencesService {
 
   private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-    List<TextSpan> readTextSpans = readTextSpansFromDatabase(startOffset, endOffset);
+    List<TextSpan> readTextSpans = textSpanDao.findTextSpansForEntity(entityId, 
+                                                                      startOffset, endOffset);
     
     // convert TextSpans into Occurrences and return them
     return convertSpansToOccurrences(readTextSpans);
   }
 
-  private List<TextSpan> readTextSpansFromDatabase(int startOffset, int endOffset) {
-    TypedQuery<TextSpan> query = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
-                                                      TextSpan.class);
-    query.setParameter("entityId", entityId);
-    query.setParameter("rangeStart", startOffset);
-    query.setParameter("rangeEnd", endOffset);
-    return query.getResultList();
-  }
-  
-  private long getNumberOfSpansFromDatabase(int startOffset, int endOffset) {
-    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
-    numberOfTextSpansQuery.setParameter("entityId", entityId);
-    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
-    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
-    return (long) numberOfTextSpansQuery.getSingleResult();
-  }
-
   @Override
   protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return getNumberOfSpansFromDatabase(stepStart, stepEnd);
+    return textSpanDao.getNumberOfTextSpansForEntity(entityId, stepStart, stepEnd);
   }
 
 }

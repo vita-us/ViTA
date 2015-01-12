@@ -2,8 +2,6 @@ package de.unistuttgart.vis.vita.model.progress;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlElement;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
@@ -14,22 +12,6 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * features.
  */
 @Entity
-@NamedQueries({
-  @NamedQuery(name = "AnalysisProgress.findAllProgresses",
-              query = "SELECT p "
-                    + "FROM AnalysisProgress p"),
-
-  @NamedQuery(name = "AnalysisProgress.findProgressById",
-              query = "SELECT p "
-                    + "FROM AnalysisProgress p "
-                    + "WHERE p.id = :progressId"),
-
-  @NamedQuery(name = "AnalysisProgress.findProgressByDocumentId",
-              query = "SELECT p "
-                    + "FROM AnalysisProgress p, Document d "
-                    + "WHERE d.id = :documentId "
-                    + "AND d.progress = p")
-})
 public class AnalysisProgress extends AbstractEntityBase {
   @Embedded
   private FeatureProgress graphViewProgress;

@@ -7,7 +7,8 @@
   vitaServices.factory('Place', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/places/:placeId', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);

@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -43,12 +44,15 @@ public class DocumentsServiceTest extends ServiceTest {
     super.setUp();
 
     EntityManager em = getModel().getEntityManager();
-
+    
     testData = new DocumentTestData();
-
     em.getTransaction().begin();
-    em.persist(testData.createTestDocument(1));
-    em.persist(testData.createTestDocument(2));
+    Document testDoc1 = testData.createTestDocument(1);
+    testDoc1.setUploadDate(new Date());
+    em.persist(testDoc1);
+    Document testDoc2 = testData.createTestDocument(2);
+    testDoc2.setUploadDate(new Date(System.currentTimeMillis() + 1000));
+    em.persist(testDoc2);
     em.getTransaction().commit();
     em.close();
   }
@@ -74,6 +78,7 @@ public class DocumentsServiceTest extends ServiceTest {
     assertEquals(2, actualResponse.getTotalCount());
     List<Document> docs = actualResponse.getDocuments();
     assertEquals(2, docs.size());
+    
     // the most recently added document comes first
     testData.checkData(docs.get(0), 2);
     testData.checkData(docs.get(1), 1);

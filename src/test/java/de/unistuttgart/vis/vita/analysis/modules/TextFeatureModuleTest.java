@@ -90,6 +90,7 @@ public class TextFeatureModuleTest {
 
     assertThat(document.getProgress().getTextProgress().getProgress(), is(1.0));
     assertThat(document.getProgress().getTextProgress().isReady(), is(true));
+    assertThat(document.getProgress().getTextProgress().isFailed(), is(false));
   }
 
   @Test
@@ -103,6 +104,18 @@ public class TextFeatureModuleTest {
 
     em.refresh(document);
     assertThat(document.getProgress().getTextProgress().getProgress(), is(0.5));
+    assertThat(document.getProgress().getTextProgress().isReady(), is(false));
+  }
+
+  @Test
+  public void testFeatureIsMarkedAsFailureWhenDependencyFails() {
+    module.dependencyFinished(Model.class, resultProvider.getResultFor(Model.class));
+    module.dependencyFinished(DocumentPersistenceContext.class,
+        resultProvider.getResultFor(DocumentPersistenceContext.class));
+    module.dependencyFailed(EntityRecognitionModule.class);
+
+    em.refresh(document);
+    assertThat(document.getProgress().getTextProgress().isFailed(), is(true));
     assertThat(document.getProgress().getTextProgress().isReady(), is(false));
   }
 

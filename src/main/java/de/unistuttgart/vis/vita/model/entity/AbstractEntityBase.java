@@ -53,4 +53,8 @@ public abstract class AbstractEntityBase {
   public int hashCode() {
     return id.hashCode();
   }
+
+  @Override public String toString() {
+    return getClass().getName().toString() + "#" + id;
+  }
 }

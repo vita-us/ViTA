@@ -63,7 +63,7 @@ public class EpubImportModule extends Module<ImportResult> {
    * @throws ParseException Thrown if metadata can not be parsed.
    */
   private DocumentMetadata extractMetadata(Book book, Path path) throws IOException, ParseException {
-    MetadataAnalyzerEpub metadataAnalyzer = new MetadataAnalyzerEpub(book, path);
+    MetadataAnalyzerEpub metadataAnalyzer = new MetadataAnalyzerEpub(book);
     return metadataAnalyzer.extractMetadata();
   }
 

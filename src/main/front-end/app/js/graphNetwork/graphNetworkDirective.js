@@ -47,7 +47,16 @@
         .domain([0, 1])
         .range([4, 16]);
 
-    var VISIBLE_LINK_LENGTH = 160;
+    var linkPathGenerator = d3.svg.line()
+        .x(function (d) {
+          return d.x;
+        })
+        .y(function (d) {
+          return d.y;
+        })
+        .interpolate('basis');
+
+    var VISIBLE_LINK_LENGTH = 160, NORMAL_VECTOR_LENGTH = 20;
 
     var graph, force, nodes, links, drag, svgContainer, entityIdNodeMap = d3.map();
 
@@ -226,14 +235,21 @@
         return 'translate(' + d.x + ',' + d.y + ')';
       });
 
-      links.attr('x1', function(d) {
-        return d.source.x;
-      }).attr('y1', function(d) {
-        return d.source.y;
-      }).attr('x2', function(d) {
-        return d.target.x;
-      }).attr('y2', function(d) {
-        return d.target.y;
+      links.attr('d', function (d) {
+        var dx = d.target.x - d.source.x;
+        var dy = d.target.y - d.source.y;
+
+        var normalX = -dy;
+        var normalY = dx;
+        var ratio = NORMAL_VECTOR_LENGTH / Math.sqrt(dx * dx + dy * dy);
+        var normalVector = {x: normalX * ratio, y: normalY * ratio};
+
+        var cx = (d.target.x + d.source.x) / 2;
+        var cy = (d.target.y + d.source.y) / 2;
+
+        var curvePoint = {x: cx + normalVector.x, y: cy + normalVector.y};
+
+        return linkPathGenerator([d.source, curvePoint, d.target]);
       });
     }
 
@@ -245,7 +261,7 @@
           });
 
       links.exit().remove();
-      links.enter().append('line')
+      links.enter().append('path')
           .classed('link', true)
           .style('stroke-width', function(d) {
             return linkWidthScale(d.weight) + "px";
@@ -253,6 +269,8 @@
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});
+              d3.select(".link.selected").classed("selected", false);
+              d3.select(this).classed('selected', true);
             }
           });
 
