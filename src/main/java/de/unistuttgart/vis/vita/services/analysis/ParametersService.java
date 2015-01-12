@@ -63,12 +63,14 @@ public class ParametersService {
     for (Field field : params.getDeclaredFields()) {
       field.setAccessible(true);
 
+      String dsp = field.getAnnotation(Description.class).value();
+
       if (field.getType() != boolean.class) {
         long min = field.getAnnotation(Min.class).value();
         long max = field.getAnnotation(Max.class).value();
-        parameter = new MinMaxParameter(field.getName(), field.getType(), min, max);
+        parameter = new MinMaxParameter(field.getName(), field.getType(), dsp, min, max);
       } else {
-        parameter = new BooleanParameter(field.getName(), field.getType());
+        parameter = new BooleanParameter(field.getName(), field.getType(), dsp);
       }
 
       parameterList.add(parameter);
