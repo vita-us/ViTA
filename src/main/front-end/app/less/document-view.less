@@ -1,3 +1,4 @@
+@bootstrap-screen-sm-min: 768px;
 @document-view-header-height: 65px;
 @document-view-footer-height: 50px;
 
@@ -28,7 +29,7 @@ body#document-view {
   float: right;
   margin-top: 12px;
   
-  @media (min-width: 768px) {
+  @media (min-width: @bootstrap-screen-sm-min) {
     display: none;
   }
 }
@@ -57,7 +58,7 @@ body#document-view {
       margin-left: 15px;
     }
     
-    @media (min-width: 768px) {
+    @media (min-width: @bootstrap-screen-sm-min) {
       .query-input {
         width: 25%;
         max-width: none;  
@@ -80,7 +81,6 @@ body#document-view {
   
   .document-view-menu {
     z-index: 100;
-    margin-bottom: 30px;
     
     .chapter {
       padding-left: 3px;
@@ -106,6 +106,7 @@ body#document-view {
  
   .document-view-text {
     background-color: @light-grey-background-color;
+    overflow: hidden;
   
     .chapter-headline, .part-headline {
       font-weight: bold;
@@ -176,7 +177,7 @@ body#document-view {
     padding-left: 10px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: @bootstrap-screen-sm-min) {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;
