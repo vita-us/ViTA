@@ -5,6 +5,8 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
+import com.sun.org.glassfish.gmbal.Description;
+
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -13,13 +15,9 @@ import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.ParametersResponse;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -43,18 +41,6 @@ public class ParametersService {
 
   @Inject
   private DocumentDao documentDao;
-
-  private Map<String, Type> nameToType = new HashMap<>();
-  private Map<String, List<Annotation>> nameToAnnotations = new HashMap<>();
-
-  public static void main(String[] args) {
-    ParametersService service = new ParametersService();
-    ParametersResponse availableParameters = service.getAvailableParameters();
-
-    for (AbstractParameter parameter : availableParameters.getParameters()) {
-      System.out.println(parameter.getName() + " " + parameter.getType());
-    }
-  }
 
   /**
    * Sets the id of the document this resource should represent
