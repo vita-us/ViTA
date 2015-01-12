@@ -18,7 +18,7 @@ public class BooleanParameter extends AbstractParameter {
   public BooleanParameter() {
   }
 
-  public BooleanParameter(String name, Type type) {
-    super(name, type);
+  public BooleanParameter(String name, Type type, String desription) {
+    super(name, type, desription);
   }
 }

@@ -20,12 +20,30 @@ public abstract class AbstractParameter {
 
   protected String name;
   protected Type attributeType;
+  protected String description;
 
   public AbstractParameter() {
   }
 
-  public AbstractParameter(String name, Type attributeType) {
+  public AbstractParameter(String name, Type attributeType, String description) {
     this.name = name;
+    this.attributeType = attributeType;
+    this.description = description;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public Type getAttributeType() {
+    return attributeType;
+  }
+
+  public void setAttributeType(Type attributeType) {
     this.attributeType = attributeType;
   }
 
@@ -35,13 +53,5 @@ public abstract class AbstractParameter {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public Type getType() {
-    return attributeType;
-  }
-
-  public void setType(Type type) {
-    this.attributeType = type;
   }
 }
