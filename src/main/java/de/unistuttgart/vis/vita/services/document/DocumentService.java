@@ -21,6 +21,7 @@ import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
+import de.unistuttgart.vis.vita.services.analysis.ParametersService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
@@ -72,6 +73,9 @@ public class DocumentService {
 
   @Inject
   PlotViewService plotViewService;
+
+  @Inject
+  ParametersService parametersService;
 
   /**
    * Sets the id of the document this resource should represent
@@ -254,4 +258,8 @@ public class DocumentService {
     return plotViewService.setDocumentId(id);
   }
 
+  @Path("/parameters")
+  public ParametersService getParameters() {
+    return parametersService.setId(id);
+  }
 }
