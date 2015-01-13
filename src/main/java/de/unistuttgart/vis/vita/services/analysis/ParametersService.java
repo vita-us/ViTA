@@ -5,8 +5,7 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
-import com.sun.org.glassfish.gmbal.Description;
-
+import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;

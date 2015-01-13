@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import com.sun.org.glassfish.gmbal.Description;
-
+import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 import javax.persistence.Entity;
