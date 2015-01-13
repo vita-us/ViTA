@@ -37,6 +37,7 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
     private ImportResult importResult;
     private Map<Chapter, List<Sentence>> chapterToSentence;
     private Map<Integer, Sentence> startOffsetToSentence;
+    private TreeSet<Integer> sortedStartOffset;
 
     @Override public SentenceDetectionResult execute(ModuleResultProvider results,
         ProgressListener progressListener) throws Exception {
@@ -54,32 +55,22 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
 
             @Override
             public Sentence getSentenceAt(TextPosition pos) {
-                for (Sentence sentence : chapterToSentence.get(pos.getChapter())) {
-                    TextPosition start = sentence.getRange().getStart();
-                    TextPosition end = sentence.getRange().getEnd();
-                    boolean overStart = start.getLocalOffset() <= pos.getLocalOffset();
-                    boolean notOverEnd = end.getLocalOffset() >= pos.getLocalOffset();
+                int offset = pos.getOffset();
+                Sentence sentence;
 
-                    if (overStart && notOverEnd) {
-                        return sentence;
-                    }
+                if (startOffsetToSentence.containsKey(offset)) {
+                    sentence = startOffsetToSentence.get(offset);
+                } else {
+                    Integer foundOffset = sortedStartOffset.floor(offset);
+                    sentence = startOffsetToSentence.get(foundOffset);
                 }
 
-                throw new IllegalArgumentException("No sentence for given position: " + pos);
+                return sentence;
             }
 
             @Override
             public Occurence createOccurrence(int startOffset, int endOffset) {
-                Sentence sentence;
-
-                if (startOffsetToSentence.containsKey(startOffset)) {
-                    sentence = startOffsetToSentence.get(startOffset);
-                } else {
-                    TreeSet<Integer> test = new TreeSet<>(startOffsetToSentence.keySet());
-                    Integer foundOffset = test.floor(startOffset);
-
-                    sentence = startOffsetToSentence.get(foundOffset);
-                }
+                Sentence sentence = getSentenceAt(null); // TODO create TextPosition with chapter
 
                 return new Occurence(sentence, sentence.getRange());
             }
@@ -115,5 +106,7 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
                 chapterToSentence.put(chapter, sentences);
             }
         }
+
+        sortedStartOffset = new TreeSet<>(startOffsetToSentence.keySet());
     }
 }
