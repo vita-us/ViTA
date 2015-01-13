@@ -33,26 +33,15 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
+@Path("/analysis-parameters")
 @ManagedBean
 public class ParametersService {
-
-  private String id;
 
   @Inject
   private DocumentDao documentDao;
 
-  /**
-   * Sets the id of the document this resource should represent
-   *
-   * @param id the id
-   */
-  public ParametersService setId(String id) {
-    this.id = id;
-    return this;
-  }
-
   @GET
-  @Path("/available")
+  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public ParametersResponse getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
@@ -76,19 +65,5 @@ public class ParametersService {
     }
 
     return new ParametersResponse(parameterList);
-  }
-
-  @GET
-  @Path("/current")
-  @Produces(MediaType.APPLICATION_JSON)
-  public AnalysisParameters getParameters() {
-    Document readDoc;
-    try {
-      readDoc = documentDao.findById(id);
-    } catch (NoResultException e) {
-      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
-    }
-
-    return readDoc.getParameters();
   }
 }
