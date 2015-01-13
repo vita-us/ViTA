@@ -18,9 +18,11 @@ import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
+import de.unistuttgart.vis.vita.services.analysis.ParametersService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
@@ -254,4 +256,17 @@ public class DocumentService {
     return plotViewService.setDocumentId(id);
   }
 
+  @GET
+  @Path("/parameters")
+  @Produces(MediaType.APPLICATION_JSON)
+  public AnalysisParameters getParameters() {
+    Document readDoc;
+    try {
+      readDoc = documentDao.findById(id);
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    return readDoc.getParameters();
+  }
 }
