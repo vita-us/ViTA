@@ -195,9 +195,6 @@
       // all the scenes equal.
       var equal_scenes = false;
 
-      // Between 0 and 1.
-      var curvature = 0.5;
-
       // Scene width in panel_width
       // i.e. scene width = panel_width*sw_panels
       var sw_panels = 3;
@@ -214,18 +211,17 @@
       //var tie_breaker = false;
       // Set for each comic separately
 
-      function get_path(link) {
-        var x0 = link.x0;
-        var x1 = link.x1;
-        var xi = d3.interpolateNumber(x0, x1);
-        var x2 = xi(curvature);
-        var x3 = xi(1 - curvature);
-        var y0 = link.y0;
-        var y1 = link.y1;
+      function create_link_path(link) {
+        var x0 = link.x0,
+            y0 = link.y0,
+            x1 = link.x1,
+            y1 = link.y1,
+            x_center = (x0 + x1) / 2;
 
+        // Creates a cubic bezier curve
         return "M" + x0 + "," + y0
-            + "C" + x2 + "," + y0
-            + " " + x3 + "," + y1
+            + "C" + x_center + "," + y0
+            + " " + x_center + "," + y1
             + " " + x1 + "," + y1;
       }
 
@@ -292,7 +288,7 @@
               counter += 1;
             })
             .attr("d", function(d) {
-              return get_path(d);
+              return create_link_path(d);
             });
 
         counter = 0;
@@ -303,7 +299,7 @@
               counter += 1;
             })
             .attr("d", function(d) {
-              return get_path(d);
+              return create_link_path(d);
             });
       }
 
@@ -802,7 +798,7 @@
             .enter().append("path")
             .attr("class", "link")
             .attr("d", function(d) {
-              return get_path(d);
+              return create_link_path(d);
             })
             .attr("from", function(d) {
               return d.from.comic_name + "_" + d.from.id;
