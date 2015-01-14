@@ -94,7 +94,7 @@ public class EntityOccurrencesService extends OccurrencesService {
   private List<FlatOccurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
 
-    List<TextSpan> readTextSpans = textSpanDao.findTextSpansForEntity(entityId, 
+    List<TextSpan> readTextSpans = occurrenceDao.findTextSpansForEntity(entityId, 
                                                                       startOffset, endOffset);
     
     // convert TextSpans into Occurrences and return them
@@ -103,7 +103,7 @@ public class EntityOccurrencesService extends OccurrencesService {
 
   @Override
   protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return textSpanDao.getNumberOfTextSpansForEntity(entityId, stepStart, stepEnd);
+    return occurrenceDao.getNumberOfTextSpansForEntity(entityId, stepStart, stepEnd);
   }
 
 }

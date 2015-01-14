@@ -18,108 +18,103 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 @ManagedBean
 @MappedSuperclass
 @NamedQueries({
-  @NamedQuery(name = "TextSpan.findAllTextSpans",
-      query = "SELECT ts "
-            + "FROM TextSpan ts"),
-
   // for returning the exact spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForEntity",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
+  @NamedQuery(name = "Occurrence.findOccurrencesForEntity",
+    query = "SELECT occ "
+          + "FROM Occurrence occ, Entity e "
           + "WHERE e.id = :entityId "
-          + "AND ts MEMBER OF e.occurrences "
+          + "AND occ MEMBER OF e.occurrences "
           // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // right ordering
-          + "ORDER BY ts.start.offset"),
+          + "ORDER BY occ.start.offset"),
 
   // for checking the amount of spans for an entity in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForEntity",
-  query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e "
+  @NamedQuery(name = "Occurrence.getNumberOfOccurencesForEntity",
+  query = "SELECT COUNT(occ) "
+        + "FROM Occurrence occ, Entity e "
         + "WHERE e.id = :entityId "
-        + "AND ts MEMBER OF e.occurrences "
+        + "AND occ MEMBER OF e.occurrences "
         // range checks
-        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+        + "AND occ.sentence.index BETWEEN :rangeStart AND :rangeEnd "),
 
   // for returning the exact spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.findTextSpansForAttribute",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e, Attribute a "
+  @NamedQuery(name = "Occurrence.findOccurrencesForAttribute",
+    query = "SELECT occ "
+          + "FROM Occurrenceocc, Entity e, Attribute a "
           + "WHERE e.id = :entityId "
           + "AND a MEMBER OF e.attributes "
           + "AND a.id = :attributeId "
-          + "AND ts MEMBER OF a.occurrences "
+          + "AND occ MEMBER OF a.occurrences "
           // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // right ordering
-          + "ORDER BY ts.start.offset"),
+          + "ORDER BY occ.start.offset"),
 
   // for checking the amount of spans for an attribute in a given range
-  @NamedQuery(name = "TextSpan.getNumberOfTextSpansForAttribute",
-  query = "SELECT COUNT(ts) "
-        + "FROM TextSpan ts, Entity e, Attribute a "
+  @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForAttribute",
+  query = "SELECT COUNT(occ) "
+        + "FROM Occurrence occ, Entity e, Attribute a "
         + "WHERE e.id = :entityId "
         + "AND a MEMBER OF e.attributes "
         + "AND a.id = :attributeId "
-        + "AND ts MEMBER OF a.occurrences "
+        + "AND occ MEMBER OF a.occurrences "
         // range checks
-        + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-        + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+        + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+        + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
   // gets the occurrences of all entities
-  @NamedQuery(name = "TextSpan.findTextSpansForEntities",
-    query = "SELECT ts "
-          + "FROM TextSpan ts, Entity e "
+  @NamedQuery(name = "Occurrence.findOccurrencesForEntities",
+    query = "SELECT occ "
+          + "FROM Occurrence occ, Entity e "
           + "WHERE e.id IN :entityIds "
-          + "AND ts MEMBER OF e.occurrences "
+          + "AND occ MEMBER OF e.occurrences "
           // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts.start.chapter IS NOT NULL "
+          + "AND occ.start.chapter IS NOT NULL "
           // right ordering
-          + "ORDER BY ts.start.offset"),
+          + "ORDER BY occ.start.offset"),
 
   // checks whether a set of entities occur in a range (for relation occurrences)
-  @NamedQuery(name = "TextSpan.getNumberOfOccurringEntities",
+  @NamedQuery(name = "Occurrence.getNumberOfOccurringEntities",
     query = "SELECT COUNT(DISTINCT e.id) "
           + "FROM Entity e "
-          + "INNER JOIN e.occurrences ts "
+          + "INNER JOIN e.occurrences occ "
           + "WHERE e.id IN :entityIds "
           // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
           // Null checks
-          + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
+          + "AND occ.start.chapter IS NOT NULL " + "AND occ.start.chapter IS NOT NULL"),
 
   // gets the entities that occur within a given range
-  @NamedQuery(name = "TextSpan.getOccurringEntities",
+  @NamedQuery(name = "Occurrence.getOccurringEntities",
     query = "SELECT DISTINCT e "
           + "FROM Entity e "
-          + "INNER JOIN e.occurrences ts "
+          + "INNER JOIN e.occurrences occ "
           + "WHERE e IN :entities "
           // range checks
-          + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+          + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
           + "GROUP BY e "
-          + "HAVING COUNT(ts) > 0.25 * ("
-            + "SELECT COUNT(ts2) "
+          + "HAVING COUNT(occ) > 0.25 * ("
+            + "SELECT COUNT(occ2) "
             + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+            + "INNER JOIN p.occurrences occ2 "
+            + "WHERE occ2.start.offset BETWEEN :rangeStart AND :rangeEnd"
           + ") / ("
             + "SELECT COUNT(DISTINCT p) "
             + "FROM Person p "
-            + "INNER JOIN p.occurrences ts2 "
-            + "WHERE ts2.start.offset BETWEEN :rangeStart AND :rangeEnd"
+            + "INNER JOIN p.occurrences occ2 "
+            + "WHERE occ2.start.offset BETWEEN :rangeStart AND :rangeEnd"
           + ")"),
 
-  @NamedQuery(name = "TextSpan.findTextSpanById", query = "SELECT ts "
-      + "FROM TextSpan ts "
-      + "WHERE ts.id = :textSpanId")
+  @NamedQuery(name = "Occurrence.findOccurrenceById", query = "SELECT occ "
+      + "FROM Occurrence occ "
+      + "WHERE occ.id = :occurrenceId")
   })
 public class OccurenceDao extends JpaDao<Occurrence, String> {
 
@@ -144,9 +139,9 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return List of TextSpans for the given Entity in the also given document range
    */
-  public List<TextSpan> findTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
-    TypedQuery<TextSpan> entityQuery = em.createNamedQuery("TextSpan.findTextSpansForEntity", 
-                                                            TextSpan.class);
+  public List<Occurrence> findOccurrencesForEntity(String entityId, int rangeStart, int rangeEnd) {
+    TypedQuery<Occurrence> entityQuery = em.createNamedQuery("Occurrence.findOccurrencesForEntity", 
+                                                            Occurrence.class);
     entityQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     entityQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
     entityQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
@@ -161,8 +156,8 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Entity in the also given document range
    */
-  public long getNumberOfTextSpansForEntity(String entityId, int rangeStart, int rangeEnd) {
-    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
+  public long getNumberOfOccurrencesForEntity(String entityId, int rangeStart, int rangeEnd) {
+    Query numberQuery = em.createNamedQuery("Occurrence.getNumberOfOccurrencesForEntity");
     numberQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
     numberQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
@@ -177,10 +172,10 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return List of TextSpans for the given Attribute in the also given document range
    */
-  public List<TextSpan> findTextSpansForAttribute(String entityId, String attrId, 
+  public List<Occurrence> findOccurrencesForAttribute(String entityId, String attrId, 
                                                     int rangeStart, int rangeEnd) {
-    TypedQuery<TextSpan> attributeQuery = em.createNamedQuery("TextSpan.findTextSpansForAttribute",
-                                                              TextSpan.class);
+    TypedQuery<Occurrence> attributeQuery = em.createNamedQuery("Occurrence.findOccurrencesForAttribute",
+                                                              Occurrence.class);
     attributeQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     attributeQuery.setParameter(ATTRIBUTE_ID_PARAMETER, attrId);
     attributeQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
@@ -197,9 +192,9 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Attribute in the also given document range
    */
-  public long getNumberOfTextSpansForAttribute(String entityId, String attrId, 
+  public long getNumberOfOccurrencesForAttribute(String entityId, String attrId, 
                                                 int rangeStart, int rangeEnd) {
-    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForAttribute");
+    Query numberQuery = em.createNamedQuery("Occurrence.getNumberOfOccurrencesForAttribute");
     numberQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     numberQuery.setParameter(ATTRIBUTE_ID_PARAMETER, attrId);
     numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
@@ -215,9 +210,9 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return List of TextSpans for the given entities in the also given document range
    */
-  public List<TextSpan> findTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
-    TypedQuery<TextSpan> entitiesQuery = em.createNamedQuery("TextSpan.FindTextSpansForEntities",
-                                                              TextSpan.class);
+  public List<Occurrence> findOccurrencesForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
+    TypedQuery<Occurrence> entitiesQuery = em.createNamedQuery("Occurrence.findOccurrencesForEntities",
+                                                              Occurrence.class);
     entitiesQuery.setParameter(ENTITY_IDS_PARAMETER, eIds);
     entitiesQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
     entitiesQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);
@@ -234,7 +229,7 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    *    range
    */
   public long getNumberOfTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
-    Query numberQuery = em.createNamedQuery("TextSpan.getNumberOfOccurringEntities");
+    Query numberQuery = em.createNamedQuery("Occurrence.getNumberOfOccurringEntities");
     numberQuery.setParameter(ENTITY_IDS_PARAMETER, eIds);
     numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
     numberQuery.setParameter(RANGE_END_PARAMETER, rangeEnd);

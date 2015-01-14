@@ -5,6 +5,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import de.unistuttgart.vis.vita.model.document.Range;
+
 /**
  * Holds a list of Occurrences to be sent as a response.
  */
@@ -12,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class OccurrencesResponse {
 
   @XmlElement(name = "occurrences")
-  private List<FlatOccurrence> occurrences;
+  private List<Range> occurrences;
   
   /**
    * Creates a new instance of OccurrencesResponse, setting all attributes to default values.
@@ -26,14 +28,14 @@ public class OccurrencesResponse {
    * 
    * @param occList - the list of Occurrences to be sent
    */
-  public OccurrencesResponse(List<FlatOccurrence> occList) {
+  public OccurrencesResponse(List<Range> occList) {
     this.occurrences = occList;
   }
 
   /**
    * @return the Occurrences stored in this response
    */
-  public List<FlatOccurrence> getOccurrences() {
+  public List<Range> getOccurrences() {
     return occurrences;
   }
 
@@ -42,7 +44,7 @@ public class OccurrencesResponse {
    * 
    * @param occList - the list of Occurrences to be sent
    */
-  public void setOccurrences(List<FlatOccurrence> occList) {
+  public void setOccurrences(List<Range> occList) {
     this.occurrences = occList;
   }
 

@@ -96,7 +96,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     List<List<Range>> spanLists = new ArrayList<>();
     for (String entityId : entityIds) {
 
-      List<TextSpan> spans = textSpanDao.findTextSpansForEntity(entityId, startOffset, endOffset);
+      List<TextSpan> spans = occurrenceDao.findTextSpansForEntity(entityId, startOffset, endOffset);
       List<TextSpan> newSpans = new ArrayList<>();
       for (TextSpan span : spans) {
         newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
@@ -112,7 +112,7 @@ public class RelationOccurrencesService extends OccurrencesService {
 
   @Override
   protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return textSpanDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
+    return occurrenceDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
   }
 
 }
