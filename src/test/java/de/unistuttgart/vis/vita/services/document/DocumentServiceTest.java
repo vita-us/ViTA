@@ -146,6 +146,24 @@ public class DocumentServiceTest extends ServiceTest {
   }
 
   /**
+   * Checks if the correct current parameters are returned.
+   */
+  @Test
+  public void testGetParameters() {
+    // set up request
+    String path = "documents/" + documentId + "/parameters";
+
+    // send request and get response
+    AnalysisParameters actualResponse = target(path).request().get(AnalysisParameters.class);
+
+    // check response for validity
+    assertNotNull(actualResponse);
+    assertThat(actualResponse.getRelationTimeStepCount(), is(20));
+    assertThat(actualResponse.getWordCloudItemsCount(), is(100));
+    assertThat(actualResponse.isStopWordListEnabled(), is(true));
+  }
+
+  /**
    * Restarts a document analysis with different parameters
    */
   @Test
