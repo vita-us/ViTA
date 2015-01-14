@@ -2,75 +2,23 @@
   border: 1px solid @border-color;
 
   // copied from the narrative.css
-  textarea {
-    font-size: 100%;
-  }
-
-  body > pre {
-    border-left: solid 2px #ccc;
-    padding-left: 18px;
-    margin: 2em 0 2em -20px;
-  }
-
-  .html .value,
-  .javascript .string,
-  .javascript .regexp {
-    color: #756bb1;
-  }
-
-  .html .tag,
-  .css .tag,
-  .javascript .keyword {
-    color: #3182bd;
-  }
-
-  .comment {
-    color: #636363;
-  }
-
-  .html .doctype,
-  .javascript .number {
-    color: #31a354;
-  }
-
-  .html .attribute,
-  .css .attribute,
-  .javascript .class,
-  .javascript .special {
-    color: #e6550d;
-  }
-
-  svg {
-    font: 10px sans-serif;
-  }
-
-  .axis path, .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  sup, sub {
-    line-height: 0;
-  }
-
   .scene {
+    color: #787878;
     cursor: move;
     fill-opacity: .15;
-    color: #787878;
     shape-rendering: auto;
   }
 
   .scene:hover {
-    fill-opacity: 0.6;
     color: #FFFF00;
+    fill-opacity: 0.6;
   }
 
   .node text {
-    pointer-events: none;
-    text-shadow: 1px 1px #fff;
     font-family: "Walter Turncoat", sans-serif;
     font-size: 10px;
+    pointer-events: none;
+    text-shadow: 1px 1px #fff;
   }
 
   .link {
@@ -81,25 +29,15 @@
     stroke-opacity: 1;
   }
 
+//  Unused in ViTA
   .comic-title {
     cursor: pointer;
-    pointer-events: all;
     font-family: "Cutive Mono", sans-serif;
     font-size: 18px;
     font-weight: normal;
-    line-height: 1em;
     letter-spacing: -1px;
-  }
-
-  p.step {
-    margin: -0.5em 0 0 1.2em;
-  }
-
-  p.todo {
-    font-style: italic;
-    margin: 0 0 0 1.2em;
-    color: #580000;
-    font-size: 12px;
+    line-height: 1em;
+    pointer-events: all;
   }
 
 }
