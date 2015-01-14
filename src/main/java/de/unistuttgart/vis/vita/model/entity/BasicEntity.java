@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.unistuttgart.vis.vita.model.document.Occurence;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 
 /**
  * The information about an entity that can be collected in the first pass
@@ -23,11 +23,11 @@ public class BasicEntity {
   private String entityId;
 
   private SortedSet<Attribute> nameAttributes;
-  private List<Occurence> occurrences;
+  private List<Occurrence> occurrences;
 
   public BasicEntity() {
     nameAttributes = new TreeSet<>(new AttributeComaparator());
-    occurrences = new ArrayList<Occurence>();
+    occurrences = new ArrayList<Occurrence>();
     entityId = UUID.randomUUID().toString();
   }
 
@@ -73,7 +73,7 @@ public class BasicEntity {
    * 
    * @return Set of all occurrences of this entity in the document
    */
-  public List<Occurence> getOccurences() {
+  public List<Occurrence> getOccurences() {
     return occurrences;
   }
 
@@ -82,7 +82,7 @@ public class BasicEntity {
    * 
    * @param newOccurences - a set of new occurrences for this entity
    */
-  public void setOccurences(List<Occurence> newOccurences) {
+  public void setOccurences(List<Occurrence> newOccurences) {
     this.occurrences = newOccurences;
   }
 

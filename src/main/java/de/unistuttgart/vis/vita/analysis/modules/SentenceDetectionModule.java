@@ -9,7 +9,7 @@ import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.Occurence;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -70,10 +70,10 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       }
 
       @Override
-      public Occurence createOccurrence(int startOffset, int endOffset) {
+      public Occurrence createOccurrence(int startOffset, int endOffset) {
         Sentence sentence = getSentenceAt(null); // TODO create TextPosition with chapter
 
-        return new Occurence(sentence, sentence.getRange());
+        return new Occurrence(sentence, sentence.getRange());
       }
     };
   }

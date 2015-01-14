@@ -7,11 +7,11 @@ import javax.persistence.OneToOne;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
- * The Occurence is defined by a sentence and a range. The range specifies the place or person to
- * which the occurence belongs.
+ * The Occurrence is defined by a sentence and a range. The range specifies the place or person to
+ * which the Occurrence belongs.
  */
 @Entity
-public class Occurence extends AbstractEntityBase {
+public class Occurrence extends AbstractEntityBase {
 
   @ManyToOne
   private Sentence sentence;
@@ -20,19 +20,19 @@ public class Occurence extends AbstractEntityBase {
   private Range range;
 
   /**
-   * Creates a new Occurence.
+   * Creates a new Occurrence.
    */
-  public Occurence() {
+  public Occurrence() {
     // empty constructor for JPA
   }
 
   /**
-   * Creates a new Occurence and sets all attributes to the given parameters.
+   * Creates a new Occurrence and sets all attributes to the given parameters.
    * 
-   * @param sentence - the sentence of this Occurence.
-   * @param range - the range of this Occurence.
+   * @param sentence - the sentence of this Occurrence.
+   * @param range - the range of this Occurrence.
    */
-  public Occurence(Sentence sentence, Range range) {
+  public Occurrence(Sentence sentence, Range range) {
     if (sentence == null) {
       throw new IllegalArgumentException("sentence must not be null!");
     }
@@ -45,18 +45,18 @@ public class Occurence extends AbstractEntityBase {
   }
 
   /**
-   * Get the Sentence of this Occurence.
+   * Get the Sentence of this Occurrence.
    * 
-   * @return the Sentence of this Occurence.
+   * @return the Sentence of this Occurrence.
    */
   public Sentence getSentence() {
     return sentence;
   }
 
   /**
-   * Set the Sentence of this Occurence.
+   * Set the Sentence of this Occurrence.
    * 
-   * @param sentence - the Sentence of this Occurence.
+   * @param sentence - the Sentence of this Occurrence.
    */
   public void setSentence(Sentence sentence) {
     if (sentence == null) {
@@ -67,18 +67,18 @@ public class Occurence extends AbstractEntityBase {
   }
 
   /**
-   * Get the Range of this Occurence.
+   * Get the Range of this Occurrence.
    * 
-   * @return the Range of this Occurence.
+   * @return the Range of this Occurrence.
    */
   public Range getRange() {
     return range;
   }
 
   /**
-   * Set the Range of this Occurence.
+   * Set the Range of this Occurrence.
    * 
-   * @param range - the Range of this Occurence.
+   * @param range - the Range of this Occurrence.
    */
   public void setRange(Range range) {
     if (range == null) {
