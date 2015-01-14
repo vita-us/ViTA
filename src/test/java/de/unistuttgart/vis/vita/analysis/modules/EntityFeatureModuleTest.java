@@ -131,8 +131,8 @@ public class EntityFeatureModuleTest {
     em.refresh(document);
 
     Place place = document.getContent().getPlaces().get(0);
-    assertThat(place.getOccurrences(), contains(
-        new Range(chapter, OCCURANCE3_START, OCCURANCE3_END)));
+    assertThat(place.getOccurrences(), contains(new Range(chapter, OCCURANCE3_START,
+        OCCURANCE3_END, document.getMetrics().getCharacterCount())));
   }
 
   @Test
@@ -142,8 +142,8 @@ public class EntityFeatureModuleTest {
 
     Person person = document.getContent().getPersons().get(0);
     WordCloud wordCloud = person.getWordCloud();
-    assertThat(wordCloud.getItems(), contains(
-        new WordCloudItem("peril", 4), new WordCloudItem("comfortable", 1)));
+    assertThat(wordCloud.getItems(),
+        contains(new WordCloudItem("peril", 4), new WordCloudItem("comfortable", 1)));
   }
 
   @Test
@@ -172,7 +172,7 @@ public class EntityFeatureModuleTest {
     assertThat(document.getProgress().getPersonsProgress().isReady(), is(false));
     assertThat(document.getProgress().getPlacesProgress().isReady(), is(false));
   }
-  
+
 
 
   private void prepareDatabase() {
@@ -190,8 +190,12 @@ public class EntityFeatureModuleTest {
     entity1 = new BasicEntity();
     entity1.setDisplayName(NAME1_1);
     entity1.setType(EntityType.PERSON);
-    entity1.getOccurences().add(new Range(chapter, OCCURANCE1_START, OCCURANCE1_END));
-    entity1.getOccurences().add(new Range(chapter, OCCURANCE2_START, OCCURANCE2_END));
+    entity1.getOccurences().add(
+        new Range(chapter, OCCURANCE1_START, OCCURANCE1_END, document.getMetrics()
+            .getCharacterCount()));
+    entity1.getOccurences().add(
+        new Range(chapter, OCCURANCE2_START, OCCURANCE2_END, document.getMetrics()
+            .getCharacterCount()));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
     list.add(entity1);
@@ -199,11 +203,13 @@ public class EntityFeatureModuleTest {
     entity2 = new BasicEntity();
     entity2.setType(EntityType.PLACE);
     entity2.setDisplayName(NAME2);
-    entity2.getOccurences().add(new Range(chapter, OCCURANCE3_START, OCCURANCE3_END));
+    entity2.getOccurences().add(
+        new Range(chapter, OCCURANCE3_START, OCCURANCE3_END, document.getMetrics()
+            .getCharacterCount()));
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
-    
-    
+
+
 
     return new EntityRanking() {
       @Override
@@ -222,14 +228,15 @@ public class EntityFeatureModuleTest {
 
       @Override
       public double[] getWeightOverTime(BasicEntity entity1, BasicEntity entity2) {
-        return new double[] { 0, 2, 1 };
+        return new double[] {0, 2, 1};
       }
     };
   }
 
   private EntityWordCloudResult getWordClouds() {
-    WordCloud wordCloud = new WordCloud(Arrays.asList(
-        new WordCloudItem("peril", 4), new WordCloudItem("comfortable", 1)));
+    WordCloud wordCloud =
+        new WordCloud(Arrays.asList(new WordCloudItem("peril", 4), new WordCloudItem("comfortable",
+            1)));
 
     EntityWordCloudResult result = mock(EntityWordCloudResult.class);
     when(result.getWordCloudForEntity(entity1)).thenReturn(wordCloud);
