@@ -81,7 +81,7 @@ public class RelationOccurrencesService extends OccurrencesService {
           .getOccurrences(steps, rangeStart, rangeEnd);
     }
 
-    List<FlatOccurrence> occs = null;
+    List<Range> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -92,7 +92,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<FlatOccurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     List<List<Range>> spanLists = new ArrayList<>();
     for (String entityId : entityIds) {
 

@@ -1,19 +1,21 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import de.unistuttgart.vis.vita.model.document.Occurrence;
-
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.annotation.ManagedBean;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
+
 /**
  * Represents a data access object for accessing TextSpans.
  */
+@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   // for returning the exact spans for an entity in a given range
@@ -122,7 +124,6 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
   private static final String RANGE_START_PARAMETER = "rangeStart";
 
-
   /**
    * Creates a new data access object for TextSpans using the given {@link EntityManager}.
    * 
@@ -229,7 +230,7 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
    * @return the number of TextSpans for the given list of entities in the also given document 
    *    range
    */
-  public long getNumberOfTextSpansForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
+  public long getNumberOfOccurrencesForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
     Query numberQuery = em.createNamedQuery("Occurrence.getNumberOfOccurringEntities");
     numberQuery.setParameter(ENTITY_IDS_PARAMETER, eIds);
     numberQuery.setParameter(RANGE_START_PARAMETER, rangeStart);
