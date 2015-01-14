@@ -11,8 +11,8 @@
         var plotviewData;
 
         scope.$watch('[width,height]', function() {
-          raw_chart_width = scope.width || raw_chart_width;
-          raw_chart_height = scope.height || raw_chart_height;
+          RAW_CHART_WIDTH = scope.width || RAW_CHART_WIDTH;
+          RAW_CHART_HEIGHT = scope.height || RAW_CHART_HEIGHT;
           redrawPlotview(container, plotviewData);
         }, true);
 
@@ -30,14 +30,13 @@
         draw_chart(container, "plotview", plotviewData, true, false, false);
       }
 
-      // Link dimensions
-      var link_width = 1.8;
-      var link_gap = 2;
+      var LINK_WIDTH = 1.8;
+      var LINK_GAP = 2;
 
-      var node_width = 10; // Set to panel_width later
-      var color = d3.scale.category10();
-      var raw_chart_width = 1000;
-      var raw_chart_height = 360;
+      var NODE_WIDTH = 10; // Set to panel_width later
+      var COLOR_SCALE = d3.scale.category10();
+      var RAW_CHART_WIDTH = 1000;
+      var RAW_CHART_HEIGHT = 360;
 
 
       // Height of empty gaps between groups
@@ -106,7 +105,6 @@
         this.group_ptr = null;
         this.first_scene = null;
         this.group_positions = {};
-        this.group_name_positions = {};
       }
 
       function Link(from, to, group, char_id) {
@@ -119,7 +117,7 @@
         this.y0 = -1;
         this.x1 = 0;
         this.y1 = -1;
-        this.char_ptr = null; // TODO: Not used
+        this.char_ptr = null;
       }
 
       function SceneNode(chars, start, duration, id, title) {
@@ -128,12 +126,10 @@
         this.duration = duration; // Scene lasts for this many panels
         this.id = id;
 
-        this.char_ptrs = [];
-        // Determined later
         this.x = 0;
         this.y = 0;
 
-        this.width = node_width; // Same for all nodes
+        this.width = NODE_WIDTH; // Same for all nodes
         this.height = 0; // Will be set later; proportional to link count
 
         this.in_links = [];
@@ -152,11 +148,6 @@
         };
         this.char_node = false;
         this.first_scene = null; // Only defined for char_node true
-        // Used when determining the y position of the name (i.e. the char_node)
-        // Char nodes are divided into x-regions, and the names in each region
-        // are sorted separately. This is the index of the x-region.
-        // ... Actually, I'll just keep an array of the nodes in every region.
-        //this.x_region = 0;
 
         this.median_group = null;
       }
@@ -218,11 +209,8 @@
         this.max = -1;
         this.id = -1;
         this.chars = [];
-        this.first_scene_chars = []; // NOT USED?
         this.median_count = 0;
-        this.biggest_scene = 0; // largest scene height. NOT USED
         this.all_chars = {};
-        this.char_scenes = [];
         this.order = -1;
       }
 
@@ -415,7 +403,7 @@
           s.y = i * text_height;
           s.x = 0;
           s.width = 5;
-          s.height = link_width;
+          s.height = LINK_WIDTH;
           s.name = chars[i].name;
           s.chars[s.chars.length] = chars[i].id;
           s.id = scenes.length;
@@ -445,7 +433,7 @@
         for (i = 0; i < chars.length; i++) {
           if (chars[i].id == char_id) break;
 
-        } // for
+        }
         if (i == chars.length) {
           console.log("ERROR: char not found, id = " + char_id);
         }
@@ -466,18 +454,9 @@
                                         chart_height, char_scenes, groups, panel_width,
                                         panel_shift, char_map) {
 
-        // Set the duration of the very last scene to something small
-        // so that there isn't a lot of wasted space at the end
-        /*
-         scenes.sort(function(a, b) { return a.start - b.start; });
-         var last = scenes[scenes.length-1];
-         last.start = last.duration - 10;
-         last.duration = 5;
-         */
-
         scenes.forEach(function(scene) {
           if (!scene.char_node) {
-            scene.height = Math.max(0, scene.chars.length * link_width + (scene.chars.length - 1) * link_gap);
+            scene.height = Math.max(0, scene.chars.length * LINK_WIDTH + (scene.chars.length - 1) * LINK_GAP);
             scene.width = panel_width * 3;
 
             // Average of chars meeting at the scene _in group_
@@ -522,7 +501,7 @@
         char_scenes.forEach(function(scene) {
           if (scene.first_scene != null) { // i.e. if it's a char scene node
             // Position char node right before the char's first scene
-            if (scene.first_scene.x > per_width * raw_chart_width)
+            if (scene.first_scene.x > per_width * RAW_CHART_WIDTH)
               scene.x = scene.first_scene.x - name_shift;
             else
               scene.x = panel_shift * panel_width - name_shift;
@@ -567,7 +546,7 @@
           for (var i = 0; i < scene.in_links.length; i++) {
             // These are links incoming to the node, so we're setting the
             // co-cordinates for the last point on the link path
-            scene.in_links[i].y1 = scene.y + i * (link_width + link_gap) + link_width / 2.0;
+            scene.in_links[i].y1 = scene.y + i * (LINK_WIDTH + LINK_GAP) + LINK_WIDTH / 2.0;
             scene.in_links[i].x1 = scene.x + 0.5 * scene.width;
 
             if (j < scene.out_links.length && scene.out_links[j].char_id == scene.in_links[i].char_id) {
@@ -578,7 +557,7 @@
 
           for (var i = 0; i < scene.out_links.length; i++) {
             if (scene.out_links[i].y0 == -1) {
-              scene.out_links[i].y0 = scene.y + i * (link_width + link_gap) + link_width / 2.0;
+              scene.out_links[i].y0 = scene.y + i * (LINK_WIDTH + LINK_GAP) + LINK_WIDTH / 2.0;
             }
             scene.out_links[i].x0 = scene.x + 0.5 * scene.width;
           }
@@ -632,7 +611,7 @@
               .attr("x", function(d) {
                 return -((d.name.length + 2) * 5);
               })
-              .attr("y", function(d) {
+              .attr("y", function() {
                 return -3;
               })
               .attr("width", function(d) {
@@ -649,7 +628,7 @@
               return d.char_node;
             })
             .attr("x", -6)
-            .attr("y", function(d) {
+            .attr("y", function() {
               return 0;
             })
             .attr("dy", ".35em")
@@ -658,9 +637,8 @@
             .text(function(d) {
               return d.name;
             })
-            .filter(function(d) {
+            .filter(function() {
               return false;
-              //return d.x < chart_width / 2;
             })
             .attr("x", function(d) {
               return 6 + d.width;
@@ -687,7 +665,7 @@
       }
 
 
-      function draw_links(links, svg, safe_name) {
+      function draw_links(links, svg) {
         var link = svg.append("g").selectAll(".link")
             .data(links)
             .enter().append("path")
@@ -705,9 +683,9 @@
               return d.from.comic_name + "_" + d.char_id;
             })
             .style("stroke", function(d) {
-              return d3.rgb(color(d.group)).darker(0.5).toString();
+              return d3.rgb(COLOR_SCALE(d.group)).darker(0.5).toString();
             })
-            .style("stroke-width", link_width)
+            .style("stroke-width", LINK_WIDTH)
             .style("stroke-opacity", "0.6")
             .style("stroke-linecap", "round")
             .on("mouseover", mouseover_cb)
@@ -724,9 +702,9 @@
         }
       }
 
-      function draw_chart(container, safe_name, data, tie_breaker, center_sort, collapse) {
+      function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
         var margin = {top: 20, right: 25, bottom: 20, left: 1};
-        var width = raw_chart_width - margin.left - margin.right;
+        var width = RAW_CHART_WIDTH - margin.left - margin.right;
 
         var jscenes = data['scenes'];
         // This calculation is only relevant for equal_scenes = true
@@ -759,32 +737,17 @@
 
 
         // Make space at the leftmost end of the chart for character names
-        //var total_panels = parseInt(j['panels']);
         var panel_width = Math.min((width - longest_name) / total_panels, 15);
         var panel_shift = Math.round(longest_name / panel_width);
         total_panels += panel_shift;
         panel_width = Math.min(width / total_panels, 15);
         
-        console.log("" + panel_width);
-
         var xchars = data.characters;
 
         // Calculate chart height based on the number of characters
         // TODO: Redo this calculation
         //var raw_chart_height = xchars.length*(link_width + link_gap + group_gap);// - (link_gap + group_gap);
-        var height = raw_chart_height - margin.top - margin.bottom;
-
-        // Insert the collapsable title
-        /*
-         var sign, disp;
-         if (collapse) {
-         sign = "+";
-         disp = "none";
-         } else {
-         sign = "-";
-         disp = "inherit";
-         }
-         */
+        var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
 
         var svg = container.append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -836,20 +799,11 @@
             s.in_links.forEach(function(l) {
               if (l.from.char_node) {
                 first_scenes[first_scenes.length] = l.from;
-                //ys[ys.length] = l.y1;
-                //console.log(l.y1);
               }
             });
-            /*
-             if (first_scenes.length == 1) {
-             first_scenes[0].y = s.y + s.height/2.0;
-             console.log(first_scenes[0].y);
-             } else {
-             */
             for (var i = 0; i < first_scenes.length; i++) {
               first_scenes[i].y = s.y + s.height / 2.0 + i * text_height;
             }
-            //}
           }
         });
 
@@ -869,21 +823,11 @@
         calculate_link_positions(scenes, chars, groups, char_map);
 
         height = groups[groups.length - 1].max + group_gap * 5;
-        raw_chart_height = height + margin.top + margin.bottom;
-        d3.select('svg#' + safe_name).style("height", raw_chart_height);
+        RAW_CHART_HEIGHT = height + margin.top + margin.bottom;
+        d3.select('svg#' + safe_name).style("height", RAW_CHART_HEIGHT);
 
-        /*
-         groups.forEach(function(g) {
-         d3.select("svg#" + folder).append("rect")
-         .attr("width", 10)
-         .attr("height", g.max-g.min)
-         .attr("x", 0)
-         .attr("y", g.min+margin.top)
-         .style("color", color(g.id));
-         });
-         */
         draw_links(links, svg);
-        draw_nodes(scenes, svg, width, height, raw_chart_height, safe_name);
+        draw_nodes(scenes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
       }
 
       return {
