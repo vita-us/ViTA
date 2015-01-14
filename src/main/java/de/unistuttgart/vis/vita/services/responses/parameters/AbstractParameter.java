@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
- *
+ * Abstract class for response parameters. Only used for the service.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({MinMaxParameter.class, BooleanParameter.class})

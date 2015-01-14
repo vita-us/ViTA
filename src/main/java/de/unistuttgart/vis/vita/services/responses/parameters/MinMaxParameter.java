@@ -10,7 +10,8 @@ import java.lang.reflect.Type;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Parameter which has additional {@link javax.validation.constraints.Min} and {@link
+ * javax.validation.constraints.Max} annotations.
  */
 @XmlRootElement
 public class MinMaxParameter extends AbstractParameter {
