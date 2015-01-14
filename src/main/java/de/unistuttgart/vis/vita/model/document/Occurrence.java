@@ -14,69 +14,69 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "Range.findAllTextSpans", query = "SELECT ts " + "FROM Range ts"),
+  @NamedQuery(name = "Occurrence.findAllTextSpans", query = "SELECT occ " + "FROM Occurrence occ"),
 
   // for returning the exact spans for an entity in a given range
-  @NamedQuery(name = "Range.findTextSpansForEntity", query = "SELECT ts "
-      + "FROM Range ts, Entity e " + "WHERE e.id = :entityId "
-      + "AND ts MEMBER OF e.occurrences "
+  @NamedQuery(name = "Occurrence.findOccurrencesForEntity", query = "SELECT occ "
+      + "FROM Occurrence occ, Entity e " + "WHERE e.id = :entityId "
+      + "AND occ MEMBER OF e.occurrences "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
       // right ordering
-      + "ORDER BY ts.start.offset"),
+      + "ORDER BY occ.start.offset"),
 
   // for checking the amount of spans for an entity in a given range
-  @NamedQuery(name = "Range.getNumberOfTextSpansForEntity", query = "SELECT COUNT(ts) "
-      + "FROM Range ts, Entity e " + "WHERE e.id = :entityId "
-      + "AND ts MEMBER OF e.occurrences "
+  @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForEntity", query = "SELECT COUNT(occ) "
+      + "FROM  occOccurrence, Entity e " + "WHERE e.id = :entityId "
+      + "AND occ MEMBER OF e.occurrences "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
   // for returning the exact spans for an attribute in a given range
-  @NamedQuery(name = "Range.findTextSpansForAttribute", query = "SELECT ts "
-      + "FROM Range ts, Entity e, Attribute a " + "WHERE e.id = :entityId "
+  @NamedQuery(name = "Occurrence.findOccurrencesForAttribute", query = "SELECT occ "
+      + "FROM  occOccurrence, Entity e, Attribute a " + "WHERE e.id = :entityId "
       + "AND a MEMBER OF e.attributes " + "AND a.id = :attributeId "
-      + "AND ts MEMBER OF a.occurrences "
+      + "AND occ MEMBER OF a.occurrences "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
       // right ordering
       + "ORDER BY ts.start.offset"),
 
   // for checking the amount of spans for an attribute in a given range
-  @NamedQuery(name = "Range.getNumberOfTextSpansForAttribute", query = "SELECT COUNT(ts) "
-      + "FROM Range ts, Entity e, Attribute a " + "WHERE e.id = :entityId "
+  @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForAttribute", query = "SELECT COUNT(occ) "
+      + "FROM Occurrence occ, Entity e, Attribute a " + "WHERE e.id = :entityId "
       + "AND a MEMBER OF e.attributes " + "AND a.id = :attributeId "
-      + "AND ts MEMBER OF a.occurrences "
+      + "AND occ MEMBER OF a.occurrences "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd"),
 
   // gets the occurrences of all entities
-  @NamedQuery(name = "Range.findTextSpansForEntities", query = "SELECT ts "
-      + "FROM Range ts, Entity e " + "WHERE e.id IN :entityIds "
-      + "AND ts MEMBER OF e.occurrences "
+  @NamedQuery(name = "Occurrence.findOccurrencesForEntities", query = "SELECT occ "
+      + "FROM Occurrence occ, Entity e " + "WHERE e.id IN :entityIds "
+      + "AND occ MEMBER OF e.occurrences "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.end.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd "
       // Null checks
-      + "AND ts.start.chapter IS NOT NULL "
+      + "AND occ.start.chapter IS NOT NULL "
       // right ordering
-      + "ORDER BY ts.start.offset"),
+      + "ORDER BY occ.start.offset"),
 
   // checks whether a set of entities occur in a range (for relation occurrences)
-  @NamedQuery(name = "Range.getNumberOfOccurringEntities", query = "SELECT COUNT(DISTINCT e.id) "
-      + "FROM Entity e " + "INNER JOIN e.occurrences ts " + "WHERE e.id IN :entityIds "
+  @NamedQuery(name = "Occurrence.getNumberOfOccurringEntities", query = "SELECT COUNT(DISTINCT e.id) "
+      + "FROM Entity e " + "INNER JOIN e.occurrences occ " + "WHERE e.id IN :entityIds "
       // range checks
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
-      + "AND ts.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
+      + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
       // Null checks
-      + "AND ts.start.chapter IS NOT NULL " + "AND ts.start.chapter IS NOT NULL"),
+      + "AND occ.start.chapter IS NOT NULL " + "AND occ.start.chapter IS NOT NULL"),
 
-  @NamedQuery(name = "Range.findTextSpanById", query = "SELECT ts " + "FROM Range ts "
-      + "WHERE ts.id = :RangeId")})
+  @NamedQuery(name = "Occurrence.findOccurrenceById", query = "SELECT occ " + "FROM Range occ "
+      + "WHERE occ.id = :occurrenceId")})
 public class Occurrence extends AbstractEntityBase {
 
   @ManyToOne
