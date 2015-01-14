@@ -1,7 +1,16 @@
 package de.unistuttgart.vis.vita.services.document;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import de.unistuttgart.vis.vita.data.DocumentTestData;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.ServiceTest;
+import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+
+import org.glassfish.jersey.server.ResourceConfig;
+import org.junit.Test;
+
+import java.nio.file.Paths;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.client.Entity;
@@ -9,20 +18,11 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
-import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
-import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
-import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.Test;
-
-import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.document.DocumentService;
-import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
-
-import java.nio.file.Paths;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * Performs some tests on the DocumentService to check whether GET, PUT and DELETE are working 
@@ -49,7 +49,7 @@ public class DocumentServiceTest extends ServiceTest {
     Document testDoc1 = testData.createTestDocument(1);
     testDoc1.setFileName("file.txt");
     testDoc1.setFilePath(
-        Paths.get(DocumentServiceTest.class.getResource("test_document.txt").getPath()));
+        Paths.get(DocumentServiceTest.class.getResource("test_document.txt").toURI()));
     documentId = testDoc1.getId();
     
     Document testDoc2 = testData.createTestDocument(2);
