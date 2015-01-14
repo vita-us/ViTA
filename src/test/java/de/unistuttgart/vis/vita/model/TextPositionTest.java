@@ -35,8 +35,7 @@ public class TextPositionTest {
 
   @Test
   public void testFromGobalOffset() {
-    TextPosition pos = TextPosition.fromGlobalOffset(chapter, 7);
-    assertEquals(chapter, pos.getChapter());
+    TextPosition pos = TextPosition.fromGlobalOffset(chapter, 7, DOCUMENT_LENGTH);
     assertEquals(7, pos.getOffset());
     // offset ist tested in depth below
   }
@@ -44,11 +43,10 @@ public class TextPositionTest {
   @Test
   public void testFromLocalOffset() {
     chapter.setRange(new Range(
-        TextPosition.fromGlobalOffset(chapter, 20),
-        TextPosition.fromGlobalOffset(chapter, 40)));
-    TextPosition pos = TextPosition.fromLocalOffset(chapter, 10);
+        TextPosition.fromGlobalOffset(chapter, 20, DOCUMENT_LENGTH),
+        TextPosition.fromGlobalOffset(chapter, 40, DOCUMENT_LENGTH)));
+    TextPosition pos = TextPosition.fromLocalOffset(chapter, 10, DOCUMENT_LENGTH);
     assertThat(pos.getOffset(), is(30));
-    assertThat(pos.getChapter(), is(chapter));
   }
 
   /**
@@ -56,14 +54,14 @@ public class TextPositionTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testNegativeOffset() {
-    TextPosition.fromGlobalOffset(chapter, -42);
+    TextPosition.fromGlobalOffset(chapter, -42, DOCUMENT_LENGTH);
   }
 
   @Test
   public void testCompareTo() {
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1, DOCUMENT_LENGTH);
 
     assertEquals(1, pos1.compareTo(null));
     assertEquals(-1, pos1.compareTo(pos2));
@@ -74,9 +72,9 @@ public class TextPositionTest {
 
   @Test
   public void testEquals() {
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1, DOCUMENT_LENGTH);
 
     assertTrue(pos1.equals(pos1Duplicate));
     assertFalse(pos1.equals(pos2));
@@ -87,9 +85,9 @@ public class TextPositionTest {
 
   @Test
   public void testHashCode() {
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos1Duplicate = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 1, DOCUMENT_LENGTH);
 
     assertEquals(pos1.hashCode(), pos1Duplicate.hashCode());
     assertNotEquals(pos1.hashCode(), pos2.hashCode());
@@ -97,16 +95,16 @@ public class TextPositionTest {
 
   @Test
   public void testMin() {
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100, DOCUMENT_LENGTH);
     assertThat(TextPosition.min(pos1, pos2), is(pos1));
     assertThat(TextPosition.min(pos2, pos1), is(pos1));
   }
 
   @Test
   public void testMax() {
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100);
+    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST, DOCUMENT_LENGTH);
+    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_TEST + 100, DOCUMENT_LENGTH);
     assertThat(TextPosition.max(pos1, pos2), is(pos2));
     assertThat(TextPosition.max(pos2, pos1), is(pos2));
   }
