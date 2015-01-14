@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.IndexSearcher;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -22,7 +21,12 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.Sentence;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.TextSpan;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -32,28 +36,30 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class,
-    ImportResult.class})
+@AnalysisModule(dependencies = {BasicEntityCollection.class, AnalysisParameters.class})
+
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   List<Chapter> allChapters;
   int documentLength;
   private static final int RADIUS = 100;
-  private static final int MAX_COUNT = 100;
+  private int count;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws IOException {
-    allChapters =
-        Chapter.transformPartsToChapters(results.getResultFor(ImportResult.class).getParts());
-    documentLength = results.getResultFor(ImportResult.class).getTotalLength();
-    IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
+
+allChapters =
+Chapter.transformPartsToChapters(results.getResultFor(ImportResult.class).getParts());
+documentLength = results.getResultFor(ImportResult.class).getTotalLength();
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
-
+    boolean stopWordListEnabled =
+        results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
+    count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
 
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities, stopWordListEnabled));
     }
 
     return new EntityWordCloudResult() {
@@ -64,10 +70,18 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
-      throws IOException {
+
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities,
+      boolean stopWordListEnabled) throws IOException {
     List<Range> spans = getTextSpansAroundEntity(entity);
     Map<String, Integer> frequencies = new HashMap<>();
+
+    Set<String> stopWordList;
+    if (stopWordListEnabled) {
+      stopWordList = StopWordList.getStopWords();
+    } else {
+      stopWordList = new HashSet<String>();
+    }
 
     // The entity name itself should not be included in the word cloud
     Set<String> entityNameTokens = new HashSet<>();
@@ -92,7 +106,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       for (int i = 1; i < tokens.length - 1; i++) {
         String token = tokens[i].trim();
         if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
-            && !entityNameTokens.contains(token) && !StopWordList.getStopWords().contains(token)) {
+            && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
           if (frequencies.containsKey(token)) {
             frequencies.put(token, frequencies.get(token) + 1);
           } else {
@@ -108,8 +122,8 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     }
 
     Collections.sort(items, Collections.reverseOrder());
-    if (items.size() > MAX_COUNT)
-      items = items.subList(0, MAX_COUNT);
+    if (items.size() > count)
+      items = items.subList(0, count);
 
     setWordCloudItemsEntitiyId(items, entities);
 
@@ -122,8 +136,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
   private List<Range> getTextSpansAroundEntity(BasicEntity entity) {
     List<Range> spans = new ArrayList<>(entity.getOccurences().size());
-    for (Range span : entity.getOccurences()) {
-      spans.add(span.widen(100, this.allChapters, documentLength));
+    //TODO with Set
+    for (Occurrence occurrence : entity.getOccurences()) {
+      spans.add(occurrence.getSentence().getRange());
     }
     return Range.normalizeOverlaps(spans, this.allChapters);
   }

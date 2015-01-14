@@ -14,28 +14,31 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-@AnalysisModule(dependencies = { BasicEntityCollection.class, ImportResult.class }, weight = 0.1)
+@AnalysisModule(dependencies = { BasicEntityCollection.class, ImportResult.class, AnalysisParameters.class }, weight = 0.1)
 public class EntityRelationModule extends Module<EntityRelations> {
 
   /**
-   * The maximum distance in characters two entities my occur at to be considered in a relation
+   * The distance in characters two entities my occur at to be considered in a relation
    */
-  public static final int MAX_DISTANCE = 50;
-
-  private static final int TIME_STEPS = 20;
+  private static final int DISTANCE = 50;
+  
+  private int timeSteps;
   
   private SortedSet<RelationEvent> events = new TreeSet<>();
   private Map<BasicEntity, Integer> presentEntities = new HashMap<>();
   private WeightsMap globalMap = new WeightsMap();
   private WeightsMap currentStepMap = new WeightsMap();
   private int currentStepMapIndex = 0;
-  private WeightsMap[] stepMaps = new WeightsMap[TIME_STEPS];
+  private WeightsMap[] stepMaps;
   private int totalLength;
   
   @Override
@@ -44,10 +47,15 @@ public class EntityRelationModule extends Module<EntityRelations> {
     Collection<BasicEntity> entities = results.getResultFor(BasicEntityCollection.class)
         .getEntities();
     totalLength = results.getResultFor(ImportResult.class).getTotalLength();
+
     List<DocumentPart> parts = results.getResultFor(ImportResult.class).getParts();
     
     // get all chapters
     List<Chapter> chapters = Chapter.transformPartsToChapters(parts);
+
+    timeSteps = results.getResultFor(AnalysisParameters.class).getRelationTimeStepCount();
+    stepMaps = new WeightsMap[timeSteps];
+
     
     for (BasicEntity entity : entities) {
       addEvents(entity, chapters);
@@ -55,7 +63,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
     
     processEvents();
     
-    while (currentStepMapIndex < TIME_STEPS) {
+    while (currentStepMapIndex < timeSteps) {
       stepMaps[currentStepMapIndex] = currentStepMap;
       currentStepMapIndex++;
       currentStepMap = new WeightsMap();
@@ -77,8 +85,8 @@ public class EntityRelationModule extends Module<EntityRelations> {
       
       @Override
       public double[] getWeightOverTime(BasicEntity entity1, BasicEntity entity2) {
-        double[] weights = new double[TIME_STEPS];
-        for (int i = 0; i < TIME_STEPS; i++) {
+        double[] weights = new double[timeSteps];
+        for (int i = 0; i < timeSteps; i++) {
           weights[i] = stepMaps[i].getNormalizedWeight(entity1, entity2);
         }
         return weights;
@@ -133,7 +141,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
         continue;
       }
       
-      while (position.getOffset() * TIME_STEPS / totalLength > currentStepMapIndex) {
+      while (position.getOffset() * timeSteps / totalLength > currentStepMapIndex) {
         stepMaps[currentStepMapIndex] = currentStepMap;
         currentStepMapIndex++;
         currentStepMap = new WeightsMap();
@@ -145,16 +153,18 @@ public class EntityRelationModule extends Module<EntityRelations> {
   }
   
   /**
-   * Extends the start and the end of the given text span by {@link #MAX_DISTANCE} / 2 each,
+   * Extends the start and the end of the given text span by {@link #DISTANCE} / 2 each,
    * but not across chapter boundaries
    * @param occurrence the span to widen
    * @param chapters all chapters of the document, sorted by position in the document
    * @return the widened span
    */
+
   private Range widenOccurrence(Range occurrence, List<Chapter> chapters) {
     int chapterOfOccurrenceStart = Range.findChapterOfRange(0, chapters, occurrence, true);
     int chapterStart = chapters.get(chapterOfOccurrenceStart).getRange().getStart().getOffset();
-    int start = occurrence.getStart().getOffset() - MAX_DISTANCE / 2;
+    int start = occurrence.getStart().getOffset() - DISTANCE / 2;
+   
 
     if (start < chapterStart) {
       start = chapterStart;
@@ -162,7 +172,8 @@ public class EntityRelationModule extends Module<EntityRelations> {
 
     int chapterOfOccurrenceEnd = Range.findChapterOfRange(0, chapters, occurrence, false);
     int chapterEnd = chapters.get(chapterOfOccurrenceEnd).getRange().getEnd().getOffset();
-    int end = occurrence.getEnd().getOffset() + MAX_DISTANCE / 2;
+    int end = occurrence.getEnd().getOffset() + DISTANCE / 2;
+
 
     if (end > chapterEnd) {
       end = chapterEnd;

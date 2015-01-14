@@ -7,7 +7,8 @@
   vitaServices.factory('Entity', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/entities/:entityId', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);

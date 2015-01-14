@@ -7,9 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,20 +22,10 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
-@Table(indexes = {@Index(columnList = "number")})
-@NamedQueries({
-    @NamedQuery(name = "Chapter.findAllChapters", query = "SELECT c " + "FROM Chapter c"),
+@Table(indexes={
+  @Index(columnList="number")
+})
 
-    @NamedQuery(name = "Chapter.findChapterById", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.id = :chapterId"),
-
-    @NamedQuery(name = "Chapter.findChapterByTitle", query = "SELECT c " + "FROM Chapter c "
-        + "WHERE c.title = :chapterTitle"),
-
-    @NamedQuery(name = "Chapter.findChapterByOffset", query = "SELECT c "
-        + "FROM Document d, DocumentPart dp, Chapter c " + "WHERE d.id = :documentId "
-        + "AND dp MEMBER OF d.content.parts " + "AND c MEMBER OF dp.chapters "
-        + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
 public class Chapter extends AbstractEntityBase {
 
   private int number;

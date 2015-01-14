@@ -54,9 +54,19 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     startAnalysis();
 
     progressListener.observeProgress(1);
+    mergeSameEntities();
     filterEntities();
     sortNames();
     return buildResult();
+  }
+
+  /**
+   * Merges all entities that have the same name
+   */
+  private void mergeSameEntities() {
+    EntityMerger merger = new EntityMerger();
+    merger.addAll(entities);
+    entities = new HashSet<BasicEntity>(merger.getResult());
   }
 
   /**
@@ -182,14 +192,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     String annotatedText = getAnnotatedText(chapter.getText(), theAnnotation);
 
     EntityType type = getEntityType(theAnnotation);
-
-    // The entity may exist in a previous chapter
-    if (entity == null) {
-      entity = getEntityByName(type, annotatedText);
-      if (entity != null) {
-        idMap.put(theAnnotation.getId(), entity);
-      }
-    }
 
     if (entity == null) {
       entity = new BasicEntity();

@@ -11,8 +11,6 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -33,12 +31,6 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 @Table(indexes={
     @Index(columnList="rankingValue")
   })
-@NamedQueries(
-  @NamedQuery(name = "Entity.findEntityById",
-          query = "SELECT e "
-                + "FROM Entity e "
-                + "WHERE e.id = :entityId")
-)
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
 @XmlRootElement

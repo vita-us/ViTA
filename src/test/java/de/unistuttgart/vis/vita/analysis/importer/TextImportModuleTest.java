@@ -74,7 +74,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("Matilde Serao", metadata.getAuthor());
     assertEquals("The conquest of Rome", metadata.getTitle());
-    assertEquals(2014, metadata.getPublishYear());
+    assertEquals(2014, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());
@@ -117,7 +117,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("John Buchan", metadata.getAuthor());
     assertEquals("The Thirty-nine Steps", metadata.getTitle());
-    assertEquals(1996, metadata.getPublishYear());
+    assertEquals(1996, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());
@@ -146,7 +146,7 @@ public class TextImportModuleTest {
     DocumentMetadata metadata = result.getMetadata();
     assertEquals("Matilde Serao", metadata.getAuthor());
     assertEquals("The conquest of Rome", metadata.getTitle());
-    assertEquals(2014, metadata.getPublishYear());
+    assertEquals(2014, metadata.getPublishYear().intValue());
     assertEquals("", metadata.getEdition());
     assertEquals("", metadata.getGenre());
     assertEquals("", metadata.getPublisher());

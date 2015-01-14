@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import de.unistuttgart.vis.vita.model.dao.AttributeDao;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
@@ -28,7 +27,7 @@ public class AttributesService {
   private String entityId;
 
   @Inject
-  private EntityManager em;
+  private AttributeDao attributeDao;
 
   @Inject
   private AttributeService attributeService;
@@ -65,22 +64,11 @@ public class AttributesService {
   @Produces(MediaType.APPLICATION_JSON)
   public AttributesResponse getAttributes(@QueryParam("offset") int offset,
                                           @QueryParam("count") int count) {
-    List<Attribute> attributes = readAttributesFromDatabase(offset, count);
+    List<Attribute> attributes = attributeDao.findAttributesForEntity(entityId, offset, count);
     
     List<BasicAttribute> basicAttributes = convertToBasicAttribute(attributes);
     
     return new AttributesResponse(basicAttributes);
-  }
-
-  private List<Attribute> readAttributesFromDatabase(int offset, int count) {
-    TypedQuery<Attribute> query = em.createNamedQuery("Attribute.findAttributesForEntity", 
-                                                      Attribute.class);
-    query.setParameter("entityId", entityId);
-
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-
-    return query.getResultList();
   }
 
   private List<BasicAttribute> convertToBasicAttribute(List<Attribute> attributes) {

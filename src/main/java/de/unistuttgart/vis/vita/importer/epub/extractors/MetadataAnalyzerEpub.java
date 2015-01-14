@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.importer.epub.extractors;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,7 +33,6 @@ public class MetadataAnalyzerEpub {
   private static final String EDITION = "edition";
   private static final String METADATA = "metadata";
 
-  private Path path;
   private Book ebook;
   private ContentBuilder contentBuilder = new ContentBuilder();
   private Document document;
@@ -47,9 +44,8 @@ public class MetadataAnalyzerEpub {
    * @param newPath The path to the eBook-file, the filename acts as alternative for the ebook's
    *        title.
    */
-  public MetadataAnalyzerEpub(Book newEbook, Path newPath) {
+  public MetadataAnalyzerEpub(Book newEbook) {
     this.ebook = newEbook;
-    this.path = newPath;
   }
 
   /**
@@ -77,7 +73,7 @@ public class MetadataAnalyzerEpub {
   private List<Line> getTitle() {
     List<Line> titleList = new ArrayList<Line>();
     // use file name...
-    String title = new File(path.toString()).getName();
+    String title = "";
     // ... or better use title from the book, if it is possible.
     if (ebook != null && !ebook.getTitle().isEmpty()) {
       title = ebook.getTitle();

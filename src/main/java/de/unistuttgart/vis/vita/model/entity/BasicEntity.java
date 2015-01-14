@@ -11,6 +11,8 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
+import com.google.common.collect.Iterables;
+
 
 /**
  * The information about an entity that can be collected in the first pass
@@ -33,7 +35,7 @@ public class BasicEntity {
 
   /**
    * Gets the name under which this entity will be shown
-   * 
+   *
    * @return the name under which this entity will be shown
    */
   public String getDisplayName() {
@@ -42,7 +44,7 @@ public class BasicEntity {
 
   /**
    * Sets the name under which this entity is shown in the graphical user interface.
-   * 
+   *
    * @param newDisplayName - the new name under which this entity should be shown
    */
   public void setDisplayName(String newDisplayName) {
@@ -51,7 +53,7 @@ public class BasicEntity {
 
   /**
    * Gets all the names under which the entity is known
-   * 
+   *
    * @return the names under which the entity is known
    */
   public SortedSet<Attribute> getNameAttributes() {
@@ -70,7 +72,7 @@ public class BasicEntity {
 
   /**
    * Gets all occurrences of this entity in the document
-   * 
+   *
    * @return Set of all occurrences of this entity in the document
    */
   public List<Occurrence> getOccurences() {
@@ -79,7 +81,7 @@ public class BasicEntity {
 
   /**
    * Sets the occurrences for this entity.
-   * 
+   *
    * @param newOccurences - a set of new occurrences for this entity
    */
   public void setOccurences(List<Occurrence> newOccurences) {
@@ -88,7 +90,7 @@ public class BasicEntity {
 
   /**
    * Indicates of which type this entity is
-   * 
+   *
    * @return either PERSON or PLACE
    */
   public EntityType getType() {
@@ -97,7 +99,7 @@ public class BasicEntity {
 
   /**
    * Sets of which type this entity is
-   * 
+   *
    * @param type either PERSON or PLACE
    */
   public void setType(EntityType type) {
@@ -106,7 +108,7 @@ public class BasicEntity {
 
   /**
    * Gets the entityId under which this entity is known
-   * 
+   *
    * @return the entityId under which this entity is known
    */
   public String getEntityId() {
@@ -122,11 +124,21 @@ public class BasicEntity {
            ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
            '}';
   }
+
+  /**
+   * Merges the names and occurrences of the other entity into this one
+   * @param other
+   */
+  public void merge(BasicEntity other) {
+    setNameAttributes(Attribute.merge(
+         Iterables.concat(getNameAttributes(), other.getNameAttributes())));
+    occurrences.addAll(other.getOccurences());
+  }
 }
 
 
 /**
- * Comparator for the names of the entity. Sorts them by the size.
+ * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
  */
 class AttributeComaparator implements Comparator<Attribute> {
 

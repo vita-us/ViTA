@@ -47,7 +47,7 @@ public class MetadataBuilder extends AbstractBuilder {
     documentMetadata.setEdition("");
     documentMetadata.setGenre("");
     documentMetadata.setPublisher("");
-    documentMetadata.setPublishYear(0);
+    documentMetadata.setPublishYear(null);
     documentMetadata.setTitle("");
 
     titleSet.add(TITLE_VERSION1);

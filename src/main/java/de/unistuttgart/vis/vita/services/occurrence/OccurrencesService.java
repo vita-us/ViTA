@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.TypedQuery;
+import javax.inject.Inject;
 
+import de.unistuttgart.vis.vita.model.dao.ChapterDao;
+import de.unistuttgart.vis.vita.model.dao.OccurenceDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
@@ -18,6 +20,12 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
  */
 @ManagedBean
 public abstract class OccurrencesService extends RangeService {
+  
+  @Inject
+  private ChapterDao chapterDao;
+  
+  @Inject
+  protected OccurenceDao textSpanDao;
 
   /**
    * Converts a given List of TextSpans into Occurrences.
@@ -44,12 +52,7 @@ public abstract class OccurrencesService extends RangeService {
    * @return the surrounding chapter
    */
   protected Chapter getSurroundingChapter(int offset) {
-    TypedQuery<Chapter> chapterQ = em.createNamedQuery("Chapter.findChapterByOffset",
-                                                        Chapter.class);
-    chapterQ.setParameter("documentId", documentId);
-    chapterQ.setParameter("offset", offset);
-
-    List<Chapter> chapters = chapterQ.getResultList();
+    List<Chapter> chapters = chapterDao.findChaptersByOffset(documentId, offset);
     if (chapters.isEmpty()) {
       throw new IllegalArgumentException("There is no chapter for the offset " +
           offset);

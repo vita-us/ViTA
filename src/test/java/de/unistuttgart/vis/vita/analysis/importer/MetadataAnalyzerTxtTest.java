@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.importer;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -48,7 +49,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText1 = metadataAnalyzer.extractMetadata();
     }
 
@@ -57,7 +58,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText2 = metadataAnalyzer.extractMetadata();
     }
     {
@@ -65,7 +66,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText3 = metadataAnalyzer.extractMetadata();
     }
     {
@@ -73,7 +74,7 @@ public class MetadataAnalyzerTxtTest {
       TextFileImporter textFileImporter;
       textFileImporter = new TextFileImporter(testPath);
       List<Line> testList = textFileImporter.getLines();
-      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList, testPath);
+      MetadataAnalyzer metadataAnalyzer = new MetadataAnalyzer(testList);
       documentMetadataText4 = metadataAnalyzer.extractMetadata();
     }
   }
@@ -94,9 +95,9 @@ public class MetadataAnalyzerTxtTest {
 
   @Test
   public void testPublisherYear() {
-    assertEquals(2006, documentMetadataText1.getPublishYear());
-    assertEquals(1999, documentMetadataText2.getPublishYear());
-    assertEquals(2010, documentMetadataText3.getPublishYear());
+    assertEquals(2006, documentMetadataText1.getPublishYear().intValue());
+    assertEquals(1999, documentMetadataText2.getPublishYear().intValue());
+    assertThat(documentMetadataText3.getPublishYear(), nullValue());
   }
 
   @Test
