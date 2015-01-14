@@ -1,23 +1,14 @@
-<<<<<<< HEAD
 package de.unistuttgart.vis.vita.model.document;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
-import de.unistuttgart.vis.vita.services.responses.occurrence.AbsoluteTextPosition;
-import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
@@ -133,31 +124,6 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
     }
 
     return result;
-  }
-
-  /**
-   * Converts this Range into an Occurrence.
-   *
-   * @param docLength - the length of the whole document in characters
-   * @return an Occurrence equivalent to this Range
-   */
-  public FlatOccurrence toOccurrence(int docLength) {
-    // create empty Occurrence
-    FlatOccurrence occ = new FlatOccurrence();
-
-    // set absolute start position
-    int startOffset = start.getOffset();
-    double startProgress = startOffset / (double) docLength;
-    occ.setStart(new AbsoluteTextPosition(startOffset, startProgress));
-
-    // set absolute end position
-    int endOffset = end.getOffset();
-    double endProgress = endOffset / (double) docLength;
-    occ.setEnd(new AbsoluteTextPosition(endOffset, endProgress));
-
-    // set length
-    occ.setLength(getLength());
-    return occ;
   }
 
   /**

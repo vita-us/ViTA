@@ -33,7 +33,6 @@ public class ChapterTestData {
     chapter.setTitle(TEST_CHAPTER_TITLE);
     chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, 0, TEST_CHAPTER_RANGE_END),
         TextPosition.fromGlobalOffset(chapter, TEST_CHAPTER_LENGTH, TEST_CHAPTER_RANGE_END)));
-    chapter.setDocumentLength(TEST_CHAPTER_RANGE_END);
 
     return chapter;
   }
