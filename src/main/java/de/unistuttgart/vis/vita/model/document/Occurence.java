@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -9,6 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * The Occurence is defined by a sentence and a range. The range specifies the place or person to
  * which the occurence belongs.
  */
+@Entity
 public class Occurence extends AbstractEntityBase {
 
   @ManyToOne
