@@ -84,6 +84,21 @@ public class TextPosition implements Comparable<TextPosition> {
   }
 
   /**
+   * Gets the offset relative to the enclosing chapter. This method will only produce a useful
+   * result if the given chapter is the enclosing chapter.
+   * 
+   * @param the enclosing chapter
+   * @return the local offset
+   */
+  public int getLocalOffset(Chapter enclosingChapter) {
+    if(enclosingChapter == null){
+      throw new IllegalArgumentException("Chapter must not be null");
+    }
+    
+    return offset - enclosingChapter.getRange().getStart().getOffset();
+  }
+
+  /**
    * @return the progress of the TextPosition in the document. Should be a number between 0.0 and
    *         1.0.
    */

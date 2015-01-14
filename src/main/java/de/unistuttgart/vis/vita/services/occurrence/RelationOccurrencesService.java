@@ -20,8 +20,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
-/**
- * Service providing a method to get the occurrences for relations in the current document via GET.
+ * /** Service providing a method to get the occurrences for relations in the current document via
+ * GET.
  */
 @ManagedBean
 public class RelationOccurrencesService extends OccurrencesService {
@@ -50,12 +50,13 @@ public class RelationOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
-                                            @QueryParam("entityIds") String eIds) {
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
+      @QueryParam("entityIds") String eIds) {
     // first check amount of steps
     if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
+      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"),
+          500);
     }
 
     // check range
@@ -70,7 +71,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
-    } catch(IllegalRangeException ire) {
+    } catch (IllegalRangeException ire) {
       throw new WebApplicationException(ire);
     }
 
@@ -78,9 +79,7 @@ public class RelationOccurrencesService extends OccurrencesService {
 
     if (entityIds.size() == 1) {
       // If there is only one entityId, that can be better handled by the entity occurrence service
-      return entityOccurrenceService
-          .setDocumentId(documentId)
-          .setEntityId(entityIds.get(0))
+      return entityOccurrenceService.setDocumentId(documentId).setEntityId(entityIds.get(0))
           .getOccurrences(steps, rangeStart, rangeEnd);
     }
 
@@ -101,6 +100,7 @@ public class RelationOccurrencesService extends OccurrencesService {
       List<Range> spans = readTextSpansForEntity(entityId, startOffset, endOffset);
       List<Range> newSpans = new ArrayList<>();
       for (Range span : spans) {
+        // TODO: Get all chapters of the document and the document length -> add as parameters
         newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
       }
       spanLists.add(Range.normalizeOverlaps(newSpans));
@@ -113,8 +113,7 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   private List<Range> readTextSpansForEntity(String entityId, int startOffset, int endOffset) {
-    TypedQuery<Range> query = em.createNamedQuery("TextSpan.findTextSpansForEntity",
-                                                      Range.class);
+    TypedQuery<Range> query = em.createNamedQuery("TextSpan.findTextSpansForEntity", Range.class);
     query.setParameter("entityId", entityId);
     query.setParameter("rangeStart", startOffset);
     query.setParameter("rangeEnd", endOffset);

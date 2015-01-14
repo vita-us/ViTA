@@ -20,6 +20,8 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
+import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -30,14 +32,20 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class})
+@AnalysisModule(dependencies = {IndexSearcher.class, BasicEntityCollection.class,
+    ImportResult.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
+  List<Chapter> allChapters;
+  int documentLength;
   private static final int RADIUS = 100;
   private static final int MAX_COUNT = 100;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws IOException {
+    allChapters =
+        Chapter.transformPartsToChapters(results.getResultFor(ImportResult.class).getParts());
+    documentLength = results.getResultFor(ImportResult.class).getTotalLength();
     IndexSearcher searcher = results.getResultFor(IndexSearcher.class);
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
@@ -68,9 +76,15 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     }
 
     for (Range span : spans) {
-      String text = span.getStart().getChapter().getText();
+      Chapter chapterOfRangeStart =
+          allChapters.get(Range.findChapterOfRange(0, this.allChapters, span, true));
+      Chapter chapterOfRangeEnd =
+          allChapters.get(Range.findChapterOfRange(0, this.allChapters, span, false));
+
+      String text = chapterOfRangeStart.getText();
       String substr =
-          text.substring(span.getStart().getLocalOffset(), span.getEnd().getLocalOffset());
+          text.substring(span.getStart().getLocalOffset(chapterOfRangeStart), span.getEnd()
+              .getLocalOffset(chapterOfRangeEnd));
 
       String[] tokens = tokenize(substr);
 
@@ -109,9 +123,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private List<Range> getTextSpansAroundEntity(BasicEntity entity) {
     List<Range> spans = new ArrayList<>(entity.getOccurences().size());
     for (Range span : entity.getOccurences()) {
-      spans.add(span.widen(100));
+      spans.add(span.widen(100, this.allChapters, documentLength));
     }
-    return Range.normalizeOverlaps(spans);
+    return Range.normalizeOverlaps(spans, this.allChapters);
   }
 
   /**
