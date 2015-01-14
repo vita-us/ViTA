@@ -6,6 +6,7 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
+import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -52,6 +53,7 @@ public class ParametersService {
       field.setAccessible(true);
 
       String dsp = field.getAnnotation(Description.class).value();
+      String label = field.getAnnotation(Label.class).value();
 
       if (field.getType() != boolean.class) {
         long min = field.getAnnotation(Min.class).value();
@@ -61,6 +63,7 @@ public class ParametersService {
         parameter = new BooleanParameter(field.getName(), field.getType(), dsp);
       }
 
+      parameter.setLabel(label);
       parameterList.add(parameter);
     }
 
