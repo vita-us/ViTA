@@ -9,6 +9,7 @@ import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -46,9 +47,7 @@ import static org.mockito.Mockito.withSettings;
 public class EntityRecognitionModuleRealTest {
 
   // Short story: The Cunning Fox and the Clever Stork
-  private final static String[]
-      CHAPTERS =
-      {""};
+  private final static String[] CHAPTERS = {""};
 
   private static List<DocumentPart> parts = new ArrayList<>();
   private static ModuleResultProvider resultProvider;
@@ -93,8 +92,8 @@ public class EntityRecognitionModuleRealTest {
     String bigString = "";
 
     try {
-      List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()),
-                                              Charset.defaultCharset());
+      List<String> lines =
+          Files.readAllLines(Paths.get(file.getAbsolutePath()), Charset.defaultCharset());
       for (String line : lines) {
         bigString = bigString.concat(line + " ");
       }
@@ -122,9 +121,16 @@ public class EntityRecognitionModuleRealTest {
   public void checkPersonRecognition() throws Exception {
     BasicEntity person = getEntityByName("Frodo");
 
+    int documentLength = getDocumentLength();
+    List<Range> occurrenceRanges = new ArrayList<Range>();
+    for (Occurrence occurrence : person.getOccurences()) {
+      occurrenceRanges.add(occurrence.getRange());
+    }
+
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PERSON));
-    assertThat(person.getOccurences(), hasItem(new Range(chapterObjects.get(0), 5750, 5759)));
+    assertThat(occurrenceRanges, hasItem(new Range(chapterObjects.get(0), 5750, 5759,
+        documentLength)));
     assertTrue(checkIfNameExists(person, "Frodo"));
     assertTrue(checkIfNameExists(person, "Mr. Frodo"));
   }
@@ -133,9 +139,16 @@ public class EntityRecognitionModuleRealTest {
   public void checkPlaceRecognition() throws Exception {
     BasicEntity person = getEntityByName("Buckland");
 
+    int documentLength = getDocumentLength();
+    List<Range> occurrenceRanges = new ArrayList<Range>();
+    for (Occurrence occurrence : person.getOccurences()) {
+      occurrenceRanges.add(occurrence.getRange());
+    }
+
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PLACE));
-    assertThat(person.getOccurences(), hasItem(new Range(chapterObjects.get(0), 4103, 4111)));
+    assertThat(occurrenceRanges, hasItem(new Range(chapterObjects.get(0), 4103, 4111,
+        documentLength)));
     assertTrue(checkIfNameExists(person, "Buckland"));
   }
 
@@ -145,14 +158,14 @@ public class EntityRecognitionModuleRealTest {
     // This does not test smoothness as the call times are not considered.
     int steps = 100;
     for (int i = 0; i < steps; i++) {
-      verify(progressListener, atLeastOnce()).observeProgress(doubleThat(
-          closeTo((double) i / steps, (double) 1 / steps)));
+      verify(progressListener, atLeastOnce()).observeProgress(
+          doubleThat(closeTo((double) i / steps, (double) 1 / steps)));
     }
   }
 
   private boolean checkIfNameExists(BasicEntity entity, String nameToSearch) {
-    for(Attribute attribute : entity.getNameAttributes()) {
-      if(attribute.getContent().equals(nameToSearch)) {
+    for (Attribute attribute : entity.getNameAttributes()) {
+      if (attribute.getContent().equals(nameToSearch)) {
         return true;
       }
     }
@@ -161,14 +174,22 @@ public class EntityRecognitionModuleRealTest {
   }
 
   private BasicEntity getEntityByName(String name) {
-    for(BasicEntity entity : collection.getEntities()) {
-      for(Attribute attribute : entity.getNameAttributes()) {
-          if(attribute.getContent().equals(name)) {
-            return entity;
-          }
+    for (BasicEntity entity : collection.getEntities()) {
+      for (Attribute attribute : entity.getNameAttributes()) {
+        if (attribute.getContent().equals(name)) {
+          return entity;
+        }
       }
     }
 
     return null;
+  }
+
+  private int getDocumentLength() {
+    int documentLength = 0;
+    for (String chapter : CHAPTERS) {
+      documentLength += chapter.length();
+    }
+    return documentLength;
   }
 }

@@ -11,9 +11,10 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -33,14 +34,15 @@ import java.util.TreeSet;
 import gate.Annotation;
 
 /**
- *
+ * 
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class}, weight = 0.1)
+@AnalysisModule(dependencies = {ImportResult.class, SentenceDetectionResult.class, AnnieNLPResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private Set<BasicEntity> entities = new HashSet<>();
   private ImportResult importResult;
+  private SentenceDetectionResult sentenceDetectionResult;
   private AnnieNLPResult annieNLPResult;
   private ProgressListener progressListener;
 
@@ -48,6 +50,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   public BasicEntityCollection execute(ModuleResultProvider result,
       ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
+    sentenceDetectionResult = result.getResultFor(SentenceDetectionResult.class);
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
     this.progressListener = progressListener;
 
@@ -90,7 +93,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Removes those entites which has only one or less occurences. Reduces the chance from getting
+   * Removes those entities which has only one or less occurrences. Reduces the chance from getting
    * wrong entities based on NLP failure.
    */
   private void filterEntities() {
@@ -203,11 +206,11 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       idMap.put(theAnnotation.getId(), entity);
       entities.add(entity);
     }
-    Range textSpan = getTextSpan(theAnnotation, chapter);
+    Occurrence occurrence = getTextSpan(theAnnotation, chapter);
 
-    updateNameAttributes(entity, annotatedText, textSpan);
+    updateNameAttributes(entity, annotatedText, occurrence);
 
-    entity.getOccurences().add(textSpan);
+    entity.getOccurences().add(occurrence);
   }
 
   private EntityType getEntityType(Annotation annotation) {
@@ -223,19 +226,19 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * 
    * @param entity The entity to be updated.
    * @param annotatedText The extracted name.
-   * @param textSpan The position of the name.
+   * @param occurrence The position of the name.
    */
-  private void updateNameAttributes(BasicEntity entity, String annotatedText, Range textSpan) {
+  private void updateNameAttributes(BasicEntity entity, String annotatedText, Occurrence occurrence) {
     for (Attribute currentAttribute : entity.getNameAttributes()) {
       if (currentAttribute.getContent().equals(annotatedText)) {
-        currentAttribute.getOccurrences().add(textSpan);
+        currentAttribute.getOccurrences().add(occurrence);
         return;
       }
     }
 
     Attribute newAttribute = new Attribute(AttributeType.NAME, annotatedText);
 
-    newAttribute.getOccurrences().add(textSpan);
+    newAttribute.getOccurrences().add(occurrence);
     entity.getNameAttributes().add(newAttribute);
   }
 
@@ -267,15 +270,16 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Creates a textpan for the given annotation. The textpan has the offset in the given chapter.
+   * Creates an Occurrence for the given annotation. The Occurrence has the offset in the given chapter.
    * 
    * @param theAnnotation The annotation to work with.
    * @param chapter The chapter in which the annotation can be found.
-   * @return The Textspan of the annotation.
+   * @return The Occurrence of the annotation.
    */
-  private Range getTextSpan(Annotation theAnnotation, Chapter chapter) {
-    return new Range(chapter, theAnnotation.getStartNode().getOffset().intValue(), theAnnotation
-        .getEndNode().getOffset().intValue(), this.importResult.getTotalLength());
+  private Occurrence getTextSpan(Annotation theAnnotation, Chapter chapter) {
+    int chapterStartOffset = chapter.getRange().getStart().getOffset();
+    return sentenceDetectionResult.createOccurrence(chapterStartOffset+theAnnotation.getStartNode().getOffset().intValue(), chapterStartOffset + theAnnotation
+        .getEndNode().getOffset().intValue());
   }
 
   /**
@@ -289,21 +293,5 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     int start = theAnnotation.getStartNode().getOffset().intValue();
     int end = theAnnotation.getEndNode().getOffset().intValue();
     return text.substring(start, end);
-  }
-
-  private BasicEntity getEntityByName(EntityType type, String name) {
-    for (BasicEntity entity : entities) {
-      if (entity.getType() != type) {
-        continue;
-      }
-
-      for (Attribute attribute : entity.getNameAttributes()) {
-        if (attribute.getContent().equals(name)) {
-          return entity;
-        }
-      }
-    }
-
-    return null;
   }
 }

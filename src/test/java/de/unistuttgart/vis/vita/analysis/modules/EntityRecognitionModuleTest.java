@@ -28,18 +28,7 @@ import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 /**
  * Unit tests for analysis modules
@@ -90,14 +79,19 @@ public class EntityRecognitionModuleTest {
     DocumentPart part = new DocumentPart();
     parts.add(part);
 
+    int documentLength = 0;
+    for(String chapterText : CHAPTERS){
+      documentLength += chapterText.length();
+    }
+    
     chapterObjects = new ArrayList<>();
     int pos = 0;
     for (String chapterText : CHAPTERS) {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
-      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, pos),
-          TextPosition.fromGlobalOffset(chapter, pos + chapterText.length())));
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, pos, documentLength),
+          TextPosition.fromGlobalOffset(chapter, pos + chapterText.length(), documentLength)));
       pos += chapterText.length();
       part.getChapters().add(chapter);
       chapterObjects.add(chapter);
