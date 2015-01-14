@@ -17,28 +17,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class ParametersServiceTest extends ServiceTest {
 
-  private String documentId;
-  private EntityManager em;
-
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-
-    em = getModel().getEntityManager();
-
-    // need a document to stop its analysis
-    Document testDocument = new DocumentTestData().createTestDocument(1);
-
-    // save id for request
-    documentId = testDocument.getId();
-
-    // persist test document
-    em.getTransaction().begin();
-    em.persist(testDocument);
-    em.getTransaction().commit();
-    em.close();
-  }
-
   @Override
   protected Application configure() {
     return new ResourceConfig(ParametersService.class);
