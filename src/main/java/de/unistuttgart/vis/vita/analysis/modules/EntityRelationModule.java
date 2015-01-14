@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -13,6 +14,8 @@ import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -41,9 +44,13 @@ public class EntityRelationModule extends Module<EntityRelations> {
     Collection<BasicEntity> entities = results.getResultFor(BasicEntityCollection.class)
         .getEntities();
     totalLength = results.getResultFor(ImportResult.class).getTotalLength();
+    List<DocumentPart> parts = results.getResultFor(ImportResult.class).getParts();
+    
+    // get all chapters
+    List<Chapter> chapters = Chapter.transformPartsToChapters(parts);
     
     for (BasicEntity entity : entities) {
-      addEvents(entity);
+      addEvents(entity, chapters);
     }
     
     processEvents();
@@ -79,9 +86,9 @@ public class EntityRelationModule extends Module<EntityRelations> {
     };
   }
   
-  private void addEvents(BasicEntity entity) {
+  private void addEvents(BasicEntity entity, List<Chapter> chapters) {
     for (Range occurrence : entity.getOccurences()) {
-      occurrence = widenOccurrence(occurrence);
+      occurrence = widenOccurrence(occurrence, chapters);
       events.add(new RelationEvent(entity, EventType.ENTER, occurrence.getStart()));
       events.add(new RelationEvent(entity, EventType.LEAVE, occurrence.getEnd()));
     }
@@ -141,25 +148,28 @@ public class EntityRelationModule extends Module<EntityRelations> {
    * Extends the start and the end of the given text span by {@link #MAX_DISTANCE} / 2 each,
    * but not across chapter boundaries
    * @param occurrence the span to widen
+   * @param chapters all chapters of the document, sorted by position in the document
    * @return the widened span
    */
-  private Range widenOccurrence(Range occurrence) {
-    int chapterStart = occurrence.getStart().getChapter().getRange().getStart().getOffset();
+  private Range widenOccurrence(Range occurrence, List<Chapter> chapters) {
+    int chapterOfOccurrenceStart = Range.findChapterOfRange(0, chapters, occurrence, true);
+    int chapterStart = chapters.get(chapterOfOccurrenceStart).getRange().getStart().getOffset();
     int start = occurrence.getStart().getOffset() - MAX_DISTANCE / 2;
 
     if (start < chapterStart) {
       start = chapterStart;
     }
 
-    int chapterEnd = occurrence.getEnd().getChapter().getRange().getEnd().getOffset();
+    int chapterOfOccurrenceEnd = Range.findChapterOfRange(0, chapters, occurrence, false);
+    int chapterEnd = chapters.get(chapterOfOccurrenceEnd).getRange().getEnd().getOffset();
     int end = occurrence.getEnd().getOffset() + MAX_DISTANCE / 2;
 
     if (end > chapterEnd) {
       end = chapterEnd;
     }
 
-    return new Range(TextPosition.fromGlobalOffset(occurrence.getStart().getChapter(), start),
-        TextPosition.fromGlobalOffset(occurrence.getEnd().getChapter(), end));
+    return new Range(TextPosition.fromGlobalOffset(chapters.get(chapterOfOccurrenceStart), start, this.totalLength),
+        TextPosition.fromGlobalOffset(chapters.get(chapterOfOccurrenceEnd), end, this.totalLength));
     
   }
 

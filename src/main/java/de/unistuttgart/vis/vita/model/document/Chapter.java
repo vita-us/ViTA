@@ -56,7 +56,7 @@ public class Chapter extends AbstractEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   private Range range;
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy="chapter")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapter")
   private List<Sentence> sentences;
 
   /**
@@ -64,10 +64,25 @@ public class Chapter extends AbstractEntityBase {
    */
   public Chapter() {
     range =
-        new Range(TextPosition.fromGlobalOffset(this, 0), TextPosition.fromGlobalOffset(this, 0));
+        new Range(TextPosition.fromGlobalOffset(this, 0, 1), TextPosition.fromGlobalOffset(this, 0,
+            1));
     sentences = new ArrayList<Sentence>();
   }
 
+  /**
+   * Gets some parts and concatenates their chapters and returns them as a list.
+   * 
+   * @param parts - the parts with the chapters. 
+   * @return the chapters from the parts, in the same order as the given parts.
+   */
+  public static List<Chapter> transformPartsToChapters(List<DocumentPart> parts){
+    List<Chapter> chapters = new ArrayList<Chapter>();
+    for(DocumentPart part : parts){
+      chapters.addAll(part.getChapters());
+    }
+    return chapters;
+  }
+  
   /**
    * Get a list of all sentences in this chapter. The sentences are sorted, so the n-th sentence in
    * the chapter is the n-th sentence in the list. The sentences don't know their text, only the
@@ -80,8 +95,8 @@ public class Chapter extends AbstractEntityBase {
   }
 
   /**
-   * Set the list of sentences. The sentences are sorted, so the n-th sentence in
-   * the chapter is the n-th sentence in the list.
+   * Set the list of sentences. The sentences are sorted, so the n-th sentence in the chapter is the
+   * n-th sentence in the list.
    * 
    * @param sentences - all sentences of this chapter.
    */
@@ -176,6 +191,28 @@ public class Chapter extends AbstractEntityBase {
    */
   public void setRange(Range range) {
     this.range = range;
+  }
+
+  /**
+   * Check if the given range lies inside of the Chapter. A range lies inside of the Chapter, if its
+   * start is behind the Chapters start or before the chapters end.
+   * 
+   * @param range - the range for which you want to know whether it is located inside of this
+   *        Chapter or not.
+   * @param useStartPosition - the start position (true) or the end position (false) of the range
+   *        decides in which chapter the range is located
+   * @return true: range is located inside of the chapter; false: range is not located inside of the
+   *         chapter.
+   */
+  public boolean containsRange(Range range, boolean useStartPosition) {
+    TextPosition rangePosition;
+    if(useStartPosition){
+      rangePosition = this.range.getStart();
+    }else{
+      rangePosition = this.range.getEnd();
+    }
+    return (this.range.getStart().compareTo(rangePosition) <= 0)
+        && (this.range.getEnd().compareTo(rangePosition) >= 0);
   }
 
   /**

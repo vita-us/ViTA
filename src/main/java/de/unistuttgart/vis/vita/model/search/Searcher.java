@@ -96,8 +96,9 @@ public class Searcher {
         continue;
       }
 
+      // TODO: document Length übergeben.
       addTextSpansToList(tokenizer, searchString, words,
-          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText);
+          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText, );
     }
   }
 
@@ -126,10 +127,11 @@ public class Searcher {
    * @param words
    * @param currentChapter
    * @param textSpans
+   * @param documentLength - the length of the whole document
    * @throws IOException
    */
   private void addTextSpansToList(Tokenizer tokenizer, String searchString, String[] words,
-      Chapter currentChapter, List<Range> textSpans, String chapterText) throws IOException {
+      Chapter currentChapter, List<Range> textSpans, String chapterText, int documentLength) throws IOException {
 
     // if it is a single word
     if (words != null && words.length == 1) {
@@ -143,8 +145,8 @@ public class Searcher {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
 
-          textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset),
-              TextPosition.fromGlobalOffset(currentChapter, endOffset)));
+          textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
+              TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
         }
       }
       tokenizer.end();
@@ -173,8 +175,8 @@ public class Searcher {
           if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
             int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
-            textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset),
-                TextPosition.fromGlobalOffset(currentChapter, endOffset)));
+            textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
+                TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
           }
         }
         tokens.clear();

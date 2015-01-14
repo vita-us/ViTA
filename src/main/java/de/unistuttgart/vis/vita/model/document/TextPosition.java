@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -12,16 +11,16 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Embeddable
 public class TextPosition implements Comparable<TextPosition> {
 
-  @ManyToOne
-  private Chapter chapter;
   private int offset;
+  private double progress;
 
   /**
    * Creates a new instance of TextPosition.
-   * <p>Use factory methods
-   * {@link TextPosition#fromGlobalOffset(Chapter, int)} and
+   * <p>
+   * Use factory methods {@link TextPosition#fromGlobalOffset(Chapter, int)} and
    * {@link TextPosition#fromLocalOffset(Chapter, int)} instead to avoid misunderstandings
-   * concerning the offsets. </p>
+   * concerning the offsets.
+   * </p>
    */
   protected TextPosition() {
     // no-argument constructor needed for JPA
@@ -30,19 +29,25 @@ public class TextPosition implements Comparable<TextPosition> {
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
    *
-   * @param pChapter - the chapter this TextPosition lies in
    * @param pOffset - the global offset of this TextPosition within the document
+   * @param documentLength - the length of the whole document
    */
-  private TextPosition(Chapter pChapter, int pOffset) {
+  private TextPosition(int pOffset, int documentLength) {
     // This constructor is private to prevent confusion about global/local offsets
     // The factory methods should be used instead.
-
     if (pOffset < 0) {
       throw new IllegalArgumentException("offset must not be negative!");
     }
+    if (documentLength < 0) {
+      throw new IllegalArgumentException("documentLength must not be negativ");
+    }
 
-    this.chapter = pChapter;
     this.offset = pOffset;
+    if (documentLength == 0) {
+      this.progress = 0.0f;
+    } else {
+      this.progress = (1.0 * pOffset) / (1.0 * documentLength);
+    }
   }
 
   /**
@@ -50,13 +55,12 @@ public class TextPosition implements Comparable<TextPosition> {
    *
    * @param chapter - the chapter this TextPosition lies in
    * @param pOffset - the offset of this TextPosition within the chapter
+   * @param documentLength - the length of the whole document
    */
-  public static TextPosition fromLocalOffset(Chapter chapter, int localOffset) {
+  public static TextPosition fromLocalOffset(Chapter chapter, int localOffset, int documentLength) {
     if (chapter == null)
       throw new NullPointerException("chapter is null");
-    return new TextPosition(
-        chapter,
-        chapter.getRange().getStart().getOffset() + localOffset);
+    return new TextPosition(chapter.getRange().getStart().getOffset() + localOffset, documentLength);
   }
 
   /**
@@ -64,20 +68,12 @@ public class TextPosition implements Comparable<TextPosition> {
    *
    * @param chapter - the chapter this TextPosition lies in
    * @param globalOffset - the global offset of this TextPosition within the document
+   * @param documentLength - the length of the whole document
    */
-  public static TextPosition fromGlobalOffset(Chapter chapter, int globalOffset) {
+  public static TextPosition fromGlobalOffset(Chapter chapter, int globalOffset, int documentLength) {
     if (chapter == null)
       throw new NullPointerException("chapter is null");
-    return new TextPosition(
-        chapter,
-        globalOffset);
-  }
-
-  /**
-   * @return the chapter this TextPosition lies in
-   */
-  public Chapter getChapter() {
-    return chapter;
+    return new TextPosition(globalOffset, documentLength);
   }
 
   /**
@@ -88,16 +84,16 @@ public class TextPosition implements Comparable<TextPosition> {
   }
 
   /**
-   * Gets the offset relative to the enclosing chapter
-   * @return the local offset
+   * @return the progress of the TextPosition in the document. Should be a number between 0.0 and
+   *         1.0.
    */
-  public int getLocalOffset() {
-    return offset - chapter.getRange().getStart().getOffset();
+  public double getProgress() {
+    return progress;
   }
 
   /**
-   * Compares this position to the given other one. This will only produce usable results
-   * if both TextPositions are in the same document.
+   * Compares this position to the given other one. This will only produce usable results if both
+   * TextPositions are in the same document.
    */
   @Override
   public int compareTo(TextPosition o) {
@@ -114,7 +110,7 @@ public class TextPosition implements Comparable<TextPosition> {
       return false;
     }
 
-    TextPosition other = (TextPosition)obj;
+    TextPosition other = (TextPosition) obj;
     // do not compare chapters, because the position between to chapters may be attributed to two
     // different chapters, and they are still the same TextPosition
     return other.offset == this.offset;
@@ -134,6 +130,7 @@ public class TextPosition implements Comparable<TextPosition> {
 
   /**
    * Returns the text position further to the end of the document
+   * 
    * @param a
    * @param b
    * @return either a or b
@@ -146,6 +143,7 @@ public class TextPosition implements Comparable<TextPosition> {
 
   /**
    * Returns the text position further at the beginning of the document
+   * 
    * @param a
    * @param b
    * @return either a or b

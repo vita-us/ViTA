@@ -1,6 +1,5 @@
 /*
  * EntityRecognitionModule.java
- *
  */
 
 package de.unistuttgart.vis.vita.analysis.modules;
@@ -21,7 +20,6 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,7 +46,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   @Override
   public BasicEntityCollection execute(ModuleResultProvider result,
-                                       ProgressListener progressListener) throws Exception {
+      ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
     this.progressListener = progressListener;
@@ -71,8 +69,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       Collections.sort(bufList, new Comparator<Attribute>() {
         @Override
         public int compare(Attribute o1, Attribute o2) {
-          return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : (
-              o1.getOccurrences().size() == o2.getOccurrences().size() ? 0 : 1));
+          return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : (o1
+              .getOccurrences().size() == o2.getOccurrences().size() ? 0 : 1));
         }
       });
 
@@ -82,19 +80,19 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Removes those entites which has only one or less occurences.
-   * Reduces the chance from getting wrong entities based on NLP failure.
+   * Removes those entites which has only one or less occurences. Reduces the chance from getting
+   * wrong entities based on NLP failure.
    */
   private void filterEntities() {
-      Set<BasicEntity> entityToRemove = new HashSet<>();
+    Set<BasicEntity> entityToRemove = new HashSet<>();
 
-      for (BasicEntity entity : entities) {
-        if (entity.getOccurences().size() <= 1) {
-          entityToRemove.add(entity);
-        }
+    for (BasicEntity entity : entities) {
+      if (entity.getOccurences().size() <= 1) {
+        entityToRemove.add(entity);
       }
+    }
 
-      entities.removeAll(entityToRemove);
+    entities.removeAll(entityToRemove);
   }
 
   /**
@@ -114,14 +112,14 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       double chapterFactor = 1. / chapters.size();
 
       for (Chapter chapter : chapters) {
-        Set<Annotation> annotations = filterEntityAnnotations(
-            annieNLPResult.getAnnotationsForChapter(chapter));
+        Set<Annotation> annotations =
+            filterEntityAnnotations(annieNLPResult.getAnnotationsForChapter(chapter));
 
         for (Annotation annieAnnotation : annotations) {
           createBasicEntity(annieAnnotation, chapter);
-          double partProgress = ((double)currentPart) / documentParts.size();
-          double chapterProgress = partFactor * ((double)currentChapter) / chapters.size();
-          double annotProgress = chapterFactor * ((double)currentAnnotation) / annotations.size();
+          double partProgress = ((double) currentPart) / documentParts.size();
+          double chapterProgress = partFactor * ((double) currentChapter) / chapters.size();
+          double annotProgress = chapterFactor * ((double) currentAnnotation) / annotations.size();
           currentProgress = partProgress + chapterProgress + annotProgress;
           progressListener.observeProgress(currentProgress);
 
@@ -156,6 +154,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   /**
    * Filters the gate annotations to only contain persons and locations.
+   * 
    * @param annotations The gate annotation set.
    * @return The new filtered set.
    */
@@ -172,8 +171,9 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Creates a new entity out of the annotation in the given chapter.
-   * If the entity already exists it will be updated with the matching position.
+   * Creates a new entity out of the annotation in the given chapter. If the entity already exists
+   * it will be updated with the matching position.
+   * 
    * @param theAnnotation The annotation to work with.
    * @param chapter The chapter in which the annotation can be found.
    */
@@ -218,6 +218,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   /**
    * Updates the name attributes for the given entity.
+   * 
    * @param entity The entity to be updated.
    * @param annotatedText The extracted name.
    * @param textSpan The position of the name.
@@ -265,18 +266,19 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   /**
    * Creates a textpan for the given annotation. The textpan has the offset in the given chapter.
+   * 
    * @param theAnnotation The annotation to work with.
    * @param chapter The chapter in which the annotation can be found.
    * @return The Textspan of the annotation.
    */
   private Range getTextSpan(Annotation theAnnotation, Chapter chapter) {
-    return new Range(chapter,
-        theAnnotation.getStartNode().getOffset().intValue(),
-        theAnnotation.getEndNode().getOffset().intValue());
+    return new Range(chapter, theAnnotation.getStartNode().getOffset().intValue(), theAnnotation
+        .getEndNode().getOffset().intValue(), this.importResult.getTotalLength());
   }
 
   /**
    * Extract the annotated text.
+   * 
    * @param text The text to cut out the annotated part.
    * @param theAnnotation The annotation to work with.
    * @return The annotated text.
@@ -288,15 +290,15 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   private BasicEntity getEntityByName(EntityType type, String name) {
-    for(BasicEntity entity : entities) {
+    for (BasicEntity entity : entities) {
       if (entity.getType() != type) {
         continue;
       }
 
-      for(Attribute attribute : entity.getNameAttributes()) {
-          if(attribute.getContent().equals(name)) {
-            return entity;
-          }
+      for (Attribute attribute : entity.getNameAttributes()) {
+        if (attribute.getContent().equals(name)) {
+          return entity;
+        }
       }
     }
 

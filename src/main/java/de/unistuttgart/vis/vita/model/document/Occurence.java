@@ -6,13 +6,14 @@ import javax.persistence.OneToOne;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
- * The Occurence is defined by a sentence object and a range.
+ * The Occurence is defined by a sentence and a range. The range specifies the place or person to
+ * which the occurence belongs.
  */
-public class Occurence extends AbstractEntityBase{
+public class Occurence extends AbstractEntityBase {
 
   @ManyToOne
   private Sentence sentence;
-  
+
   @OneToOne
   private Range range;
 
@@ -30,13 +31,13 @@ public class Occurence extends AbstractEntityBase{
    * @param range - the range of this Occurence.
    */
   public Occurence(Sentence sentence, Range range) {
-    if(sentence == null){
+    if (sentence == null) {
       throw new IllegalArgumentException("sentence must not be null!");
     }
-    if(range == null){
+    if (range == null) {
       throw new IllegalArgumentException("range must not be null!");
     }
-    
+
     this.sentence = sentence;
     this.range = range;
   }
@@ -56,10 +57,10 @@ public class Occurence extends AbstractEntityBase{
    * @param sentence - the Sentence of this Occurence.
    */
   public void setSentence(Sentence sentence) {
-    if(sentence == null){
+    if (sentence == null) {
       throw new IllegalArgumentException("sentence must not be null!");
     }
-    
+
     this.sentence = sentence;
   }
 
@@ -78,10 +79,10 @@ public class Occurence extends AbstractEntityBase{
    * @param range - the Range of this Occurence.
    */
   public void setRange(Range range) {
-    if(range == null){
+    if (range == null) {
       throw new IllegalArgumentException("range must not be null!");
     }
-    
+
     this.range = range;
   }
 }
