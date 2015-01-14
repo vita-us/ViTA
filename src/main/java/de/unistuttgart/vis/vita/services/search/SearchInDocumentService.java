@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -36,6 +37,9 @@ public class SearchInDocumentService extends OccurrencesService {
 
   @Inject
   private Model model;
+  
+  @Inject
+  private DocumentDao documentDao;
 
   public SearchInDocumentService setDocumentId(String documentId) {
     this.documentId = documentId;
@@ -68,6 +72,8 @@ public class SearchInDocumentService extends OccurrencesService {
     } catch(IllegalRangeException ire) {
       throw new WebApplicationException(ire);
     }
+    
+    
 
     Chapter startChapter = getSurroundingChapter(startOffset);
     Chapter endChapter = getSurroundingChapter(endOffset);
@@ -75,7 +81,7 @@ public class SearchInDocumentService extends OccurrencesService {
 
     Searcher searcher = new Searcher();
     try {
-      textSpans = searcher.searchString(documentId, query, chapters, model);
+      textSpans = searcher.searchString(documentDao.findById(documentId), query, chapters, model);
     } catch (ParseException e) {
       LOGGER.log(Level.INFO, "Invalid search query: " + query, e);
       return new OccurrencesResponse(new ArrayList<FlatOccurrence>());
