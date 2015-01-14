@@ -41,7 +41,6 @@ public class ParametersService {
   private DocumentDao documentDao;
 
   @GET
-  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public ParametersResponse getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
