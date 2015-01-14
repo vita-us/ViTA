@@ -7,6 +7,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.Occurence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.Entity;
@@ -58,7 +59,7 @@ public class AnalysisResetter {
     for (EntityRelation rel : entity.getEntityRelations()) {
       em.remove(rel);
     }
-    for (Range span : entity.getOccurrences()) {
+    for (Occurence span : entity.getOccurrences()) {
       em.remove(span);
     }
   }

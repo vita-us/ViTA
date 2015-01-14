@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,7 +13,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
-import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.Occurence;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
@@ -56,13 +56,13 @@ public class Attribute extends AbstractEntityBase {
 
   @OneToMany(cascade = CascadeType.ALL)
   @OrderBy("start.offset ASC")
-  private SortedSet<Range> occurrences;
+  private List<Occurence> occurrences;
 
   /**
    * Creates a new attribute, setting all fields to default values.
    */
   public Attribute() {
-    occurrences = new TreeSet<>();
+    occurrences = new ArrayList<Occurence>();
   }
 
   /**
@@ -119,7 +119,7 @@ public class Attribute extends AbstractEntityBase {
   /**
    * @return a Set of all occurrences in the text which are related to this Attribute
    */
-  public SortedSet<Range> getOccurrences() {
+  public List<Occurence> getOccurrences() {
     return occurrences;
   }
 

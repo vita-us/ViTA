@@ -1,19 +1,16 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import de.unistuttgart.vis.vita.model.document.Range;
-
-import org.apache.commons.lang.StringUtils;
-
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import de.unistuttgart.vis.vita.model.document.Range;
-
 import org.apache.commons.lang.StringUtils;
+
+import de.unistuttgart.vis.vita.model.document.Occurence;
 
 /**
  * The information about an entity that can be collected in the first pass
@@ -26,11 +23,11 @@ public class BasicEntity {
   private String entityId;
 
   private SortedSet<Attribute> nameAttributes;
-  private SortedSet<Range> occurrences;
+  private List<Occurence> occurrences;
 
   public BasicEntity() {
     nameAttributes = new TreeSet<>(new AttributeComaparator());
-    occurrences = new TreeSet<>();
+    occurrences = new ArrayList<Occurence>();
     entityId = UUID.randomUUID().toString();
   }
 
@@ -76,7 +73,7 @@ public class BasicEntity {
    * 
    * @return Set of all occurrences of this entity in the document
    */
-  public SortedSet<Range> getOccurences() {
+  public List<Occurence> getOccurences() {
     return occurrences;
   }
 
@@ -85,7 +82,7 @@ public class BasicEntity {
    * 
    * @param newOccurences - a set of new occurrences for this entity
    */
-  public void setOccurences(SortedSet<Range> newOccurences) {
+  public void setOccurences(List<Occurence> newOccurences) {
     this.occurrences = newOccurences;
   }
 
