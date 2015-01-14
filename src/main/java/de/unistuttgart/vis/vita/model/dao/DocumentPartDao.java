@@ -43,13 +43,6 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
 
   /**
-   * Creates a new data access object for DocumentParts.
-   */
-  public DocumentPartDao() {
-    super(DocumentPart.class);
-  }
-  
-  /**
    * Creates a new data access object for DocumentParts using the given {@link EntityManager}.
    * 
    * @param em - the EntityManager to be used in the new DocumentPartDao

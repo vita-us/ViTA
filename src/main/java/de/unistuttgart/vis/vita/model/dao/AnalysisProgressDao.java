@@ -1,10 +1,7 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -33,11 +30,8 @@ public class AnalysisProgressDao extends JpaDao<AnalysisProgress, String> {
 
   private static final String DOC_ID_PARAMETER = "documentId";
 
-  /**
-   * Creates a new data access object for accessing the progress of the analysis.
-   */
-  public AnalysisProgressDao() {
-    super(AnalysisProgress.class);
+  public AnalysisProgressDao(EntityManager em) {
+    super(AnalysisProgress.class, em);
   }
 
   /**

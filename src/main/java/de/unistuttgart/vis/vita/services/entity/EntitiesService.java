@@ -1,5 +1,7 @@
 package de.unistuttgart.vis.vita.services.entity;
 
+import de.unistuttgart.vis.vita.services.BaseService;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
@@ -9,7 +11,7 @@ import javax.ws.rs.PathParam;
  * Redirects entity and relations requests for the current Document to the right sub service.
  */
 @ManagedBean
-public class EntitiesService {
+public class EntitiesService extends BaseService {
   
   private String documentId;
   

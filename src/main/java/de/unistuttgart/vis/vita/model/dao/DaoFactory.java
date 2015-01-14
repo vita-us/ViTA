@@ -13,9 +13,11 @@ public class DaoFactory {
   private ChapterDao chapterDao;
   private EntityRelationDao entityRelationDao;
   private AttributeDao attributeDao;
-  
-  public DaoFactory(EntityManagerFactory emf) {
-    this.em = emf.createEntityManager();
+  private PersonDao personDao;
+  private PlaceDao placeDao;
+
+  public DaoFactory(EntityManager em) {
+    this.em = em;
   }
   
   public DocumentDao getDocumentDao() {
@@ -35,14 +37,14 @@ public class DaoFactory {
 
   public TextSpanDao getTextSpanDao() {
     if (textSpanDao == null) {
-      textSpanDao = new TextSpanDao();
+      textSpanDao = new TextSpanDao(em);
     }
     return textSpanDao;
   }
 
   public DocumentPartDao getDocumentPartDao() {
     if (documentPartDao == null) {
-      documentPartDao = new DocumentPartDao();
+      documentPartDao = new DocumentPartDao(em);
     }
     return documentPartDao;
   }
@@ -68,4 +70,17 @@ public class DaoFactory {
     return attributeDao;
   }
 
+  public PersonDao getPersonDao() {
+    if (personDao == null) {
+      personDao = new PersonDao(em);
+    }
+    return personDao;
+  }
+
+  public PlaceDao getPlaceDao() {
+    if (personDao == null) {
+      placeDao = new PlaceDao(em);
+    }
+    return placeDao;
+  }
 }

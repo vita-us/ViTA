@@ -43,13 +43,6 @@ public class AttributeDao extends JpaDao<Attribute, String> {
   private static final String ENTITY_ID_PARAMETER = "entityId";
 
   /**
-   * Creates a new data access object for accessing Attributes.
-   */
-  public AttributeDao() {
-    super(Attribute.class);
-  }
-
-  /**
    * Creates a new data access object for accessing Attributes using the given {@link EntityManager}.
    * 
    * @param em - the EntityManager to be used in the new AttributeDao

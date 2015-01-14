@@ -1,51 +1,41 @@
 package de.unistuttgart.vis.vita.analysis;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.TransactionalAction;
+import de.unistuttgart.vis.vita.model.dao.DaoFactory;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 
-import java.nio.file.Path;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.nio.file.Path;
+import java.util.*;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
  */
-@ApplicationScoped
-public class AnalysisController {
-
-  @Inject
-  private DocumentDao documentDao;
-
-  @Inject
-  private AnalysisResetter analysisResetter;
-  
+@ApplicationScoped public class AnalysisController {
+  private Model model;
   private AnalysisExecutorFactory executorFactory;
-  
+
   private Queue<Document> analysisQueue = new PriorityQueue<>();
   private boolean isAnalysisRunning;
   private AnalysisExecutor currentExecuter;
   private Document currentDocument;
-  
+
   /**
    * New instance of the controller with given model. It will be created a new empty module
    * registry.
-   * 
+   *
    * @param model The model with data.
    */
-  @Inject
-  public AnalysisController(Model model) {
+  @Inject public AnalysisController(Model model) {
     this(model, ModuleRegistry.getDefaultRegistry());
   }
-  
+
   /**
    * This constructor should not be used manually, only by the CDI framework
    */
@@ -56,8 +46,8 @@ public class AnalysisController {
 
   /**
    * New instance of the controller with given model and registry.
-   * 
-   * @param model The model to use.
+   *
+   * @param model          The model to use.
    * @param moduleRegistry The registry to use.
    */
   public AnalysisController(Model model, ModuleRegistry moduleRegistry) {
@@ -66,12 +56,10 @@ public class AnalysisController {
 
   public AnalysisController(Model model, AnalysisExecutorFactory executorFactory) {
     this.executorFactory = executorFactory;
-    
+    this.model = model;
+
     // only for Unit-tests, otherwise these fields are injected automatically
     if (model != null) {
-      this.documentDao = model.getDaoFactory().getDocumentDao();
-      this.analysisResetter = new AnalysisResetter(model);
-      
       // with CDI this method is called automatically (@PostConstruct)
       resetInterruptedDocuments();
     }
@@ -81,12 +69,18 @@ public class AnalysisController {
    * Resets all documents which haven't been analyzed because program didn't terminate properly.
    * Automatically restarts the analysis.
    */
-  @PostConstruct
-  private void resetInterruptedDocuments() {
-    List<Document> documents = documentDao.findDocumentsByStatus(AnalysisStatus.RUNNING);
-    for (Document document : documents) {
-      analysisResetter.resetAndFail(document);
-    }
+  @PostConstruct private void resetInterruptedDocuments() {
+    model.runInTransaction(new TransactionalAction() {
+      @Override public void run(EntityManager em, DaoFactory daoFactory) {
+        DocumentDao documentDao = daoFactory.getDocumentDao();
+        AnalysisResetter analysisResetter = new AnalysisResetter(em);
+
+        List<Document> documents = documentDao.findDocumentsByStatus(AnalysisStatus.RUNNING);
+        for (Document document : documents) {
+          analysisResetter.resetAndFail(document);
+        }
+      }
+    });
   }
 
   /**
@@ -113,7 +107,7 @@ public class AnalysisController {
    * @return The document id.
    */
   public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName,
-                                                      AnalysisParameters parameters) {
+      AnalysisParameters parameters) {
     Document document = createDocument(filePath, fileName, parameters);
     scheduleDocumentAnalyisis(document);
     return document.getId();
@@ -124,7 +118,7 @@ public class AnalysisController {
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
-  
+
   private synchronized void scheduleDocumentAnalyisis(Document document) {
     if (isAnalysisRunning) {
       analysisQueue.add(document);
@@ -134,7 +128,7 @@ public class AnalysisController {
   }
 
   private synchronized void startAnalysis(final Document document) {
-    setStatus(document.getId(),  AnalysisStatus.RUNNING);
+    setStatus(document.getId(), AnalysisStatus.RUNNING);
     Path path = document.getFilePath();
     if (path == null)
       throw new UnsupportedOperationException("There is no file associated with the document");
@@ -144,14 +138,12 @@ public class AnalysisController {
     isAnalysisRunning = true;
 
     currentExecuter.addObserver(new AnalysisObserver() {
-      @Override
-      public void onFinish(AnalysisExecutor executor) {
-        setStatus(document.getId(),  AnalysisStatus.FINISHED);
+      @Override public void onFinish(AnalysisExecutor executor) {
+        setStatus(document.getId(), AnalysisStatus.FINISHED);
         startNextAnalysis();
       }
 
-      @Override
-      public void onFail(AnalysisExecutor executor) {
+      @Override public void onFail(AnalysisExecutor executor) {
         setStatus(document.getId(), AnalysisStatus.FAILED);
         startNextAnalysis();
       }
@@ -172,13 +164,17 @@ public class AnalysisController {
     return document;
   }
 
-  private void persistDocument(Document document) {
-    documentDao.save(document);
+  private void persistDocument(final Document document) {
+    model.runInTransaction(new TransactionalAction() {
+      @Override public void run(EntityManager em, DaoFactory daoFactory) {
+        daoFactory.getDocumentDao().save(document);
+      }
+    });
   }
 
   /**
    * Cancels the analysis if necessary. The process will be canceled as soon as possible.
-   * 
+   *
    * @param documentID The document which is analyzed.
    */
   public synchronized void cancelAnalysis(String documentID) {
@@ -186,14 +182,14 @@ public class AnalysisController {
       currentExecuter.cancel();
       currentDocument = null;
       currentExecuter = null;
-      setStatus(documentID,  AnalysisStatus.CANCELLED);
+      setStatus(documentID, AnalysisStatus.CANCELLED);
       startNextAnalysis();
     } else {
       Iterator<Document> it = analysisQueue.iterator();
       while (it.hasNext()) {
         if (it.next().getId().equals(documentID)) {
           // Only set status to cancelled if it is currently running or scheduled
-          setStatus(documentID,  AnalysisStatus.CANCELLED);
+          setStatus(documentID, AnalysisStatus.CANCELLED);
           it.remove();
           return;
         }
@@ -215,19 +211,25 @@ public class AnalysisController {
 
   /**
    * Restarts a previously cancelled or failed document analysis
-   * 
+   *
    * @param documentId
    */
-  public void restartAnalysis(String documentId) {
-    Document document = documentDao.findById(documentId);
-    analysisResetter.resetDocument(document);
-    scheduleDocumentAnalyisis(document);
+  public void restartAnalysis(final String documentId) {
+    model.runInTransaction(new TransactionalAction() {
+      @Override public void run(EntityManager em, DaoFactory daoFactory) {
+        DocumentDao documentDao = daoFactory.getDocumentDao();
+        AnalysisResetter analysisResetter = new AnalysisResetter(em);
+        Document document = documentDao.findById(documentId);
+        analysisResetter.resetDocument(document);
+        scheduleDocumentAnalyisis(document);
+      }
+    });
   }
-  
+
   /**
    * Gets the number of documents that are currently waiting for being analyzed. The document
    * currently being analyzed does not count to this value.
-   * 
+   *
    * @return the number of documents in queue
    */
   public synchronized int documentsInQueue() {
@@ -236,16 +238,21 @@ public class AnalysisController {
 
   /**
    * Indicates whether a document is being analyzed at the moment
-   * 
+   *
    * @return true, if an analysis is in process, false otherwise
    */
   public synchronized boolean isWorking() {
     return isAnalysisRunning;
   }
 
-  private void setStatus(String documentId, AnalysisStatus status) {
-    Document document = documentDao.findById(documentId);
-    document.getProgress().setStatus(status);
-    documentDao.save(document);
+  private void setStatus(final String documentId, final AnalysisStatus status) {
+    model.runInTransaction(new TransactionalAction() {
+      @Override public void run(EntityManager em, DaoFactory daoFactory) {
+        DocumentDao documentDao = daoFactory.getDocumentDao();
+        Document document = documentDao.findById(documentId);
+        document.getProgress().setStatus(status);
+        documentDao.save(document);
+      }
+    });
   }
 }

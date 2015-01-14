@@ -45,13 +45,6 @@ public class ChapterDao extends JpaDao<Chapter, String> {
   private static final String CHAPTER_TITLE_PARAMETER = "title";
 
   /**
-   * Creates a new data access object to access Chapters.
-   */
-  public ChapterDao() {
-    super(Chapter.class);
-  }
-
-  /**
    * Creates a new data access object to access Chapter using the given {@link EntityManager}.
    * 
    * @param em - the EntityManager to be used in the new ChapterDao

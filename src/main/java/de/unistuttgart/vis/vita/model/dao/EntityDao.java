@@ -32,13 +32,6 @@ public class EntityDao extends JpaDao<Entity, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
 
   /**
-   * Creates a new data access object for Entities.
-   */
-  public EntityDao() {
-    super(Entity.class);
-  }
-
-  /**
    * Creates a new EntityDao with the given {@link EntityManager}.
    * 
    * @param em - the EntityManager to be used in the new EntityDao

@@ -1,51 +1,30 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import de.unistuttgart.vis.vita.model.Model;
-import de.unistuttgart.vis.vita.model.dao.AttributeDao;
-import de.unistuttgart.vis.vita.model.dao.ChapterDao;
-import de.unistuttgart.vis.vita.model.dao.DocumentDao;
-import de.unistuttgart.vis.vita.model.dao.DocumentPartDao;
-import de.unistuttgart.vis.vita.model.dao.EntityDao;
-import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
-import de.unistuttgart.vis.vita.model.dao.TextSpanDao;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
-import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.model.dao.*;
+import de.unistuttgart.vis.vita.model.document.*;
+import de.unistuttgart.vis.vita.model.entity.*;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
-import javax.annotation.ManagedBean;
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
-@ManagedBean
 public class AnalysisResetter {
-  
-  @Inject DocumentDao documentDao;
-  @Inject EntityDao entityDao;
-  @Inject TextSpanDao textSpanDao;
-  @Inject DocumentPartDao partDao;
-  @Inject ChapterDao chapterDao;
-  @Inject EntityRelationDao entityRelationDao;
-  @Inject AttributeDao attributeDao;
+  DocumentDao documentDao;
+  EntityDao entityDao;
+  TextSpanDao textSpanDao;
+  DocumentPartDao partDao;
+  ChapterDao chapterDao;
+  EntityRelationDao entityRelationDao;
+  AttributeDao attributeDao;
 
-  public AnalysisResetter() {
-    // needs zero argument constructor
-  }
-  
-  public AnalysisResetter(Model model) {
-    this.documentDao = model.getDaoFactory().getDocumentDao();
-    this.entityDao = model.getDaoFactory().getEntityDao();
-    this.textSpanDao = model.getDaoFactory().getTextSpanDao();
-    this.partDao = model.getDaoFactory().getDocumentPartDao();
-    this.chapterDao = model.getDaoFactory().getChapterDao();
-    this.entityRelationDao = model.getDaoFactory().getEntityRelationDao();
-    this.attributeDao = model.getDaoFactory().getAttributeDao();
+  public AnalysisResetter(EntityManager em) {
+    DaoFactory daoFactory = new DaoFactory(em);
+    this.documentDao = daoFactory.getDocumentDao();
+    this.entityDao = daoFactory.getEntityDao();
+    this.textSpanDao = daoFactory.getTextSpanDao();
+    this.partDao = daoFactory.getDocumentPartDao();
+    this.chapterDao = daoFactory.getChapterDao();
+    this.entityRelationDao = daoFactory.getEntityRelationDao();
+    this.attributeDao = daoFactory.getAttributeDao();
   }
 
   /**

@@ -46,13 +46,6 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
   private static final String TYPE_PARAMETER = "type";
 
   /**
-   * Creates a new data access object for accessing EntityRelations
-   */
-  public EntityRelationDao() {
-    super(EntityRelation.class);
-  }
-
-  /**
    * Creates a new data access object for accessing EntityRelations using the given 
    * {@link EntityManager}.
    * 

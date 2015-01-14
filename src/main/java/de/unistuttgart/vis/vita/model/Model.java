@@ -1,5 +1,9 @@
 package de.unistuttgart.vis.vita.model;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisResetter;
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.Document;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.jersey.server.CloseableService;
 
@@ -7,6 +11,8 @@ import de.unistuttgart.vis.vita.model.dao.DaoFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +47,6 @@ public class Model implements Factory<EntityManager> {
   CloseableService closeableService;
   private TextRepository textRepository;
   private GateDatastoreLocation gateDatastoreLocation;
-  private DaoFactory daoFactory;
 
   /**
    * Create a default Model instance
@@ -54,7 +59,6 @@ public class Model implements Factory<EntityManager> {
     this.entityManagerFactory = emf;
     this.textRepository = textRepository;
     this.gateDatastoreLocation = new GateDatastoreLocation();
-    this.daoFactory = new DaoFactory(emf);
   }
 
   private static void loadDriver() {
@@ -84,10 +88,6 @@ public class Model implements Factory<EntityManager> {
    */
   public EntityManager getEntityManager() {
     return entityManagerFactory.createEntityManager();
-  }
-  
-  public DaoFactory getDaoFactory() {
-    return daoFactory;
   }
 
   /**
@@ -132,5 +132,16 @@ public class Model implements Factory<EntityManager> {
 
   public void closeAllEntityManagers() {
     entityManagerFactory.close();
+  }
+
+  public void runInTransaction(TransactionalAction callback) {
+    EntityManager em = getEntityManager();
+    try {
+      em.getTransaction().begin();
+      callback.run(em, new DaoFactory(em));
+      em.getTransaction().commit();
+    } finally {
+      em.close();
+    }
   }
 }

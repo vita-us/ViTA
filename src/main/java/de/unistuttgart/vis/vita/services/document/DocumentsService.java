@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.services.document;
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.BaseService;
+import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.responses.DocumentsResponse;
 
@@ -43,19 +45,23 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
  */
 @Path("/documents")
 @ManagedBean
-public class DocumentsService {
+public class DocumentsService extends BaseService {
+  private DocumentDao documentDao;
+
+  @Inject
+  private AnalysisController analysisController;
+
+  @Inject
+  private DocumentService documentService;
   
   private static final String DOCUMENT_PATH = System.getProperty("user.home") + File.separator
                                               + ".vita" + File.separator + "docs" + File.separator;
 
-  @Inject
-  private DocumentDao documentDao;
-  
-  @Inject
-  private AnalysisController analysisController;
-  
-  @Inject
-  private DocumentService documentService;
+  @Override
+  public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   /**
    * Returns a DocumentsResponse including a list of Documents with a given maximum length,

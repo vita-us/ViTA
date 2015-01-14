@@ -30,20 +30,13 @@ public class DocumentDao extends JpaDao<Document, String> {
 
   private static final String DOCUMENT_TITLE_PARAMETER = "title";
 
-  /**
-   * Creates a new data access object for Documents.
-   */
-  public DocumentDao() {
-    super(Document.class);
-  }
 
   public DocumentDao(EntityManager em) {
     super(Document.class, em);
   }
 
   @Override public List<Document> findAll() {
-    TypedQuery<Document> query = em.createNamedQuery("Document.findAllDocuments", Document.class);
-    return query.getResultList();
+    return queryAll("Document.findAllDocuments");
   }
 
   /**
@@ -53,10 +46,8 @@ public class DocumentDao extends JpaDao<Document, String> {
    * @return the document with the given title
    */
   public Document findDocumentByTitle(String docTitle) {
-    TypedQuery<Document> titleQuery =
-        em.createNamedQuery("Document.findDocumentByTitle", Document.class);
-    titleQuery.setParameter(DOCUMENT_TITLE_PARAMETER, docTitle);
-    return titleQuery.getSingleResult();
+    return queryOne("Document.findDocumentByTitle",
+        DOCUMENT_TITLE_PARAMETER, docTitle);
   }
 
   /**
@@ -66,10 +57,8 @@ public class DocumentDao extends JpaDao<Document, String> {
    * @return the documents with the given status
    */
   public List<Document> findDocumentsByStatus(AnalysisStatus status) {
-    TypedQuery<Document> query =
-        em.createNamedQuery("Document.findDocumentByStatus", Document.class);
-    query.setParameter("status", status);
-    return query.getResultList();
+    return queryAll("Document.findDocumentByStatus",
+        "status", status);
   }
 
 }

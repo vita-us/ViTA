@@ -129,12 +129,6 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
   private static final String RANGE_START_PARAMETER = "rangeStart";
 
-  /**
-   * Creates a new data access object for TextSpans.
-   */
-  public TextSpanDao() {
-    super(TextSpan.class);
-  }
 
   /**
    * Creates a new data access object for TextSpans using the given {@link EntityManager}.
