@@ -1,14 +1,11 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-<<<<<<< HEAD
+
 import java.util.ArrayList;
 import java.util.List;
-=======
+
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
->>>>>>> master
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

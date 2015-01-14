@@ -40,7 +40,7 @@ public class Searcher {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
 
-  public List<Range> searchString(String documentId, String searchString,
+  public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document, String searchString,
       List<Chapter> chapters, Model model) throws IOException, ParseException {
     if (chapters.isEmpty()) {
       return new ArrayList<Range>();
@@ -52,12 +52,12 @@ public class Searcher {
     List<Range> textSpans = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
-    IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(documentId);
+    IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(document.getId());
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
 
-    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
+    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits, document.getMetrics().getCharacterCount());
     indexSearcher.getIndexReader().close();
 
     Collections.sort(textSpans);
@@ -75,7 +75,7 @@ public class Searcher {
    * @throws IOException
    */
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
-      List<Range> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits) throws IOException {
+      List<Range> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength) throws IOException {
     for (int i = 0; i < hits.length; i++) {
       
       String chapterText = indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue();
@@ -98,7 +98,7 @@ public class Searcher {
 
       // TODO: document Length übergeben.
       addTextSpansToList(tokenizer, searchString, words,
-          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText, );
+          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText,documentLength );
     }
   }
 
