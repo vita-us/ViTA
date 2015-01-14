@@ -75,6 +75,18 @@
 
         $scope.showFingerprint = function(ids) {
           $scope.fingerprintEntityIds = ids;
+          Person.get({
+            documentId: $routeParams.documentId,
+            personId: ids[0]
+          }, function(response) {
+            $scope.fingerprintEntityA = response;
+          });
+          Person.get({
+            documentId: $routeParams.documentId,
+            personId: ids[1]
+          }, function(response) {
+            $scope.fingerprintEntityB = response;
+          });
           $scope.$apply();
         };
 
