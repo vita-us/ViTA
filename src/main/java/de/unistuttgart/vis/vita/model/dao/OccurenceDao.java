@@ -37,8 +37,7 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
         + "WHERE e.id = :entityId "
         + "AND occ MEMBER OF e.occurrences "
         // range checks
-        + "AND occ.start.offset BETWEEN :rangeStart AND :rangeEnd "
-        + "AND occ.end.offset BETWEEN :rangeStart AND :rangeEnd"),
+        + "AND occ.sentence.index BETWEEN :rangeStart AND :rangeEnd "),
 
   // for returning the exact spans for an attribute in a given range
   @NamedQuery(name = "Occurrence.findOccurrencesForAttribute",
@@ -193,7 +192,7 @@ public class OccurenceDao extends JpaDao<Occurrence, String> {
    * @param rangeEnd - the end of the document range to search in
    * @return the number of TextSpans for the given Attribute in the also given document range
    */
-  public long getNumberOfTextSpansForAttribute(String entityId, String attrId, 
+  public long getNumberOfOccurrencesForAttribute(String entityId, String attrId, 
                                                 int rangeStart, int rangeEnd) {
     Query numberQuery = em.createNamedQuery("Occurrence.getNumberOfOccurrencesForAttribute");
     numberQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
