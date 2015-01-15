@@ -1,14 +1,35 @@
+.analysis-parameter {
+
+  .analysis-parameter-title {
+    font-weight: bold;
+    color: gray;
+    font-size: 18px;
+  }
+
+  .parameter-list {
+    border: 1px solid @border-color;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+
 .boolean-parameter {
-  border: 1px solid @border-color;
   padding: 5px;
 }
 
 .number-parameter {
-  border: 1px solid @border-color;
   padding: 5px;
+
+  input {
+    width: 75px;
+  }
 }
 
 .string-parameter {
-  border: 1px solid @border-color;
   padding: 5px;
+}
+
+.parameter-label {
+  color: gray;
+  padding-right: 5px;
 }
