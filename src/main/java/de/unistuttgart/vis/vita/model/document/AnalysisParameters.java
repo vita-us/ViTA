@@ -14,22 +14,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
-  @Description("The number of steps between the relations over time.")
-  @Label("Relation time steps")
+  @Description("The granularity of the time slider in the graph network")
+  @Label("Temporal granularity in graph network")
   @Min(1)
   @Max(1000)
   private int relationTimeStepCount = 20;
 
   @XmlElement
   @Description("The number of items visualized in the word cloud.")
-  @Label("Word cloud items")
+  @Label("Word Cloud items")
   @Min(10)
   @Max(100)
   private int wordCloudItemsCount = 100;
 
   @XmlElement
-  @Description("If the stop word list should be used to filter probalby unnecessary words.")
-  @Label("Enable stop list")
+  @Description("Check to hide the most common words in the word cloud to focus on more special words")
+  @Label("Enable stop word list")
   private boolean stopWordListEnabled = true;
 
   public int getRelationTimeStepCount() {
