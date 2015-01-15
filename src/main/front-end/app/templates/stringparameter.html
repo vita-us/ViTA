@@ -1,5 +1,6 @@
 <div class="string-parameter">
   <label title="{{parameter.description}}">
-    <input type="text"> {{parameter.label}}</input>
+    <span class="parameter-label">{{parameter.label}}</span>
+    <input type="text" ng-model="parameter['value']">
   </label>
 </div>

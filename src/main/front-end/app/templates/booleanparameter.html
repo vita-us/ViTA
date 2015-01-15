@@ -1,3 +1,6 @@
-<label title="{{parameter.description}}" class="boolean-parameter">
-    <input type="checkbox"> {{parameter.label}}</input>
-</label>
+<div class="boolean-parameter">
+  <label title="{{parameter.description}}">
+    <span class="parameter-label">{{parameter.label}}</span>
+    <input type="checkbox" ng-model="parameter['value']">
+  </label>
+</div>

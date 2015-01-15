@@ -1,5 +1,8 @@
 <div class="number-parameter">
   <label title="{{parameter.description}}">
-     <input type="number" min="{{parameter.min}}" max="{{parameter.max}}"> {{parameter.label}}</input>
+     <span class="parameter-label">{{parameter.label}}</span>
+      {{parameter.min}} <
+     <input type="number" ng-model="parameter['value']" min="{{parameter.min}}" max="{{parameter.max}}">
+      < {{parameter.max}}
   </label>
 </div>
