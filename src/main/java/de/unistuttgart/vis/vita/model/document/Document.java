@@ -1,12 +1,13 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -172,5 +173,45 @@ public class Document extends AbstractEntityBase {
    */
   public void setParameters(AnalysisParameters parameters) {
     this.parameters = parameters;
+  }
+
+  /**
+   * Find the chapter for a given global offset.
+   * @param globalOffset The offset to search the chapter.
+   * @return
+   */
+  public Chapter getChapterAt(int globalOffset) {
+    List<Chapter> allChapters = new ArrayList<>();
+
+    for (DocumentPart documentPart : content.getParts()) {
+      allChapters.addAll(documentPart.getChapters());
+    }
+
+    int lo = 0;
+    int hi = allChapters.size() - 1;
+
+    boolean toHigh = allChapters.get(hi).getRange().getEnd().getOffset() < globalOffset;
+    boolean negative = globalOffset < 0;
+
+    if (toHigh || negative) {
+      throw new IndexOutOfBoundsException("Offset is not in range.");
+    }
+
+    while (lo <= hi) {
+      int mid = lo + (hi - lo) / 2;
+      TextSpan range = allChapters.get(mid).getRange();
+      int start = range.getStart().getOffset();
+      int end = range.getEnd().getOffset();
+
+      if (globalOffset < start) {
+        hi = mid - 1;
+      } else if (globalOffset > end) {
+        lo = mid + 1;
+      } else {
+        return allChapters.get(mid);
+      }
+    }
+
+    throw new IllegalStateException("Not found the correct chapter");
   }
 }
