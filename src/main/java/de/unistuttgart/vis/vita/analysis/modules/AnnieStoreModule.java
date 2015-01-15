@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.Model;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import gate.Corpus;
