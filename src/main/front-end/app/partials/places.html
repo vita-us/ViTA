@@ -2,12 +2,36 @@
   <div class="col-md-2">
     <div ng-include="'partials/menu.html'"></div>
   </div>
-  <div class="col-md-10">
+  <div class="col-md-8">
+    <div class="row">
+      <h1><small><span class="glyphicon glyphicon-map-marker"></span></small> {{selected.displayName}}</h1>
+      <dl class="dl-horizontal" ng-repeat="attribute in selected.attributes">
+        <dt>{{attribute.attributetype}}</dt>
+        <dd>{{attribute.content}}</dd>
+      </dl>
+      <dl class="dl-horizontal">
+        <dt>co-occurences</dt>
+        <dd ng-repeat="entity in relatedEntities | limitTo: 5">
+          <a ng-href="index.html#/documents/{{document.id}}/{{path(entity.type)}}/{{entity.id}}">
+            {{entity.displayName}}
+          </a>
+          <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
+            ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
+            title="Add this entity to the fingerprint"></span>
+        </dd>
+      </dl>
+    </div>
+    <div class="row">
+      <div data-fingerprint-top-row></div>
+      <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds"data-parts="parts"></div>
+    </div>
+  </div>
+  <div class="col-md-2">
     <div class="row filterable-list">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
       <ul>
-        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' ">
-          <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">{{place.displayName}}</a>
+        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' " ng-click="select(place)" style="list-style-type: none;" ng-class="{marked:isSelected(place)}">
+          {{place.displayName}}
         </li>
       </ul>
     </div>
