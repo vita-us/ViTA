@@ -4,8 +4,8 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the places page
-  vitaControllers.controller('PlaceListCtrl', ['$scope', 'Document', 'Page', 'Place',
-      '$routeParams', function($scope, Document, Page, Place, $routeParams) {
+  vitaControllers.controller('PlaceListCtrl', ['$scope', 'Document', 'DocumentParts', 'Page', 'Place', 'Entity',
+      '$routeParams', function($scope, Document, DocumentParts, Page, Place, Entity, $routeParams) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -64,7 +64,7 @@
           documentId: $routeParams.documentId
         }, function(placesWrapper) {
           $scope.places = placesWrapper.places;
-	  $scope.selected = placesWrapper.places[0];
+	  $scope.select(placesWrapper.places[0]);
         });
 
         Document.get({
@@ -73,6 +73,12 @@
           $scope.document = document;
           Page.breadcrumbs = 'Places';
           Page.setUpForDocument(document);
+        });
+
+        DocumentParts.get({
+          documentId: $routeParams.documentId
+        }, function(response) {
+          $scope.parts = response.parts;
         });
       }]);
 

@@ -9,12 +9,10 @@
         <dt>{{attribute.attributetype}}</dt>
         <dd>{{attribute.content}}</dd>
       </dl>
-      <dl class="dl-horizontal">
+      <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
         <dt>co-occurences</dt>
-        <dd ng-repeat="entity in relatedEntities | limitTo: 5">
-          <a ng-href="index.html#/documents/{{document.id}}/{{path(entity.type)}}/{{entity.id}}">
+        <dd ng-repeat="entity in relatedEntities | limitTo: 5" ng-click="select(entity)">
             {{entity.displayName}}
-          </a>
           <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
             ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
             title="Add this entity to the fingerprint"></span>
