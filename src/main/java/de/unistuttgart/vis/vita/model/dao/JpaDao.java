@@ -1,11 +1,15 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import de.unistuttgart.vis.vita.model.document.Document;
+
 import java.io.Serializable;
 import java.util.List;
 
+import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
 /**
  * Generic implementation of a data access object (DAO).
@@ -16,17 +20,12 @@ import javax.persistence.NoResultException;
 public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   
   private final Class<T> persistentClass;
-  
-  @Inject
+
   protected EntityManager em;
 
-  /**
-   * Creates a new GenericHibernateDAO for the given class and session.
-   * 
-   * @param persClass - the class of the objects to be persisted
-   */
-  public JpaDao(Class<T> persClass) {
+  public JpaDao(Class<T> persClass, EntityManager em) {
     this.persistentClass = persClass;
+    this.em = em;
   }
 
   /**
@@ -51,14 +50,14 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
    */
   @Override
   public T findById(I id) {
-    T result = em.find(getPersistentClass(), id);
+      T result = em.find(getPersistentClass(), id);
 
     if (result == null) {
       throw new NoResultException("No entity of type '" + getPersistentClassName()
                                   + "' found with id '" + id + "'!");
     }
     
-    return em.find(getPersistentClass(), id);
+    return result;
   }
 
   /**
@@ -79,15 +78,11 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
    */
   @Override
   public void save(T entity) {
-    em.getTransaction().begin();
     em.persist(entity);
-    em.getTransaction().commit();
   }
   
   public void update(T entity) {
-    em.getTransaction().begin();
     em.merge(entity);
-    em.getTransaction().commit();
   }
 
   /**
@@ -97,9 +92,34 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
    */
   @Override
   public void remove(T entity) {
-    em.getTransaction().begin();
-    em.remove(entity);
-    em.getTransaction().commit();
+    em.remove(entity);;
+  }
+
+  protected T queryOne(String queryName, Object... parameters) {
+    TypedQuery<T> query = buildQuery(queryName, parameters);
+    return query.getSingleResult();
+  }
+
+  protected List<T> queryAll(String queryName, Object... parameters) {
+    TypedQuery<T> query = buildQuery(queryName, parameters);
+    return query.getResultList();
+  }
+
+  protected TypedQuery<T> buildQuery(String queryName, Object... parameters) {
+    TypedQuery<T> query = em.createNamedQuery(queryName, persistentClass);
+    if (parameters.length % 2 != 0) {
+      throw new IllegalArgumentException("parameters must have an even number (names and their values");
+    }
+
+    for (int i = 0; i < parameters.length; i += 2) {
+      Object key = parameters[i];
+      if (!(key instanceof String)) {
+        throw new IllegalArgumentException("Every even parameter must be the key, thus a string");
+      }
+      query.setParameter((String)key, parameters[i + 1]);
+    }
+
+    return query;
   }
   
 }

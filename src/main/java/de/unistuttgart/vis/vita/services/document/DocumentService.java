@@ -15,6 +15,7 @@ import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
 import de.unistuttgart.vis.vita.services.analysis.ParametersService;
@@ -39,11 +40,10 @@ import java.util.UUID;
  * Provides methods for GET, PUT and DELETE a document with a specific id.
  */
 @ManagedBean
-public class DocumentService {
+public class DocumentService extends BaseService {
 
   private String id;
 
-  @Inject
   private DocumentDao documentDao;
 
   @Inject
@@ -78,6 +78,12 @@ public class DocumentService {
 
   @Inject
   PlotViewService plotViewService;
+
+  @Override
+  public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   /**
    * Sets the id of the document this resource should represent

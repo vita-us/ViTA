@@ -1,74 +1,67 @@
 #graph-network-wrapper {
   margin-top: 10px;
   border: 1px solid @border-color;
-}
 
-.link {
-  cursor: pointer;
-  stroke: #B0B0B0;
-  fill: none;
-}
+  .link {
+    cursor: pointer;
+    stroke: #B0B0B0;
+    fill: none;
+  }
 
-.link:hover {
-  stroke: #FFD27F;
-}
+  .node {
+    fill: @default-character-ranking-color;
+    cursor: pointer;
+  }
 
-.link.selected {
-  stroke: orange;
-}
+  .node.ranking-1 {
+    fill: @character-ranking-color-1;
+  }
 
-.node {
-  fill: @default-character-ranking-color;
-  cursor: pointer;
-}
+  .node.ranking-2 {
+    fill: @character-ranking-color-2;
+  }
 
-.node.ranking-1 {
-  fill: @character-ranking-color-1;
-}
+  .node.ranking-3 {
+    fill: @character-ranking-color-3;
+  }
 
-.node.ranking-2 {
-  fill: @character-ranking-color-2;
-}
+  .node.ranking-4 {
+    fill: @character-ranking-color-4;
+  }
 
-.node.ranking-3 {
-  fill: @character-ranking-color-3;
-}
+  .node.ranking-5 {
+    fill: @character-ranking-color-5;
+  }
 
-.node.ranking-4 {
-  fill: @character-ranking-color-4;
-}
+  .node.ranking-6 {
+    fill: @character-ranking-color-6;
+  }
 
-.node.ranking-5 {
-  fill: @character-ranking-color-5;
-}
+  .node.ranking-7 {
+    fill: @character-ranking-color-7;
+  }
 
-.node.ranking-6 {
-  fill: @character-ranking-color-6;
-}
+  .graph-network-container {
+    display: block;
+  }
 
-.node.ranking-7 {
-  fill: @character-ranking-color-7;
-}
+  .node-label {
+    cursor: pointer;
+  }
 
-.graph-network-container {
-  display: block;
-}
+  .label-text {
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: white;
+  }
 
-.node-label {
-  cursor: pointer;
-}
+  .label-background {
+    fill: #333;
+    opacity: 0.8;
+  }
 
-.label-text {
-  text-anchor: middle;
-  dominant-baseline: central;
-  fill: white;
-}
+  .help-text {
+    color: #d3d3d3;
+  }
 
-.label-background {
-  fill: #333;
-  opacity: 0.8;
-}
-
-.help-text {
-  color: #d3d3d3;
 }

@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -10,12 +11,12 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
  * Represents a generic data access object for entities.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries(
     @NamedQuery(name = "Entity.findEntityById",
@@ -31,10 +32,12 @@ public class EntityDao extends JpaDao<Entity, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
 
   /**
-   * Creates a new data access object for Entities.
+   * Creates a new EntityDao with the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new EntityDao
    */
-  public EntityDao() {
-    super(Entity.class);
+  public EntityDao(EntityManager em) {
+    super(Entity.class, em);
   }
 
   /**
@@ -85,6 +88,40 @@ public class EntityDao extends JpaDao<Entity, String> {
     query.setParameter(ENTITIES_PARAMETER, entities);
     query.setParameter(RANGE_START_PARAMETER, startOffset);
     query.setParameter(RANGE_END_PARAMETER, endOffset);
+    return (List<Entity>) query.getResultList();
+  }
+
+  /**
+   * Returns a the sublist of given entities occurring in a given range.
+   *
+   * @param startOffset - the start offset of the range
+   * @param endOffset - the end offset of the range
+   * @param entities - the list of entities to search for
+   * @param type - the type of entities to be returned
+   * @return sublist of occurring entities
+   */
+  @SuppressWarnings("unchecked")
+  public List<Entity> getOccurringEntities(int startOffset,
+      int endOffset,
+      List<?> entities,
+      EntityType type) {
+    Query query;
+
+    switch (type) {
+      case PERSON:
+        query = em.createNamedQuery("TextSpan.getOccurringPersons");
+        break;
+      case PLACE:
+        query = em.createNamedQuery("TextSpan.getOccurringPlaces");
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown type of entity");
+    }
+
+    query.setParameter("entities", entities);
+    query.setParameter("rangeStart", startOffset);
+    query.setParameter("rangeEnd", endOffset);
+
     return (List<Entity>) query.getResultList();
   }
 
