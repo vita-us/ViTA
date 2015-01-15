@@ -29,6 +29,9 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
 @ManagedBean
 public class PlotViewService {
 
+  public static final int MAX_PERSON_COUNT = 10;
+  public static final int DEFAULT_PANEL_AMOUNT = 100;
+
   private String documentId;
 
   @Inject
@@ -57,10 +60,7 @@ public class PlotViewService {
   }
 
   /**
-   * Returns the Service to access the Entity with the given id.
-   *
-   * @param id - the id of the Entity to be accessed
-   * @return the EntityService to access the given Entity with the given id
+   * Returns a response including persons, places and scenes for the plot view.
    */
   @Produces(MediaType.APPLICATION_JSON)
   @GET
@@ -70,7 +70,7 @@ public class PlotViewService {
     List<Entity> entities = new ArrayList<>();
     
     int personIndex = 0;
-    List<Person> persons = personDao.findInDocument(documentId, 0, 10);
+    List<Person> persons = personDao.findInDocument(documentId, 0, MAX_PERSON_COUNT);
     for (Person person : persons) {
       response.getCharacters().add(new PlotViewCharacter(person.getDisplayName(),
           person.getId(), personIndex++));
@@ -119,7 +119,7 @@ public class PlotViewService {
         currentScene.setTitle(currentTitle);
         
         response.getScenes().add(currentScene);
-        response.setPanels(100);
+        response.setPanels(DEFAULT_PANEL_AMOUNT);
       }
     }
 

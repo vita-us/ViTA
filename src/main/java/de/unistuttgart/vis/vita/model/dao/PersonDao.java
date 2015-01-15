@@ -51,6 +51,8 @@ public class PersonDao extends JpaDao<Person, String> {
   public List<Person> findInDocument(String documentId, int offset, int count) {
     TypedQuery<Person> docQuery = em.createNamedQuery(getInDocumentQueryName(), Person.class);
     docQuery.setParameter(DOCUMENT_ID_PARAMETER, documentId);
+    docQuery.setFirstResult(offset);
+    docQuery.setMaxResults(count);
     return docQuery.getResultList();
   }
 
