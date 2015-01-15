@@ -76,8 +76,9 @@ public class PlotViewService {
           person.getId(), personIndex++));
       entities.add(person);
     }
-    
-    List<Place> places = placeDao.readSpecialPlacesFromDatabase(documentId, chapterDao.getAverageChapterLength(documentId));
+
+    long avgChapterLength = chapterDao.getAverageChapterLength(documentId);
+    List<Place> places = placeDao.readSpecialPlacesFromDatabase(documentId, avgChapterLength, 0.1, 5);
     for (Entity place : places) {
       response.getPlaces().add(new PlotViewPlace(place.getId(), place.getDisplayName()));
     }

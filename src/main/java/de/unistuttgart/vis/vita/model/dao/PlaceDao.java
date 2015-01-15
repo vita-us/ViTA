@@ -80,11 +80,11 @@ public class PlaceDao extends JpaDao<Place, String> {
    *
    * @return list of places occurring in the current Document
    */
-  public List<Place> readSpecialPlacesFromDatabase(String documentId, long averageChapterLength) {
+  public List<Place> readSpecialPlacesFromDatabase(String documentId, long averageChapterLength, double minRangeFactor, int maxRangeFactor) {
     TypedQuery<Place> placeQuery = em.createNamedQuery("Place.findSpecialPlacesInDocument",
         Place.class);
-    int minRange = (int) (0.1 * averageChapterLength);
-    int maxRange = (int) (5 * averageChapterLength);
+    int minRange = (int) (minRangeFactor * averageChapterLength);
+    int maxRange = (int) (maxRangeFactor * averageChapterLength);
 
     placeQuery.setParameter("documentId", documentId);
     placeQuery.setParameter("minRange", minRange);
