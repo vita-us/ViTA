@@ -131,9 +131,9 @@ public class EntityRelationModule extends Module<EntityRelations> {
 
     for (BasicEntity entity : basicEntities) {
       for (Occurrence occurrence : entity.getOccurences()) {
-        Set<BasicEntity> entities = new HashSet<BasicEntity>();
         Sentence currentSentence = occurrence.getSentence();
         if (!entitesInSentencesMap.containsKey(currentSentence)) {
+          Set<BasicEntity> entities = new HashSet<>();
           entities.add(entity);
           entitesInSentencesMap.put(currentSentence, entities);
         } else {
