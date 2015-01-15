@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -14,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents a data access object for accessing TextSpans.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "TextSpan.findAllTextSpans",
@@ -128,11 +128,14 @@ public class TextSpanDao extends JpaDao<TextSpan, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
   private static final String RANGE_START_PARAMETER = "rangeStart";
 
+
   /**
-   * Creates a new data access object for TextSpans.
+   * Creates a new data access object for TextSpans using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new TextSpanDao
    */
-  public TextSpanDao() {
-    super(TextSpan.class);
+  public TextSpanDao(EntityManager em) {
+    super(TextSpan.class, em);
   }
 
   /**

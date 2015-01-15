@@ -39,6 +39,10 @@
           });
         }
 
+        $scope.prepareAttributeForView = function(attribute) {
+          return attribute != null ? attribute : "-";
+        };
+
         $scope.$on('$destroy', function() {
           if (timerToken) {
             $interval.cancel(timerToken);

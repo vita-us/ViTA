@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -34,11 +35,13 @@ public class Document extends AbstractEntityBase {
   private AnalysisParameters parameters;
 
   private String filePath;
-
+  
   @Column(length = 1000)
   private Date uploadDate;
 
   private String fileName;
+
+  private UUID contentID;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -49,6 +52,7 @@ public class Document extends AbstractEntityBase {
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
     this.parameters = new AnalysisParameters();
+    contentID = UUID.randomUUID();
   }
 
   /**
@@ -60,7 +64,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the meta data for this document.
-   *
+   * 
    * @param newMetadata - the meta data for this document
    */
   public void setMetadata(DocumentMetadata newMetadata) {
@@ -76,7 +80,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the metrics for this Document.
-   *
+   * 
    * @param newMetrics - the metrics for this Document
    */
   public void setMetrics(DocumentMetrics newMetrics) {
@@ -92,7 +96,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the content for this Document.
-   *
+   * 
    * @param content - the document content, including text and entities
    */
   public void setContent(DocumentContent content) {
@@ -108,13 +112,13 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the new progress of the analysis of this document.
-   *
+   * 
    * @param newProgress - the new progress of the analysis of this document
    */
   public void setProgress(AnalysisProgress newProgress) {
     this.progress = newProgress;
   }
-
+  
   /**
    * Gets the path to the uploaded file
    * @return the path, or null if the file does not exist anymore
@@ -141,10 +145,10 @@ public class Document extends AbstractEntityBase {
   public Date getUploadDate() {
     return uploadDate;
   }
-
+  
   /**
    * Sets the upload date of the uploaded file
-   *
+   * 
    * @param uploadDate
    */
   public void setUploadDate(Date uploadDate) {
@@ -157,6 +161,10 @@ public class Document extends AbstractEntityBase {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public UUID getContentID() {
+    return contentID;
   }
 
   /**

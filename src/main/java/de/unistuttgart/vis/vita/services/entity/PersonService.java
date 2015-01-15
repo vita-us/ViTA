@@ -9,20 +9,25 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.DaoFactory;
 import de.unistuttgart.vis.vita.model.dao.PersonDao;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.BaseService;
 
 /**
  * Provides methods to GET a person with the current id.
  */
 @ManagedBean
-public class PersonService {
-  
+public class PersonService extends BaseService {
   private String personId;
 
-  @Inject
   private PersonDao personDao;
-  
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    personDao = getDaoFactory().getPersonDao();
+  }
+
   /**
    * Sets the id of the Person this resource should represent.
    * 

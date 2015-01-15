@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 @ManagedBean
-public class WordCloudService {
+public class WordCloudService extends BaseService {
 
   private String documentId;
 

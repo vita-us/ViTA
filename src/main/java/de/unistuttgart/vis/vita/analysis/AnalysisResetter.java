@@ -1,40 +1,45 @@
 package de.unistuttgart.vis.vita.analysis;
 
-import javax.persistence.EntityManager;
-
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.DocumentMetadata;
-import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
-import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.model.entity.Attribute;
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.model.dao.*;
+import de.unistuttgart.vis.vita.model.document.*;
+import de.unistuttgart.vis.vita.model.entity.*;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
+import javax.persistence.EntityManager;
+
 public class AnalysisResetter {
+  DocumentDao documentDao;
+  EntityDao entityDao;
+  TextSpanDao textSpanDao;
+  DocumentPartDao partDao;
+  ChapterDao chapterDao;
+  EntityRelationDao entityRelationDao;
+  AttributeDao attributeDao;
+
+  public AnalysisResetter(EntityManager em) {
+    DaoFactory daoFactory = new DaoFactory(em);
+    this.documentDao = daoFactory.getDocumentDao();
+    this.entityDao = daoFactory.getEntityDao();
+    this.textSpanDao = daoFactory.getTextSpanDao();
+    this.partDao = daoFactory.getDocumentPartDao();
+    this.chapterDao = daoFactory.getChapterDao();
+    this.entityRelationDao = daoFactory.getEntityRelationDao();
+    this.attributeDao = daoFactory.getAttributeDao();
+  }
+
   /**
    * Reverts the complete analysis
    * @param document
    */
-  public static void resetDocument(EntityManager em, Document document) {
-    em.getTransaction().begin();
+  public void resetDocument(Document document) {
     for (Person person : document.getContent().getPersons()) {
-      removeEntity(em, person);
+      removeEntityData(person);
     }
+    
     for (Place place : document.getContent().getPlaces()) {
-      removeEntity(em, place);
+      removeEntityData(place);
     }
-    for (DocumentPart part : document.getContent().getParts()) {
-      for (Chapter chapter : part.getChapters()) {
-        em.remove(chapter.getRange());
-        em.remove(chapter);
-      }
-      em.remove(part);
-    }
+    
     document.getContent().getParts().clear();
     document.getContent().getPersons().clear();
     document.getContent().getPlaces().clear();
@@ -44,22 +49,45 @@ public class AnalysisResetter {
     document.setProgress(new AnalysisProgress());
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setMetrics(new DocumentMetrics());
-    em.getTransaction().commit();
+    documentDao.save(document);
+    
+    for (DocumentPart part : document.getContent().getParts()) {
+      partDao.remove(part);
+      for (Chapter chapter : part.getChapters()) {
+        chapterDao.remove(chapter);
+      }
+    }
+    
+    for (Person person : document.getContent().getPersons()) {
+      entityDao.remove(person);
+    }
+    for (Place place : document.getContent().getPlaces()) {
+      entityDao.remove(place);
+    }
+    
   }
-  
+
   /**
-   * Removes the complete entity
+   * Resets the document and sets the status of the document to failed.
+   *
+   * @param document The document to be resetted.
    */
-  private static void removeEntity(EntityManager em, Entity entity) {
-    em.remove(entity);
+  public void resetAndFail(Document document) {
+    resetDocument(document);
+    document.getProgress().setStatus(AnalysisStatus.FAILED);
+    documentDao.save(document);
+  }
+
+  /**
+   * Removes all entity data
+   */
+  private void removeEntityData(Entity entity) {
     for (Attribute attr : entity.getAttributes()) {
-      em.remove(attr);
+      attributeDao.remove(attr);
     }
+    
     for (EntityRelation rel : entity.getEntityRelations()) {
-      em.remove(rel);
-    }
-    for (TextSpan span : entity.getOccurrences()) {
-      em.remove(span);
+      entityRelationDao.remove(rel);
     }
   }
 }
