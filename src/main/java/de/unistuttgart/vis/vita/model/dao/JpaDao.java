@@ -58,7 +58,7 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
                                   + "' found with id '" + id + "'!");
     }
     
-    return em.find(getPersistentClass(), id);
+    return result;
   }
 
   /**

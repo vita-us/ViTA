@@ -44,8 +44,9 @@ import de.unistuttgart.vis.vita.model.entity.Place;
                     + "WHERE d.id = :documentId "
                     + "AND pl MEMBER OF d.content.places "
                     + "GROUP BY pl.id "
-                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) < "
-                    + "(4 * (SELECT AVG(c.length) FROM Chapter c)) "
+                    + "HAVING (MAX(ts.end.offset) - MIN(ts.start.offset)) "
+                    + "BETWEEN :minRange AND :maxRange "
+                    + "AND COUNT(ts) > 3 "
                     + "ORDER BY pl.rankingValue")
 })
 public class PlaceDao extends JpaDao<Place, String> {
