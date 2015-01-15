@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
-import de.unistuttgart.vis.vita.model.dao.OccurenceDao;
+import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
+
 import de.unistuttgart.vis.vita.services.RangeService;
 
 
@@ -23,11 +23,14 @@ import de.unistuttgart.vis.vita.services.RangeService;
 @ManagedBean
 public abstract class OccurrencesService extends RangeService {
 
-  @Inject
-  private ChapterDao     chapterDao;
+  private ChapterDao chapterDao;
+  protected OccurrenceDao occurrenceDao;
 
-  @Inject
-  protected OccurenceDao occurrenceDao;
+  @Override public void postConstruct() {
+    super.postConstruct();
+    chapterDao = getDaoFactory().getChapterDao();
+    occurrenceDao = getDaoFactory().getOccurrenceDao();
+  }
 
   /**
    * Converts a given List of TextSpans into Occurrences.
@@ -109,5 +112,4 @@ public abstract class OccurrencesService extends RangeService {
   }
 
   protected abstract long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex);
-
 }

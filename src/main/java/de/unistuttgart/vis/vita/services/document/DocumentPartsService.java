@@ -7,18 +7,23 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.dao.DocumentPartDao;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.DocumentPartsResponse;
 
 /**
  * Provides a method to GET all parts of the document this service refers to.
  */
 @ManagedBean
-public class DocumentPartsService {
+public class DocumentPartsService extends BaseService {
   
   private String documentId;
 
-  @Inject
   private DocumentPartDao documentPartDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentPartDao = getDaoFactory().getDocumentPartDao();
+  }
 
   /**
    * Sets the id of the document for which this service should provide the DocumentParts.

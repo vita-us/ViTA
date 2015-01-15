@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @NamedQueries({
-  @NamedQuery(name = "Occurrence.findAllTextSpans", query = "SELECT occ " + "FROM Occurrence occ"),
+  @NamedQuery(name = "Occurrence.findAllOccurrences", query = "SELECT occ " + "FROM Occurrence occ"),
 
   // for returning the exact spans for an entity in a given range
   @NamedQuery(name = "Occurrence.findOccurrencesForEntity", query = "SELECT occ "

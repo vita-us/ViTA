@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.Model;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import gate.Corpus;
@@ -86,13 +85,13 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       }
 
       @Override
-      public void storeResult(LanguageResource resource, String documentName)
+      public void storeResult(LanguageResource resource, String persistID)
           throws PersistenceException {
         serialDataStore.open();
 
         try {
           LanguageResource adopt = serialDataStore.adopt(resource);
-          adopt.setLRPersistenceId(documentName);
+          adopt.setLRPersistenceId(persistID);
           serialDataStore.sync(adopt);
           LOGGER.info("Corpus saved in datastore!");
         } finally {
@@ -101,12 +100,12 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
       }
 
       @Override
-      public void removeResult(String documentName) throws PersistenceException {
+      public void removeResult(String persistsID) throws PersistenceException {
         serialDataStore.open();
 
         try {
-          serialDataStore.delete(LR_TYPE_CORP, documentName);
-          LOGGER.info("Corpus with ID: " + documentName + " removed!");
+          serialDataStore.delete(LR_TYPE_CORP, persistsID);
+          LOGGER.info("Corpus with ID: " + persistsID + " removed!");
         } finally {
           serialDataStore.close();
         }

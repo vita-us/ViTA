@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -15,7 +16,6 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 /**
  * Represents a generic data access object for entities.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries(
     @NamedQuery(name = "Entity.findEntityById",
@@ -31,10 +31,12 @@ public class EntityDao extends JpaDao<Entity, String> {
   private static final String RANGE_END_PARAMETER = "rangeEnd";
 
   /**
-   * Creates a new data access object for Entities.
+   * Creates a new EntityDao with the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new EntityDao
    */
-  public EntityDao() {
-    super(Entity.class);
+  public EntityDao(EntityManager em) {
+    super(Entity.class, em);
   }
 
   /**
