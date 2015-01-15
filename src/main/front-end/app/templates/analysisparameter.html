@@ -1,0 +1,19 @@
+<div class="analysis-parameter">
+  <button class="btn btn-default" type="button" ng-click="isOpen = !isOpen">
+    <span class="">Analysis Parameters</span>
+    <span class="caret"></span>
+  </button>
+  <div ng-show="isOpen" class="parameter-list">
+    <div ng-repeat="parameter in analysisParameters">
+      <div ng-if="parameter.attributeType === 'int'">
+        <div data-number-parameter data-parameter="parameter"></div>
+      </div>
+      <div ng-if="parameter.attributeType === 'string'">
+        <div data-string-parameter data-parameter="parameter"></div>
+      </div>
+      <div ng-if="parameter.attributeType === 'boolean'">
+        <div data-boolean-parameter data-parameter="parameter"></div>
+      </div>
+    </div>
+  </div>
+</div>
