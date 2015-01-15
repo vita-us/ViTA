@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 /**
  * Represents a data access object for accessing EntityRelations.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "EntityRelation.findAllEntityRelations",

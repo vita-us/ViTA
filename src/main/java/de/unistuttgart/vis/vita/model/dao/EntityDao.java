@@ -16,7 +16,6 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 /**
  * Represents a generic data access object for entities.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries(
     @NamedQuery(name = "Entity.findEntityById",

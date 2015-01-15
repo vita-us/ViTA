@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * Represents a data access object for accessing DocumentParts.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "DocumentPart.findAllParts",

@@ -8,7 +8,6 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 /**
  * Represents a data access object for accessing the progress of the document analysis.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "AnalysisProgress.findAllProgresses",

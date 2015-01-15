@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 /**
  * Represents a data access object for accessing Attributes.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Attribute.findAllAttributes",

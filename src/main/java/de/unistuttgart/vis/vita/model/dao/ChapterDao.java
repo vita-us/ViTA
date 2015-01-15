@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 /**
  * Represents a data access object for accessing Chapters.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Chapter.findAllChapters",

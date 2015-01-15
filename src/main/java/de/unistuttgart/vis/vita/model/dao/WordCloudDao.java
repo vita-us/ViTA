@@ -8,7 +8,6 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 /**
  * Represents a data access object for accessing WordClouds.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "WordCloud.getGlobal",

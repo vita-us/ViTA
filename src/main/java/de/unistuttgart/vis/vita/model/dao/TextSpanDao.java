@@ -15,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.TextSpan;
 /**
  * Represents a data access object for accessing TextSpans.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "TextSpan.findAllTextSpans",

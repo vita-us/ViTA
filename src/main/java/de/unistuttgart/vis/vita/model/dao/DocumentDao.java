@@ -15,7 +15,8 @@ import java.util.List;
 /**
  * Represents a data access object for accessing documents.
  */
-@ManagedBean @MappedSuperclass @NamedQueries({@NamedQuery(name = "Document.findAllDocuments",
+@MappedSuperclass
+@NamedQueries({@NamedQuery(name = "Document.findAllDocuments",
     query = "SELECT d " + "FROM Document d " + "ORDER BY d.uploadDate DESC"),
 
     @NamedQuery(name = "Document.findDocumentById",

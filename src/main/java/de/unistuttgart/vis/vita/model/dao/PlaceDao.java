@@ -10,7 +10,6 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 /**
  * Represents a data access object for accessing places.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Place.findAllPlaces",

@@ -10,7 +10,6 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 /**
  * Represents a data access object for accessing Persons.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Person.findAllPersons",
