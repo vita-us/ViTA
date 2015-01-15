@@ -10,21 +10,26 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.dao.PlaceDao;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.PlacesResponse;
 
 /**
  * Provides a method to GET all places mentioned in the document this service refers to.
  */
 @ManagedBean
-public class PlacesService {
+public class PlacesService extends BaseService {
   
   private String documentId;
 
-  @Inject
   private PlaceDao placeDao;
   
   @Inject
   private PlaceService placeService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    placeDao = getDaoFactory().getPlaceDao();
+  }
 
   /**
    * Sets the id of the document for which this service should provide the mentioned places.

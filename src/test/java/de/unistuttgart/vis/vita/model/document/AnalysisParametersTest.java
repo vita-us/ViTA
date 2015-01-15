@@ -49,14 +49,17 @@ public class AnalysisParametersTest {
     em = model.getEntityManager();
     parameters = new AnalysisParameters();
 
+    ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
+    AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
+    Path docPath = Paths.get(MainAnalysisModule.class.getResource("TestDocument.txt").toURI());
+    doc.setParameters(parameters);
+    doc.setFilePath(docPath);
+
     em.getTransaction().begin();
     em.persist(doc);
     em.getTransaction().commit();
 
-    ModuleRegistry registry = ModuleRegistry.getDefaultRegistry();
-    AnalysisExecutorFactory factory = new DefaultAnalysisExecutorFactory(model, registry);
-    Path docPath = Paths.get(MainAnalysisModule.class.getResource("TestDocument.txt").toURI());
-    executor = factory.createExecutor(doc.getId(), docPath, parameters);
+    executor = factory.createExecutor(doc);
 
   }
 

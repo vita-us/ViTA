@@ -9,6 +9,8 @@ import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.parameters.AbstractParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
@@ -32,10 +34,13 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("/analysis-parameters")
 @ManagedBean
-public class ParametersService {
-
-  @Inject
+public class ParametersService extends BaseService {
   private DocumentDao documentDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   /**
    * Method for retrieving all available parameters as JSON response.
