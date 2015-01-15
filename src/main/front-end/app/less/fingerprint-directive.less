@@ -56,4 +56,38 @@
     opacity: 0.6;
     pointer-events: none;
   }
+
+  .loading-rect {
+    fill: white;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.separators-key {
+  font-size: 12px;
+  border: 1px solid @border-color;
+  padding: 5px;
+
+  .part-separator-key {
+    margin-right: 10px;
+
+    .part-help {
+      color: @fingerprint-part-color;
+      font-weight: bold;
+      font-size: 17px;
+    }
+  }
+
+  .chapter-separator-key {
+    .chapter-help {
+      color: @fingerprint-line-color;
+      font-weight: bold;
+      font-size: 17px;
+    }
+  }
+}
+
+.fingerprint-top-row {
+  overflow: hidden;
 }

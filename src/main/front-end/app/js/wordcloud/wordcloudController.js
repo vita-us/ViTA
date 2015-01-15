@@ -25,11 +25,13 @@
 
         $scope.loadPersonWordcloud = function(person) {
           $scope.activeWordcloud = person.id;
+          $scope.wordcloudPerson = person;
           loadWordcloud(person.id);
         };
 
         $scope.loadGlobalWordcloud = function() {
           $scope.activeWordcloud = 'global';
+          $scope.wordcloudPerson = undefined;
           loadWordcloud();
         };
 

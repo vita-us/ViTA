@@ -15,12 +15,20 @@
 
     this.synchronize = function() {
       var separators = $('.chapter-separators, .part-separators');
+      var separatorsKey = $('.separators-key');
+
       if (isSeparatorVisible) {
         separators.show();
+        separatorsKey.show();
       } else {
         separators.hide();
+        separatorsKey.hide();
       }
     };
+
+    this.isSeparatorVisible = function() {
+      return isSeparatorVisible;
+    }
   });
 
 })(angular);

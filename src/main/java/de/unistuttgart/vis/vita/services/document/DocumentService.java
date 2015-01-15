@@ -5,39 +5,45 @@ import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
+import de.unistuttgart.vis.vita.services.analysis.ParametersService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
 import de.unistuttgart.vis.vita.services.entity.PlacesService;
 import de.unistuttgart.vis.vita.services.entity.PlotViewService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
  */
 @ManagedBean
-public class DocumentService {
+public class DocumentService extends BaseService {
 
   private String id;
 
-  @Inject
   private DocumentDao documentDao;
 
   @Inject
@@ -72,6 +78,12 @@ public class DocumentService {
 
   @Inject
   PlotViewService plotViewService;
+
+  @Override
+  public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   /**
    * Sets the id of the document this resource should represent
@@ -254,4 +266,49 @@ public class DocumentService {
     return plotViewService.setDocumentId(id);
   }
 
+  @GET
+  @Path("/parameters")
+  @Produces(MediaType.APPLICATION_JSON)
+  public AnalysisParameters getParameters() {
+    Document readDoc;
+    try {
+      readDoc = documentDao.findById(id);
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    return readDoc.getParameters();
+  }
+
+  /**
+   * Restarts the analysis of a document with different parameters
+   */
+  @Path("/derive")
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public DocumentIdResponse derive(AnalysisParameters parameters) {
+    Set<ConstraintViolation<AnalysisParameters>> violations =
+        Validation.buildDefaultValidatorFactory().getValidator().validate(parameters);
+    if (!violations.isEmpty()) {
+      // TODO this does not work, it produces a generic Bad Request
+      throw new ValidationViolationException(violations);
+    }
+
+    Document readDoc;
+    try {
+      readDoc = documentDao.findById(id);
+    } catch (NoResultException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    DocumentIdResponse response = null;
+
+    // schedule analysis
+    String id = analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(),
+        readDoc.getFileName(), parameters);
+
+    // set up Response
+    return new DocumentIdResponse(id);
+  }
 }

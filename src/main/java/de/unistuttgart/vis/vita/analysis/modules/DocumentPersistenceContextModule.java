@@ -5,18 +5,17 @@ import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
-
-import java.nio.file.Path;
+import de.unistuttgart.vis.vita.model.document.Document;
 
 @AnalysisModule(weight = 0.1)
 public class DocumentPersistenceContextModule extends Module<DocumentPersistenceContext> {
 
   private String id;
-  private Path documentPath;
+  private Document document;
 
-  public DocumentPersistenceContextModule(String id, Path documentPath) {
-    this.id = id;
-    this.documentPath = documentPath;
+  public DocumentPersistenceContextModule(Document document) {
+    this.document = document;
+    this.id = document.getId();
   }
 
   @Override
@@ -24,13 +23,23 @@ public class DocumentPersistenceContextModule extends Module<DocumentPersistence
                                             ProgressListener progressListener) throws Exception {
     return new DocumentPersistenceContext() {
       @Override
+      public Document getDocument() {
+        return document;
+      }
+
+      @Override
       public String getDocumentId() {
         return id;
       }
 
       @Override
+      public String getDocumentContentId() {
+        return document.getContentID().toString();
+      }
+
+      @Override
       public String getFileName() {
-        return documentPath.getFileName().toString();
+        return document.getFileName();
       }
     };
   }

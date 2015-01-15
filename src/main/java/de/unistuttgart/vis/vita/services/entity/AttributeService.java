@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.dao.AttributeDao;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.AttributeOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
@@ -19,9 +20,7 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
  * Provides methods to GET an attribute with current id
  */
 @ManagedBean
-public class AttributeService {
-  
-  @Inject
+public class AttributeService extends BaseService {
   private AttributeDao attributeDao;
   
   private String documentId;
@@ -30,6 +29,11 @@ public class AttributeService {
   
   @Inject
   private AttributeOccurrencesService attributeOccurrencesService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    attributeDao = getDaoFactory().getAttributeDao();
+  }
 
   /**
    * Sets the id of the document this service refers to and returns itself.

@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.dao.EntityDao;
 import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
 import de.unistuttgart.vis.vita.services.search.SearchEntityService;
 
@@ -19,14 +20,13 @@ import de.unistuttgart.vis.vita.services.search.SearchEntityService;
  * Redirects attribute requests for the current entity to the right AttributeService.
  */
 @ManagedBean
-public class EntityService {
+public class EntityService extends BaseService {
   
   private String documentId;
   private String entityId;
 
-  @Inject
   private EntityDao entityDao;
-  
+
   @Inject
   private AttributesService attributesService;
 
@@ -35,6 +35,11 @@ public class EntityService {
 
   @Inject
   SearchEntityService searchEntityService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    entityDao = getDaoFactory().getEntityDao();
+  }
 
   /**
    * Sets the id of the Document the referring entity occurs in
