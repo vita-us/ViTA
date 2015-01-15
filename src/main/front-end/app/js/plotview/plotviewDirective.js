@@ -27,7 +27,7 @@
           return;
         }
         container.selectAll('*').remove();
-        draw_chart(container, "plotview", plotviewData, true, false, false);
+        draw_chart(container, 'plotview', plotviewData, true, false, false);
       }
 
       var LINK_WIDTH = 1.8;
@@ -85,13 +85,13 @@
           return a.start - b.start;
         });
 
-        var svg = container.append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("class", "chart")
-            .attr("id", safe_name)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = container.append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('class', 'chart')
+            .attr('id', safe_name)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         var character_data = data.characters;
         var characters = [];
@@ -156,7 +156,7 @@
 
         calculate_link_positions(scene_nodes, characters, groups, character_map);
 
-        d3.select('svg#' + safe_name).style("height", RAW_CHART_HEIGHT);
+        d3.select('svg#' + safe_name).style('height', RAW_CHART_HEIGHT);
 
         draw_links(links, svg);
         draw_nodes(scene_nodes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
@@ -185,10 +185,10 @@
             x_center = (x0 + x1) / 2;
 
         // Creates a cubic bezier curve
-        return "M" + x0 + "," + y0
-            + "C" + x_center + "," + y0
-            + " " + x_center + "," + y1
-            + " " + x1 + "," + y1;
+        return 'M' + x0 + ',' + y0
+            + 'C' + x_center + ',' + y0
+            + ' ' + x_center + ',' + y1
+            + ' ' + x1 + ',' + y1;
       }
 
       function Character(name, id, group) {
@@ -227,7 +227,7 @@
         this.in_links = [];
         this.out_links = [];
 
-        this.name = "";
+        this.name = '';
 
         this.title = title;
 
@@ -246,24 +246,24 @@
 
       function reposition_node_links(scene_id, x, y, width, height, svg, ydisp, comic_name) {
         var counter = 0;
-        d3.selectAll("[to=\"" + comic_name + "_" + scene_id + "\"]")
+        d3.selectAll('[to="' + comic_name + '_' + scene_id + '"]')
             .each(function(d) {
               d.x1 = x + width / 2;
               d.y1 -= ydisp;
               counter += 1;
             })
-            .attr("d", function(d) {
+            .attr('d', function(d) {
               return create_link_path(d);
             });
 
         counter = 0;
-        d3.selectAll("[from=\"" + comic_name + "_" + scene_id + "\"]")
+        d3.selectAll('[from="' + comic_name + '_' + scene_id + '"]')
             .each(function(d) {
               d.x0 = x + width / 2;
               d.y0 -= ydisp;
               counter += 1;
             })
-            .attr("d", function(d) {
+            .attr('d', function(d) {
               return create_link_path(d);
             });
       }
@@ -524,7 +524,7 @@
 
         }
         if (i == chars.length) {
-          console.log("ERROR: char not found, id = " + char_id);
+          console.log('ERROR: char not found, id = ' + char_id);
         }
 
         // Find the corresponding group
@@ -533,7 +533,7 @@
           if (chars[i].group == groups[j].id) break;
         }
         if (j == groups.length) {
-          console.log("ERROR: groups not found.");
+          console.log('ERROR: groups not found.');
         }
         return j;
       }
@@ -571,7 +571,7 @@
             } else if (den1 != 0) {
               avg = sum1 / den1;
             } else {
-              console.log("ERROR: den1 and den2 are 0. Scene doesn't have characters?");
+              console.log('ERROR: den1 and den2 are 0. Scene doesn\'t have characters?');
               avg = scene.median_group.min;
             }
             scene.y = avg - scene.height / 2.0;
@@ -647,92 +647,92 @@
       }
 
       function draw_nodes(scenes, svg, chart_width, chart_height, safe_name) {
-        var node = svg.append("g").selectAll(".node")
+        var node = svg.append('g').selectAll('.node')
             .data(scenes)
-            .enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) {
-              return "translate(" + d.x + "," + d.y + ")";
+            .enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', function(d) {
+              return 'translate(' + d.x + ',' + d.y + ')';
             })
-            .attr("scene_id", function(d) {
+            .attr('scene_id', function(d) {
               return d.id;
             })
             .call(d3.behavior.drag()
                 .origin(function(d) {
                   return d;
                 })
-                .on("dragstart", function() {
+                .on('dragstart', function() {
                   this.parentNode.appendChild(this);
                 })
-                .on("drag", dragmove));
+                .on('drag', dragmove));
 
-        node.append("rect")
-            .attr("width", function(d) {
+        node.append('rect')
+            .attr('width', function(d) {
               return d.width;
             })
-            .attr("height", function(d) {
+            .attr('height', function(d) {
               return d.height;
             })
-            .attr("class", "scene")
-            .attr("title", function(d) {
+            .attr('class', 'scene')
+            .attr('title', function(d) {
               return d.title;
             })
-            .attr("rx", 20)
-            .attr("ry", 10)
-            .append("title")
+            .attr('rx', 20)
+            .attr('ry', 10)
+            .append('title')
             .text(function(d) {
               return d.name;
             });
 
         // White background for the names
         if (WHITE_BACKGROUND_FOR_NAMES) {
-          node.append("rect")
+          node.append('rect')
               .filter(function(d) {
                 return d.char_node;
               })
-              .attr("x", function(d) {
+              .attr('x', function(d) {
                 return -((d.name.length + 2) * 5);
               })
-              .attr("y", function() {
+              .attr('y', function() {
                 return -3;
               })
-              .attr("width", function(d) {
+              .attr('width', function(d) {
                 return (d.name.length + 1) * 5;
               })
-              .attr("height", 7.5)
-              .attr("transform", null)
-              .attr("fill", "#fff")
-              .style("opacity", 1);
+              .attr('height', 7.5)
+              .attr('transform', null)
+              .attr('fill', '#fff')
+              .style('opacity', 1);
         }
 
-        node.append("text")
+        node.append('text')
             .filter(function(d) {
               return d.char_node;
             })
-            .attr("x", -6)
-            .attr("y", function() {
+            .attr('x', -6)
+            .attr('y', function() {
               return 0;
             })
-            .attr("dy", ".35em")
-            .attr("text-anchor", "end")
-            .attr("transform", null)
+            .attr('dy', '.35em')
+            .attr('text-anchor', 'end')
+            .attr('transform', null)
             .text(function(d) {
               return d.name;
             })
             .filter(function() {
               return false;
             })
-            .attr("x", function(d) {
+            .attr('x', function(d) {
               return 6 + d.width;
             })
-            .attr("text-anchor", "start");
+            .attr('text-anchor', 'start');
 
         function dragmove(d) {
           var newy = Math.max(0, Math.min(chart_height - d.height, d3.event.y));
           var ydisp = d.y - newy;
-          d3.select(this).attr("transform", "translate("
-          + (d.x = Math.max(0, Math.min(chart_width - d.width, d3.event.x))) + ","
-          + (d.y = Math.max(0, Math.min(chart_height - d.height, d3.event.y))) + ")");
+          d3.select(this).attr('transform', 'translate('
+          + (d.x = Math.max(0, Math.min(chart_width - d.width, d3.event.x))) + ','
+          + (d.y = Math.max(0, Math.min(chart_height - d.height, d3.event.y))) + ')');
           reposition_node_links(d.id, d.x, d.y, d.width, d.height, svg, ydisp, d.comic_name);
         }
       }
@@ -748,39 +748,39 @@
 
 
       function draw_links(links, svg) {
-        var link = svg.append("g").selectAll(".link")
+        var link = svg.append('g').selectAll('.link')
             .data(links)
-            .enter().append("path")
-            .attr("class", "link")
-            .attr("d", function(d) {
+            .enter().append('path')
+            .attr('class', 'link')
+            .attr('d', function(d) {
               return create_link_path(d);
             })
-            .attr("from", function(d) {
-              return d.from.comic_name + "_" + d.from.id;
+            .attr('from', function(d) {
+              return d.from.comic_name + '_' + d.from.id;
             })
-            .attr("to", function(d) {
-              return d.to.comic_name + "_" + d.to.id;
+            .attr('to', function(d) {
+              return d.to.comic_name + '_' + d.to.id;
             })
-            .attr("charid", function(d) {
-              return d.from.comic_name + "_" + d.char_id;
+            .attr('charid', function(d) {
+              return d.from.comic_name + '_' + d.char_id;
             })
-            .style("stroke", function(d) {
+            .style('stroke', function(d) {
               return d3.rgb(COLOR_SCALE(d.group)).darker(0.5).toString();
             })
-            .style("stroke-width", LINK_WIDTH)
-            .style("stroke-opacity", "0.6")
-            .style("stroke-linecap", "round")
-            .on("mouseover", mouseover_cb)
-            .on("mouseout", mouseout_cb);
+            .style('stroke-width', LINK_WIDTH)
+            .style('stroke-opacity', '0.6')
+            .style('stroke-linecap', 'round')
+            .on('mouseover', mouseover_cb)
+            .on('mouseout', mouseout_cb);
 
         function mouseover_cb(d) {
-          d3.selectAll("[charid=\"" + d.from.comic_name + "_" + d.char_id + "\"]")
-              .style("stroke-opacity", "1");
+          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
+              .style('stroke-opacity', '1');
         }
 
         function mouseout_cb(d) {
-          d3.selectAll("[charid=\"" + d.from.comic_name + "_" + d.char_id + "\"]")
-              .style("stroke-opacity", "0.6");
+          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
+              .style('stroke-opacity', '0.6');
         }
       }
 
