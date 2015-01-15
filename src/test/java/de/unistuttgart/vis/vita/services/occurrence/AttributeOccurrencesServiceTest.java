@@ -17,7 +17,7 @@ import de.unistuttgart.vis.vita.data.AttributeTestData;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
-import de.unistuttgart.vis.vita.data.TextSpanTestData;
+import de.unistuttgart.vis.vita.data.OccurrenceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -31,8 +31,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
   
-  private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
-  private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
+  private static final int ABSOLUTE_START_OFFSET = OccurrenceTestData.TEST_RANGE_START;
+  private static final int ABSOLUTE_END_OFFSET = OccurrenceTestData.TEST_RANGE_END;
 
   private String documentId;
   private String entityId;
@@ -45,7 +45,7 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     super.setUp();
     
     // first set up test data
-    TextSpanTestData testData = new TextSpanTestData();
+    OccurrenceTestData testData = new OccurrenceTestData();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     Chapter testChapter = new ChapterTestData().createTestChapter();
 
@@ -58,7 +58,7 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
 
-    Range attributeTextSpan = testData.createTestTextSpan(testChapter);
+    Range attributeTextSpan = testData.createOccurrenceSpan(testChapter);
     Person testEntity = new PersonTestData().createTestPerson(1);
     Attribute testAttribute = new AttributeTestData().createTestAttribute(1);
     testEntity.getAttributes().add(testAttribute);
@@ -146,11 +146,11 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     if (exact) {
       assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
       assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
-      assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+      assertEquals(OccurrenceTestData.TEST_RANGE_LENGTH, receivedOccurence.getLength());
     } else {
       assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
       assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
-      assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength());
+      assertTrue(OccurrenceTestData.TEST_RANGE_LENGTH <= receivedOccurence.getLength());
     }
   }
 }

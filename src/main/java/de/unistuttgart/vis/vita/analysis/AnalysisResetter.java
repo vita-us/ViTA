@@ -59,8 +59,8 @@ public class AnalysisResetter {
     for (EntityRelation rel : entity.getEntityRelations()) {
       em.remove(rel);
     }
-    for (Occurrence span : entity.getOccurrences()) {
-      em.remove(span);
+    for (Occurrence occurrence : entity.getOccurrences()) {
+      em.remove(occurrence);
     }
   }
 }

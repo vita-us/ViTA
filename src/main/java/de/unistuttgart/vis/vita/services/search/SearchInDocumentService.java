@@ -119,7 +119,7 @@ public class SearchInDocumentService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
     int count = 0;
     for (Range span : textSpans) {
       if (span.getEnd().getOffset() > stepEnd)

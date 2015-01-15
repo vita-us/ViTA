@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 public class EntityRelationsService extends RangeService {
   
   @Inject
-  private OccurenceDao textSpanDao;
+  private OccurenceDao occcurrenceDao;
   
   @Inject
   private EntityRelationDao entityRelationDao;
@@ -121,7 +121,7 @@ public class EntityRelationsService extends RangeService {
   }
 
   private boolean occurrsInRange(String entityId, int startOffset, int endOffset) {
-    return ((long) textSpanDao.getNumberOfTextSpansForEntity(entityId, startOffset, endOffset) > 0);
+    return ((long) occcurrenceDao.getNumberOfOccurrencesForEntity(entityId, startOffset, endOffset) > 0);
   }
 
   /**

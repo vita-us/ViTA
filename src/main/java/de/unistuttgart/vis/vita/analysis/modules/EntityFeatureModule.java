@@ -33,7 +33,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * the result.
  *
  * This depends on the text feature module because the chapters must have been stored for the
- * TextSpans to be persistable
+ * Ranges/Occurrences to be persistable
  */
 @AnalysisModule(dependencies = {EntityAttributes.class, EntityRanking.class, EntityRelations.class,
                                 BasicEntityCollection.class, DocumentPersistenceContext.class,

@@ -13,7 +13,7 @@ import org.junit.Before;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
-import de.unistuttgart.vis.vita.data.TextSpanTestData;
+import de.unistuttgart.vis.vita.data.OccurrenceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -29,8 +29,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  */
 public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
 
-  private static final int ABSOLUTE_START_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_START;
-  private static final int ABSOLUTE_END_OFFSET = TextSpanTestData.TEST_TEXT_SPAN_END;
+  private static final int ABSOLUTE_START_OFFSET = OccurrenceTestData.TEST_RANGE_START;
+  private static final int ABSOLUTE_END_OFFSET = OccurrenceTestData.TEST_RANGE_END;
   
   private String docId;
   private String chapterId;
@@ -42,7 +42,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     super.setUp();
 
     // first set up test data
-    TextSpanTestData testData = new TextSpanTestData();
+    OccurrenceTestData testData = new OccurrenceTestData();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     Chapter testChapter = new ChapterTestData().createTestChapter();
 
@@ -52,7 +52,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
     testChapter.setRange(chapterRangeSpan);
 
-    Range personTextSpan = testData.createTestTextSpan(testChapter);
+    Range personTextSpan = testData.createOccurrenceSpan(testChapter);
     Person testPerson = new PersonTestData().createTestPerson(1);
     testPerson.getOccurrences().add(personTextSpan);
 
@@ -134,11 +134,11 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     if (exact) {
       assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
       assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
-      assertEquals(TextSpanTestData.TEST_TEXT_SPAN_LENGTH, receivedOccurence.getLength());
+      assertEquals(OccurrenceTestData.TEST_RANGE_LENGTH, receivedOccurence.getLength());
     } else {
       assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
       assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
-      assertTrue(TextSpanTestData.TEST_TEXT_SPAN_LENGTH <= receivedOccurence.getLength()); 
+      assertTrue(OccurrenceTestData.TEST_RANGE_LENGTH <= receivedOccurence.getLength()); 
     }
   }
 

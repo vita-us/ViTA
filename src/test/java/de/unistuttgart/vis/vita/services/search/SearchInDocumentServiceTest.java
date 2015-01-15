@@ -15,7 +15,7 @@ import de.unistuttgart.vis.vita.analysis.modules.LuceneModule;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentPartTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.data.TextSpanTestData;
+import de.unistuttgart.vis.vita.data.OccurrenceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;

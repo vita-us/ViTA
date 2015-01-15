@@ -127,7 +127,7 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
   }
 
   /**
-   * Compares first the start positions, and if they are equal, the lengths. Shorter spans are
+   * Compares first the start positions, and if they are equal, the lengths. Shorter ranges are
    * considered smaller than longer ones. This will only produce usable results if both
    * TextPositions are in the same document.
    */
@@ -146,7 +146,7 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
   }
 
   /**
-   * Indicates if obj is a Range representing the same range as this text span
+   * Indicates if obj is a Range representing the same range as this range
    */
   @Override
   public boolean equals(Object obj) {
@@ -165,6 +165,6 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
 
   @Override
   public String toString() {
-    return String.format("Span %s ... %s", start, end);
+    return String.format("Range %s ... %s", start, end);
   }
 }
