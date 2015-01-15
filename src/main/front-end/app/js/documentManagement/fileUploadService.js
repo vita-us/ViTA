@@ -5,13 +5,13 @@
 
   vitaDirectives.service('FileUpload', ['$http', function($http) {
     // http://uncorkedstudios.com/blog/multipartformdata-file-upload-with-angularjs
-    this.uploadFileToUrl = function(file, uploadUrl, onSuccess, onError) {
+    this.uploadFileToUrl = function(file, uploadUrl, analysisParameters, onSuccess, onError) {
       var fd = new FormData();
       fd.append('file', file);
 
-      // TODO this is how parameters can be passed. They should be taken from the UI
-      var parameters = { relationTimeStepCount: 30, wordCloudItemsCount: 20, stopWordListEnabled: true };
-      fd.append('parameters', new Blob([ JSON.stringify(parameters) ], {type: 'application/json'}));
+      if(analysisParameters) {
+        fd.append('parameters', new Blob([JSON.stringify(analysisParameters)], {type: 'application/json'}));
+      }
 
       $http.post(uploadUrl, fd, {
         transformRequest: angular.identity,

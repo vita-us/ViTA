@@ -4,8 +4,8 @@
   var vitaDirectives = angular.module('vitaDirectives');
 
   vitaDirectives.directive('documentUpload', [
-      'FileUpload',
-      function(FileUpload) {
+      'FileUpload', 'AnalysisParameter',
+      function(FileUpload, AnalysisParameter) {
 
         var allowedExtensions = ['.txt', '.epub'];
 
@@ -20,6 +20,7 @@
           scope.allowedExtensionsString = allowedExtensions.join(',');
 
           setupFileValidation(scope);
+          setupAnalysisParameters(scope);
 
           scope.uploading = false;
           scope.uploadSelectedFile = function() {
@@ -31,7 +32,8 @@
             if (scope.file) {
               scope.uploading = true;
 
-              FileUpload.uploadFileToUrl(scope.file, 'webapi/documents', function() {
+              FileUpload.uploadFileToUrl(scope.file, 'webapi/documents', getParameterToValueMap(scope),
+                function() {
                 // nothing to do: we poll the documents every X seconds
                 resetUploadField();
                 scope.uploading = false;
@@ -76,6 +78,28 @@
           document.getElementById('document-input').value = '';
         }
 
+        function setupAnalysisParameters(scope) {
+          AnalysisParameter.get({}, function(response) {
+            scope.analysisParameters = response.parameters;
+            scope.analysisParameters.forEach(function(parameter) {
+              if (parameter.attributeType === 'int') {
+                parameter.value = parameter.min;
+              } else if (parameter.attributeType === 'boolean') {
+                parameter.value = false;
+              } else {
+                parameter.value = "";
+              }
+            });
+          });
+        }
+
+        function getParameterToValueMap(scope) {
+          var parameterToValue = {};
+          scope.analysisParameters.forEach(function(parameter) {
+            parameterToValue[parameter.name] = parameter.value;
+          });
+          return parameterToValue;
+        }
         return directive;
       }]);
 
