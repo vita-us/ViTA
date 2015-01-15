@@ -3,17 +3,13 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.entity.Place;
 
 /**
  * Represents a data access object for accessing places.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Place.findAllPlaces",
@@ -56,8 +52,8 @@ public class PlaceDao extends JpaDao<Place, String> {
   /**
    * Creates a new data access object for accessing places.
    */
-  public PlaceDao() {
-    super(Place.class);
+  public PlaceDao(EntityManager em) {
+    super(Place.class, em);
   }
 
   public List<Place> findInDocument(String documentId, int offset, int count) {

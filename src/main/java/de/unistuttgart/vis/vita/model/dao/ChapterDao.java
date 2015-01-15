@@ -3,6 +3,11 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.TypedQuery;
 import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -10,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 /**
  * Represents a data access object for accessing Chapters.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Chapter.findAllChapters",
@@ -50,10 +54,12 @@ public class ChapterDao extends JpaDao<Chapter, String> {
   private static final String CHAPTER_TITLE_PARAMETER = "title";
 
   /**
-   * Creates a new data access object to access Chapters.
+   * Creates a new data access object to access Chapter using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new ChapterDao
    */
-  public ChapterDao() {
-    super(Chapter.class);
+  public ChapterDao(EntityManager em) {
+    super(Chapter.class, em);
   }
 
   /**

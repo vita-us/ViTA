@@ -1,10 +1,18 @@
 package de.unistuttgart.vis.vita.model;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisResetter;
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.Document;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.jersey.server.CloseableService;
 
+import de.unistuttgart.vis.vita.model.dao.DaoFactory;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,16 +52,13 @@ public class Model implements Factory<EntityManager> {
    * Create a default Model instance
    */
   public Model() {
-    entityManagerFactory =
-        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-    textRepository = new TextRepository();
-    gateDatastoreLocation = new GateDatastoreLocation();
+    this(Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME), new TextRepository());
   }
 
   protected Model(EntityManagerFactory emf, TextRepository textRepository) {
-    entityManagerFactory = emf;
+    this.entityManagerFactory = emf;
     this.textRepository = textRepository;
-    gateDatastoreLocation = new GateDatastoreLocation();
+    this.gateDatastoreLocation = new GateDatastoreLocation();
   }
 
   private static void loadDriver() {
@@ -127,5 +132,16 @@ public class Model implements Factory<EntityManager> {
 
   public void closeAllEntityManagers() {
     entityManagerFactory.close();
+  }
+
+  public void runInTransaction(TransactionalAction callback) {
+    EntityManager em = getEntityManager();
+    try {
+      em.getTransaction().begin();
+      callback.run(em, new DaoFactory(em));
+      em.getTransaction().commit();
+    } finally {
+      em.close();
+    }
   }
 }

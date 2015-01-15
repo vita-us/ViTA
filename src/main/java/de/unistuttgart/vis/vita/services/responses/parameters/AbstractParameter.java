@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
- *
+ * Abstract class for response parameters. Only used for the service.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({MinMaxParameter.class, BooleanParameter.class})
@@ -21,6 +21,7 @@ public abstract class AbstractParameter {
   protected String name;
   protected Type attributeType;
   protected String description;
+  protected String label;
 
   public AbstractParameter() {
   }
@@ -29,6 +30,14 @@ public abstract class AbstractParameter {
     this.name = name;
     this.attributeType = attributeType;
     this.description = description;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
   }
 
   public String getDescription() {

@@ -20,12 +20,15 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
  */
 @ManagedBean
 public abstract class OccurrencesService extends RangeService {
-  
-  @Inject
+
   private ChapterDao chapterDao;
-  
-  @Inject
   protected TextSpanDao textSpanDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    chapterDao = getDaoFactory().getChapterDao();
+    textSpanDao = getDaoFactory().getTextSpanDao();
+  }
 
   /**
    * Converts a given List of TextSpans into Occurrences.

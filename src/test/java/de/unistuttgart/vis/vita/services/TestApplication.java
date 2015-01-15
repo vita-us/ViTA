@@ -14,33 +14,22 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
-
-public class TestApplication extends BaseApplication {
-  
-  public TestApplication() {
-    register(new MyApplicationBinder());
-    register(ServiceLocatorUtilities.createAndPopulateServiceLocator());
+/**
+ * The application config used for the unit tests
+ */
+public class TestApplication extends Hk2Application {
+  @Override protected AbstractBinder getBinder() {
+    return new MyApplicationBinder();
   }
 
-  private static class MyApplicationBinder extends AbstractBinder {
+  private static class MyApplicationBinder extends BaseApplicationBinder {
     @Override
     protected void configure() {
-      bindAllManagedBeans(SERVICES_PACKAGE);
-      bindAllManagedBeans(DAO_PACKAGE);   
+      super.configure();
 
       bind(UnitTestModel.class).to(Model.class);
       bindFactory(UnitTestModel.class).to(EntityManager.class);
       bind(AnalysisController.class).to(AnalysisController.class);
     }
-    
-    private void bindAllManagedBeans(String packageName) {
-      Iterable<Class<?>> managedBeanClasses =
-          new Reflections(packageName).getTypesAnnotatedWith(ManagedBean.class);
-      
-      for (Class<?> managedBeanClass : managedBeanClasses) {
-        bind(managedBeanClass).to(managedBeanClass);
-      }
-    }
-    
   }
 }

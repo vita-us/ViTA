@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -13,7 +14,6 @@ import de.unistuttgart.vis.vita.model.entity.Attribute;
 /**
  * Represents a data access object for accessing Attributes.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Attribute.findAllAttributes",
@@ -42,10 +42,12 @@ public class AttributeDao extends JpaDao<Attribute, String> {
   private static final String ENTITY_ID_PARAMETER = "entityId";
 
   /**
-   * Creates a new data access object for accessing Attributes.
+   * Creates a new data access object for accessing Attributes using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new AttributeDao
    */
-  public AttributeDao() {
-    super(Attribute.class);
+  public AttributeDao(EntityManager em) {
+    super(Attribute.class, em);
   }
 
   /**

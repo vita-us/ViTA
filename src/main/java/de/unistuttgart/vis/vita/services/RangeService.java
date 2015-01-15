@@ -9,13 +9,17 @@ import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
  * Represents a service offering data from specific ranges of a Document. Provides methods to 
  * check ranges and calculate offsets.
  */
-public abstract class RangeService {
+public abstract class RangeService extends BaseService {
 
-  @Inject
   protected DocumentDao documentDao;
   
   protected String documentId;
   private int documentLength;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   /**
    * Returns the length of the current document.

@@ -16,6 +16,7 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.model.entity.Place;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewCharacter;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewPlace;
@@ -27,27 +28,32 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
  * in order to give an overview of the document plot.
  */
 @ManagedBean
-public class PlotViewService {
+public class PlotViewService extends BaseService {
 
   public static final int MAX_PERSON_COUNT = 10;
   public static final int DEFAULT_PANEL_AMOUNT = 100;
 
   private String documentId;
 
-  @Inject
   private DocumentDao documentDao;
-
-  @Inject
+  
   private ChapterDao chapterDao;
   
-  @Inject
   private PersonDao personDao;
 
-  @Inject
   private PlaceDao placeDao;
 
-  @Inject
   private EntityDao entityDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+    personDao = getDaoFactory().getPersonDao();
+    entityDao = getDaoFactory().getEntityDao();
+    chapterDao = getDaoFactory().getChapterDao();
+    placeDao = getDaoFactory().getPlaceDao();
+    entityDao = getDaoFactory().getEntityDao();
+  }
 
   /**
    * Sets the id of the Document this service should refer to
