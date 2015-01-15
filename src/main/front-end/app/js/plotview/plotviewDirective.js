@@ -33,62 +33,59 @@
       var LINK_WIDTH = 1.8;
       var LINK_GAP = 2;
 
-      var NODE_WIDTH = 10; // Set to panel_width later
+      var SCENE_WIDTH = 10;
       var COLOR_SCALE = d3.scale.category10();
       var RAW_CHART_WIDTH = 1000;
       var RAW_CHART_HEIGHT = 360;
 
-
       var WHITE_BACKGROUND_FOR_NAMES = true;
+      var RESERVED_NAME_WIDTH = 115;
 
+      var USE_EQUAL_SCENE_WIDTHS = false;
 
 
       function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
         var margin = {top: 20, right: 25, bottom: 20, left: 1};
+        var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
         var width = RAW_CHART_WIDTH - margin.left - margin.right;
 
-        var jscenes = data['scenes'];
-        // This calculation is only relevant for equal_scenes = true
-        var scene_width = (width - longest_name) / (jscenes.length + 1);
+        var scenes = data.scenes;
+        var scene_nodes = [];
+        var total_duration = 0;
+        var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
 
-        var total_panels = 0;
-        var scenes = [];
-        for (var i = 0; i < jscenes.length; i++) {
-          var duration = parseInt(jscenes[i]['duration']);
-          var start;
-          if (equal_scenes) {
-            start = i * scene_width + longest_name;
+        for (var i = 0; i < scenes.length; i++) {
+          var scene = scenes[i];
+          var duration = parseInt(scene.duration);
+          var start_x;
+          if (USE_EQUAL_SCENE_WIDTHS) {
+            start_x = i * average_scene_width + RESERVED_NAME_WIDTH;
           } else {
-            start = parseInt(jscenes[i]['start']);
+            start_x = parseInt(scene.start);
           }
-          var chars = jscenes[i]['chars'];
-          //if (chars.length == 0) continue;
-          scenes[scenes.length] = new SceneNode(jscenes[i]['chars'],
-              start, duration,
-              parseInt(jscenes[i]['id']), jscenes[i].title);
-          scenes[scenes.length - 1].comic_name = safe_name;
-          total_panels += duration;
+
+          // Skip the duration of the last scene to remove whitespace
+          if (i === scenes.length - 1) {
+            duration = 0
+          }
+
+          var sceneNode = new SceneNode(scene.chars, start_x, duration, parseInt(scene.id), scene.title);
+          sceneNode.comic_name = safe_name;
+          scene_nodes.push(sceneNode);
+
+          total_duration += duration;
         }
 
-        scenes.sort(function(a, b) {
+        scene_nodes.sort(function(a, b) {
           return a.start - b.start;
         });
-        total_panels -= scenes[scenes.length - 1].duration;
-        scenes[scenes.length - 1].duration = 0;
-
 
         // Make space at the leftmost end of the chart for character names
-        var panel_width = Math.min((width - longest_name) / total_panels, 15);
-        var panel_shift = Math.round(longest_name / panel_width);
-        total_panels += panel_shift;
-        panel_width = Math.min(width / total_panels, 15);
+        var panel_width = Math.min((width - RESERVED_NAME_WIDTH) / total_duration, 15);
+        var panel_shift = Math.round(RESERVED_NAME_WIDTH / panel_width);
+        total_duration += panel_shift;
+        panel_width = Math.min(width / total_duration, 15);
 
-        var xchars = data.characters;
-
-        // Calculate chart height based on the number of characters
-        // TODO: Redo this calculation
-        //var raw_chart_height = xchars.length*(link_width + link_gap + group_gap);// - (link_gap + group_gap);
-        var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
 
         var svg = container.append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -99,41 +96,41 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-        var chars = [];
-        var char_map = []; // maps id to pointer
-        for (var i = 0; i < xchars.length; i++) {
-          chars[chars.length] = new Character_(xchars[i].name, xchars[i].id, xchars[i].group);
-          char_map[xchars[i].id] = chars[chars.length - 1];
+        var character_data = data.characters;
+        var characters = [];
+        var character_map = []; // maps id to pointer
+        for (var i = 0; i < character_data.length; i++) {
+          var character = new Character(character_data[i].name, character_data[i].id, character_data[i].group);
+          characters.push(character);
+          character_map[character_data[i].id] = character;
         }
 
-        var groups = define_groups(chars);
-        find_median_groups(groups, scenes, chars, char_map, tie_breaker);
+        var groups = define_groups(characters);
+        find_median_groups(groups, scene_nodes, characters, character_map, tie_breaker);
         groups = sort_groups_main(groups, center_sort);
 
-        var links = generate_links(chars, scenes);
-        var char_scenes = add_char_scenes(chars, scenes, links, groups, panel_shift, safe_name);
+        var links = generate_links(characters, scene_nodes);
+        var char_scenes = add_char_scenes(characters, scene_nodes, links, groups, panel_shift, safe_name);
 
 
         // Determine the position of each character in each group
-        // (if it ever appears in the scenes that appear in that
-        // group)
-        groups.forEach(function(g) {
-          g.all_chars.sort(function(a, b) {
+        groups.forEach(function(group) {
+          group.all_chars.sort(function(a, b) {
             return a.group_ptr.order - b.group_ptr.order;
           });
-          var y = g.min;
-          for (var i = 0; i < g.all_chars.length; i++) {
-            g.all_chars[i].group_positions[g.id] = y + i * (text_height);
+          var y = group.min;
+          for (var i = 0; i < group.all_chars.length; i++) {
+            group.all_chars[i].group_positions[group.id] = y + i * (text_height);
           }
         });
 
 
-        calculate_node_positions(chars, scenes, total_panels,
+        calculate_node_positions(characters, scene_nodes, total_duration,
             width, height, char_scenes, groups, panel_width,
-            panel_shift, char_map);
+            panel_shift, character_map);
 
 
-        scenes.forEach(function(s) {
+        scene_nodes.forEach(function(s) {
           if (!s.char_node) {
             var first_scenes = [];
             //ys = [];
@@ -152,7 +149,7 @@
         // if the appear at the beginning of the chart
         char_scenes.forEach(function(cs) {
 
-          var character = char_map[cs.chars[0]];
+          var character = character_map[cs.chars[0]];
           if (character.first_scene.x < per_width * width) {
             // The median group of the first scene in which the character appears
             // We want the character's name to appear in that group
@@ -161,14 +158,12 @@
           }
         });
 
-        calculate_link_positions(scenes, chars, groups, char_map);
+        calculate_link_positions(scene_nodes, characters, groups, character_map);
 
-        height = groups[groups.length - 1].max + group_gap * 5;
-        RAW_CHART_HEIGHT = height + margin.top + margin.bottom;
         d3.select('svg#' + safe_name).style("height", RAW_CHART_HEIGHT);
 
         draw_links(links, svg);
-        draw_nodes(scenes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
+        draw_nodes(scene_nodes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
       }
 
 
@@ -190,27 +185,6 @@
       // scene's x value by this many pixels
       var name_shift = 10;
 
-
-      // True: Disregard actual scene duration and make
-      // all the scenes equal.
-      var equal_scenes = false;
-
-      // Scene width in panel_width
-      // i.e. scene width = panel_width*sw_panels
-      var sw_panels = 3;
-
-      // Longest name in pixels to make space at the beginning
-      // of the chart. Can calculate but this works okay.
-      var longest_name = 115;
-
-      // True: When deciding on which group to put a scene in,
-      // if there's a tie, break the tie based on which
-      // groups the scenes from which the links are incoming
-      // are in
-      // False: Arbitrary
-      //var tie_breaker = false;
-      // Set for each comic separately
-
       function create_link_path(link) {
         var x0 = link.x0,
             y0 = link.y0,
@@ -225,11 +199,10 @@
             + " " + x1 + "," + y1;
       }
 
-      function Character_(name, id, group) {
+      function Character(name, id, group) {
         this.name = name;
         this.id = id;
         this.group = group;
-        this.group_ptr = null;
         this.first_scene = null;
         this.group_positions = {};
       }
@@ -239,12 +212,12 @@
         this.from = from;
         this.to = to;
         this.char_id = char_id;
-        this.group = group; // Group number
+        this.group = group;
         this.x0 = 0;
         this.y0 = -1;
         this.x1 = 0;
         this.y1 = -1;
-        this.char_ptr = null;
+        this.character = null;
       }
 
       function SceneNode(chars, start, duration, id, title) {
@@ -256,7 +229,7 @@
         this.x = 0;
         this.y = 0;
 
-        this.width = NODE_WIDTH; // Same for all nodes
+        this.width = SCENE_WIDTH; // Same for all nodes
         this.height = 0; // Will be set later; proportional to link count
 
         this.in_links = [];
@@ -310,19 +283,21 @@
           var char_scenes = [];
           for (var j = 0; j < scenes.length; j++) {
             if (scenes[j].has_char(chars[i].id)) {
-              char_scenes[char_scenes.length] = scenes[j];
+              char_scenes.push(scenes[j]);
             }
           }
-
 
           char_scenes.sort(function(a, b) {
             return a.start - b.start;
           });
+
           chars[i].first_scene = char_scenes[0];
           for (var j = 1; j < char_scenes.length; j++) {
-            links[links.length] = new Link(char_scenes[j - 1], char_scenes[j],
+            var link = new Link(char_scenes[j - 1], char_scenes[j],
                 chars[i].group, chars[i].id);
-            links[links.length - 1].char_ptr = chars[i];
+            link.character = chars[i];
+
+            links.push(link);
             char_scenes[j - 1].out_links[char_scenes[j - 1].out_links.length] = links[links.length - 1];
             char_scenes[j].in_links[char_scenes[j].in_links.length] = links[links.length - 1];
           }
@@ -376,24 +351,25 @@
       }
 
 
-      function define_groups(chars) {
+      function define_groups(characters) {
         var groups = [];
-        chars.forEach(function(c) {
-          // Put char in group
+
+        characters.forEach(function(char) {
           var found_group = false;
-          groups.forEach(function(g) {
-            if (g.id == c.group) {
+          groups.forEach(function(group) {
+            if (group.id === char.group) {
               found_group = true;
-              g.chars[g.chars.length] = c;
-              c.group_ptr = g;
+              group.chars.push(char);
+              char.group_ptr = group;
             }
           });
+
           if (!found_group) {
-            var g = new Group();
-            g.id = c.group;
-            g.chars[g.chars.length] = c;
-            c.group_ptr = g;
-            groups[groups.length] = g;
+            var group = new Group();
+            group.id = char.group;
+            group.chars.push(char);
+            char.group_ptr = group;
+            groups.push(group);
           }
         });
         return groups;
@@ -510,7 +486,7 @@
         // Shit starting times for the rest of the scenes panel_shift panels to the left
         var char_scenes = [];
         scenes.forEach(function(scene) {
-          if (!equal_scenes) {
+          if (!USE_EQUAL_SCENE_WIDTHS) {
             scene.start += panel_shift;
           }
         });
@@ -537,7 +513,7 @@
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
             var l = new Link(s, chars[i].first_scene, chars[i].group, chars[i].id);
-            l.char_ptr = chars[i];
+            l.character = chars[i];
 
             s.out_links[s.out_links.length] = l;
             chars[i].first_scene.in_links[chars[i].first_scene.in_links.length] = l;
@@ -584,7 +560,6 @@
         scenes.forEach(function(scene) {
           if (!scene.char_node) {
             scene.height = Math.max(0, scene.chars.length * LINK_WIDTH + (scene.chars.length - 1) * LINK_GAP);
-            scene.width = panel_width * 3;
 
             // Average of chars meeting at the scene _in group_
             var sum1 = 0;
@@ -617,7 +592,7 @@
             }
             scene.y = avg - scene.height / 2.0;
 
-            if (equal_scenes) {
+            if (USE_EQUAL_SCENE_WIDTHS) {
               scene.x = scene.start;
             } else {
               scene.x = scene.start * panel_width;
@@ -655,10 +630,10 @@
           // TODO: Sort the in_links here
           // Use sort by group for now
           scene.in_links.sort(function(a, b) {
-            return a.char_ptr.group_ptr.order - b.char_ptr.group_ptr.order;
+            return a.character.group_ptr.order - b.character.group_ptr.order;
           });
           scene.out_links.sort(function(a, b) {
-            return a.char_ptr.group_ptr.order - b.char_ptr.group_ptr.order;
+            return a.character.group_ptr.order - b.character.group_ptr.order;
           });
 
           // We can't calculate the y positions of the in links in the same
