@@ -22,8 +22,8 @@ public class MinMaxParameter extends AbstractParameter {
   public MinMaxParameter() {
   }
 
-  public MinMaxParameter(String name, Type type, String description, long min, long max) {
-    super(name, type, description);
+  public MinMaxParameter(String name, Type type, long min, long max) {
+    super(name, type);
     this.min = min;
     this.max = max;
   }
