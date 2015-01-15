@@ -9,12 +9,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.services.BaseService;
 
 /**
  * Provides a method to tell the server to stop the analysis for the current Document.
  */
 @ManagedBean
-public class AnalysisService {
+public class AnalysisService extends BaseService {
   
   private String documentId;
   

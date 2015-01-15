@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
-import de.unistuttgart.vis.vita.model.dao.OccurenceDao;
+import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -29,16 +29,20 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
  */
 @ManagedBean
 public class EntityRelationsService extends RangeService {
-  
-  @Inject
-  private OccurenceDao textSpanDao;
+  private OccurrenceDao occurrenceDao;
   
   @Inject
   private EntityRelationDao entityRelationDao;
   
   @Inject
   private RelationOccurrencesService relationOccurrencesService;
-  
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    occurrenceDao = getDaoFactory().getOccurrenceDao();
+    entityRelationDao = getDaoFactory().getEntityRelationDao();
+  }
+
   /**
    * Sets the id of the Document this service should refer to
    * 
@@ -121,7 +125,7 @@ public class EntityRelationsService extends RangeService {
   }
 
   private boolean occurrsInRange(String entityId, int startOffset, int endOffset) {
-    return ((long) textSpanDao.getNumberOfTextSpansForEntity(entityId, startOffset, endOffset) > 0);
+    return ((long) occurrenceDao.getNumberOfOccurrencesForEntity(entityId, startOffset, endOffset) > 0);
   }
 
   /**

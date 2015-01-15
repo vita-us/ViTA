@@ -7,21 +7,21 @@
       <div class="col-md-6">
         <dl>
           <dt>Author:</dt>
-          <dd>{{document.metadata.author}}</dd>
+          <dd>{{prepareAttributeForView(document.metadata.author)}}</dd>
         </dl>
         <dl>
           <dt>Published:</dt>
-          <dd>{{document.metadata.publishYear}}</dd>
+          <dd>{{prepareAttributeForView(document.metadata.publishYear)}}</dd>
         </dl>
       </div>
       <div class="col-md-6">
         <dl>
           <dt>Number of chapters:</dt>
-          <dd>{{document.metrics.chapterCount}}</dd>
+          <dd>{{prepareAttributeForView(document.metrics.chapterCount)}}</dd>
         </dl>
         <dl>
           <dt>Number of words:</dt>
-          <dd>{{document.metrics.wordCount}}</dd>
+          <dd>{{prepareAttributeForView(document.metrics.wordCount)}}</dd>
         </dl>
       </div>
     </div>

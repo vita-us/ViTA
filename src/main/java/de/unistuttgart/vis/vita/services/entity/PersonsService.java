@@ -10,21 +10,26 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.dao.PersonDao;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
 /**
  * Provides a method to GET all persons mentioned in the document this service refers to.
  */
 @ManagedBean
-public class PersonsService {
+public class PersonsService extends BaseService {
 
   private String documentId;
 
-  @Inject
   private PersonDao personDao;
 
   @Inject
   private PersonService personService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    personDao = getDaoFactory().getPersonDao();
+  }
 
   /**
    * Sets the id of the document for which this service should provide the mentioned persons.

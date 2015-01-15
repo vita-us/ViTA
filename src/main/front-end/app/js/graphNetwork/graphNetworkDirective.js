@@ -129,6 +129,10 @@
         rangeEnd: rangeEnd,
         type: 'person'
       }, function(relationData) {
+        if (!isEntityRelationResponseValid(entities, relationData)) {
+          return;
+        }
+
         var graphData = parseEntitiesToGraphData(entities, relationData);
 
         redrawElements(graphData, showFingerprint);
@@ -137,6 +141,27 @@
             .links(graphData.links)
             .start();
       });
+    }
+
+    function isEntityRelationResponseValid(entities, relationData) {
+      var receivedEntityIds = relationData.entityIds;
+      var entityIds = entities.map(function(entity) {
+        return entity.id;
+      });
+
+      if (entityIds.length < receivedEntityIds.length) {
+        return false;
+      }
+
+      // check for received ids that weren't used in the request
+      for (var i = 0, l = receivedEntityIds.length; i < l; i++) {
+        var receivedEntityId = receivedEntityIds[i];
+        if (entityIds.indexOf(receivedEntityId) < 0) {
+          return false;
+        }
+      }
+
+      return true;
     }
 
     function parseEntitiesToGraphData(entities, relationData) {
@@ -231,6 +256,10 @@
     }
 
     function setNewPositions() {
+      if (!nodes || !links) {
+        return;
+      }
+
       nodes.attr('transform', function(d) {
         return 'translate(' + d.x + ',' + d.y + ')';
       });
@@ -269,6 +298,8 @@
           .on('click', function(link) {
             if (showFingerprint instanceof Function) {
               showFingerprint({ids: [link.source.id, link.target.id]});
+              d3.select(".link.selected").classed("selected", false);
+              d3.select(this).classed('selected', true);
             }
           });
 

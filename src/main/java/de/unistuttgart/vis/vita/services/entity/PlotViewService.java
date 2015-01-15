@@ -17,6 +17,7 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewCharacter;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewResponse;
 import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
@@ -25,17 +26,22 @@ import de.unistuttgart.vis.vita.services.responses.plotview.PlotViewScene;
  * Redirects entity and relations requests for the current Document to the right sub service.
  */
 @ManagedBean
-public class PlotViewService {
+public class PlotViewService extends BaseService {
 
   private String documentId;
-  
-  @Inject
+
   private DocumentDao documentDao;
-  
-  @Inject
+
   private PersonDao personDao;
   
   private EntityDao entityDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+    personDao = getDaoFactory().getPersonDao();
+    entityDao = getDaoFactory().getEntityDao();
+  }
 
   /**
    * Sets the id of the Document this service should refer to
@@ -48,10 +54,7 @@ public class PlotViewService {
   }
 
   /**
-   * Returns the Service to access the Entity with the given id.
-   *
-   * @param id - the id of the Entity to be accessed
-   * @return the EntityService to access the given Entity with the given id
+   * Gets the plot view data
    */
   @Produces(MediaType.APPLICATION_JSON)
   @GET

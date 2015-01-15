@@ -16,11 +16,13 @@
             {{entity.displayName}}
           </a>
           <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
-            ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"></span>
+            ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
+            title="Add this entity to the fingerprint"></span>
         </dd>
       </dl>
     </div>
     <div class="row">
+      <div data-fingerprint-top-row></div>
       <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds"data-parts="parts"></div>
     </div>
   </div>
