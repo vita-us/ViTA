@@ -52,12 +52,12 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   public T findById(I id) {
       T result = em.find(getPersistentClass(), id);
 
-      if (result == null) {
-        throw new NoResultException("No entity of type '" + getPersistentClassName()
-                                    + "' found with id '" + id + "'!");
-      }
-
-      return em.find(getPersistentClass(), id);
+    if (result == null) {
+      throw new NoResultException("No entity of type '" + getPersistentClassName()
+                                  + "' found with id '" + id + "'!");
+    }
+    
+    return result;
   }
 
   /**
