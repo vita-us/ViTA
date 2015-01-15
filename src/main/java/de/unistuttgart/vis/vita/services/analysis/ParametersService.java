@@ -56,18 +56,22 @@ public class ParametersService extends BaseService {
     for (Field field : params.getDeclaredFields()) {
       field.setAccessible(true);
 
-      String dsp = field.getAnnotation(Description.class).value();
-      String label = field.getAnnotation(Label.class).value();
-
       if (field.getType() != boolean.class) {
         long min = field.getAnnotation(Min.class).value();
         long max = field.getAnnotation(Max.class).value();
-        parameter = new MinMaxParameter(field.getName(), field.getType(), dsp, min, max);
+        parameter = new MinMaxParameter(field.getName(), field.getType(), min, max);
       } else {
-        parameter = new BooleanParameter(field.getName(), field.getType(), dsp);
+        parameter = new BooleanParameter(field.getName(), field.getType());
       }
 
-      parameter.setLabel(label);
+      if (field.getAnnotation(Description.class) != null) {
+        parameter.setDescription(field.getAnnotation(Description.class).value());
+      }
+
+      if (field.getAnnotation(Label.class) != null) {
+        parameter.setLabel(field.getAnnotation(Label.class).value());
+      }
+
       parameterList.add(parameter);
     }
 
