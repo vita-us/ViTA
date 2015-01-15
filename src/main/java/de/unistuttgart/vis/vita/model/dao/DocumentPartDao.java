@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
+import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -13,7 +14,6 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 /**
  * Represents a data access object for accessing DocumentParts.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "DocumentPart.findAllParts",
@@ -42,10 +42,12 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
 
   /**
-   * Creates a new data access object for DocumentParts.
+   * Creates a new data access object for DocumentParts using the given {@link EntityManager}.
+   * 
+   * @param em - the EntityManager to be used in the new DocumentPartDao
    */
-  public DocumentPartDao() {
-    super(DocumentPart.class);
+  public DocumentPartDao(EntityManager em) {
+    super(DocumentPart.class, em);
   }
 
   /**

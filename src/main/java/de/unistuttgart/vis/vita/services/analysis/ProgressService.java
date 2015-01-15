@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.analysis;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
+import de.unistuttgart.vis.vita.services.BaseService;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
@@ -15,13 +16,17 @@ import javax.ws.rs.core.Response;
  * A service which provides a method to GET the analysis progress for a specific document.
  */
 @ManagedBean
-public class ProgressService {
+public class ProgressService extends BaseService {
   
   private String documentId;
-  
-  @Inject
+
   private DocumentDao documentDao;
-  
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
+
   /**
    * Sets the id of the document this should represent the progress of
    * @param id the id

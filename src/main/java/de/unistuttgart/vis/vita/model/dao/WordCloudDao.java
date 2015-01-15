@@ -1,17 +1,13 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 /**
  * Represents a data access object for accessing WordClouds.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "WordCloud.getGlobal",
@@ -28,11 +24,8 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
   private static final String ENTITY_ID_PARAMETER = "entityId";
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
 
-  /**
-   * Creates a new data access object for accessing WordClouds.
-   */
-  public WordCloudDao() {
-    super(WordCloud.class);
+  public WordCloudDao(EntityManager em) {
+    super(WordCloud.class, em);
   }
 
   /**

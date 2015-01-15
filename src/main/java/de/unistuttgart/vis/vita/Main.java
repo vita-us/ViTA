@@ -16,8 +16,10 @@ import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.servlet.GrizzlyWebContainerFactory;
 
 public class Main {
+  private static final int PORT = 9998;
+
   private static URI getBaseURI() {
-    return UriBuilder.fromUri("http://localhost/webapi").port(9998).build();
+    return UriBuilder.fromUri("http://localhost/webapi").port(PORT).build();
   }
 
   private static HttpServer startServer() throws IOException {
@@ -41,7 +43,7 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     HttpServer server = startServer();
-    System.out.println("server started at " + getBaseURI());
+    System.out.println("server started at http://localhost:" + PORT + "/");
     System.in.read();
     server.shutdown();
   }

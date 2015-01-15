@@ -29,16 +29,19 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
  */
 @ManagedBean
 public class EntityRelationsService extends RangeService {
-  
-  @Inject
   private TextSpanDao textSpanDao;
-  
-  @Inject
+
   private EntityRelationDao entityRelationDao;
   
   @Inject
   private RelationOccurrencesService relationOccurrencesService;
-  
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    textSpanDao = getDaoFactory().getTextSpanDao();
+    entityRelationDao = getDaoFactory().getEntityRelationDao();
+  }
+
   /**
    * Sets the id of the Document this service should refer to
    * 
