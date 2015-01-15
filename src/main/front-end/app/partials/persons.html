@@ -6,23 +6,23 @@
     <div class="col-md-10">
       <div class="row">
         <h1><small><span class="glyphicon glyphicon-user"></span></small> {{selected.displayName}}</h1>
-          <dl class="dl-horizontal">
-	    <div ng-repeat="attribute in selected.attributes" ng-show="!$first">
-              <dt>{{attribute.attributetype}}</dt>
-              <dd>{{attribute.content}}</dd>
-	    </div>
-          </dl>
-          <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
-            <dt>co-occurences</dt>
-            <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
-              <a ng-href="index.html#/documents/{{document.id}}/{{path(entity.type)}}/{{entity.id}}">
-                {{entity.displayName}}
-              </a>
-              <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
-                ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
-                title="Add this entity to the fingerprint"></span>
-            </dd>
-          </dl>
+        <dl class="dl-horizontal">
+          <div ng-repeat="attribute in selected.attributes" ng-show="!$first">
+            <dt>{{attribute.attributetype}}</dt>
+            <dd>{{attribute.content}}</dd>
+          </div>
+        </dl>
+        <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
+          <dt>co-occurences</dt>
+          <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
+            <a ng-href="index.html#/documents/{{document.id}}/{{path(entity.type)}}/{{entity.id}}">
+              {{entity.displayName}}
+            </a>
+            <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
+              ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
+              title="Add this entity to the fingerprint"></span>
+          </dd>
+        </dl>
       </div>
       <div class="row">
         <div data-fingerprint-top-row></div>
@@ -34,7 +34,8 @@
     <div class="row filterable-list">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
       <ul>
-        <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' " ng-click="select(person)" style="list-style-type: none;" ng-class="{marked:isSelected(person)}">
+        <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
+          ng-click="select(person)" style="list-style-type: none;" ng-class="{marked:isSelected(person)}">
           {{person.displayName}}
         </li>
       </ul>

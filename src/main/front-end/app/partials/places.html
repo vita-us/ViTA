@@ -28,7 +28,8 @@
     <div class="row filterable-list">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
       <ul>
-        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' " ng-click="select(place)" style="list-style-type: none;" ng-class="{marked:isSelected(place)}">
+        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' "
+          ng-click="select(place)" style="list-style-type: none;" ng-class="{marked:isSelected(place)}">
           {{place.displayName}}
         </li>
       </ul>
