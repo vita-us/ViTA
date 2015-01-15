@@ -5,29 +5,35 @@
   <div class="col-md-10">
     <div class="row">
       <div class="col-md-6">
-        <dl>
+        <dl ng-show="metadataLoaded()">
           <dt>Author:</dt>
           <dd>{{prepareAttributeForView(document.metadata.author)}}</dd>
         </dl>
-        <dl>
+        <dl ng-show="metadataLoaded()">
           <dt>Published:</dt>
           <dd>{{prepareAttributeForView(document.metadata.publishYear)}}</dd>
         </dl>
+	<div id="document-loading-spinner" ng-hide="metadataLoaded()">
+	  <span class="glyphicon glyphicon-refresh spin"></span>
+	</div>
       </div>
       <div class="col-md-6">
-        <dl>
+        <dl ng-show="metricsLoaded()">
           <dt>Number of chapters:</dt>
           <dd>{{prepareAttributeForView(document.metrics.chapterCount)}}</dd>
         </dl>
-        <dl>
+        <dl ng-show="metricsLoaded()">
           <dt>Number of words:</dt>
           <dd>{{prepareAttributeForView(document.metrics.wordCount)}}</dd>
         </dl>
+	<div id="document-loading-spinner" ng-hide="metricsLoaded()">
+	  <span class="glyphicon glyphicon-refresh spin"></span>
+	</div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
-        <dl>
+        <dl ng-show="charactersLoaded()">
           <dt>Main characters:</dt>
           <dd>
             <ul class="list-inline">
@@ -38,6 +44,9 @@
             </ul>
           </dd>
         </dl>
+	<div id="document-loading-spinner" ng-hide="charactersLoaded()">
+	  <span class="glyphicon glyphicon-refresh spin"></span>
+	</div>
       </div>
     </div>
     <hr />

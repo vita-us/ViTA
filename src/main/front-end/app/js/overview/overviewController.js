@@ -10,6 +10,8 @@
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
+	$scope.document = {};
+	$scope.persons = [];
 
         Person.get({
           documentId: $routeParams.documentId
@@ -49,6 +51,17 @@
           }
         });
 
+	$scope.metadataLoaded = function() {
+	  return !($scope.document.metadata == null);
+	};
+
+	$scope.metricsLoaded = function() {
+	  return !($scope.document.metrics == null);
+	};
+
+	$scope.charactersLoaded = function() {
+	  return $scope.persons.length != 0;
+	};
       }]);
 
 })(angular);
