@@ -19,8 +19,13 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
   private EntityManager em;
   private DaoFactory daoFactory;
 
+  @javax.annotation.PostConstruct
+  public void postConstructCaller() {
+    postConstruct();
+  }
+
   @Override
-  @javax.annotation.PostConstruct public void postConstruct() {
+   public void postConstruct() {
     this.em = model.getEntityManager();
     em.getTransaction().begin();
     daoFactory = new DaoFactory(em);
