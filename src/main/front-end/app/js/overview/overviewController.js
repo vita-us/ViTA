@@ -4,14 +4,14 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the overview page
-  vitaControllers.controller('OverviewCtrl', ['$scope', 'Document', 'Page', '$routeParams',
-      'AnalysisProgress', '$interval', 'Person', 'CssClass',
+  vitaControllers.controller('OverviewCtrl',
+    ['$scope', 'Document', 'Page', '$routeParams', 'AnalysisProgress', '$interval', 'Person', 'CssClass',
       function($scope, Document, Page, $routeParams, AnalysisProgress, $interval, Person, CssClass) {
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
-	$scope.document = {};
-	$scope.persons = [];
+        $scope.document = {};
+        $scope.persons = [];
 
         Person.get({
           documentId: $routeParams.documentId
@@ -42,7 +42,7 @@
         }
 
         $scope.prepareAttributeForView = function(attribute) {
-          return attribute != null ? attribute : "-";
+          return attribute != null ? attribute : '-';
         };
 
         $scope.$on('$destroy', function() {
@@ -51,17 +51,17 @@
           }
         });
 
-	$scope.metadataLoaded = function() {
-	  return !($scope.document.metadata == null);
-	};
+        $scope.metadataLoaded = function() {
+          return !($scope.document.metadata == null);
+        };
 
-	$scope.metricsLoaded = function() {
-	  return !($scope.document.metrics == null);
-	};
+        $scope.metricsLoaded = function() {
+          return !($scope.document.metrics == null);
+        };
 
-	$scope.charactersLoaded = function() {
-	  return $scope.persons.length != 0;
-	};
+        $scope.charactersLoaded = function() {
+          return $scope.persons.length != 0;
+        };
       }]);
 
 })(angular);
