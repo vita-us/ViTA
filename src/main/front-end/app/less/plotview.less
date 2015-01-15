@@ -14,11 +14,18 @@
     fill-opacity: 0.6;
   }
 
-  .node text {
-    font-family: "Walter Turncoat", sans-serif;
-    font-size: 10px;
-    pointer-events: none;
-    text-shadow: 1px 1px #fff;
+  .node .label-group {
+    rect {
+      fill: white;
+    }
+
+    text {
+      dominant-baseline: central;
+      font-family: 'Walter Turncoat', sans-serif;
+      font-size: 10px;
+      pointer-events: none;
+      text-shadow: 1px 1px #fff;
+    }
   }
 
   .link {
@@ -29,10 +36,10 @@
     stroke-opacity: 1;
   }
 
-//  Unused in ViTA
+  //  Unused in ViTA
   .comic-title {
     cursor: pointer;
-    font-family: "Cutive Mono", sans-serif;
+    font-family: 'Cutive Mono', sans-serif;
     font-size: 18px;
     font-weight: normal;
     letter-spacing: -1px;

@@ -45,6 +45,21 @@
       var CHARACTER_LABEL_LEFT_SHIFT = 10;
 
 
+      function create_link_path(link) {
+        var x0 = link.x0,
+            y0 = link.y0,
+            x1 = link.x1,
+            y1 = link.y1,
+            x_center = (x0 + x1) / 2;
+
+        // Creates a cubic bezier curve
+        return 'M' + x0 + ',' + y0
+            + 'C' + x_center + ',' + y0
+            + ' ' + x_center + ',' + y1
+            + ' ' + x1 + ',' + y1;
+      }
+
+
       function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
         var margin = {top: 20, right: 25, bottom: 20, left: 1};
         var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
@@ -122,8 +137,7 @@
         });
 
 
-        calculate_node_positions(characters, scene_nodes, total_duration,
-            width, height, char_scenes, groups, character_map);
+        calculate_node_positions(characters, scene_nodes, total_duration, char_scenes, groups, character_map);
 
 
         scene_nodes.forEach(function(s) {
@@ -176,20 +190,6 @@
       // opposed to appearing right before the first scene
       // (the name doesn't make any sense).
       var per_width = 0.3;
-
-      function create_link_path(link) {
-        var x0 = link.x0,
-            y0 = link.y0,
-            x1 = link.x1,
-            y1 = link.y1,
-            x_center = (x0 + x1) / 2;
-
-        // Creates a cubic bezier curve
-        return 'M' + x0 + ',' + y0
-            + 'C' + x_center + ',' + y0
-            + ' ' + x_center + ',' + y1
-            + ' ' + x1 + ',' + y1;
-      }
 
       function Character(name, id, group) {
         this.name = name;
@@ -539,8 +539,7 @@
       }
 
 
-      function calculate_node_positions(chars, scenes, total_panels, chart_width,
-                                        chart_height, char_scenes, groups, char_map) {
+      function calculate_node_positions(chars, scenes, total_panels, char_scenes, groups, char_map) {
         scenes.forEach(function(scene) {
           if (!scene.char_node) {
             scene.height = Math.max(0, scene.chars.length * LINK_WIDTH + (scene.chars.length - 1) * LINK_GAP);
@@ -647,26 +646,24 @@
       }
 
       function draw_nodes(scenes, svg, chart_width, chart_height, safe_name) {
-        var node = svg.append('g').selectAll('.node')
+        var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
             .enter().append('g')
             .attr('class', 'node')
             .attr('transform', function(d) {
               return 'translate(' + d.x + ',' + d.y + ')';
             })
-            .attr('scene_id', function(d) {
-              return d.id;
-            })
             .call(d3.behavior.drag()
                 .origin(function(d) {
                   return d;
                 })
                 .on('dragstart', function() {
+                  // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
                 .on('drag', dragmove));
 
-        node.append('rect')
+        nodes.append('rect')
             .attr('width', function(d) {
               return d.width;
             })
@@ -684,48 +681,41 @@
               return d.name;
             });
 
-        // White background for the names
-        if (WHITE_BACKGROUND_FOR_NAMES) {
-          node.append('rect')
-              .filter(function(d) {
-                return d.char_node;
-              })
-              .attr('x', function(d) {
-                return -((d.name.length + 2) * 5);
-              })
-              .attr('y', function() {
-                return -3;
-              })
-              .attr('width', function(d) {
-                return (d.name.length + 1) * 5;
-              })
-              .attr('height', 7.5)
-              .attr('transform', null)
-              .attr('fill', '#fff')
-              .style('opacity', 1);
-        }
 
-        node.append('text')
-            .filter(function(d) {
-              return d.char_node;
-            })
-            .attr('x', -6)
-            .attr('y', function() {
-              return 0;
-            })
-            .attr('dy', '.35em')
-            .attr('text-anchor', 'end')
-            .attr('transform', null)
-            .text(function(d) {
-              return d.name;
-            })
-            .filter(function() {
-              return false;
-            })
-            .attr('x', function(d) {
-              return 6 + d.width;
-            })
-            .attr('text-anchor', 'start');
+        // Iterate over all nodes separately to be able to add a custom sized background for each node
+        nodes.each(function(d) {
+          // Check if this node will have its character name displayed
+          if (!d.char_node) {
+            return;
+          }
+
+          var label_group = d3.select(this).append('g')
+              .classed('label-group', true)
+              .attr('transform', 'translate(-3,0)'); // Move the complete label a bit to the left
+
+          var character_label = label_group.append('text')
+              .attr('text-anchor', 'end')
+              .filter(function(d) {return d.char_node;})
+              .text(function(d) {
+                return d.name;
+              });
+
+          // Create the background after the text to get the size of the text
+          if (WHITE_BACKGROUND_FOR_NAMES) {
+            var label_bbox = character_label.node().getBBox();
+
+            label_group.append('rect')
+                .classed('background', true)
+                .attr('x', -label_bbox.width)
+                .attr('y', -label_bbox.height / 2)
+                .attr('width', label_bbox.width)
+                .attr('height', label_bbox.height)
+                .attr('fill', '#fff');
+
+            character_label.node().parentNode.appendChild(character_label.node());
+          }
+        });
+
 
         function dragmove(d) {
           var newy = Math.max(0, Math.min(chart_height - d.height, d3.event.y));
@@ -736,16 +726,6 @@
           reposition_node_links(d.id, d.x, d.y, d.width, d.height, svg, ydisp, d.comic_name);
         }
       }
-
-      function find_link(links, char_id) {
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].char_id == char_id) {
-            return links[i];
-          }
-        }
-        return 0;
-      }
-
 
       function draw_links(links, svg) {
         var link = svg.append('g').selectAll('.link')
