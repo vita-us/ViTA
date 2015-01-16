@@ -29,6 +29,11 @@
               return;
             }
 
+            if(!areParametersValid(scope)) {
+              alert('Please correctly input all parameters.');
+              return;
+            }
+
             if (scope.file) {
               scope.uploading = true;
 
@@ -102,6 +107,17 @@
           });
           return parameterToValue;
         }
+
+        function areParametersValid(scope) {
+          var areValid = true;
+          scope.analysisParameters.forEach(function(parameter) {
+            if (angular.isUndefined(parameter.value)) {
+              areValid = false;
+            }
+          });
+          return areValid;
+        }
+
         return directive;
       }]);
 
