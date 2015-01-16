@@ -11,11 +11,9 @@ import org.junit.Before;
 
 import com.google.common.collect.ImmutableList;
 
-import de.unistuttgart.vis.vita.analysis.modules.LuceneModule;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentPartTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.data.OccurrenceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -23,13 +21,11 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.document.DocumentService;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTest;
-import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 
 public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
   private String documentId;
-  private String chapterId;
 
   @Override
   @Before
@@ -43,15 +39,13 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
     testChapter.setLength(testChapter.getText().length());
     testChapter.setRange(new Range(
-        TextPosition.fromGlobalOffset(testChapter, 0),
-        TextPosition.fromGlobalOffset(testChapter, testChapter.getLength())));
-    testChapter.setDocumentLength(testChapter.getLength());
+        TextPosition.fromGlobalOffset(testChapter, 0, testChapter.getLength()),
+        TextPosition.fromGlobalOffset(testChapter, testChapter.getLength(), testChapter.getLength())));
     testDoc.getMetrics().setCharacterCount(testChapter.getLength());
     testPart.getChapters().add(testChapter);
 
     // id for query
     documentId = testDoc.getId();
-    chapterId = testChapter.getId();
 
     // persist it
     EntityManager em = getModel().getEntityManager();
@@ -87,7 +81,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    FlatOccurrence occurrence = actualResponse.getOccurrences().get(0);
+    Range occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(10));
     assertThat(occurrence.getEnd().getOffset(), is(13));
   }
@@ -102,7 +96,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    FlatOccurrence occurrence = actualResponse.getOccurrences().get(0);
+    Range occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(0));
     assertThat(occurrence.getEnd().getOffset(), is(14));
   }
