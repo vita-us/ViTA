@@ -86,7 +86,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
 
     for (Map.Entry<Sentence, Set<BasicEntity>> entry : entitiesInSentenceMap.entrySet()) {
       int currentStepMapIndex =
-          Math.round((entry.getKey().getRange().getStart().getOffset() * timeSteps) / totalLength);
+          (entry.getKey().getRange().getStart().getOffset() * timeSteps) / totalLength;
       for (BasicEntity sourceEntity : entry.getValue()) {
         for (BasicEntity targetEntity : entry.getValue()) {
           if (sourceEntity != targetEntity) {
