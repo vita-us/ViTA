@@ -20,12 +20,12 @@ public class OccurrenceTestData {
   public static final int TEST_SENTENCE_END = 105225;
   
   /**
-   * Returns a test TextSpan in the given chapter.
+   * Returns a test Occurrence in the given chapter.
    * 
-   * @param chapter - the chapter in which the test TextSpan should lay in
-   * @return a test TextSpan laying in the given chapter
+   * @param chapter - the chapter in which the test Occurrence should lay in
+   * @return a test Occurrence laying in the given chapter
    */
-  public Occurrence createOccurrenceSpan(Chapter chapter) {
+  public Occurrence createOccurrence(Chapter chapter) {
     TextPosition testSentenceStartPosition = TextPosition.fromGlobalOffset(chapter, TEST_SENTENCE_START, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition testSentenceEndPosition = TextPosition.fromGlobalOffset(chapter, TEST_SENTENCE_END, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Range testSentenceRange = new Range(testSentenceStartPosition, testSentenceEndPosition);

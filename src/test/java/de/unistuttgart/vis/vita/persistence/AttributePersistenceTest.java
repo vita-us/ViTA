@@ -132,7 +132,7 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     TextPosition pos3 = TextPosition.fromGlobalOffset(chapter, 30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition pos4 = TextPosition.fromGlobalOffset(chapter, 40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     
-    Range sentenceRange1 = new Range(pos1, pos3);
+    Range sentenceRange1 = new Range(pos1, pos4);
     Range sentenceRange2 = new Range(pos3, pos4) ;
     Sentence sentence1 = new Sentence(sentenceRange1, chapter, 0);
     Sentence sentence2 = new Sentence(sentenceRange2, chapter, 1);

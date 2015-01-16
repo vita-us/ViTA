@@ -11,7 +11,6 @@ import javax.ws.rs.core.Application;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Test;
 
-import de.unistuttgart.vis.vita.data.DocumentPartTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Person;
@@ -22,7 +21,6 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 public class WordCloudServiceTest extends ServiceTest {
   private String docId;
   private String entityId;
-  private DocumentPartTestData testData;
 
   @Override
   public void setUp() throws Exception {

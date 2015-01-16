@@ -136,7 +136,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     // first set up test data
     OccurrenceTestData testData = new OccurrenceTestData();
     Chapter c = new ChapterTestData().createTestChapter();
-    Occurrence personOccurrence = testData.createOccurrenceSpan(c);
+    Occurrence personOccurrence = testData.createOccurrence(c);
     Person testPerson = new PersonTestData().createTestPerson(1);
     testPerson.getOccurrences().add(personOccurrence);
 
