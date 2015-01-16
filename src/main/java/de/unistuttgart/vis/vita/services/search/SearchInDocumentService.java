@@ -26,7 +26,6 @@ import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.search.Searcher;
 import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
-import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 @ManagedBean
@@ -84,12 +83,12 @@ public class SearchInDocumentService extends OccurrencesService {
       textSpans = searcher.searchString(documentDao.findById(documentId), query, chapters, model);
     } catch (ParseException e) {
       LOGGER.log(Level.INFO, "Invalid search query: " + query, e);
-      return new OccurrencesResponse(new ArrayList<FlatOccurrence>());
+      return new OccurrencesResponse(new ArrayList<Range>());
     }
 
-    List<FlatOccurrence> occs = null;
+    List<Range> occs = null;
     if (steps == 0) {
-      occs = convertSpansToOccurrences(textSpans);
+      occs = textSpans;
     } else {
       occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
     }
