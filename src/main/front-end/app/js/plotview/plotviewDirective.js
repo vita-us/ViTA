@@ -712,6 +712,7 @@
                 .attr('height', label_bbox.height)
                 .attr('fill', '#fff');
 
+            // Foreground the character label which is currently behind the background rectangle
             character_label.node().parentNode.appendChild(character_label.node());
           }
         });
@@ -731,7 +732,7 @@
         var link = svg.append('g').selectAll('.link')
             .data(links)
             .enter().append('path')
-            .attr('class', 'link')
+            .classed('link', true)
             .attr('d', function(d) {
               return create_link_path(d);
             })
@@ -748,19 +749,17 @@
               return d3.rgb(COLOR_SCALE(d.group)).darker(0.5).toString();
             })
             .style('stroke-width', LINK_WIDTH)
-            .style('stroke-opacity', '0.6')
-            .style('stroke-linecap', 'round')
-            .on('mouseover', mouseover_cb)
-            .on('mouseout', mouseout_cb);
+            .on('mouseover', mouseover_of_link)
+            .on('mouseout', mouseout_of_link);
 
-        function mouseover_cb(d) {
+        function mouseover_of_link(d) {
           d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .style('stroke-opacity', '1');
+              .classed('hovered', true);
         }
 
-        function mouseout_cb(d) {
+        function mouseout_of_link(d) {
           d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .style('stroke-opacity', '0.6');
+              .classed('hovered', false);
         }
       }
 
