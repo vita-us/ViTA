@@ -102,7 +102,7 @@ public class EntityOccurrencesService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
     return occurrenceDao.getNumberOfTextSpansForEntity(entityId, stepStart, stepEnd);
   }
 

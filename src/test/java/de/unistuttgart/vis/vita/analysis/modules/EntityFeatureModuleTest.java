@@ -13,7 +13,9 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.AttributeType;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
@@ -40,6 +42,7 @@ import javax.persistence.EntityManager;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,6 +58,11 @@ public class EntityFeatureModuleTest {
   private static final int OCCURANCE2_END = 40;
   private static final int OCCURANCE3_START = 15;
   private static final int OCCURANCE3_END = 25;
+  private static final int SENTENCE1_START = 0;
+  private static final int SENTENCE1_END = 25;
+  private static final int SENTENCE2_START = 26;
+  private static final int SENTENCE2_END = 40;
+
 
   private Document document;
   private Chapter chapter;
@@ -131,8 +139,15 @@ public class EntityFeatureModuleTest {
     em.refresh(document);
 
     Place place = document.getContent().getPlaces().get(0);
-    assertThat(place.getOccurrences(), contains(new Range(chapter, OCCURANCE3_START,
-        OCCURANCE3_END, document.getMetrics().getCharacterCount())));
+    assertFalse(place.getOccurrences().equals(null));
+
+    List<Range> occurrenceRanges = new ArrayList<Range>();
+    for (Occurrence occurrence : place.getOccurrences()) {
+      occurrenceRanges.add(occurrence.getRange());
+    }
+
+    assertThat(occurrenceRanges, contains(new Range(chapter, OCCURANCE3_START, OCCURANCE3_END,
+        document.getMetrics().getCharacterCount())));
   }
 
   @Test
@@ -190,12 +205,27 @@ public class EntityFeatureModuleTest {
     entity1 = new BasicEntity();
     entity1.setDisplayName(NAME1_1);
     entity1.setType(EntityType.PERSON);
-    entity1.getOccurences().add(
-        new Range(chapter, OCCURANCE1_START, OCCURANCE1_END, document.getMetrics()
-            .getCharacterCount()));
-    entity1.getOccurences().add(
-        new Range(chapter, OCCURANCE2_START, OCCURANCE2_END, document.getMetrics()
-            .getCharacterCount()));
+
+    int documentLength = document.getMetrics().getCharacterCount();
+
+    // build Occurrence 1
+    Range sentence1Range = new Range(chapter, SENTENCE1_START, SENTENCE1_END, documentLength);
+    Range entity1Range = new Range(chapter, OCCURANCE1_START, OCCURANCE1_END, documentLength);
+    Sentence sentence1 = new Sentence(sentence1Range, chapter, 0);
+    Occurrence occurrence1 = new Occurrence(sentence1, entity1Range);
+
+    // build Occurrence 2
+    Range sentence2Range = new Range(chapter, SENTENCE2_START, SENTENCE2_END, documentLength);
+    Range entity2Range = new Range(chapter, OCCURANCE2_START, OCCURANCE2_END, documentLength);
+    Sentence sentence2 = new Sentence(sentence2Range, chapter, 1);
+    Occurrence occurrence2 = new Occurrence(sentence2, entity2Range);
+
+    // build Occurrence 3
+    Range entity3Range = new Range(chapter, OCCURANCE3_START, OCCURANCE3_END, documentLength);
+    Occurrence occurrence3 = new Occurrence(sentence1, entity3Range);
+
+    entity1.getOccurences().add(occurrence1);
+    entity1.getOccurences().add(occurrence2);
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
     list.add(entity1);
@@ -203,9 +233,7 @@ public class EntityFeatureModuleTest {
     entity2 = new BasicEntity();
     entity2.setType(EntityType.PLACE);
     entity2.setDisplayName(NAME2);
-    entity2.getOccurences().add(
-        new Range(chapter, OCCURANCE3_START, OCCURANCE3_END, document.getMetrics()
-            .getCharacterCount()));
+    entity2.getOccurences().add(occurrence3);
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
 

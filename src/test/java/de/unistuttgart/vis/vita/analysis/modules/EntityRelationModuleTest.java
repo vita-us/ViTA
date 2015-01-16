@@ -23,13 +23,30 @@ import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
-import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 
 
 public class EntityRelationModuleTest {
+  private static final int ENTITY1_OCCURRENCE1_START_OFFSET = 510;
+  private static final int ENTITY1_OCCURRENCE1_END_OFFSET = 520;
+  private static final int ENTITY1_OCCURRENCE2_START_OFFSET = 634;
+  private static final int ENTITY1_OCCURRENCE2_END_OFFSET = 655;
+
+  private static final int ENTITY2_OCCURRENCE1_START_OFFSET = 534;
+  private static final int ENTITY2_OCCURRENCE1_END_OFFSET = 579;
+  private static final int ENTITY2_OCCURRENCE2_START_OFFSET = 820;
+  private static final int ENTITY2_OCCURRENCE2_END_OFFSET = 835;
+
+  private static final int ENTITY3_OCCURRENCE1_START_OFFSET = 660;
+  private static final int ENTITY3_OCCURRENCE1_END_OFFSET = 670;
+  private static final int ENTITY3_OCCURRENCE2_START_OFFSET = 804;
+  private static final int ENTITY3_OCCURRENCE2_END_OFFSET = 819;
+  
+  private static final int RELATION_TIME_STEPS_COUNT = 20;
+
   private ModuleResultProvider resultProvider;
   private ProgressListener progressListener;
   private Chapter chapter;
@@ -51,8 +68,6 @@ public class EntityRelationModuleTest {
   @Before
   public void setUp() {
     chapter = new Chapter();
-    chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, 500, 0), TextPosition
-        .fromGlobalOffset(chapter, 900, DOCUMENT_LENGTH)));
 
     sentences = new ArrayList<Sentence>();
     int startOffSet = 500;
@@ -65,6 +80,9 @@ public class EntityRelationModuleTest {
       endOffset += 100;
     }
     chapter.setSentences(sentences);
+    chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, 500, 0), TextPosition
+        .fromGlobalOffset(chapter, 900, DOCUMENT_LENGTH)));
+
 
     resultProvider = mock(ModuleResultProvider.class);
     progressListener = mock(ProgressListener.class);
@@ -77,6 +95,7 @@ public class EntityRelationModuleTest {
     when(resultProvider.getResultFor(BasicEntityCollection.class)).thenReturn(entities);
 
     AnalysisParameters parameters = new AnalysisParameters();
+    parameters.setRelationTimeStepCount(RELATION_TIME_STEPS_COUNT);
     when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     module = new EntityRelationModule();
   }
@@ -84,25 +103,23 @@ public class EntityRelationModuleTest {
   @Test
   public void testRelations() throws Exception {
     EntityRelations relations = module.execute(resultProvider, progressListener);
-//    assertThat(relations.getRelatedEntities(entity1), hasEntry(entity2, 0.5));
-//    assertThat(relations.getRelatedEntities(entity1), hasEntry(entity3, 1.0));
-    for(BasicEntity entity: relations.getRelatedEntities(entity1).keySet()){
-      System.out.println("entity: "+ entity.getDisplayName());
-    }
+     assertThat(relations.getRelatedEntities(entity1), hasEntry(entity2, 1.0));
+     assertThat(relations.getRelatedEntities(entity1), hasEntry(entity3, 1.0));
   }
 
   @Test
   public void testRelationsOverTime() throws Exception {
     EntityRelations relations = module.execute(resultProvider, progressListener);
-//    assertThat(
-//        Doubles.asList(relations.getWeightOverTime(entity1, entity2)),
-//        contains(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-//            0.0, 0.0, 0.0, 0.0));
-//    assertThat(
-//        Doubles.asList(relations.getWeightOverTime(entity1, entity3)),
-//        contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-//            0.0, 0.0, 0.0, 0.0));
-    
+     assertThat(
+     Doubles.asList(relations.getWeightOverTime(entity1, entity2)),
+     contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+     0.0, 0.0, 0.0, 0.0));
+     assertThat(
+     Doubles.asList(relations.getWeightOverTime(entity1, entity3)),
+     contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+     0.0, 0.0, 0.0, 0.0));
+
+
   }
 
   private BasicEntityCollection createBasicEntities() {
@@ -111,33 +128,40 @@ public class EntityRelationModuleTest {
     entity1 = new BasicEntity();
     entity1.setDisplayName("entity1");
     entity1.getOccurences().add(
-        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter, 510,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 520, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY1_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY1_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity1.getOccurences().add(
-        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter, 634,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 655, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY1_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY1_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity1);
 
     entity2 = new BasicEntity();
     entity2.setDisplayName("entity2");
     entity2.getOccurences().add(
-        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter, 543,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 579, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY2_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY2_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity2.getOccurences().add(
-        new Occurrence(sentences.get(2), new Range(TextPosition.fromGlobalOffset(chapter, 820,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 835, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(2), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY2_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY2_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity2);
 
     entity3 = new BasicEntity();
     entity3.setDisplayName("entity3");
     entity3.getOccurences().add(
-        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter, 660,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 670, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY3_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY3_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity3.getOccurences().add(
-        new Occurrence(sentences.get(4), new Range(TextPosition.fromGlobalOffset(chapter, 804,
-            DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, 819, DOCUMENT_LENGTH))));
+        new Occurrence(sentences.get(4), new Range(TextPosition.fromGlobalOffset(chapter,
+            ENTITY3_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
+            chapter, ENTITY3_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity3);
-    
+
+
     return new BasicEntityCollection() {
       @Override
       public Collection<BasicEntity> getEntities() {

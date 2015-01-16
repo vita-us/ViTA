@@ -9,8 +9,9 @@ import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
-import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
+import de.unistuttgart.vis.vita.model.document.Range;
+
 import de.unistuttgart.vis.vita.services.RangeService;
 
 
@@ -85,7 +86,7 @@ public abstract class OccurrencesService extends RangeService {
       int stepStart = startOffset + (stepSize * step);
       int stepEnd = startOffset + (stepSize * (step + 1));
 
-      if (getNumberOfSpansInStep(stepStart, stepEnd) > 0) {
+      if (getNumberOfOccurrencesInStep(stepStart, stepEnd) > 0) {
         if (!includesLastStep) {
           // Start a new step
           includesLastStep = true;
@@ -110,6 +111,5 @@ public abstract class OccurrencesService extends RangeService {
     return stepSpans;
   }
 
-  protected abstract long getNumberOfSpansInStep(int firstSentenceIndex, int lastSentenceIndex);
-
+  protected abstract long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex);
 }

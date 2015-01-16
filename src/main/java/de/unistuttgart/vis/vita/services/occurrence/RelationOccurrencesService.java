@@ -111,7 +111,7 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
+  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
     return occurrenceDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
   }
 

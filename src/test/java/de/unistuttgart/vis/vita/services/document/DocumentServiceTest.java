@@ -9,8 +9,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
-import de.unistuttgart.vis.vita.importer.txt.input.TextFileImporter;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import org.glassfish.jersey.server.ResourceConfig;

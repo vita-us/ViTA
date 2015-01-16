@@ -206,7 +206,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       idMap.put(theAnnotation.getId(), entity);
       entities.add(entity);
     }
-    Occurrence occurrence = getTextSpan(theAnnotation, chapter);
+    Occurrence occurrence = getOccurences(theAnnotation, chapter);
 
     updateNameAttributes(entity, annotatedText, occurrence);
 
@@ -276,7 +276,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * @param chapter The chapter in which the annotation can be found.
    * @return The Occurrence of the annotation.
    */
-  private Occurrence getTextSpan(Annotation theAnnotation, Chapter chapter) {
+  private Occurrence getOccurences(Annotation theAnnotation, Chapter chapter) {
     int chapterStartOffset = chapter.getRange().getStart().getOffset();
     return sentenceDetectionResult.createOccurrence(chapterStartOffset+theAnnotation.getStartNode().getOffset().intValue(), chapterStartOffset + theAnnotation
         .getEndNode().getOffset().intValue());

@@ -49,7 +49,7 @@ public class Searcher {
     // This empty set allows to search for stop words
     CharArraySet charArraySet = new CharArraySet(0, true);
     StandardAnalyzer analyzer = new StandardAnalyzer(charArraySet);
-    List<Range> textSpans = new ArrayList<Range>();
+    List<Range> ranges = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
     IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(document.getId());
@@ -57,11 +57,11 @@ public class Searcher {
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
 
-    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits, document.getMetrics().getCharacterCount());
+    callCorrectTokenizers(searchString, chapters, ranges, indexSearcher, hits, document.getMetrics().getCharacterCount());
     indexSearcher.getIndexReader().close();
 
-    Collections.sort(textSpans);
-    return textSpans;
+    Collections.sort(ranges);
+    return ranges;
   }
 
   /**
@@ -69,13 +69,13 @@ public class Searcher {
    *
    * @param searchString
    * @param chapters
-   * @param textSpans
+   * @param ranges
    * @param indexSearcher
    * @param hits
    * @throws IOException
    */
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
-      List<Range> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength) throws IOException {
+      List<Range> ranges, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength) throws IOException {
     for (int i = 0; i < hits.length; i++) {
       
       String chapterText = indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue();
@@ -97,8 +97,8 @@ public class Searcher {
       }
 
       // TODO: document Length übergeben.
-      addTextSpansToList(tokenizer, searchString, words,
-          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText,documentLength );
+      addRangesToList(tokenizer, searchString, words,
+          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), ranges, chapterText,documentLength );
     }
   }
 
@@ -120,18 +120,18 @@ public class Searcher {
   }
 
   /**
-   * Produces the textspans and them to textSpans list
+   * Produces the Ranges and them to Ranges list
    * 
    * @param tokenizer
    * @param searchString
    * @param words
    * @param currentChapter
-   * @param textSpans
+   * @param ranges
    * @param documentLength - the length of the whole document
    * @throws IOException
    */
-  private void addTextSpansToList(Tokenizer tokenizer, String searchString, String[] words,
-      Chapter currentChapter, List<Range> textSpans, String chapterText, int documentLength) throws IOException {
+  private void addRangesToList(Tokenizer tokenizer, String searchString, String[] words,
+      Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength) throws IOException {
 
     // if it is a single word
     if (words != null && words.length == 1) {
@@ -145,7 +145,7 @@ public class Searcher {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
 
-          textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
+          ranges.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
               TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
         }
       }
@@ -175,7 +175,7 @@ public class Searcher {
           if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
             int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
-            textSpans.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
+            ranges.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
                 TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
           }
         }

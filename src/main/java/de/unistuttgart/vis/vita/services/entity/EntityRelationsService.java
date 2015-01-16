@@ -29,6 +29,7 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
  */
 @ManagedBean
 public class EntityRelationsService extends RangeService {
+  
   private OccurrenceDao occurrenceDao;
   
   @Inject

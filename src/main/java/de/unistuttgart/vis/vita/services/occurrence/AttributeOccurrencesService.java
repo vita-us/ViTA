@@ -113,17 +113,16 @@ public class AttributeOccurrencesService extends OccurrencesService {
   }
 
   private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
-    // get the TextSpans
-
+    // get the Occurrences
     List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForAttribute(entityId, attributeId, 
                                                                           startOffset, endOffset);
     
-    // convert TextSpans into Occurrences and return them
+    // convert Occurrences into Ranges and return them
     return convertOccurrencesToRanges(readOccurrences);
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int firstSentenceIndex, int lastSentenceIndex) {
+  protected long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
     return occurrenceDao.getNumberOfOccurrencesForAttribute(entityId, attributeId, firstSentenceIndex, lastSentenceIndex);
   }
 
