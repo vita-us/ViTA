@@ -8,6 +8,14 @@
     fill: none;
   }
 
+  .link:hover {
+    stroke: #FFD27F;
+  }
+
+  .link.selected {
+    stroke: orange;
+  }
+
   .node {
     fill: @default-character-ranking-color;
     cursor: pointer;
@@ -60,8 +68,10 @@
     opacity: 0.8;
   }
 
+}
+
+#graph-network-page {
   .help-text {
     color: #d3d3d3;
   }
-
 }
