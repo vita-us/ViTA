@@ -86,6 +86,8 @@
                 parameter.value = parameter.min;
               } else if (parameter.attributeType === 'boolean') {
                 parameter.value = false;
+              } else if (parameter.attributeType === 'enum') {
+                parameter.value = parameter.defaultValue;
               } else {
                 parameter.value = "";
               }
