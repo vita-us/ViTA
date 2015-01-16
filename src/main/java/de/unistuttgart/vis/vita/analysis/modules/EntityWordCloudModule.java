@@ -92,9 +92,8 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
               sentence.getRange().getEnd().getLocalOffset(currentChapter));
 
       String[] tokens = tokenize(substr);
-
-      // Do not include first and last token, they may not be complete
-      for (int i = 1; i < tokens.length - 1; i++) {
+  
+      for (int i = 0; i < tokens.length; i++) {
         String token = tokens[i].trim();
         if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
             && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
