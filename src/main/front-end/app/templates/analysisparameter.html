@@ -1,9 +1,5 @@
 <div class="analysis-parameter">
-  <button class="btn btn-default btn-info" type="button" ng-click="isOpen = !isOpen">
-    <span class="">Analysis Parameters</span>
-    <span class="caret"></span>
-  </button>
-  <div ng-show="isOpen" class="parameter-list">
+  <div class="parameter-list">
     <div ng-repeat="parameter in analysisParameters">
       <div ng-if="parameter.attributeType === 'int'">
         <div data-number-parameter data-parameter="parameter"></div>
