@@ -15,12 +15,25 @@
 
   <div class="col-md-6" ng-show="selectedDocument">
     <div data-document-preview data-document="selectedDocument"></div>
-    <div>
-      <button type="button" class="btn btn-default btn-sm" ng-click="renameDocument()">
-        <span class="glyphicon glyphicon-edit"></span> Rename
+    <div ng-init="isOpen = false">
+      <button class="btn btn-default btn-info" type="button" ng-click="isOpen = !isOpen" id="show-analysis-parameters">
+        <span class="">Analysis Parameters</span>
+        <span class="caret"></span>
+      </button>
+      <button type="button" class="btn btn-default btn-default rename-button" ng-click="renameDocument()">
+      <span class="glyphicon glyphicon-edit"></span> Rename
       </button>
       <a class="btn btn-success pull-right" ng-href="#/documents/{{selectedDocument.id}}">Show
         document</a>
+      <div ng-show="isOpen">
+        <form class="form-horizontal">
+          <div data-analysis-parameter data-analysis-parameters="analysisParameters"></div>
+        </form>
+        <button type="button" class="btn btn-default" ng-click="deriveDocument(selectedDocument)">
+          <span class="glyphicon glyphicon-play-circle"></span> Reanalyse with changed parameters
+        </button>
+      </div>
+    </div>
     </div>
   </div>
 
