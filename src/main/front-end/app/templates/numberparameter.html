@@ -1,6 +1,7 @@
 <div class="number-parameter form-group"  title="{{parameter.description}}" >
-  <label class="parameter-label col-sm-6">{{parameter.label}}</label>
+  <label class="parameter-label col-sm-6" for="{{parameter.name}}">{{parameter.label}}</label>
   <div class="controls col-sm-6">
-     <input class="span4" type="number" ng-model="parameter['value']" min="{{parameter.min}}" max="{{parameter.max}}" required>
+     <input type="number" ng-model="parameter['value']" min="{{parameter.min}}" max="{{parameter.max}}" required
+         class="input" id="{{parameter.name}}">
   </div>
 </div>

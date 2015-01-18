@@ -3,9 +3,11 @@
     {{parameter.label}}
   </label>
   <div class="col-sm-6">
-    <span ng-repeat="value in parameter.values">
-      <label>{{value.label}}</label>
-      <input type="radio" ng-model="parameter['value']" value="{{value.name}}">
-    </span>
+    <div class="input">
+      <span ng-repeat="value in parameter.values" class="enum-input">
+        <label for="{{value.name}}">{{value.label}}</label>
+        <input type="radio" ng-model="parameter['value']" value="{{value.name}}" id="{{value.name}}">
+      </span>
+    </div>
   </div>
 </div>
