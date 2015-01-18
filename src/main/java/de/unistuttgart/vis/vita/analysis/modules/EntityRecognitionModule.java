@@ -278,8 +278,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    */
   private Occurrence getOccurences(Annotation theAnnotation, Chapter chapter) {
     int chapterStartOffset = chapter.getRange().getStart().getOffset();
-    return sentenceDetectionResult.createOccurrence(chapterStartOffset+theAnnotation.getStartNode().getOffset().intValue(), chapterStartOffset + theAnnotation
-        .getEndNode().getOffset().intValue());
+    return sentenceDetectionResult.createOccurrence(chapterStartOffset+theAnnotation.getStartNode().getOffset().intValue());
   }
 
   /**
