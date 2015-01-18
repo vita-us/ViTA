@@ -13,21 +13,30 @@ import java.util.List;
  * Represents a data access object for accessing documents.
  */
 @MappedSuperclass
-@NamedQueries({@NamedQuery(name = "Document.findAllDocuments",
-    query = "SELECT d " + "FROM Document d " + "ORDER BY d.uploadDate DESC"),
+@NamedQueries({
+    @NamedQuery(name = "Document.findAllDocuments",
+                query = "SELECT d "
+                        + "FROM Document d "
+                        + "ORDER BY d.uploadDate DESC"),
 
     @NamedQuery(name = "Document.findDocumentById",
-        query = "SELECT d " + "FROM Document d " + "WHERE d.id = :documentId"),
+        query = "SELECT d "
+                + "FROM Document d "
+                + "WHERE d.id = :documentId"),
 
     @NamedQuery(name = "Document.findDocumentByTitle",
-        query = "SELECT d " + "FROM Document d " + "WHERE d.metadata.title = :documentTitle"),
+        query = "SELECT d "
+                + "FROM Document d "
+                + "WHERE d.metadata.title = :documentTitle"),
 
     @NamedQuery(name = "Document.findDocumentByStatus",
-        query = "SELECT d " + "FROM Document d " + "WHERE d.progress.status = :status")})
+        query = "SELECT d "
+                + "FROM Document d "
+                + "WHERE d.progress.status = :status")
+})
 public class DocumentDao extends JpaDao<Document, String> {
 
   private static final String DOCUMENT_TITLE_PARAMETER = "title";
-
 
   public DocumentDao(EntityManager em) {
     super(Document.class, em);
@@ -56,6 +65,16 @@ public class DocumentDao extends JpaDao<Document, String> {
   public List<Document> findDocumentsByStatus(AnalysisStatus status) {
     return queryAll("Document.findDocumentByStatus",
         "status", status);
+  }
+
+  /**
+   * Returns whether the analysis of the Document with the given id is finished.
+   *
+   * @param documentId - the id of the Document which analysis status should be checked
+   * @return true if the analysis for the given Document is finished, false otherwise
+   */
+  public boolean isAnalysisFinished(String documentId) {
+    return findById(documentId).getProgress().getStatus() == AnalysisStatus.FINISHED;
   }
 
 }
