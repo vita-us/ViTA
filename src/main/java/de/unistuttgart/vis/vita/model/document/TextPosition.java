@@ -1,8 +1,8 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import javax.persistence.Embeddable;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import javax.persistence.Embeddable;
 
 /**
  * Represents the position of a single character in the text of a Document. It is aware of the
@@ -17,8 +17,8 @@ public class TextPosition implements Comparable<TextPosition> {
   /**
    * Creates a new instance of TextPosition.
    * <p>
-   * Use factory methods {@link TextPosition#fromGlobalOffset(Chapter, int)} and
-   * {@link TextPosition#fromLocalOffset(Chapter, int)} instead to avoid misunderstandings
+   * Use factory methods {@link TextPosition#fromGlobalOffset(int, int)} and
+   * {@link TextPosition#fromLocalOffset(Chapter, int, int)} instead to avoid misunderstandings
    * concerning the offsets.
    * </p>
    */
@@ -54,7 +54,7 @@ public class TextPosition implements Comparable<TextPosition> {
    * Creates a new TextPosition by specifying the chapter and the chapter-local character offset
    *
    * @param chapter - the chapter this TextPosition lies in
-   * @param pOffset - the offset of this TextPosition within the chapter
+   * @param localOffset - the offset of this TextPosition within the chapter
    * @param documentLength - the length of the whole document
    */
   public static TextPosition fromLocalOffset(Chapter chapter, int localOffset, int documentLength) {
@@ -66,13 +66,14 @@ public class TextPosition implements Comparable<TextPosition> {
   /**
    * Creates a new TextPosition by specifying the chapter and the document-wide character offset
    *
-   * @param chapter - the chapter this TextPosition lies in
    * @param globalOffset - the global offset of this TextPosition within the document
    * @param documentLength - the length of the whole document
    */
-  public static TextPosition fromGlobalOffset(Chapter chapter, int globalOffset, int documentLength) {
-    if (chapter == null)
-      throw new NullPointerException("chapter is null");
+  public static TextPosition fromGlobalOffset(int globalOffset, int documentLength) {
+    if (globalOffset > documentLength) {
+      throw new IllegalArgumentException(
+          "The global offset can not be higher then the document length!");
+    }
     return new TextPosition(globalOffset, documentLength);
   }
 
