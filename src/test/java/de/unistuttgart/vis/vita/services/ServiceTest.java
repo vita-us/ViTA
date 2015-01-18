@@ -25,6 +25,7 @@ import de.unistuttgart.vis.vita.model.UnitTestModel;
  */
 public class ServiceTest extends JerseyTest {
   private Model model;
+  protected static final String RELATIVE_DIRECTORY_TEST = ".vita/test/";
   
   @Override
   protected TestContainerFactory getTestContainerFactory() throws TestContainerException {
