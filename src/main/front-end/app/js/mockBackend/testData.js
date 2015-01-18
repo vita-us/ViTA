@@ -1036,6 +1036,55 @@
           },
           'length': 989
         }]
+      },
+
+      analysisParameters: {
+        'totalCount': 3,
+        'parameters': [{
+          'name': 'relationTimeStepCount',
+          'label': 'Relation time steps',
+          'attributeType': 'int',
+          'description': 'The number of steps between the relations over time.',
+          'defaultValue': 100,
+          'min': 1,
+          'max': 1000
+        }, {
+          'name': 'wordCloudItemsCount',
+          'label': 'Word cloud items',
+          'attributeType': 'int',
+          'description': 'The number of items visualized in the word cloud.',
+          'defaultValue': 100,
+          'min': 10,
+          'max': 100
+        }, {
+          'name': 'stopWordListEnabled',
+          'label': 'Enable stop word',
+          'attributeType': 'boolean',
+          'description': 'If the stop word list should be used to filter probalby unnecessary words.',
+          'defaultValue': true
+        }, {
+          'name': 'stopWordListEnabled',
+          'label': 'Enable stop word',
+          'attributeType': 'boolean',
+          'description': 'If the stop word list should be used to filter probalby unnecessary words.',
+          'defaultValue': true
+        }, {
+          "name": "documentLanguage",
+          "label": "Document language",
+          "attributeType": "enum",
+          "description": "The language of the imported document",
+          "values": [
+            {"name": "german", "label": "German"},
+            {"name": "english", "label": "English"}
+          ],
+          "defaultValue": "english"
+        }, {
+          "name": "stopWordList",
+          "label": "Stop word list",
+          "attributeType": "string",
+          "description": "A list of stop words for the Word Cloud",
+          "defaultValue": "hi"
+        }]
       }
 
     };
