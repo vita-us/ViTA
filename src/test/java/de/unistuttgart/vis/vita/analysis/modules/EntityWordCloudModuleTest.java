@@ -66,8 +66,8 @@ public class EntityWordCloudModuleTest {
   private void createChapter() {
     chapter = new Chapter();
     chapter.setText(SENTENCES[0] + SENTENCES[1]);
-    chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, 0, 0), TextPosition
-        .fromGlobalOffset(chapter, documentLength, 0)));
+    chapter.setRange(new Range(TextPosition.fromGlobalOffset(0, documentLength), TextPosition
+        .fromGlobalOffset(documentLength, documentLength)));
   }
 
   private void createBasicEntities(List<BasicEntity> basicEntities, String name) {
@@ -90,24 +90,24 @@ public class EntityWordCloudModuleTest {
   private void createOccurrencesForEntityOne(List<Occurrence> occurrences) {
 
     Sentence sentenceOne =
-        new Sentence(new Range(TextPosition.fromLocalOffset(chapter, 0, 0),
-            TextPosition.fromLocalOffset(chapter, SENTENCES[0].length(), 0)), chapter, 0);
+        new Sentence(new Range(TextPosition.fromLocalOffset(chapter, 0, documentLength),
+            TextPosition.fromLocalOffset(chapter, SENTENCES[0].length(), documentLength)), chapter, 0);
     sentenceOne.setChapter(chapter);
 
-    occurrences.add(new Occurrence(sentenceOne, new Range(TextPosition.fromGlobalOffset(chapter, 0,
-        0), TextPosition.fromGlobalOffset(chapter, 10, 0))));
+    occurrences.add(new Occurrence(sentenceOne, new Range(TextPosition.fromGlobalOffset( 0,
+        documentLength), TextPosition.fromGlobalOffset( 10, documentLength))));
 
   }
 
   private void createOccurrencesForEntityTwo(List<Occurrence> occurrences) {
     Sentence sentenceTwo =
-        new Sentence(new Range(TextPosition.fromLocalOffset(chapter, SENTENCES[0].length(), 0),
-            TextPosition.fromLocalOffset(chapter, documentLength, 0)), chapter, 1);
+        new Sentence(new Range(TextPosition.fromLocalOffset(chapter, SENTENCES[0].length(), documentLength),
+            TextPosition.fromLocalOffset(chapter, documentLength,documentLength)), chapter, 1);
     sentenceTwo.setChapter(chapter);
 
-    occurrences.add(new Occurrence(sentenceTwo, new Range(TextPosition.fromGlobalOffset(chapter,
-        SENTENCES[0].length(), 0), TextPosition.fromGlobalOffset(chapter,
-        SENTENCES[0].length() + 5, 0))));
+    occurrences.add(new Occurrence(sentenceTwo, new Range(TextPosition.fromGlobalOffset(
+        SENTENCES[0].length(), documentLength), TextPosition.fromGlobalOffset(
+        SENTENCES[0].length() + 5, documentLength))));
   }
 
   @Test
