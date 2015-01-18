@@ -8,6 +8,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
@@ -70,8 +71,9 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       }
 
       @Override
-      public Occurrence createOccurrence(int startOffset, int endOffset) {
-        Sentence sentence = getSentenceAt(null); // TODO create TextPosition with chapter
+      public Occurrence createOccurrence(int startOffset) {
+        Sentence sentence = getSentenceAt(
+            TextPosition.fromGlobalOffset(startOffset, importResult.getTotalLength()));
 
         return new Occurrence(sentence, sentence.getRange());
       }
@@ -97,10 +99,10 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
           int endOffset = annotation.getEndNode().getOffset().intValue();
           int length = endOffset - startOffset;
           TextPosition start =
-              TextPosition.fromGlobalOffset(chapter, startOffset,
+              TextPosition.fromGlobalOffset(startOffset,
                   this.importResult.getTotalLength());
           TextPosition end =
-              TextPosition.fromGlobalOffset(chapter, startOffset + length,
+              TextPosition.fromGlobalOffset(startOffset + length,
                   this.importResult.getTotalLength());
           Range range = new Range(start, end);
           Sentence sentence = new Sentence(range, chapter, index);

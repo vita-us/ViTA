@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.results;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -31,5 +32,5 @@ public interface SentenceDetectionResult {
      * @throws java.lang.IllegalArgumentException if startOffset or endOffset do are not in the
      *   document range
      */
-    public Occurrence createOccurrence(int startOffset, int endOffset);
+    public Occurrence createOccurrence(int startOffset);
 }
