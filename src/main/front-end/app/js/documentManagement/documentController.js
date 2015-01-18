@@ -77,14 +77,15 @@
           $scope.analysisParameters = response.parameters;
         });
 
-        $scope.$watch('selectedDocument', function(newValue) {
-          DocumentParameter.get({documentId: newValue.id}, function(response) {
-                var parameterValues = response;
-                $scope.analysisParameters.forEach(function (parameter) {
-                  parameter.value = parameterValues[parameter.name];
-                });
-              }
-          );
+        $scope.$watch('selectedDocument', function(newSelectedDocument) {
+          if(!angular.isUndefined(newSelectedDocument)) {
+            DocumentParameter.get({documentId: newSelectedDocument.id}, function (parameterValues) {
+                  $scope.analysisParameters.forEach(function (parameter) {
+                    parameter.value = parameterValues[parameter.name];
+                  });
+                }
+            );
+          }
         }, true);
 
         function getParameterToValueMap() {
