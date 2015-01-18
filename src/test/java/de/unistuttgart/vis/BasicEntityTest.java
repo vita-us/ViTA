@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.model.entity;
+package de.unistuttgart.vis;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
@@ -15,6 +15,10 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
+import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.model.entity.AttributeType;
+import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 
 public class BasicEntityTest {
