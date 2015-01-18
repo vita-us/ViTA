@@ -17,6 +17,10 @@
   label {
     font-weight: inherit;
   }
+
+  .input {
+    width: 80%;
+  }
 }
 
 .boolean-parameter {
@@ -25,14 +29,30 @@
 
 .number-parameter {
   padding-left: 5px;
+
+  input {
+    text-align: center;
+  }
 }
 
 .enum-parameter {
   padding-left: 5px;
+
+  .enum-input {
+    padding-right: 10px;
+
+    label {
+      padding-right: 5px;
+    }
+  }
 }
 
 .string-parameter {
   padding-left: 5px;
+
+  textarea {
+    resize:vertical;
+  }
 }
 
 .parameter-label {
