@@ -90,8 +90,8 @@ public class EntityRecognitionModuleTest {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
-      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, pos, documentLength),
-          TextPosition.fromGlobalOffset(chapter, pos + chapterText.length(), documentLength)));
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(pos, documentLength),
+          TextPosition.fromGlobalOffset(pos + chapterText.length(), documentLength)));
       pos += chapterText.length();
       part.getChapters().add(chapter);
       chapterObjects.add(chapter);

@@ -26,13 +26,13 @@ public class OccurrenceTestData {
    * @return a test Occurrence laying in the given chapter
    */
   public Occurrence createOccurrence(Chapter chapter) {
-    TextPosition testSentenceStartPosition = TextPosition.fromGlobalOffset(chapter, TEST_SENTENCE_START, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    TextPosition testSentenceEndPosition = TextPosition.fromGlobalOffset(chapter, TEST_SENTENCE_END, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition testSentenceStartPosition = TextPosition.fromGlobalOffset(TEST_SENTENCE_START, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition testSentenceEndPosition = TextPosition.fromGlobalOffset(TEST_SENTENCE_END, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Range testSentenceRange = new Range(testSentenceStartPosition, testSentenceEndPosition);
     Sentence testSentence = new Sentence(testSentenceRange, chapter, 0);
 
-    TextPosition testStartPosition = TextPosition.fromGlobalOffset(chapter, TEST_RANGE_START, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    TextPosition testEndPosition = TextPosition.fromGlobalOffset(chapter, TEST_RANGE_END, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition testStartPosition = TextPosition.fromGlobalOffset(TEST_RANGE_START, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition testEndPosition = TextPosition.fromGlobalOffset(TEST_RANGE_END, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Range testRange = new Range(testStartPosition, testEndPosition);
     Occurrence testOccurrence = new Occurrence(testSentence, testRange);
     return testOccurrence;

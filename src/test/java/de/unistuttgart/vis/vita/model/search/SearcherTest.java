@@ -74,8 +74,8 @@ public class SearcherTest {
     for (int i = 0; i < CHAPTERS_TEXTS.length; i++) {
       Chapter chapter = new Chapter();
       chapter.setText(CHAPTERS_TEXTS[i]);
-      chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, globalOffsetStart, documentLength),
-          TextPosition.fromGlobalOffset(chapter, globalOffsetEnd, documentLength)));
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(globalOffsetStart, documentLength),
+          TextPosition.fromGlobalOffset(globalOffsetEnd, documentLength)));
       chapterIds.add(chapter.getId());
       chapters.add(chapter);
       if (i != CHAPTERS_TEXTS.length - 1) {

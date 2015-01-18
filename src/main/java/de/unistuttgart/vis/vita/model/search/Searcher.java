@@ -145,8 +145,8 @@ public class Searcher {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
 
-          ranges.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
-              TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
+          ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+              TextPosition.fromGlobalOffset(endOffset, documentLength)));
         }
       }
       tokenizer.end();
@@ -175,8 +175,8 @@ public class Searcher {
           if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
             int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
-            ranges.add(new Range(TextPosition.fromGlobalOffset(currentChapter, startOffset, documentLength),
-                TextPosition.fromGlobalOffset(currentChapter, endOffset, documentLength)));
+            ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+                TextPosition.fromGlobalOffset(endOffset, documentLength)));
           }
         }
         tokens.clear();

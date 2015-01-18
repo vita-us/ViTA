@@ -128,13 +128,13 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     Document doc = new Document();
     Chapter chapter = new Chapter();
     TextPosition pos1 =
-        TextPosition.fromGlobalOffset(chapter, 10, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+        TextPosition.fromGlobalOffset(10, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition pos2 =
-        TextPosition.fromGlobalOffset(chapter, 20, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+        TextPosition.fromGlobalOffset(20, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition pos3 =
-        TextPosition.fromGlobalOffset(chapter, 30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+        TextPosition.fromGlobalOffset(30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition pos4 =
-        TextPosition.fromGlobalOffset(chapter, 40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+        TextPosition.fromGlobalOffset(40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Range span1 = new Range(pos1, pos4);
     Range span2 = new Range(pos2, pos4);
     Range span3 = new Range(pos3, pos4);

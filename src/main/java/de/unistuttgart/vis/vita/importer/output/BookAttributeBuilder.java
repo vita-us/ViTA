@@ -66,9 +66,9 @@ public class BookAttributeBuilder extends AbstractBuilder {
     int currentPosition = 0;
     for (DocumentPart part : this.parts) {
       for (Chapter chapter : part.getChapters()) {
-        TextPosition startPosition = TextPosition.fromGlobalOffset(chapter, currentPosition, documentLength);
+        TextPosition startPosition = TextPosition.fromGlobalOffset(currentPosition, documentLength);
         currentPosition += chapter.getLength();
-        TextPosition endPosition = TextPosition.fromGlobalOffset(chapter, currentPosition, documentLength);
+        TextPosition endPosition = TextPosition.fromGlobalOffset(currentPosition, documentLength);
         chapter.setRange(new Range(startPosition, endPosition));
       }
     }

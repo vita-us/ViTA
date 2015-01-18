@@ -43,13 +43,13 @@ public class RangeTest {
     metrics.setCharacterCount(DOCUMENT_LENGTH);
     chapter = new Chapter();
     chapter.setRange(new Range(
-        TextPosition.fromGlobalOffset(chapter, 0, DOCUMENT_LENGTH),
-        TextPosition.fromGlobalOffset(chapter, DOCUMENT_LENGTH, DOCUMENT_LENGTH)));
+        TextPosition.fromGlobalOffset(0, DOCUMENT_LENGTH),
+        TextPosition.fromGlobalOffset(DOCUMENT_LENGTH, DOCUMENT_LENGTH)));
 
-    pos1 = TextPosition.fromGlobalOffset(chapter, OFFSET_1, DOCUMENT_LENGTH);
-    pos2 = TextPosition.fromGlobalOffset(chapter, OFFSET_2, DOCUMENT_LENGTH);
-    pos3 = TextPosition.fromGlobalOffset(chapter, OFFSET_3, DOCUMENT_LENGTH);
-    pos4 = TextPosition.fromGlobalOffset(chapter, OFFSET_4, DOCUMENT_LENGTH);
+    pos1 = TextPosition.fromGlobalOffset(OFFSET_1, DOCUMENT_LENGTH);
+    pos2 = TextPosition.fromGlobalOffset(OFFSET_2, DOCUMENT_LENGTH);
+    pos3 = TextPosition.fromGlobalOffset(OFFSET_3, DOCUMENT_LENGTH);
+    pos4 = TextPosition.fromGlobalOffset(OFFSET_4, DOCUMENT_LENGTH);
   }
 
   @Test

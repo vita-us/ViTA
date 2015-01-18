@@ -39,8 +39,8 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
     Chapter testChapter = new ChapterTestData().createTestChapter();
     testChapter.setLength(testChapter.getText().length());
     testChapter.setRange(new Range(
-        TextPosition.fromGlobalOffset(testChapter, 0, testChapter.getLength()),
-        TextPosition.fromGlobalOffset(testChapter, testChapter.getLength(), testChapter.getLength())));
+        TextPosition.fromGlobalOffset(0, testChapter.getLength()),
+        TextPosition.fromGlobalOffset(testChapter.getLength(), testChapter.getLength())));
     testDoc.getMetrics().setCharacterCount(testChapter.getLength());
     testPart.getChapters().add(testChapter);
 

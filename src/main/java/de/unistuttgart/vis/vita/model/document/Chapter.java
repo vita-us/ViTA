@@ -48,7 +48,7 @@ public class Chapter extends AbstractEntityBase {
    */
   public Chapter() {
     range =
-        new Range(TextPosition.fromGlobalOffset(this, 0, 1), TextPosition.fromGlobalOffset(this, 0,
+        new Range(TextPosition.fromGlobalOffset(0, 1), TextPosition.fromGlobalOffset(0,
             1));
     sentences = new ArrayList<Sentence>();
   }
