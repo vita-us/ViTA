@@ -87,15 +87,7 @@
           AnalysisParameter.get({}, function(response) {
             scope.analysisParameters = response.parameters;
             scope.analysisParameters.forEach(function(parameter) {
-              if (parameter.attributeType === 'int') {
-                parameter.value = parameter.min;
-              } else if (parameter.attributeType === 'boolean') {
-                parameter.value = false;
-              } else if (parameter.attributeType === 'enum') {
-                parameter.value = parameter.defaultValue;
-              } else {
-                parameter.value = "";
-              }
+              parameter.value = parameter.defaultValue;
             });
           });
         }
