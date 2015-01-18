@@ -78,7 +78,7 @@ public class DaoFactory {
   }
 
   public PlaceDao getPlaceDao() {
-    if (personDao == null) {
+    if (placeDao == null) {
       placeDao = new PlaceDao(em);
     }
     return placeDao;

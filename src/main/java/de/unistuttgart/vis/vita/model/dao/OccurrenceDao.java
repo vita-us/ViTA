@@ -1,17 +1,15 @@
 package de.unistuttgart.vis.vita.model.dao;
 
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.document.Occurrence;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
 
 /**
  * Represents a data access object for accessing TextSpans.

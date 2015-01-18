@@ -47,7 +47,6 @@ public class ParametersService extends BaseService {
    * @return The parameters in JSON.
    */
   @GET
-  @Path("/")
   @Produces(MediaType.APPLICATION_JSON)
   public ParametersResponse getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
@@ -57,18 +56,30 @@ public class ParametersService extends BaseService {
     for (Field field : params.getDeclaredFields()) {
       field.setAccessible(true);
 
-      String dsp = field.getAnnotation(Description.class).value();
-      String label = field.getAnnotation(Label.class).value();
-
-      if (field.getType() != boolean.class) {
-        long min = field.getAnnotation(Min.class).value();
-        long max = field.getAnnotation(Max.class).value();
-        parameter = new MinMaxParameter(field.getName(), field.getType(), dsp, min, max);
+      if (field.getType() == boolean.class) {
+        parameter = new BooleanParameter(field.getName(), field.getType());
+      } else if (field.getType() == int.class || field.getType() == long.class) {
+        long min = Integer.MIN_VALUE;
+        long max = Integer.MAX_VALUE;
+        if (field.getAnnotation(Min.class) != null) {
+          min = field.getAnnotation(Min.class).value();
+        }
+        if (field.getAnnotation(Max.class) != null) {
+          max = field.getAnnotation(Max.class).value();
+        }
+        parameter = new MinMaxParameter(field.getName(), field.getType(), min, max);
       } else {
-        parameter = new BooleanParameter(field.getName(), field.getType(), dsp);
+        continue;
       }
 
-      parameter.setLabel(label);
+      if (field.getAnnotation(Description.class) != null) {
+        parameter.setDescription(field.getAnnotation(Description.class).value());
+      }
+
+      if (field.getAnnotation(Label.class) != null) {
+        parameter.setLabel(field.getAnnotation(Label.class).value());
+      }
+
       parameterList.add(parameter);
     }
 

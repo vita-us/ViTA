@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.services;
 
+import de.unistuttgart.vis.vita.services.analysis.ParametersServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -27,7 +28,8 @@ import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
     ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class,
     PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class,
     DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
-    AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class})
+    AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class,
+    ParametersServiceTest.class})
 public class ServiceTests {
 
 }
