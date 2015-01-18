@@ -44,7 +44,7 @@ public class EntityRelationModuleTest {
   private static final int ENTITY3_OCCURRENCE1_END_OFFSET = 670;
   private static final int ENTITY3_OCCURRENCE2_START_OFFSET = 804;
   private static final int ENTITY3_OCCURRENCE2_END_OFFSET = 819;
-  
+
   private static final int RELATION_TIME_STEPS_COUNT = 20;
 
   private ModuleResultProvider resultProvider;
@@ -73,15 +73,15 @@ public class EntityRelationModuleTest {
     int startOffSet = 500;
     int endOffset = 600;
     for (int i = 0; i < 5; i++) {
-      sentences.add(new Sentence(new Range(TextPosition.fromGlobalOffset(chapter, startOffSet,
-          DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(chapter, endOffset, DOCUMENT_LENGTH)),
-          chapter, i));
+      sentences
+          .add(new Sentence(new Range(TextPosition.fromGlobalOffset(startOffSet, DOCUMENT_LENGTH),
+              TextPosition.fromGlobalOffset(endOffset, DOCUMENT_LENGTH)), chapter, i));
       startOffSet += 100;
       endOffset += 100;
     }
     chapter.setSentences(sentences);
-    chapter.setRange(new Range(TextPosition.fromGlobalOffset(chapter, 500, 0), TextPosition
-        .fromGlobalOffset(chapter, 900, DOCUMENT_LENGTH)));
+    chapter.setRange(new Range(TextPosition.fromGlobalOffset(500, DOCUMENT_LENGTH), TextPosition
+        .fromGlobalOffset(900, DOCUMENT_LENGTH)));
 
 
     resultProvider = mock(ModuleResultProvider.class);
@@ -103,21 +103,21 @@ public class EntityRelationModuleTest {
   @Test
   public void testRelations() throws Exception {
     EntityRelations relations = module.execute(resultProvider, progressListener);
-     assertThat(relations.getRelatedEntities(entity1), hasEntry(entity2, 1.0));
-     assertThat(relations.getRelatedEntities(entity1), hasEntry(entity3, 1.0));
+    assertThat(relations.getRelatedEntities(entity1), hasEntry(entity2, 1.0));
+    assertThat(relations.getRelatedEntities(entity1), hasEntry(entity3, 1.0));
   }
 
   @Test
   public void testRelationsOverTime() throws Exception {
     EntityRelations relations = module.execute(resultProvider, progressListener);
-     assertThat(
-     Doubles.asList(relations.getWeightOverTime(entity1, entity2)),
-     contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-     0.0, 0.0, 0.0, 0.0));
-     assertThat(
-     Doubles.asList(relations.getWeightOverTime(entity1, entity3)),
-     contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
-     0.0, 0.0, 0.0, 0.0));
+    assertThat(
+        Doubles.asList(relations.getWeightOverTime(entity1, entity2)),
+        contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0));
+    assertThat(
+        Doubles.asList(relations.getWeightOverTime(entity1, entity3)),
+        contains(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0));
 
 
   }
@@ -128,37 +128,37 @@ public class EntityRelationModuleTest {
     entity1 = new BasicEntity();
     entity1.setDisplayName("entity1");
     entity1.getOccurences().add(
-        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY1_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY1_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity1.getOccurences().add(
-        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY1_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY1_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity1);
 
     entity2 = new BasicEntity();
     entity2.setDisplayName("entity2");
     entity2.getOccurences().add(
-        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY2_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY2_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity2.getOccurences().add(
-        new Occurrence(sentences.get(2), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(2), new Range(TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY2_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY2_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity2);
 
     entity3 = new BasicEntity();
     entity3.setDisplayName("entity3");
     entity3.getOccurences().add(
-        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY3_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY3_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
     entity3.getOccurences().add(
-        new Occurrence(sentences.get(4), new Range(TextPosition.fromGlobalOffset(chapter,
+        new Occurrence(sentences.get(4), new Range(TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
-            chapter, ENTITY3_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
+            ENTITY3_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
     entities.add(entity3);
 
 
