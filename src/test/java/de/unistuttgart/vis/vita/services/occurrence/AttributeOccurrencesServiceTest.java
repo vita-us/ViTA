@@ -49,10 +49,10 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
 
     // Set range
     TextPosition rangeStartPos =
-        TextPosition.fromGlobalOffset(testChapter, 0,
+        TextPosition.fromGlobalOffset(0,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition rangeEndPos =
-        TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
+        TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
 
     Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);

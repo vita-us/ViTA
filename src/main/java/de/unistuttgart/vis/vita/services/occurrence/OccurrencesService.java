@@ -90,10 +90,10 @@ public abstract class OccurrencesService extends RangeService {
         if (!includesLastStep) {
           // Start a new step
           includesLastStep = true;
-          currentSpanStart = TextPosition.fromGlobalOffset(getSurroundingChapter(stepStart),
+          currentSpanStart = TextPosition.fromGlobalOffset(
               stepStart, getDocumentLength());
         }
-        currentSpanEnd = TextPosition.fromGlobalOffset(getSurroundingChapter(stepEnd), stepEnd,
+        currentSpanEnd = TextPosition.fromGlobalOffset(stepEnd,
             getDocumentLength());
 
       } else if (includesLastStep) {
