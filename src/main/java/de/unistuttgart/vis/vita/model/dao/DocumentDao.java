@@ -3,11 +3,12 @@ package de.unistuttgart.vis.vita.model.dao;
 import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.document.Document;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import java.util.List;
 
 /**
  * Represents a data access object for accessing documents.
@@ -21,6 +22,9 @@ import java.util.List;
 
     @NamedQuery(name = "Document.findDocumentByTitle",
         query = "SELECT d " + "FROM Document d " + "WHERE d.metadata.title = :documentTitle"),
+
+    @NamedQuery(name = "Document.findDocumentsByFilename",
+        query = "SELECT d " + "FROM Document d " + "WHERE d.fileName = :fileName"),
 
     @NamedQuery(name = "Document.findDocumentByStatus",
         query = "SELECT d " + "FROM Document d " + "WHERE d.progress.status = :status")})
@@ -56,6 +60,17 @@ public class DocumentDao extends JpaDao<Document, String> {
   public List<Document> findDocumentsByStatus(AnalysisStatus status) {
     return queryAll("Document.findDocumentByStatus",
         "status", status);
+  }
+
+  /**
+   * Finds all documents with the given file name.
+   *
+   * @param fileName The name of the file corresponding to the document.
+   * @return the documents with the given filename.
+   */
+  public List<Document> findDocumentsByFilename(String fileName) {
+    return queryAll("Document.findDocumentsByFilename",
+                    "fileName", fileName);
   }
 
 }
