@@ -183,7 +183,7 @@
       var group_gap = 0;
 
       // This is used for more than just text height.
-      var text_height = 8;
+      var text_height = 12;
 
       // If a name's x is smaller than this value * chart width,
       // the name appears at the start of the chart, as
