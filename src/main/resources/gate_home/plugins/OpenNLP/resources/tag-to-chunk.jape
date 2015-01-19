@@ -1,0 +1,66 @@
+Imports: {
+  import static gate.Utils.*;
+}
+
+Phase: TagToChunk
+Options: control = once
+Input: Token
+
+// check there is at least one chunk to process
+Rule: TagToChunk
+({Token.chunk != "O"}):tok
+-->
+{
+  try {
+    List<Annotation> tokens = inDocumentOrder(inputAS.get("Token"));
+    String currentChunkType = null;
+    Long chunkStart = null;
+    for(int i = 0; i < tokens.size(); i++) {
+      String chunkTag = (String)tokens.get(i).getFeatures().get("chunk");
+      if(chunkTag == null) {
+        throw new NonFatalJapeException("Found token (" + start(tokens.get(i))
+            + ":" + end(tokens.get(i)) + ") with no chunk tag");
+      }
+
+      if(currentChunkType == null) {
+        // case 1: not currently in a chunk
+        if("O".equals(chunkTag)) {
+          continue;
+        } else if(chunkTag.startsWith("B-")) {
+          chunkStart = start(tokens.get(i));
+          currentChunkType = chunkTag.substring(2);
+        } else {
+          throw new NonFatalJapeException("Found chunk tag " + chunkTag
+              + " outside a chunk");
+        }
+      } else {
+        // case 2: currently looking for the end of a chunk
+        if("O".equals(chunkTag)) {
+          outputAS.add(chunkStart, end(tokens.get(i-1)), currentChunkType,
+              featureMap());
+          currentChunkType = null;
+          chunkStart = null;
+        } else if(chunkTag.startsWith("B-")) {
+          // finish one chunk and start another
+          outputAS.add(chunkStart, end(tokens.get(i-1)), currentChunkType,
+              featureMap());
+          chunkStart = start(tokens.get(i));
+          currentChunkType = chunkTag.substring(2);
+        } else if(chunkTag.equals("I-" + currentChunkType)) {
+          // still inside the current chunk, do nothing
+        } else {
+          throw new NonFatalJapeException("Token (" + start(tokens.get(i))
+            + ":" + end(tokens.get(i)) + ") has invalid chunk tag " + chunkTag);
+        }
+      }
+    }
+
+    // check whether the last token was part of a chunk, and close it off
+    if(currentChunkType != null) {
+      outputAS.add(chunkStart, end(tokens.get(tokens.size()-1)), currentChunkType,
+          featureMap());
+    }
+  } catch(InvalidOffsetException e) {
+    throw new JapeException(e);
+  }
+}
