@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.model.document;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -9,10 +10,10 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 @Entity
 public class Occurrence extends AbstractEntityBase {
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private Sentence sentence;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   private Range range;
 
   /**

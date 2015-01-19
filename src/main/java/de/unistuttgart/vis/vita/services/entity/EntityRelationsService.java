@@ -31,8 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
 public class EntityRelationsService extends RangeService {
   
   private OccurrenceDao occurrenceDao;
-  
-  @Inject
+
   private EntityRelationDao entityRelationDao;
   
   @Inject

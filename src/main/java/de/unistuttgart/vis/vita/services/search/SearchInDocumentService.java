@@ -36,9 +36,13 @@ public class SearchInDocumentService extends OccurrencesService {
 
   @Inject
   private Model model;
-  
-  @Inject
+
   private DocumentDao documentDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+  }
 
   public SearchInDocumentService setDocumentId(String documentId) {
     this.documentId = documentId;

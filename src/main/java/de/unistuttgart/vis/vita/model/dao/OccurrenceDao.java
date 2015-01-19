@@ -27,7 +27,7 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "
 
         // right ordering
-        + "ORDER BY occ.start.offset"),
+        + "ORDER BY occ.range.start.offset"),
 
     // for checking the amount of spans for an entity in a given range
     @NamedQuery(name = "Occurrence.getNumberOfOccurencesForEntity", query = "SELECT COUNT(occ) "
@@ -39,14 +39,14 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 
     // for returning the exact spans for an attribute in a given range
     @NamedQuery(name = "Occurrence.findOccurrencesForAttribute", query = "SELECT occ "
-        + "FROM Occurrenceocc, Entity e, Attribute a " + "WHERE e.id = :entityId "
+        + "FROM Occurrence occ, Entity e, Attribute a " + "WHERE e.id = :entityId "
         + "AND a MEMBER OF e.attributes "
         + "AND a.id = :attributeId "
         + "AND occ MEMBER OF a.occurrences "
         // range checks
         + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "
         // right ordering
-        + "ORDER BY occ.start.offset"),
+        + "ORDER BY occ.range.start.offset"),
 
     // for checking the amount of spans for an attribute in a given range
     @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForAttribute", query = "SELECT COUNT(occ) "
@@ -65,10 +65,8 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "AND occ MEMBER OF e.occurrences "
         // range checks
         + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "
-        // Null checks
-        + "AND occ.start.chapter IS NOT NULL "
         // right ordering
-        + "ORDER BY occ.start.offset"),
+        + "ORDER BY occ.range.start.offset"),
 
     // checks whether a set of entities occur in a range (for relation
     // occurrences)
@@ -77,9 +75,7 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "INNER JOIN e.occurrences occ "
         + "WHERE e.id IN :entityIds "
         // range checks
-        + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "
-        // Null checks
-        + "AND occ.start.chapter IS NOT NULL " + "AND occ.start.chapter IS NOT NULL"),
+        + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "),
 
     // gets the entities that occur within a given range
     @NamedQuery(name = "Occurrence.getOccurringEntities", query = "SELECT DISTINCT e "
@@ -93,12 +89,12 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "SELECT COUNT(occ2) "
         + "FROM Person p "
         + "INNER JOIN p.occurrences occ2 "
-        + "AND occw2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
+        + "WHERE occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
         + ") / ("
         + "SELECT COUNT(DISTINCT p) "
         + "FROM Person p "
         + "INNER JOIN p.occurrences occ2 "
-        + "AND occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
+        + "WHERE occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
         + ")"),
 
     @NamedQuery(name = "Occurrence.findOccurrenceById", query = "SELECT occ "
@@ -106,8 +102,8 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 @NamedQuery(name = "Occurrence.getSentencesForAllEntities", query = "SELECT DISTINCT occ "
     + "FROM Occurrence occ "
     + "GROUP BY occ.sentence.index "
-    + "HAVING (SELECT COUNT(DISTINCT occ2.entityID) "
-    + "FROM Occurrence occ2 WHERE entityID IN :entityIDs) = :entityCount"
+    + "HAVING (SELECT COUNT(DISTINCT e) "
+    + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE e.id IN :entityIDs) = :entityCount "
     // range checks
     + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd ")
 public class OccurrenceDao extends JpaDao<Occurrence, String> {
