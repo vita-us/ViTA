@@ -128,7 +128,7 @@
         // Determine the position of each character in each group
         groups.forEach(function(group) {
           group.all_chars.sort(function(a, b) {
-            return a.group_ptr.order - b.group_ptr.order;
+            return a.group.order - b.group.order;
           });
           var y = group.min;
           for (var i = 0; i < group.all_chars.length; i++) {
@@ -191,20 +191,20 @@
       // (the name doesn't make any sense).
       var per_width = 0.3;
 
-      function Character(name, id, group) {
+      function Character(name, id, group_id) {
         this.name = name;
         this.id = id;
-        this.group = group;
+        this.group_id= group_id;
         this.first_scene = null;
         this.group_positions = {};
       }
 
-      function Link(from, to, group, char_id) {
+      function Link(from, to, group_id, char_id) {
         // to and from are ids of scenes
         this.from = from;
         this.to = to;
         this.char_id = char_id;
-        this.group = group;
+        this.group_id= group_id;
         this.x0 = 0;
         this.y0 = -1;
         this.x1 = 0;
@@ -282,7 +282,7 @@
           chars[i].first_scene = char_scenes[0];
           for (var j = 1; j < char_scenes.length; j++) {
             var link = new Link(char_scenes[j - 1], char_scenes[j],
-                chars[i].group, chars[i].id);
+                chars[i].group_id, chars[i].id);
             link.character = chars[i];
 
             links.push(link);
@@ -345,18 +345,18 @@
         characters.forEach(function(char) {
           var found_group = false;
           groups.forEach(function(group) {
-            if (group.id === char.group) {
+            if (group.id === char.group_id) {
               found_group = true;
               group.chars.push(char);
-              char.group_ptr = group;
+              char.group = group;
             }
           });
 
           if (!found_group) {
             var group = new Group();
-            group.id = char.group;
+            group.id = char.group_id;
             group.chars.push(char);
-            char.group_ptr = group;
+            char.group = group;
             groups.push(group);
           }
         });
@@ -494,7 +494,7 @@
           s.id = scenes.length;
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
-            var l = new Link(s, chars[i].first_scene, chars[i].group, chars[i].id);
+            var l = new Link(s, chars[i].first_scene, chars[i].group_id, chars[i].id);
             l.character = chars[i];
 
             s.out_links[s.out_links.length] = l;
@@ -526,7 +526,7 @@
         // Find the corresponding group
         var j;
         for (j = 0; j < groups.length; j++) {
-          if (chars[i].group == groups[j].id) break;
+          if (chars[i].group_id == groups[j].id) break;
         }
         if (j == groups.length) {
           console.log('ERROR: groups not found.');
@@ -549,7 +549,7 @@
               var c = char_map[scene.chars[i]];
               var y = c.group_positions[scene.median_group.id];
               if (!y) continue;
-              if (c.group.id == scene.median_group.id) {
+              if (c.group_id == scene.median_group.id) {
                 sum1 += y;
                 den1 += 1;
               } else {
@@ -605,10 +605,10 @@
           // TODO: Sort the in_links here
           // Use sort by group for now
           scene.in_links.sort(function(a, b) {
-            return a.character.group_ptr.order - b.character.group_ptr.order;
+            return a.character.group.order - b.character.group.order;
           });
           scene.out_links.sort(function(a, b) {
-            return a.character.group_ptr.order - b.character.group_ptr.order;
+            return a.character.group.order - b.character.group.order;
           });
 
           // We can't calculate the y positions of the in links in the same
@@ -641,7 +641,7 @@
         });
       }
 
-      function draw_nodes(scenes, svg, chart_width, chart_height, safe_name) {
+      function draw_nodes(scenes, svg, chart_width, chart_height) {
         var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
             .enter().append('g')
@@ -744,7 +744,7 @@
               return d.from.comic_name + '_' + d.char_id;
             })
             .style('stroke', function(d) {
-              return d3.rgb(COLOR_SCALE(d.group)).darker(0.5).toString();
+              return d3.rgb(COLOR_SCALE(d.group_id)).darker(0.5).toString();
             })
             .style('stroke-width', LINK_WIDTH)
             .on('mouseover', mouseover_of_link)
