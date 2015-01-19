@@ -244,24 +244,20 @@
         this.median_group = null;
       }
 
-      function reposition_node_links(scene_id, x, y, width, height, svg, ydisp, comic_name) {
-        var counter = 0;
-        d3.selectAll('[to="' + comic_name + '_' + scene_id + '"]')
+      function reposition_node_links(scene, y_difference) {
+        d3.selectAll('[to="' + scene.comic_name + '_' + scene.id + '"]')
             .each(function(d) {
-              d.x1 = x + width / 2;
-              d.y1 -= ydisp;
-              counter += 1;
+              d.x1 = scene.x + scene.width / 2;
+              d.y1 -= y_difference;
             })
             .attr('d', function(d) {
               return create_link_path(d);
             });
 
-        counter = 0;
-        d3.selectAll('[from="' + comic_name + '_' + scene_id + '"]')
+        d3.selectAll('[from="' + scene.comic_name + '_' + scene.id + '"]')
             .each(function(d) {
-              d.x0 = x + width / 2;
-              d.y0 -= ydisp;
-              counter += 1;
+              d.x0 = scene.x + scene.width / 2;
+              d.y0 -= y_difference;
             })
             .attr('d', function(d) {
               return create_link_path(d);
@@ -718,13 +714,15 @@
         });
 
 
-        function dragmove(d) {
-          var newy = Math.max(0, Math.min(chart_height - d.height, d3.event.y));
-          var ydisp = d.y - newy;
-          d3.select(this).attr('transform', 'translate('
-          + (d.x = Math.max(0, Math.min(chart_width - d.width, d3.event.x))) + ','
-          + (d.y = Math.max(0, Math.min(chart_height - d.height, d3.event.y))) + ')');
-          reposition_node_links(d.id, d.x, d.y, d.width, d.height, svg, ydisp, d.comic_name);
+        function dragmove(scene) {
+          var old_y = scene.y;
+
+          scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
+          scene.y = Math.max(0, Math.min(chart_height - scene.height, d3.event.y));
+          d3.select(this).attr('transform', 'translate(' + scene.x + ',' + scene.y + ')');
+
+          var y_difference = old_y - scene.y;
+          reposition_node_links(scene, y_difference);
         }
       }
 
