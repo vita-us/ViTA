@@ -12,9 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
-import de.unistuttgart.vis.vita.services.responses.occurrence.FlatOccurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -93,26 +93,16 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
-    List<List<Range>> spanLists = new ArrayList<>();
-    for (String entityId : entityIds) {
 
-      List<TextSpan> spans = occurrenceDao.findTextSpansForEntity(entityId, startOffset, endOffset);
-      List<TextSpan> newSpans = new ArrayList<>();
-      for (TextSpan span : spans) {
-        newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
-      }
-      spanLists.add(Range.normalizeOverlaps(newSpans));
-    }
-
-    List<Range> intersectSpans = Range.intersect(spanLists);
+      List<Occurrence> occurrences = occurrenceDao.getSentencesForAllEntities(entityIds, startOffset, endOffset);
 
     // convert TextSpans into Occurrences and return them
-    return convertSpansToOccurrences(intersectSpans);
+    return convertOccurrencesToRanges(occurrences);
   }
 
   @Override
   protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
-    return occurrenceDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
+    return occurrenceDao.getSentencesForAllEntities(entityIds, stepStart, stepEnd).size();
   }
 
 }
