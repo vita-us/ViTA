@@ -3,7 +3,7 @@
  *
  */
 
-package de.unistuttgart.vis.vita.analysis.modules;
+package de.unistuttgart.vis.vita.analysis.modules.gate;
 
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -14,7 +14,6 @@ import de.unistuttgart.vis.vita.model.Model;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import gate.Corpus;
