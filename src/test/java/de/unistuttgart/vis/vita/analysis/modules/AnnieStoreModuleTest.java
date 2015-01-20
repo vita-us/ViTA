@@ -2,6 +2,8 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.AnnieStoreModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.model.GateDatastoreLocation;
 import de.unistuttgart.vis.vita.model.Model;
