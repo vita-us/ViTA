@@ -9,7 +9,8 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateControllerProgress;
+import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.OpenNLPResult;
@@ -26,10 +27,10 @@ import java.util.Set;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Corpus;
-import gate.CorpusController;
 import gate.Document;
 import gate.Factory;
 import gate.Gate;
+import gate.creole.ConditionalSerialAnalyserController;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
@@ -38,7 +39,7 @@ import gate.util.persistence.PersistenceManager;
 /**
  * OpenNLP module to analyse the text. Needs ANNIE as dependency because it shouldn't work parallel
  */
-@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieNLPResult.class,
+@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
                                 DocumentPersistenceContext.class,
                                 ImportResult.class}, weight = 500)
 public class OpenNLPModule extends Module<OpenNLPResult> {
@@ -52,7 +53,7 @@ public class OpenNLPModule extends Module<OpenNLPResult> {
   private ImportResult importResult;
   private DocumentPersistenceContext documentIdModule;
   private ProgressListener progressListener;
-  private CorpusController controller;
+  private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
   private Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   private Corpus corpus;
@@ -60,14 +61,24 @@ public class OpenNLPModule extends Module<OpenNLPResult> {
   @Override
   public OpenNLPResult execute(ModuleResultProvider results, ProgressListener progressListener)
       throws Exception {
+    this.progressListener = progressListener;
     importResult = results.getResultFor(ImportResult.class);
     documentIdModule = results.getResultFor(DocumentPersistenceContext.class);
-    this.progressListener = progressListener;
+    AnnieDatastore storeModule = results.getResultFor(AnnieDatastore.class);
+    String documentName = documentIdModule.getFileName();
 
-    loadEngine();
-    createCorpus();
-    startAnalysis();
+    corpus = storeModule.getStoredAnalysis(documentName);
+
+    // Persist the annie analysis into the datastore with the document id
+    if (corpus == null) {
+      loadEngine();
+      createCorpus();
+      startAnalysis();
+      storeModule.storeResult(corpus, documentName);
+    }
+
     createResultMap();
+    progressListener.observeProgress(1);
 
     return buildResult();
   }
@@ -98,11 +109,27 @@ public class OpenNLPModule extends Module<OpenNLPResult> {
 
   private void startAnalysis() throws ExecutionException {
     controller.setCorpus(corpus);
-    controller.execute();
+
+    int maxDocuments = corpus.size();
+    int progressSteps;
+
+    if (maxDocuments > 0) {
+      progressSteps = 1 / maxDocuments;
+    } else {
+      progressSteps = 0;
+    }
+
+    controller.addProgressListener(
+        new GateControllerProgress(progressListener, maxDocuments, progressSteps));
+
+    try {
+      controller.execute();
+    } catch (IllegalStateException e) {
+      System.out.println(e.getCause().toString());
+    }
   }
 
-  private void loadEngine()
-      throws GateException, IOException {
+  private void loadEngine() throws GateException, IOException {
     if (controller != null) {
       return;
     }
@@ -113,7 +140,7 @@ public class OpenNLPModule extends Module<OpenNLPResult> {
     Gate.getCreoleRegister().registerDirectories(engineFolder.toURI().toURL());
 
     controller =
-        (CorpusController) PersistenceManager.loadObjectFromFile(engineState);
+        (ConditionalSerialAnalyserController) PersistenceManager.loadObjectFromFile(engineState);
   }
 
   /**
