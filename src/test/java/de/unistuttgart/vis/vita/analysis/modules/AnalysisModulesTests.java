@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import de.unistuttgart.vis.vita.analysis.importer.ImportTests;
 import de.unistuttgart.vis.vita.analysis.importer.epub.EpubImportTests;
+import de.unistuttgart.vis.vita.analysis.modules.nlp.ANNIEModuleTest;
 
 /**
  * Unit tests for analysis modules
