@@ -30,7 +30,9 @@ import org.apache.log4j.Logger;
 /**
  * Wrapper for the opennlp parser
  */
-@CreoleResource(name="OpenNLP Parser")
+@CreoleResource(name="OpenNLP Parser",
+    comment = "Syntactic parser from Apache OpenNLP",
+    helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:opennlp")
 public class OpenNlpParser extends AbstractLanguageAnalyser {
 
   public static final long serialVersionUID = 1L;

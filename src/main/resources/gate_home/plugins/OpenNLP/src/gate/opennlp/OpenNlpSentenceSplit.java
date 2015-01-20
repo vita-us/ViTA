@@ -7,7 +7,7 @@
  *  Version 2, June 1991 (in the distribution as file licence.html,
  *  and also available at http://gate.ac.uk/gate/licence.html).
  *
- *  $Id: OpenNlpSentenceSplit.java 17826 2014-04-14 12:37:47Z ian_roberts $
+ *  $Id: OpenNlpSentenceSplit.java 17967 2014-05-11 16:35:51Z ian_roberts $
  */
 package gate.opennlp;
 
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  */
 @CreoleResource(name = "OpenNLP Sentence Splitter", 
     comment = "Sentence splitter using an OpenNLP maxent model",
-    helpURL = "http://gate.ac.uk/sale/tao/splitch21.html#sec:misc-creole:opennlp")
+    helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:opennlp")
 public class OpenNlpSentenceSplit extends AbstractLanguageAnalyser {
 
   

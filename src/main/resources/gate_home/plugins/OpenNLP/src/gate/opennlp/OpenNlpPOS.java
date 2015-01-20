@@ -7,7 +7,7 @@
  *  Version 2, June 1991 (in the distribution as file licence.html,
  *  and also available at http://gate.ac.uk/gate/licence.html).
  *
- *  $Id: OpenNlpPOS.java 17027 2013-10-28 12:32:22Z ian_roberts $
+ *  $Id: OpenNlpPOS.java 17967 2014-05-11 16:35:51Z ian_roberts $
  */
 package gate.opennlp;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 @CreoleResource(name = "OpenNLP POS Tagger", 
     comment = "POS Tagger using an OpenNLP maxent model",
-    helpURL = "http://gate.ac.uk/sale/tao/splitch21.html#sec:misc-creole:opennlp")
+    helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:opennlp")
 public class OpenNlpPOS extends AbstractLanguageAnalyser {
 
   private static final long serialVersionUID = 4010938787910114221L;

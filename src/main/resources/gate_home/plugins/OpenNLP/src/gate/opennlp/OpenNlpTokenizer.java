@@ -7,7 +7,7 @@
  *  Version 2, June 1991 (in the distribution as file licence.html,
  *  and also available at http://gate.ac.uk/gate/licence.html).
  *
- *  $Id: OpenNlpTokenizer.java 17827 2014-04-14 12:39:04Z ian_roberts $
+ *  $Id: OpenNlpTokenizer.java 17967 2014-05-11 16:35:51Z ian_roberts $
  */
 package gate.opennlp;
 
@@ -33,7 +33,7 @@ import gate.util.InvalidOffsetException;
  */
 @CreoleResource(name = "OpenNLP Tokenizer", 
     comment = "Tokenizer using an OpenNLP maxent model",
-    helpURL = "http://gate.ac.uk/sale/tao/splitch21.html#sec:misc-creole:opennlp")
+    helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:opennlp")
 public class OpenNlpTokenizer extends AbstractLanguageAnalyser {
 
   private static final long serialVersionUID = 6965074842061250720L;

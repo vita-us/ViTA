@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadata xmlns="http://gate.ac.uk/ns/pipeline-metadata">
+  <pipeline-name>Stanford Parser and POS Tagger</pipeline-name>
+  <slug>stanford-parser-and-pos-tagger</slug>
+  <ordering>50</ordering>
+  <annotation-selectors>:SyntaxTreeNode</annotation-selectors>
+  <additional-annotations>:Dependency, :Token, :SpaceToken, :Sentence</additional-annotations>
+  <tags>
+    <tag>English</tag>
+    <tag>Stanford Parser</tag>
+    <tag>Parser</tag>
+  </tags>
+</metadata>

@@ -7,7 +7,7 @@
  *  Version 2, June 1991 (in the distribution as file licence.html,
  *  and also available at http://gate.ac.uk/gate/licence.html).
  *
- *  $Id: OpenNLPNameFin.java 17027 2013-10-28 12:32:22Z ian_roberts $
+ *  $Id: OpenNLPNameFin.java 17967 2014-05-11 16:35:51Z ian_roberts $
  */
 package gate.opennlp;
 
@@ -34,7 +34,7 @@ import gate.util.InvalidOffsetException;
  */
 @CreoleResource(name = "OpenNLP NER", 
     comment = "NER PR using a set of OpenNLP maxent models",
-    helpURL = "http://gate.ac.uk/sale/tao/splitch21.html#sec:misc-creole:opennlp")
+    helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:opennlp")
 public class OpenNLPNameFin extends AbstractLanguageAnalyser {
 
   private static final long serialVersionUID = -5507338627058320125L;
