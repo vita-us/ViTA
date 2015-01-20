@@ -24,13 +24,17 @@ public class GateControllerProgress implements ProgressListener {
    * Create new progress listener.
    * @param progressListener The module progress listener which should be update if the analysis makes progress.
    * @param maxDocuments The maximum amount of documents the controller corpus has.
-   * @param progressSteps -
    */
   public GateControllerProgress(de.unistuttgart.vis.vita.analysis.ProgressListener progressListener,
-                                int maxDocuments, int progressSteps) {
+                                int maxDocuments) {
     this.progressListener = progressListener;
     this.maxDocuments = maxDocuments;
-    this.progressSteps = progressSteps;
+
+    if (maxDocuments > 0) {
+      progressSteps = 1 / maxDocuments;
+    } else {
+      progressSteps = 0;
+    }
   }
 
   @Override

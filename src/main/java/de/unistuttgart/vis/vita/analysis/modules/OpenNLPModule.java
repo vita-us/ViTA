@@ -111,16 +111,9 @@ public class OpenNLPModule extends Module<OpenNLPResult> {
     controller.setCorpus(corpus);
 
     int maxDocuments = corpus.size();
-    int progressSteps;
-
-    if (maxDocuments > 0) {
-      progressSteps = 1 / maxDocuments;
-    } else {
-      progressSteps = 0;
-    }
 
     controller.addProgressListener(
-        new GateControllerProgress(progressListener, maxDocuments, progressSteps));
+        new GateControllerProgress(progressListener, maxDocuments));
 
     try {
       controller.execute();
