@@ -30,14 +30,12 @@ import gate.creole.ANNIEConstants;
 import gate.creole.ConditionalSerialAnalyserController;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import gate.persist.PersistenceException;
 import gate.util.GateException;
 
 /**
  *
  */
 public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
-
   protected ImportResult importResult;
   protected ProgressListener progressListener;
   protected ConditionalSerialAnalyserController controller;
@@ -112,8 +110,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
     int maxDocuments = corpus.size();
 
-    controller.addProgressListener(
-        new GateControllerProgress(progressListener, maxDocuments));
+    controller.addProgressListener(new GateControllerProgress(progressListener, maxDocuments));
 
     try {
       controller.execute();
@@ -124,8 +121,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     }
   }
 
-  protected abstract void loadEngine()
-      throws GateException, IOException;
+  protected abstract void loadEngine() throws GateException, IOException;
 
   protected abstract T buildResult();
 }
