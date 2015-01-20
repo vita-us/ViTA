@@ -8,7 +8,8 @@ package de.unistuttgart.vis.vita.analysis.modules.gate;
 import gate.event.ProgressListener;
 
 /**
- *
+ * A listener for the gate controllers. Updates the desired progresslistener automatically if any
+ * progress update happens.
  */
 public class GateControllerProgress implements ProgressListener {
 
@@ -19,6 +20,12 @@ public class GateControllerProgress implements ProgressListener {
   private int maxDocuments;
   private static final int PROGRESS_RESET_SPAN = 20;
 
+  /**
+   * Create new progress listener.
+   * @param progressListener The module progress listener which should be update if the analysis makes progress.
+   * @param maxDocuments The maximum amount of documents the controller corpus has.
+   * @param progressSteps -
+   */
   public GateControllerProgress(de.unistuttgart.vis.vita.analysis.ProgressListener progressListener,
                                 int maxDocuments, int progressSteps) {
     this.progressListener = progressListener;
