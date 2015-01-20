@@ -2,6 +2,8 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.OpenNLPModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
@@ -22,7 +24,9 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isOneOf;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.doubleThat;
@@ -99,10 +103,12 @@ public class OpenNLPModuleTest {
   public void testEntityAnnotations() throws Exception {
     Set<Annotation> annotations = openNLPResult.getAnnotationsForChapter(chapterObjects.get(1));
     assertThat(annotations, is(not(empty())));
-    assertThat(annotations, is(hasSize(1)));
+    assertThat(annotations, is(hasSize(2)));
 
-    Annotation location = annotations.iterator().next();
-    assertThat(location.getType(), is("Location"));
+    for (Annotation annotation : annotations) {
+      assertThat(annotation, is(notNullValue()));
+      assertThat(annotation.getType(), isOneOf("Location", "Person"));
+    }
   }
 
   @Test
