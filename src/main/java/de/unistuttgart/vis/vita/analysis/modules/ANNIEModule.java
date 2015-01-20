@@ -9,6 +9,7 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateControllerProgress;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -42,24 +43,19 @@ import gate.util.persistence.PersistenceManager;
 @AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
                                 DocumentPersistenceContext.class, ImportResult.class}, weight = 500)
 public class ANNIEModule extends Module<AnnieNLPResult> {
-  private static final int PROGRESS_RESET_SPAN = 20;
   private ImportResult importResult;
-  private DocumentPersistenceContext documentIdModule;
   private ProgressListener progressListener;
   private ConditionalSerialAnalyserController controller;
   private Map<Document, Chapter> docToChapter = new HashMap<>();
   private Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   private Corpus corpus;
-  private int oldProgress = 0;
-  private int documentsFinished = 0;
-  private int maxDocuments;
-  private double progressSteps;
 
   @Override
   public AnnieNLPResult execute(ModuleResultProvider result, ProgressListener progressListener)
       throws Exception {
     importResult = result.getResultFor(ImportResult.class);
-    documentIdModule = result.getResultFor(DocumentPersistenceContext.class);
+    DocumentPersistenceContext documentIdModule =
+        result.getResultFor(DocumentPersistenceContext.class);
     AnnieDatastore storeModule = result.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
     String documentName = documentIdModule.getFileName();
@@ -98,37 +94,23 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
   private void startAnnie() throws ExecutionException {
     controller.setCorpus(corpus);
 
-    controller.addProgressListener(new gate.event.ProgressListener() {
+    int maxDocuments = corpus.size();
+    int progressSteps;
 
-      @Override
-      public void progressChanged(int i) {
-        if (Thread.currentThread().isInterrupted()) {
-          controller.interrupt();
-        }
-        
-        calcProgress(i);
-      }
-
-      @Override
-      public void processFinished() {
-        // nothing to do
-      }
-    });
-
-    controller.execute();
-  }
-
-  private void calcProgress(int i) {
-    if (oldProgress - PROGRESS_RESET_SPAN > i) {
-      documentsFinished++;
+    if (maxDocuments > 0) {
+      progressSteps = 1 / maxDocuments;
+    } else {
+      progressSteps = 0;
     }
 
-    double finishFactor = (double) documentsFinished / (double) maxDocuments;
-    double progChapt = progressSteps * ((double) i / 100);
-    oldProgress = i;
-    double currentProgress = finishFactor + progChapt;
+    controller.addProgressListener(
+        new GateControllerProgress(progressListener, maxDocuments, progressSteps));
 
-    progressListener.observeProgress(currentProgress);
+    try {
+      controller.execute();
+    } catch (IllegalStateException e) {
+      System.out.println(e.getCause().toString());
+    }
   }
 
   /**
@@ -143,12 +125,6 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
         docToChapter.put(doc, chapter);
         corpus.add(doc);
       }
-    }
-    maxDocuments = corpus.size();
-    if (maxDocuments > 0) {
-      progressSteps = 1 / maxDocuments;
-    } else {
-      progressSteps = 0;
     }
   }
 
