@@ -16,23 +16,28 @@ import javax.ws.rs.core.Response;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.services.BaseService;
 
 /**
  * Provides method returning chapters requested using GET.
  */
 @ManagedBean
-public class ChapterService {
+public class ChapterService extends BaseService {
   
   private String chapterId;
   private String documentId;
 
-  @Inject
   private ChapterDao chapterDao;
 
   @Inject
   private Model model;
 
   private static final Logger LOGGER = Logger.getLogger(ChapterService.class.getName());
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    chapterDao = getDaoFactory().getChapterDao();
+  }
 
   /**
    * Sets the id of the chapter this resource should represent

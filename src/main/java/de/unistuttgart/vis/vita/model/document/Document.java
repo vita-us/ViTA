@@ -1,12 +1,14 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import de.unistuttgart.vis.vita.analysis.modules.EntityRelationModule;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,11 +35,13 @@ public class Document extends AbstractEntityBase {
   private AnalysisParameters parameters;
 
   private String filePath;
-
+  
   @Column(length = 1000)
   private Date uploadDate;
 
   private String fileName;
+
+  private UUID contentID;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -48,6 +52,7 @@ public class Document extends AbstractEntityBase {
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
     this.parameters = new AnalysisParameters();
+    contentID = UUID.randomUUID();
   }
 
   /**
@@ -59,7 +64,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the meta data for this document.
-   *
+   * 
    * @param newMetadata - the meta data for this document
    */
   public void setMetadata(DocumentMetadata newMetadata) {
@@ -75,7 +80,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the metrics for this Document.
-   *
+   * 
    * @param newMetrics - the metrics for this Document
    */
   public void setMetrics(DocumentMetrics newMetrics) {
@@ -91,7 +96,7 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the content for this Document.
-   *
+   * 
    * @param content - the document content, including text and entities
    */
   public void setContent(DocumentContent content) {
@@ -107,13 +112,13 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Sets the new progress of the analysis of this document.
-   *
+   * 
    * @param newProgress - the new progress of the analysis of this document
    */
   public void setProgress(AnalysisProgress newProgress) {
     this.progress = newProgress;
   }
-
+  
   /**
    * Gets the path to the uploaded file
    * @return the path, or null if the file does not exist anymore
@@ -140,10 +145,10 @@ public class Document extends AbstractEntityBase {
   public Date getUploadDate() {
     return uploadDate;
   }
-
+  
   /**
    * Sets the upload date of the uploaded file
-   *
+   * 
    * @param uploadDate
    */
   public void setUploadDate(Date uploadDate) {
@@ -156,6 +161,10 @@ public class Document extends AbstractEntityBase {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public UUID getContentID() {
+    return contentID;
   }
 
   /**
@@ -172,5 +181,45 @@ public class Document extends AbstractEntityBase {
    */
   public void setParameters(AnalysisParameters parameters) {
     this.parameters = parameters;
+  }
+
+  /**
+   * Find the chapter for a given global offset.
+   * @param globalOffset The offset to search the chapter.
+   * @return
+   */
+  public Chapter getChapterAt(int globalOffset) {
+    List<Chapter> allChapters = new ArrayList<>();
+
+    for (DocumentPart documentPart : content.getParts()) {
+      allChapters.addAll(documentPart.getChapters());
+    }
+
+    int lo = 0;
+    int hi = allChapters.size() - 1;
+
+    boolean toHigh = allChapters.get(hi).getRange().getEnd().getOffset() < globalOffset;
+    boolean negative = globalOffset < 0;
+
+    if (toHigh || negative) {
+      throw new IndexOutOfBoundsException("Offset is not in range.");
+    }
+
+    while (lo <= hi) {
+      int mid = lo + (hi - lo) / 2;
+      TextSpan range = allChapters.get(mid).getRange();
+      int start = range.getStart().getOffset();
+      int end = range.getEnd().getOffset();
+
+      if (globalOffset < start) {
+        hi = mid - 1;
+      } else if (globalOffset > end) {
+        lo = mid + 1;
+      } else {
+        return allChapters.get(mid);
+      }
+    }
+
+    throw new IllegalStateException("Not found the correct chapter");
   }
 }

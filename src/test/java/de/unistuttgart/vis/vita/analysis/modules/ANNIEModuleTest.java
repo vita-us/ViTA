@@ -7,6 +7,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 import org.junit.Before;
@@ -55,7 +56,17 @@ public class ANNIEModuleTest {
     initializeModule.execute(resultProvider, progressListener);
     DocumentPersistenceContext testingID = new DocumentPersistenceContext() {
       @Override
+      public Document getDocument() {
+        return null;
+      }
+
+      @Override
       public String getDocumentId() {
+        return "testID123";
+      }
+
+      @Override
+      public String getDocumentContentId() {
         return "testID123";
       }
 

@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.dao.AttributeDao;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.AttributesResponse;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
@@ -21,16 +22,20 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
  * Provides a method to GET all attributes mentioned in the document this service refers to.
  */
 @ManagedBean
-public class AttributesService {
+public class AttributesService extends BaseService {
 
   private String documentId;
   private String entityId;
 
-  @Inject
   private AttributeDao attributeDao;
 
   @Inject
   private AttributeService attributeService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    attributeDao = getDaoFactory().getAttributeDao();
+  }
 
   /**
    * Sets the id of the document this service refers to and returns itself.

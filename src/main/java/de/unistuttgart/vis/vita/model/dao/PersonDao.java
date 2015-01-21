@@ -3,17 +3,13 @@ package de.unistuttgart.vis.vita.model.dao;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
  * Represents a data access object for accessing Persons.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
   @NamedQuery(name = "Person.findAllPersons",
@@ -41,16 +37,15 @@ public class PersonDao extends JpaDao<Person, String> {
 
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
 
-  /**
-   * Creates a new data access object for accessing Persons.
-   */
-  public PersonDao() {
-    super(Person.class);
+  public PersonDao(EntityManager em) {
+    super(Person.class, em);
   }
 
   public List<Person> findInDocument(String documentId, int offset, int count) {
     TypedQuery<Person> docQuery = em.createNamedQuery(getInDocumentQueryName(), Person.class);
     docQuery.setParameter(DOCUMENT_ID_PARAMETER, documentId);
+    docQuery.setFirstResult(offset);
+    docQuery.setMaxResults(count);
     return docQuery.getResultList();
   }
 
