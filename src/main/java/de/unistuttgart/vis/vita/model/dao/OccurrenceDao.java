@@ -15,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 /**
  * Represents a data access object for accessing TextSpans.
  */
-@ManagedBean
 @MappedSuperclass
 @NamedQueries({
     // for returning the exact spans for an entity in a given range
