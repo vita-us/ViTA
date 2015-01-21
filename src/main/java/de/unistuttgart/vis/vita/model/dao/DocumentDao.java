@@ -3,6 +3,8 @@ package de.unistuttgart.vis.vita.model.dao;
 import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.document.Document;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
@@ -29,6 +31,9 @@ import java.util.List;
                 + "FROM Document d "
                 + "WHERE d.metadata.title = :documentTitle"),
 
+    @NamedQuery(name = "Document.findDocumentsByFilename",
+        query = "SELECT d " + "FROM Document d " + "WHERE d.fileName = :fileName"),
+
     @NamedQuery(name = "Document.findDocumentByStatus",
         query = "SELECT d "
                 + "FROM Document d "
@@ -37,6 +42,7 @@ import java.util.List;
 public class DocumentDao extends JpaDao<Document, String> {
 
   private static final String DOCUMENT_TITLE_PARAMETER = "title";
+
 
   public DocumentDao(EntityManager em) {
     super(Document.class, em);
@@ -75,6 +81,17 @@ public class DocumentDao extends JpaDao<Document, String> {
    */
   public boolean isAnalysisFinished(String documentId) {
     return findById(documentId).getProgress().getStatus() == AnalysisStatus.FINISHED;
+  }
+
+  /**
+   * Finds all documents with the given file name.
+   *
+   * @param fileName The name of the file corresponding to the document.
+   * @return the documents with the given filename.
+   */
+  public List<Document> findDocumentsByFilename(String fileName) {
+    return queryAll("Document.findDocumentsByFilename",
+                    "fileName", fileName);
   }
 
 }
