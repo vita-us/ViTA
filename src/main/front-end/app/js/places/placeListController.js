@@ -5,7 +5,7 @@
 
   // Controller responsible for the places page
   vitaControllers.controller('PlaceListCtrl',
-    ['$scope', 'Document', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams'
+    ['$scope', 'Document', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams',
     function($scope, Document, DocumentParts, Page, Place, Entity, $routeParams) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;

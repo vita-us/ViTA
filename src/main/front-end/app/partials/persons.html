@@ -15,9 +15,7 @@
         <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
           <dt>co-occurences</dt>
           <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
-            <a ng-href="index.html#/documents/{{document.id}}/{{path(entity.type)}}/{{entity.id}}">
-              {{entity.displayName}}
-            </a>
+            {{entity.displayName}}
             <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
               ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
               title="Add this entity to the fingerprint"></span>
@@ -31,11 +29,11 @@
     </div>
   </div>
   <div class="col-md-2">
-    <div class="row filterable-list">
+    <div class="row">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
-      <ul>
+      <ul class="list-group scrollable-list-group">
         <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
-          ng-click="select(person)" style="list-style-type: none;" ng-class="{marked:isSelected(person)}">
+          ng-click="select(person)" class="list-group-item" ng-class="{active: isSelected(person)}">
           {{person.displayName}}
         </li>
       </ul>
