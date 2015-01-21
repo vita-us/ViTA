@@ -68,14 +68,36 @@
           return ($scope.fingerprintIds.indexOf(id) > -1);
         };
 
-
         // Get a list of characters from the server
         Person.get({
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.persons = response.persons;
+          var selectedPerson = getPersonById($routeParams.personId);
+          if (selectedPerson) {
+            $scope.select(selectedPerson);
+          } else {
           $scope.select(response.persons[0]);
+          }
         });
+
+        var getPersonById = function(id) {
+          for (var i = 0; i < $scope.persons.length; i++) {
+            if ($scope.persons[i].id == id) {
+              return $scope.persons[i];
+            }
+          }
+          return undefined;
+        };
+
+        $scope.getEntityType = function(entity) {
+          if (entity.type === 'person') {
+            return 'characters';
+          }
+          if (entity.type === 'place') {
+            return 'places';
+          }
+        };
 
         // Get document related details from the server
         Document.get({

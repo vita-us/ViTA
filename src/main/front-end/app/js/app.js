@@ -28,7 +28,13 @@
     }).when('/documents/:documentId/characters', {
       templateUrl: 'partials/persons.html',
       controller: 'PersonListCtrl'
+    }).when('/documents/:documentId/characters/:personId', {
+      templateUrl: 'partials/persons.html',
+      controller: 'PersonListCtrl'
     }).when('/documents/:documentId/places', {
+      templateUrl: 'partials/places.html',
+      controller: 'PlaceListCtrl'
+    }).when('/documents/:documentId/places/:placeId', {
       templateUrl: 'partials/places.html',
       controller: 'PlaceListCtrl'
     }).when('/documents/:documentId/fingerprint', {

@@ -65,8 +65,31 @@
           documentId: $routeParams.documentId
         }, function(placesWrapper) {
           $scope.places = placesWrapper.places;
-          $scope.select(placesWrapper.places[0]);
+          var selectedPlace = getPlaceById($routeParams.placeId);
+          if (selectedPlace) {
+            $scope.select(selectedPlace);
+          } else {
+            $scope.select(placesWrapper.places[0]);
+          }
         });
+
+        var getPlaceById = function(id) {
+          for (var i = 0; i < $scope.places.length; i++) {
+            if ($scope.places[i].id == id) {
+              return $scope.places[i];
+            }
+          }
+          return undefined;
+        };
+
+        $scope.getEntityType = function(entity) {
+          if (entity.type === 'person') {
+            return 'characters';
+          }
+          if (entity.type === 'place') {
+            return 'places';
+          }
+        };
 
         Document.get({
           documentId: $routeParams.documentId

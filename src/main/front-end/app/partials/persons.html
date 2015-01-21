@@ -15,7 +15,9 @@
         <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
           <dt>co-occurences</dt>
           <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
-            {{entity.displayName}}
+            <a ng-href="#/documents/{{document.id}}/{{getEntityType(entity)}}/{{entity.id}}">
+              {{entity.displayName}}
+            </a>
             <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
               ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
               title="Add this entity to the fingerprint"></span>
