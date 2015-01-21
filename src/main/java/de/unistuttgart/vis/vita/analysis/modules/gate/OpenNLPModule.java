@@ -5,10 +5,6 @@
 
 package de.unistuttgart.vis.vita.analysis.modules.gate;
 
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
-import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
-import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.OpenNLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
@@ -25,9 +21,6 @@ import gate.util.persistence.PersistenceManager;
 /**
  * OpenNLP module to analyse the text. Needs ANNIE as dependency because it shouldn't work parallel
  */
-@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
-                                DocumentPersistenceContext.class,
-                                ImportResult.class}, weight = 500)
 public class OpenNLPModule extends AbstractNLPModule<OpenNLPResult> {
   public static final String PLUGIN_DIR = "OpenNLP";
   public static final String DEFAULT_FILE = "opennlp_state.xgapp";

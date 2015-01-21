@@ -8,7 +8,6 @@ package de.unistuttgart.vis.vita.analysis.modules;
 import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -39,8 +38,6 @@ import gate.util.persistence.PersistenceManager;
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
-@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
-                                DocumentPersistenceContext.class, ImportResult.class}, weight = 500)
 public class ANNIEModule extends Module<AnnieNLPResult> {
   private static final int PROGRESS_RESET_SPAN = 20;
   private ImportResult importResult;
