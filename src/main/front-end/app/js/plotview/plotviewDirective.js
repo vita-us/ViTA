@@ -118,7 +118,7 @@
         }
 
         var groups = define_groups(characters);
-        find_median_groups(groups, scene_nodes, characters, character_map, tie_breaker);
+        find_median_groups(groups, scene_nodes, character_map, tie_breaker);
         groups = sort_groups_main(groups, center_sort);
 
         var links = generate_links(characters, scene_nodes);
@@ -173,7 +173,7 @@
         d3.select('svg#' + safe_name).style('height', RAW_CHART_HEIGHT);
 
         draw_links(links, svg);
-        draw_nodes(scene_nodes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
+        draw_nodes(scene_nodes, svg, width, height, character_map);
       }
 
 
@@ -194,7 +194,7 @@
       function Character(name, id, group_id) {
         this.name = name;
         this.id = id;
-        this.group_id= group_id;
+        this.group_id = group_id;
         this.first_scene = null;
         this.group_positions = {};
       }
@@ -204,7 +204,7 @@
         this.from = from;
         this.to = to;
         this.char_id = char_id;
-        this.group_id= group_id;
+        this.group_id = group_id;
         this.x0 = 0;
         this.y0 = -1;
         this.x1 = 0;
@@ -363,57 +363,59 @@
         return groups;
       }
 
-      function find_median_groups(groups, scenes, chars, char_map, tie_breaker) {
+      function find_median_groups(groups, scenes, char_map, tie_breaker) {
         scenes.forEach(function(scene) {
-          if (!scene.char_node) {
-            var group_count = [];
-            for (var i = 0; i < groups.length; i++) {
-              group_count[i] = 0;
-            }
-            var max_index = 0;
+          if (scene.char_node) {
+            return;
+          }
 
-            scene.chars.forEach(function(c) {
-              // TODO: Can just search group.chars
-              var group_index = find_group(chars, groups, c);
-              group_count[group_index] += 1;
-              if ((!tie_breaker && group_count[group_index] >= group_count[max_index]) ||
-                  (group_count[group_index] > group_count[max_index])) {
-                max_index = group_index;
-              } else if (group_count[group_index] == group_count[max_index]) {
-                // Tie-breaking
-                var score1 = 0;
-                var score2 = 0;
-                for (var i = 0; i < scene.in_links.length; i++) {
-                  if (scene.in_links[i].from.median_group != null) {
-                    if (scene.in_links[i].from.median_group.id == groups[group_index].id) {
-                      score1 += 1;
-                    } else if (scene.in_links[i].from.median_group.id == groups[max_index].id) {
-                      score2 += 1;
-                    }
+          var group_count = [];
+          for (var i = 0; i < groups.length; i++) {
+            group_count[i] = 0;
+          }
+          var max_index = 0;
+
+          scene.chars.forEach(function(char_id) {
+            // TODO: Can just search group.chars
+            var group_index = find_group(char_map, groups, char_id);
+            group_count[group_index] += 1;
+            if ((!tie_breaker && group_count[group_index] >= group_count[max_index]) ||
+                (group_count[group_index] > group_count[max_index])) {
+              max_index = group_index;
+            } else if (group_count[group_index] == group_count[max_index]) {
+              // Tie-breaking
+              var score1 = 0;
+              var score2 = 0;
+              for (var i = 0; i < scene.in_links.length; i++) {
+                if (scene.in_links[i].from.median_group != null) {
+                  if (scene.in_links[i].from.median_group.id == groups[group_index].id) {
+                    score1 += 1;
+                  } else if (scene.in_links[i].from.median_group.id == groups[max_index].id) {
+                    score2 += 1;
                   }
-                }
-                for (var i = 0; i < scene.out_links.length; i++) {
-                  if (scene.out_links[i].to.median_group != null) {
-                    if (scene.out_links[i].to.median_group.id == groups[group_index].id) {
-                      score1 += 1;
-                    } else if (scene.out_links[i].to.median_group.id == groups[max_index].id) {
-                      score2 += 1;
-                    }
-                  }
-                }
-                if (score1 > score2) {
-                  max_index = group_index;
                 }
               }
-            });
-            scene.median_group = groups[max_index];
-            groups[max_index].median_count += 1;
-            scene.chars.forEach(function(c) {
-              // This just puts this character in the set
-              // using sets to avoid duplicating characters
-              groups[max_index].all_chars[c] = true;
-            });
-          }
+              for (var i = 0; i < scene.out_links.length; i++) {
+                if (scene.out_links[i].to.median_group != null) {
+                  if (scene.out_links[i].to.median_group.id == groups[group_index].id) {
+                    score1 += 1;
+                  } else if (scene.out_links[i].to.median_group.id == groups[max_index].id) {
+                    score2 += 1;
+                  }
+                }
+              }
+              if (score1 > score2) {
+                max_index = group_index;
+              }
+            }
+          });
+          scene.median_group = groups[max_index];
+          groups[max_index].median_count += 1;
+          scene.chars.forEach(function(c) {
+            // This just puts this character in the set
+            // using sets to avoid duplicating characters
+            groups[max_index].all_chars[c] = true;
+          });
         });
 
         // Convert all the group char sets to regular arrays
@@ -490,7 +492,6 @@
           s.width = 5;
           s.height = LINK_WIDTH;
           s.name = chars[i].name;
-          s.chars[s.chars.length] = chars[i].id;
           s.id = scenes.length;
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
@@ -511,22 +512,19 @@
       }
 
 
-      // TODO: Use the char_map to eliminate this
-      function find_group(chars, groups, char_id) {
-        // Find the char's group id
-        var i;
-        for (i = 0; i < chars.length; i++) {
-          if (chars[i].id == char_id) break;
+      function find_group(char_map, groups, char_id) {
+        var char = char_map[char_id];
 
-        }
-        if (i == chars.length) {
+        if (!char) {
           console.log('ERROR: char not found, id = ' + char_id);
         }
 
         // Find the corresponding group
         var j;
         for (j = 0; j < groups.length; j++) {
-          if (chars[i].group_id == groups[j].id) break;
+          if (char.group_id === groups[j].id) {
+            break;
+          }
         }
         if (j == groups.length) {
           console.log('ERROR: groups not found.');
@@ -641,7 +639,7 @@
         });
       }
 
-      function draw_nodes(scenes, svg, chart_width, chart_height) {
+      function draw_nodes(scenes, svg, chart_width, chart_height, character_map) {
         var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
             .enter().append('g')
@@ -691,7 +689,9 @@
 
           var character_label = label_group.append('text')
               .attr('text-anchor', 'end')
-              .filter(function(d) {return d.char_node;})
+              .filter(function(d) {
+                return d.char_node;
+              })
               .text(function(d) {
                 return d.name;
               });
