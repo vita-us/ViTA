@@ -19,7 +19,7 @@ public class Sentence extends AbstractEntityBase {
   @ManyToOne
   private Chapter chapter;
 
-  @Column(name = "\"index\"")
+  @Column(name = "sentenceIndex")
   private int index;
 
   /**

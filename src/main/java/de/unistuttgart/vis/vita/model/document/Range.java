@@ -16,7 +16,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * within the bounds.
  */
 @Entity
-@Table(name = "\"Range\"", // RANGE is a reserved word in mysql
+@Table(name = "Ranges", // RANGE is a reserved word in mysql
     indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
 @XmlRootElement
 public class Range extends AbstractEntityBase implements Comparable<Range> {
