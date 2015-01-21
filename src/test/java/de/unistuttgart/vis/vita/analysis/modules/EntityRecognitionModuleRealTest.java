@@ -7,6 +7,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -14,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,19 +27,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for analysis modules
@@ -81,6 +73,10 @@ public class EntityRecognitionModuleRealTest {
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+
+    SentenceDetectionModule sentenceModule = new SentenceDetectionModule();
+    SentenceDetectionResult sentenceResult = sentenceModule.execute(resultProvider, progressListener);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
 
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
