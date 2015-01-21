@@ -108,7 +108,7 @@ public class EntityServiceTest extends AbstractEntityServiceTest {
     entityDao = new EntityDao(em);
     entityRelationDao = new EntityRelationDao(em);
     wordCloudDao = new WordCloudDao(em);
-    Response actualResponse = target("documents/document/entities/frodo/delete").request().delete();
+    Response actualResponse = target("documents/document/entities/frodo").request().delete();
     assertEquals(204, actualResponse.getStatus());
 
     em.refresh(testDoc);

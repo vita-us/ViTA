@@ -133,7 +133,6 @@ public class EntityService extends BaseService {
    * @return a response with no content if removal was successful, status 404 if document was not
    *         found
    */
-  @Path("/delete")
   @DELETE
   public Response deleteEntity(@PathParam("entityId") String entityId) {
 
