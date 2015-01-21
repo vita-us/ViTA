@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisServiceTest;
 import de.unistuttgart.vis.vita.services.analysis.ProgressServiceTest;
 import de.unistuttgart.vis.vita.services.document.ChapterServiceTest;
-import de.unistuttgart.vis.vita.services.document.DocumentPartsServiceTest;
+import de.unistuttgart.vis.vita.services.document.DocumentPartsServiceTests;
 import de.unistuttgart.vis.vita.services.document.DocumentServiceTest;
 import de.unistuttgart.vis.vita.services.document.DocumentsServiceTest;
 import de.unistuttgart.vis.vita.services.entity.AttributeServiceTest;
@@ -27,7 +27,7 @@ import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
 @SuiteClasses({VersionServiceTest.class, DocumentsServiceTest.class, DocumentServiceTest.class,
     ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTests.class,
     PersonServiceTest.class, PlacesServiceTests.class, PlaceServiceTest.class,
-    DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
+    DocumentPartsServiceTests.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
     AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class,
     ParametersServiceTest.class})
 public class ServiceTests {
