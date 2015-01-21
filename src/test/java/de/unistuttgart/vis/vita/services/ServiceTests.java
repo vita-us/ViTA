@@ -15,9 +15,9 @@ import de.unistuttgart.vis.vita.services.entity.AttributeServiceTest;
 import de.unistuttgart.vis.vita.services.entity.AttributesServiceTest;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PersonServiceTest;
-import de.unistuttgart.vis.vita.services.entity.PersonsServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PersonsServiceTests;
 import de.unistuttgart.vis.vita.services.entity.PlaceServiceTest;
-import de.unistuttgart.vis.vita.services.entity.PlacesServiceTest;
+import de.unistuttgart.vis.vita.services.entity.PlacesServiceTests;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
 
 /**
@@ -25,8 +25,8 @@ import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({VersionServiceTest.class, DocumentsServiceTest.class, DocumentServiceTest.class,
-    ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTest.class,
-    PersonServiceTest.class, PlacesServiceTest.class, PlaceServiceTest.class,
+    ChapterServiceTest.class, ProgressServiceTest.class, PersonsServiceTests.class,
+    PersonServiceTest.class, PlacesServiceTests.class, PlaceServiceTest.class,
     DocumentPartsServiceTest.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
     AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class,
     ParametersServiceTest.class})
