@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
@@ -23,7 +25,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 @Table(indexes={
   @Index(columnList="number")
 })
-
+@XmlRootElement
 public class Chapter extends AbstractEntityBase {
 
   private int number;
@@ -40,6 +42,7 @@ public class Chapter extends AbstractEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   private Range range;
 
+  @XmlTransient
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapter")
   private List<Sentence> sentences;
 
@@ -60,6 +63,7 @@ public class Chapter extends AbstractEntityBase {
    * 
    * @return all sentences of this chapter.
    */
+  @XmlTransient
   public List<Sentence> getSentences() {
     return sentences;
   }
