@@ -8,55 +8,41 @@
 
   .parameter-list {
     border: 1px solid @border-color;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 10px 5px;
     margin-top: 5px;
     margin-bottom: 5px;
-  }
-
-  label {
-    font-weight: inherit;
-  }
-
-  .input {
-    width: 80%;
-  }
-}
-
-.boolean-parameter {
-  padding-left: 5px;
-}
-
-.number-parameter {
-  padding-left: 5px;
-
-  input {
-    text-align: center;
-  }
-}
-
-.enum-parameter {
-  padding-left: 5px;
-
-  .enum-input {
-    padding-right: 10px;
 
     label {
+      font-weight: inherit;
+    }
+
+    .parameter-label {
       padding-right: 5px;
     }
+
+    .input {
+      width: 80%;
+    }
+
+    .number-parameter {
+      input {
+        text-align: center;
+      }
+    }
+
+    .enum-parameter {
+      .enum-input {
+        padding-right: 10px;
+      }
+    }
+
+    .string-parameter {
+      textarea {
+        resize:vertical;
+      }
+    }
+
   }
-}
-
-.string-parameter {
-  padding-left: 5px;
-
-  textarea {
-    resize:vertical;
-  }
-}
-
-.parameter-label {
-  padding-right: 5px;
 }
 
 #show-analysis-parameters {
