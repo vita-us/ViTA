@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.ChapterTestData;
@@ -43,7 +44,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
 
     // read persisted TextSpans from database
-    Occurrence readOccurrence = readOccurrenceFromDb(oc.getId());
+    Occurrence readOccurrence = new OccurrenceDao(em).findById(oc.getId());
 
     // check whether data is correct
     checkData(readOccurrence);
@@ -63,16 +64,6 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Sentence sentence = new Sentence(sentenceRange, chapter,0);
     return new Occurrence(sentence, range);
-  }
-
-  /**
-   * Read a specific Occurrence from database and returns it.
-   * 
-   * @return the occurrence
-   */
-  private Occurrence readOccurrenceFromDb(String id) {
-    return em.createNamedQuery("Occurrence.findTextSpanById", Occurrence.class)
-        .setParameter("occurrenceId", id).getSingleResult();
   }
 
   /**
@@ -111,8 +102,8 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
 
     // check Named Query finding all chapters
-    TypedQuery<Occurrence> allQ = em.createNamedQuery("Occurrence.findAllOccurences", Occurrence.class);
-    List<Occurrence> allOccurrences = allQ.getResultList();
+    OccurrenceDao occurrenceDao = new OccurrenceDao(em);
+    List<Occurrence> allOccurrences = occurrenceDao.findAll();
 
     assertTrue(allOccurrences.size() > 0);
     Occurrence readOccurrence = allOccurrences.get(0);
@@ -121,10 +112,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     String id = readOccurrence.getId();
 
     // check Named Query finding occurrences by id
-    TypedQuery<Occurrence> idQ = em.createNamedQuery("Occurrence.findOccurrenceById", Occurrence.class);
-    idQ.setParameter("occurrenceId", id);
-    Occurrence idOccurrence = idQ.getSingleResult();
-
+    Occurrence idOccurrence = occurrenceDao.findById(id);
     checkData(idOccurrence);
   }
 
