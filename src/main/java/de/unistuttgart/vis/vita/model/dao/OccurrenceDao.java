@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 
 /**
  * Represents a data access object for accessing TextSpans.
@@ -100,13 +101,14 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "FROM Occurrence occ " + "WHERE occ.id = :occurrenceId"),
 
     @NamedQuery(name = "Occurrence.getSentencesForAllEntities", query =
-        "SELECT DISTINCT occ "
-        + "FROM Occurrence occ "
-        + "GROUP BY occ.sentence.index, occ.id "
+        "SELECT sentence "
+        + "FROM Sentence sentence "
+        + "GROUP BY sentence "
         + "HAVING (SELECT COUNT(DISTINCT e) "
-        + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE occ2.sentence.index = occ.sentence.index AND e.id IN (:entityIds)) = :entityCount "
+        + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE occ2.sentence = sentence AND e.id IN (:entityIds)) = :entityCount "
         // range checks
-        + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd ")})
+        + "AND sentence.range.start.offset >= :rangeStart AND sentence.range.start.offset < :rangeEnd "
+        + "ORDER BY sentence.index ASC")})
 public class OccurrenceDao extends JpaDao<Occurrence, String> {
 
   private static final String ENTITY_ID_PARAMETER    = "entityId";
@@ -261,9 +263,9 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
     return (long) numberQuery.getSingleResult();
   }
 
-  public List<Occurrence> getSentencesForAllEntities(List<String> eIds, int rangeStart, int rangeEnd) {
-    TypedQuery<Occurrence> query = em.createNamedQuery("Occurrence.getSentencesForAllEntities",
-        Occurrence.class);
+  public List<Sentence> getSentencesForAllEntities(List<String> eIds, int rangeStart, int rangeEnd) {
+    TypedQuery<Sentence> query = em.createNamedQuery("Occurrence.getSentencesForAllEntities",
+        Sentence.class);
     query.setParameter(ENTITY_IDS_PARAMETER, eIds);
     query.setParameter(RANGE_START_PARAMETER, rangeStart);
     query.setParameter(RANGE_END_PARAMETER, rangeEnd);
