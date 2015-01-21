@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
@@ -30,7 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 @ManagedBean
 public class SearchInDocumentService extends OccurrencesService {
-  private static final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
+  private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
   private List<Range> textSpans;
 
@@ -44,6 +45,12 @@ public class SearchInDocumentService extends OccurrencesService {
     documentDao = getDaoFactory().getDocumentDao();
   }
 
+  /**
+   * Sets the id of the document in which this service should search in.
+   *
+   * @param documentId - the id of the document to search in
+   * @return this SearchInDocumentService
+   */
   public SearchInDocumentService setDocumentId(String documentId) {
     this.documentId = documentId;
     return this;
@@ -78,6 +85,11 @@ public class SearchInDocumentService extends OccurrencesService {
     
     
 
+    if (!documentDao.isAnalysisFinished(documentId)) {
+      LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+    }
+
     Chapter startChapter = getSurroundingChapter(startOffset);
     Chapter endChapter = getSurroundingChapter(endOffset);
     List<Chapter> chapters = getChaptersInRange(startChapter, endChapter);
@@ -90,7 +102,7 @@ public class SearchInDocumentService extends OccurrencesService {
       return new OccurrencesResponse(new ArrayList<Range>());
     }
 
-    List<Range> occs = null;
+    List<Range> occs;
     if (steps == 0) {
       occs = textSpans;
     } else {
