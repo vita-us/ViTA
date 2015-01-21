@@ -79,7 +79,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     int end = occurrenceToCheck.getRange().getEnd().getOffset();
     int diff = end - start;
     int sentenceStart = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
-    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
+    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getEnd().getOffset();
 
     assertEquals(TEST_RANGE_START, start);
     assertEquals(TEST_RANGE_END, end);
