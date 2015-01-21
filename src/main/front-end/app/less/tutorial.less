@@ -1,0 +1,79 @@
+/*
+ * Design for the tutorial page
+ */
+
+.tutorial-intro-description {
+
+}
+
+/*
+ * Section in the tutorial mainly containing an image and a description part
+ */
+.tutorial-section {
+  .section-headline {
+    margin-top: 40px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed lightgrey;
+  }
+
+  .section-image {
+    padding: 5px;
+    margin-bottom: 20px;
+
+    img {
+      display: block;
+      min-height: 100px;
+      max-height: 400px;
+      max-width: 100%;
+      border: 1px solid lightgrey;
+      padding: 5px;
+    }
+  }
+
+  .section-paragraph {
+    margin-bottom: 15px;
+
+    .number {
+      padding: 2px 5px;
+      border: 1px solid grey;
+      margin-right: 3px;
+      color: blue;
+    }
+
+    .text {
+
+    }
+  }
+}
+
+/*
+ * Section in which a smaller image and the paragraphs should float next to each other
+ */
+.tutorial-section.floating-content {
+  @minimum-paragraph-width: 300px;
+  @maximum-image-width: 400px;
+
+  .section-image {
+    float: left;
+    padding-right: 20px;
+    margin-bottom: 0;
+
+    img {
+      max-width: @maximum-image-width;
+    }
+
+    /*
+     * As we don't want the paragraphs become to small we remove the floating at a width lower than the sum of
+     * minimum paragraph width and maximum image width
+     */
+    @media (max-width: 700px) {
+      float: none;
+      padding-right: 0;
+      margin-bottom: 20px;
+
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+}
