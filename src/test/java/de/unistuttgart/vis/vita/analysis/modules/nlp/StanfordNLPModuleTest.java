@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.analysis.modules;
+package de.unistuttgart.vis.vita.analysis.modules.nlp;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
