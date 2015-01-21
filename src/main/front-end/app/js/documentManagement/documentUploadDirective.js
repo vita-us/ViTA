@@ -42,8 +42,10 @@
                 // nothing to do: we poll the documents every X seconds
                 resetUploadField();
                 scope.uploading = false;
+                scope.file = undefined;
               }, function() {
                 scope.uploading = false;
+                scope.file = undefined;
                 alert('Upload of ' + scope.file.name + ' failed.');
               });
             } else {
