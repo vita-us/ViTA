@@ -2,6 +2,11 @@
  * Design for the tutorial page
  */
 
+@import '../bower_components/bootstrap/less/variables.less';
+
+@fixed-navigation-width: 170px;
+@navigation-fixed-breakpoint: @screen-md;
+
 .tutorial-intro-description {
 
 }
@@ -44,6 +49,10 @@
 
     }
   }
+
+  @media (min-width: @navigation-fixed-breakpoint) {
+    padding-left: (@fixed-navigation-width + 20px);
+  }
 }
 
 /*
@@ -75,5 +84,19 @@
         max-width: 100%;
       }
     }
+  }
+}
+
+#tutorial-navigation {
+  ul {
+    padding-left: 20px;
+  }
+
+  @media (min-width: @navigation-fixed-breakpoint) {
+    position: fixed;
+    border: 1px solid @border-color;
+    padding: 0 10px;
+    width: @fixed-navigation-width;
+    box-sizing: border-box;
   }
 }
