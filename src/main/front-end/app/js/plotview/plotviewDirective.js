@@ -108,14 +108,8 @@
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        var character_data = data.characters;
-        var characters = [];
-        var character_map = []; // maps id to pointer
-        for (var i = 0; i < character_data.length; i++) {
-          var character = new Character(character_data[i].name, character_data[i].id, character_data[i].group);
-          characters.push(character);
-          character_map[character_data[i].id] = character;
-        }
+        var character_map = create_character_map(data.characters);
+        var characters = character_map.values();
 
         var groups = define_groups(characters);
         find_median_groups(groups, scene_nodes, character_map, tie_breaker);
@@ -159,7 +153,7 @@
         // if the appear at the beginning of the chart
         char_scenes.forEach(function(cs) {
 
-          var character = character_map[cs.chars[0]];
+          var character = character_map.get(cs.chars[0]);
           if (character.first_scene.x < per_width * width) {
             // The median group of the first scene in which the character appears
             // We want the character's name to appear in that group
@@ -168,12 +162,21 @@
           }
         });
 
-        calculate_link_positions(scene_nodes, characters, groups, character_map);
+        calculate_link_positions(scene_nodes, characters, groups);
 
         d3.select('svg#' + safe_name).style('height', RAW_CHART_HEIGHT);
 
         draw_links(links, svg);
-        draw_nodes(scene_nodes, svg, width, height, character_map);
+        draw_nodes(scene_nodes, svg, width, height);
+      }
+
+      function create_character_map(character_data) {
+        var character_map = d3.map();
+        for (var i = 0; i < character_data.length; i++) {
+          var character = character_data[i];
+          character_map.set(character.id, new Character(character.name, character.id, character.group));
+        }
+        return character_map;
       }
 
 
@@ -422,7 +425,7 @@
         groups.forEach(function(g) {
           var chars_list = [];
           for (var c in g.all_chars) {
-            chars_list.push(char_map[c]);
+            chars_list.push(char_map.get(c));
           }
           g.all_chars = chars_list;
         });
@@ -512,8 +515,8 @@
       }
 
 
-      function find_group(char_map, groups, char_id) {
-        var char = char_map[char_id];
+      function find_group(character_map, groups, char_id) {
+        var char = character_map.get(char_id);
 
         if (!char) {
           console.log('ERROR: char not found, id = ' + char_id);
@@ -544,7 +547,7 @@
             var den1 = 0;
             var den2 = 0;
             for (var i = 0; i < scene.chars.length; i++) {
-              var c = char_map[scene.chars[i]];
+              var c = char_map.get(scene.chars[i]);
               var y = c.group_positions[scene.median_group.id];
               if (!y) continue;
               if (c.group_id == scene.median_group.id) {
@@ -588,7 +591,7 @@
       // The positions of the nodes have to be set before this is called
       // (The positions of the links are determined according to the positions
       // of the nodes they link.)
-      function calculate_link_positions(scenes, chars, groups, char_map) {
+      function calculate_link_positions(scenes, chars, groups) {
         // Sort by x
         // Because the sorting of the in_links will depend on where the link
         // is coming from, so that needs to be calculated first
@@ -639,7 +642,7 @@
         });
       }
 
-      function draw_nodes(scenes, svg, chart_width, chart_height, character_map) {
+      function draw_nodes(scenes, svg, chart_width, chart_height) {
         var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
             .enter().append('g')
