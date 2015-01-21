@@ -29,20 +29,20 @@ public class NLPStarterModule extends Module<NLPResult> {
     AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
     AbstractNLPModule module;
 
-    int a = 5;
+    MockParameterEnum testEnum = MockParameterEnum.STANFORD;
 
-    switch (a) {
-      case 0:
+    switch (testEnum) {
+      case ANNIE:
         module = new ANNIEModule();
         break;
-      case 1:
+      case STANFORD:
         module = new StanfordNLPModule();
         break;
-      case 2:
+      case OPENNLP:
         module = new OpenNLPModule();
         break;
       default:
-        throw new IllegalStateException("Not registered nlp module " + a + "!");
+        throw new IllegalStateException("Not registered nlp module " + testEnum + "!");
     }
 
     return module.execute(results, progressListener);
