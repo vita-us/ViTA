@@ -15,10 +15,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class BooleanParameter extends AbstractParameter {
 
+  protected boolean defaultValue;
+
   public BooleanParameter() {
   }
 
-  public BooleanParameter(String name, Type type, String desription) {
-    super(name, type, desription);
+  public BooleanParameter(String name, Type type) {
+    super(name, type);
+  }
+
+  @Override
+  public Object getDefaultValue() {
+    return defaultValue;
+  }
+
+  @Override
+  public void setDefaultValue(String defaultValue) {
+    this.defaultValue = Boolean.parseBoolean(defaultValue);
   }
 }

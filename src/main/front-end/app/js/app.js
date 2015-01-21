@@ -43,6 +43,9 @@
     }).when('/documents/:documentId/graphnetwork', {
       templateUrl: 'partials/graphnetwork.html',
       controller: 'GraphNetworkCtrl'
+    }).when('/documents/:documentId/plotview', {
+      templateUrl: 'partials/plotview.html',
+      controller: 'PlotviewCtrl'
     }).when('/documents/:documentId/wordcloud', {
       templateUrl: 'partials/wordcloud.html',
       controller: 'WordcloudCtrl'

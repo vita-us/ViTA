@@ -1085,8 +1085,201 @@
           "description": "A list of stop words for the Word Cloud",
           "defaultValue": "hi"
         }]
-      }
+      },
 
+      plotviewData: {
+        "characters": [
+          {
+            "name": "Elizabeth",
+            "id": "62994bcc-d26c-4dde-8513-dc4085aaf58d",
+            "group": 0
+          }, {
+            "name": "Felix",
+            "id": "4b8bea39-42a2-41db-9d55-9496b616856e",
+            "group": 1
+          }, {
+            "name": "Justine",
+            "id": "f55ed527-ccaf-4770-9fb8-917f1fad1312",
+            "group": 2
+          }, {
+            "name": "William",
+            "id": "1a73c023-0981-4d1d-81da-01d9607cba38",
+            "group": 3
+          }, {
+            "name": "Justine",
+            "id": "37a83c51-f57c-49e6-a260-f18a1f5bc551",
+            "group": 4
+          }, {
+            "name": "Clerval",
+            "id": "2a7edd22-e6ac-4206-b08a-e5c78851fc0d",
+            "group": 5
+          }, {
+            "name": "Agatha",
+            "id": "2659a715-aca5-4f85-bbb8-9ac6d9c61a34",
+            "group": 6
+          }, {
+            "name": "Henry",
+            "id": "3402dc17-5bbc-46be-8347-6a4bf1c85f1f",
+            "group": 7
+          }, {
+            "name": "rain",
+            "id": "fd14d83b-ac15-4937-a463-f82b6dd8b7d3",
+            "group": 8
+          }, {"name": "Mr. Kirwin", "id": "688adf71-7543-40c1-b675-420284fb2172", "group": 9}],
+        "panels": 28,
+        "scenes": [
+          {
+            "start": 0,
+            "duration": 1,
+            "id": 0,
+            "chars": [],
+            "title": "1 - Letter 1"
+          }, {"start": 1, "duration": 1, "id": 1, "chars": [], "title": "2 - Letter 2"}, {
+            "start": 2,
+            "duration": 1,
+            "id": 2,
+            "chars": [],
+            "title": "3 - Letter 3"
+          }, {"start": 3, "duration": 1, "id": 3, "chars": [], "title": "4 - Letter 4"}, {
+            "start": 4,
+            "duration": 1,
+            "id": 4,
+            "chars": [],
+            "title": "5 - Chapter 1"
+          }, {
+            "start": 5,
+            "duration": 1,
+            "id": 5,
+            "chars": ["2a7edd22-e6ac-4206-b08a-e5c78851fc0d", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "6 - Chapter 2"
+          }, {
+            "start": 6,
+            "duration": 1,
+            "id": 6,
+            "chars": ["62994bcc-d26c-4dde-8513-dc4085aaf58d", "3402dc17-5bbc-46be-8347-6a4bf1c85f1f"],
+            "title": "7 - Chapter 3"
+          }, {"start": 7, "duration": 1, "id": 7, "chars": [], "title": "8 - Chapter 4"}, {
+            "start": 8,
+            "duration": 1,
+            "id": 8,
+            "chars": ["fd14d83b-ac15-4937-a463-f82b6dd8b7d3", "2a7edd22-e6ac-4206-b08a-e5c78851fc0d", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "9 - Chapter 5"
+          }, {
+            "start": 9,
+            "duration": 1,
+            "id": 9,
+            "chars": ["37a83c51-f57c-49e6-a260-f18a1f5bc551", "f55ed527-ccaf-4770-9fb8-917f1fad1312", "62994bcc-d26c-4dde-8513-dc4085aaf58d", "3402dc17-5bbc-46be-8347-6a4bf1c85f1f"],
+            "title": "10 - Chapter 6"
+          }, {
+            "start": 10,
+            "duration": 1,
+            "id": 10,
+            "chars": ["1a73c023-0981-4d1d-81da-01d9607cba38", "fd14d83b-ac15-4937-a463-f82b6dd8b7d3", "37a83c51-f57c-49e6-a260-f18a1f5bc551", "62994bcc-d26c-4dde-8513-dc4085aaf58d", "3402dc17-5bbc-46be-8347-6a4bf1c85f1f"],
+            "title": "11 - Chapter 7"
+          }, {
+            "start": 11,
+            "duration": 1,
+            "id": 11,
+            "chars": ["1a73c023-0981-4d1d-81da-01d9607cba38", "f55ed527-ccaf-4770-9fb8-917f1fad1312", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "12 - Chapter 8"
+          }, {
+            "start": 12,
+            "duration": 1,
+            "id": 12,
+            "chars": ["1a73c023-0981-4d1d-81da-01d9607cba38", "f55ed527-ccaf-4770-9fb8-917f1fad1312", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "13 - Chapter 9"
+          }, {
+            "start": 13,
+            "duration": 1,
+            "id": 13,
+            "chars": ["fd14d83b-ac15-4937-a463-f82b6dd8b7d3"],
+            "title": "14 - Chapter 10"
+          }, {
+            "start": 14,
+            "duration": 1,
+            "id": 14,
+            "chars": ["fd14d83b-ac15-4937-a463-f82b6dd8b7d3"],
+            "title": "15 - Chapter 11"
+          }, {
+            "start": 15,
+            "duration": 1,
+            "id": 15,
+            "chars": ["2659a715-aca5-4f85-bbb8-9ac6d9c61a34", "4b8bea39-42a2-41db-9d55-9496b616856e"],
+            "title": "16 - Chapter 12"
+          }, {
+            "start": 16,
+            "duration": 1,
+            "id": 16,
+            "chars": ["2659a715-aca5-4f85-bbb8-9ac6d9c61a34", "4b8bea39-42a2-41db-9d55-9496b616856e"],
+            "title": "17 - Chapter 13"
+          }, {
+            "start": 17,
+            "duration": 1,
+            "id": 17,
+            "chars": ["2659a715-aca5-4f85-bbb8-9ac6d9c61a34", "4b8bea39-42a2-41db-9d55-9496b616856e"],
+            "title": "18 - Chapter 14"
+          }, {
+            "start": 18,
+            "duration": 1,
+            "id": 18,
+            "chars": ["2659a715-aca5-4f85-bbb8-9ac6d9c61a34", "4b8bea39-42a2-41db-9d55-9496b616856e"],
+            "title": "19 - Chapter 15"
+          }, {
+            "start": 19,
+            "duration": 1,
+            "id": 19,
+            "chars": ["4b8bea39-42a2-41db-9d55-9496b616856e"],
+            "title": "20 - Chapter 16"
+          }, {
+            "start": 20,
+            "duration": 1,
+            "id": 20,
+            "chars": [],
+            "title": "21 - Chapter 17"
+          }, {
+            "start": 21,
+            "duration": 1,
+            "id": 21,
+            "chars": ["62994bcc-d26c-4dde-8513-dc4085aaf58d", "3402dc17-5bbc-46be-8347-6a4bf1c85f1f"],
+            "title": "22 - Chapter 18"
+          }, {
+            "start": 22,
+            "duration": 1,
+            "id": 22,
+            "chars": ["3402dc17-5bbc-46be-8347-6a4bf1c85f1f"],
+            "title": "23 - Chapter 19"
+          }, {
+            "start": 23,
+            "duration": 1,
+            "id": 23,
+            "chars": ["62994bcc-d26c-4dde-8513-dc4085aaf58d", "688adf71-7543-40c1-b675-420284fb2172"],
+            "title": "24 - Chapter 20"
+          }, {
+            "start": 24,
+            "duration": 1,
+            "id": 24,
+            "chars": ["1a73c023-0981-4d1d-81da-01d9607cba38", "37a83c51-f57c-49e6-a260-f18a1f5bc551", "2a7edd22-e6ac-4206-b08a-e5c78851fc0d", "688adf71-7543-40c1-b675-420284fb2172"],
+            "title": "25 - Chapter 21"
+          }, {
+            "start": 25,
+            "duration": 1,
+            "id": 25,
+            "chars": ["37a83c51-f57c-49e6-a260-f18a1f5bc551", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "26 - Chapter 22"
+          }, {
+            "start": 26,
+            "duration": 1,
+            "id": 26,
+            "chars": ["fd14d83b-ac15-4937-a463-f82b6dd8b7d3", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "27 - Chapter 23"
+          }, {
+            "start": 27,
+            "duration": 1,
+            "id": 27,
+            "chars": ["1a73c023-0981-4d1d-81da-01d9607cba38", "4b8bea39-42a2-41db-9d55-9496b616856e", "62994bcc-d26c-4dde-8513-dc4085aaf58d"],
+            "title": "28 - Chapter 24"
+          }]
+      }
     };
 
   });

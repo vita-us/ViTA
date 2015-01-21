@@ -8,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
@@ -36,8 +37,17 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
           + "WHERE d.id = :documentId "
           + "AND dp MEMBER OF d.content.parts "
           + "AND c MEMBER OF dp.chapters "
-          + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset")})
+          + "AND :offset BETWEEN c.range.start.offset AND c.range.end.offset"),
+
+  @NamedQuery(name = "Chapter.getAverageLength",
+    query = "SELECT AVG(c.length) "
+          + "FROM Document d, DocumentPart dp, Chapter c "
+          + "WHERE d.id = :documentId "
+          + "AND dp MEMBER OF d.content.parts "
+          + "AND c MEMBER OF dp.chapters")})
 public class ChapterDao extends JpaDao<Chapter, String> {
+
+  private long avgChapterLength;
 
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
   private static final String OFFSET_PARAMETER = "offset";
@@ -93,5 +103,16 @@ public class ChapterDao extends JpaDao<Chapter, String> {
     query.setParameter(OFFSET_PARAMETER, offset);
     return query;
   }
+
+  public long getAverageChapterLength(String documentId) {
+    if (avgChapterLength == 0) {
+      Query lengthQuery = em.createNamedQuery("Chapter.getAverageLength");
+      lengthQuery.setParameter("documentId", documentId);
+      avgChapterLength = Math.round((double)lengthQuery.getSingleResult());
+    }
+
+    return avgChapterLength;
+  }
+
 
 }

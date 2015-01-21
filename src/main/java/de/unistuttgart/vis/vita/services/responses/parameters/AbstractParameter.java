@@ -26,11 +26,14 @@ public abstract class AbstractParameter {
   public AbstractParameter() {
   }
 
-  public AbstractParameter(String name, Type attributeType, String description) {
+  public AbstractParameter(String name, Type attributeType) {
     this.name = name;
     this.attributeType = attributeType;
-    this.description = description;
   }
+
+  public abstract Object getDefaultValue();
+
+  public abstract void setDefaultValue(String defaultValue);
 
   public String getLabel() {
     return label;
