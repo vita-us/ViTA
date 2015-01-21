@@ -39,9 +39,10 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * Ranges/Occurrences to be persistable
  */
 @AnalysisModule(dependencies = {EntityAttributes.class, EntityRanking.class, EntityRelations.class,
-                                BasicEntityCollection.class, DocumentPersistenceContext.class,
-                                Model.class, TextFeatureModule.class, EntityWordCloudResult.class},
-                                weight = 0.1)
+    BasicEntityCollection.class, DocumentPersistenceContext.class,
+    Model.class, TextFeatureModule.class, EntityWordCloudResult.class,
+    SentenceDetectionResult.class},
+    weight = 0.1)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
