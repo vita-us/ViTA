@@ -2,6 +2,7 @@ package de.unistuttgart.vis.vita.model.document;
 
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -15,6 +16,10 @@ public class Occurrence extends AbstractEntityBase {
 
   @OneToOne(cascade = CascadeType.ALL)
   private Range range;
+
+  // only for indexing / sorting
+  @Column
+  private int startOffset;
 
   /**
    * Creates a new Occurrence.
@@ -39,6 +44,7 @@ public class Occurrence extends AbstractEntityBase {
 
     this.sentence = sentence;
     this.range = range;
+    this.startOffset = range.getStart().getOffset();
   }
 
   /**
