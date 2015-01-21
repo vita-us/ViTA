@@ -29,8 +29,10 @@ public interface SentenceDetectionResult {
     /**
      * Creates an occurrence for the range between two global offsets in the document
      * @return the created occurrence
+     * @param startOffset the global start
+     * @param length the total length of the occurrence
      * @throws java.lang.IllegalArgumentException if startOffset or endOffset do are not in the
      *   document range
      */
-    public Occurrence createOccurrence(int startOffset);
+    public Occurrence createOccurrence(int startOffset, int length);
 }

@@ -71,11 +71,13 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       }
 
       @Override
-      public Occurrence createOccurrence(int startOffset) {
+      public Occurrence createOccurrence(int startOffset, int length) {
         Sentence sentence = getSentenceAt(
             TextPosition.fromGlobalOffset(startOffset, importResult.getTotalLength()));
 
-        return new Occurrence(sentence, sentence.getRange());
+        return new Occurrence(sentence, new Range(
+                TextPosition.fromGlobalOffset(startOffset, importResult.getTotalLength()),
+                TextPosition.fromGlobalOffset(startOffset + length, importResult.getTotalLength())));
       }
     };
   }
