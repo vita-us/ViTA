@@ -20,6 +20,7 @@ import de.unistuttgart.vis.vita.services.entity.PlaceServiceTest;
 import de.unistuttgart.vis.vita.services.entity.PlacesServiceTests;
 import de.unistuttgart.vis.vita.services.entity.PlotViewServiceTests;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
+import de.unistuttgart.vis.vita.services.search.SearchInDocumentServiceTests;
 
 /**
  * A suite containing the tests for the REST API
@@ -30,7 +31,8 @@ import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
     PersonServiceTest.class, PlacesServiceTests.class, PlaceServiceTest.class,
     DocumentPartsServiceTests.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
     AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class,
-    ParametersServiceTest.class, WordCloudServiceTests.class, PlotViewServiceTests.class})
+    ParametersServiceTest.class, WordCloudServiceTests.class, PlotViewServiceTests.class,
+    SearchInDocumentServiceTests.class})
 public class ServiceTests {
 
 }
