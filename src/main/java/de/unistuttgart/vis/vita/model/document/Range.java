@@ -4,6 +4,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -23,8 +24,10 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
   private static final int MIN_LENGTH = 0;
 
   @Embedded
+  @XmlElement(name = "start")
   private TextPosition start;
 
+  @XmlElement(name = "end")
   @Embedded
   private TextPosition end;
 
