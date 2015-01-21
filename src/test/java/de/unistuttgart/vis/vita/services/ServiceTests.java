@@ -29,7 +29,7 @@ import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTests;
     PersonServiceTest.class, PlacesServiceTests.class, PlaceServiceTest.class,
     DocumentPartsServiceTests.class, AnalysisServiceTest.class, EntityRelationsServiceTest.class,
     AttributesServiceTest.class, AttributeServiceTest.class, OccurrencesServiceTests.class,
-    ParametersServiceTest.class})
+    ParametersServiceTest.class, WordCloudServiceTests.class})
 public class ServiceTests {
 
 }

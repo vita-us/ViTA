@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -48,12 +49,16 @@ public class WordCloudService extends BaseService {
   @Produces(MediaType.APPLICATION_JSON)
   public WordCloud getWordCloudContent(@QueryParam("wordCount") int wordCount,
                                         @QueryParam("entityId") String entityId) {
-    WordCloud wordCloud;
+    WordCloud wordCloud = null;
 
-    if (StringUtils.isEmpty(entityId)) {
-      wordCloud = wordCloudDao.findByDocument(documentId);
-    } else {
-      wordCloud = wordCloudDao.findByEntity(entityId);
+    try {
+      if (StringUtils.isEmpty(entityId)) {
+        wordCloud = wordCloudDao.findByDocument(documentId);
+      } else {
+        wordCloud = wordCloudDao.findByEntity(entityId);
+      }
+    } catch (NoResultException nre) {
+      LOGGER.log(Level.FINEST, "No word cloud found!");
     }
 
     if (!documentDao.isAnalysisFinished(documentId) && wordCloud == null) {
