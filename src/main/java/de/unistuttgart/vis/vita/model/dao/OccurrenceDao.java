@@ -30,7 +30,7 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + "ORDER BY occ.range.start.offset"),
 
     // for checking the amount of spans for an entity in a given range
-    @NamedQuery(name = "Occurrence.getNumberOfOccurencesForEntity", query = "SELECT COUNT(occ) "
+    @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForEntity", query = "SELECT COUNT(occ) "
         + "FROM Occurrence occ, Entity e "
         + "WHERE e.id = :entityId "
         + "AND occ MEMBER OF e.occurrences "
@@ -98,14 +98,16 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
         + ")"),
 
     @NamedQuery(name = "Occurrence.findOccurrenceById", query = "SELECT occ "
-        + "FROM Occurrence occ " + "WHERE occ.id = :occurrenceId") })
-@NamedQuery(name = "Occurrence.getSentencesForAllEntities", query = "SELECT DISTINCT occ "
-    + "FROM Occurrence occ "
-    + "GROUP BY occ.sentence.index "
-    + "HAVING (SELECT COUNT(DISTINCT e) "
-    + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE e.id IN :entityIDs) = :entityCount "
-    // range checks
-    + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd ")
+        + "FROM Occurrence occ " + "WHERE occ.id = :occurrenceId"),
+
+    @NamedQuery(name = "Occurrence.getSentencesForAllEntities", query =
+        "SELECT DISTINCT occ "
+        + "FROM Occurrence occ "
+        + "GROUP BY occ.sentence.index, occ.id "
+        + "HAVING (SELECT COUNT(DISTINCT e) "
+        + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE occ2.sentence.index = occ.sentence.index AND e.id IN (:entityIds)) = :entityCount "
+        // range checks
+        + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd ")})
 public class OccurrenceDao extends JpaDao<Occurrence, String> {
 
   private static final String ENTITY_ID_PARAMETER    = "entityId";
@@ -261,12 +263,12 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   public List<Occurrence> getSentencesForAllEntities(List<String> eIds, int rangeStart, int rangeEnd) {
-    TypedQuery<Occurrence> query = em.createNamedQuery("Occurrence.getNumberOfOccurringEntities",
+    TypedQuery<Occurrence> query = em.createNamedQuery("Occurrence.getSentencesForAllEntities",
         Occurrence.class);
     query.setParameter(ENTITY_IDS_PARAMETER, eIds);
     query.setParameter(RANGE_START_PARAMETER, rangeStart);
     query.setParameter(RANGE_END_PARAMETER, rangeEnd);
-    query.setParameter(ENTITY_COUNT_PARAMETER, eIds.size());
+    query.setParameter(ENTITY_COUNT_PARAMETER, (long)eIds.size());
     return query.getResultList();
   }
 
