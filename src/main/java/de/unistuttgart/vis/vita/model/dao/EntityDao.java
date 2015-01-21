@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
@@ -18,12 +17,14 @@ import de.unistuttgart.vis.vita.model.entity.Person;
  * Represents a generic data access object for entities.
  */
 @MappedSuperclass
-@NamedQueries(
+@NamedQueries({
     @NamedQuery(name = "Entity.findEntityById",
             query = "SELECT e "
                   + "FROM Entity e "
-                  + "WHERE e.id = :entityId")
-)
+                  + "WHERE e.id = :entityId"),
+                  
+    @NamedQuery(name = "Entity.deleteEntityById",
+                query = "DELETE "+ "FROM Entity e "+ "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
   
   private static final String ENTITIES_PARAMETER = "entities";
@@ -124,5 +125,10 @@ public class EntityDao extends JpaDao<Entity, String> {
 
     return (List<Entity>) query.getResultList();
   }
-
+  
+  public void deleteEntityById(String entityId){
+    Query query = em.createNamedQuery("Entity.deleteEntityById");
+    query.setParameter("entityId", entityId).executeUpdate();
+    
+  }
 }
