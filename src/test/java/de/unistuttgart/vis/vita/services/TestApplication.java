@@ -14,24 +14,18 @@ import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
 import de.unistuttgart.vis.vita.services.document.DocumentsService;
 
-public class TestApplication extends ResourceConfig {
-  private static String SERVICES_PACKAGE = "de.unistuttgart.vis.vita.services";
-
-  public TestApplication() {
-    super(MultiPartFeature.class, DocumentsService.class);
-    packages(true, SERVICES_PACKAGE);
-    register(new MyApplicationBinder());
-    register(ServiceLocatorUtilities.createAndPopulateServiceLocator());
+/**
+ * The application config used for the unit tests
+ */
+public class TestApplication extends Hk2Application {
+  @Override protected AbstractBinder getBinder() {
+    return new MyApplicationBinder();
   }
 
-  private static class MyApplicationBinder extends AbstractBinder {
+  private static class MyApplicationBinder extends BaseApplicationBinder {
     @Override
     protected void configure() {
-      Iterable<Class<?>> services =
-          new Reflections(SERVICES_PACKAGE).getTypesAnnotatedWith(ManagedBean.class);
-      for (Class<?> service : services) {
-        bind(service).to(service);
-      }
+      super.configure();
 
       bind(UnitTestModel.class).to(Model.class);
       bindFactory(UnitTestModel.class).to(EntityManager.class);

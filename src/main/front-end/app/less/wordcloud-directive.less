@@ -1,9 +1,12 @@
 .wordcloud-container {
+
+  border: 1px solid @border-color;
+
   text {
     font-family: Impact;
     text-anchor: middle;
     cursor: pointer;
-    fill: gray;
+    fill: #A8A8A8;
   }
 
   text.ranking-1 {
@@ -37,4 +40,33 @@
   text:hover {
     opacity: 0.5;
   }
+}
+
+.wordcloud-tool-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.wordcloud-tool-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  pointer-events: none;
+}
+
+.wordcloud-tool-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
 }

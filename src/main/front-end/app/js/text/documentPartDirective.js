@@ -13,7 +13,8 @@
       restrict: 'A',
       scope: {
         partData: '=',
-        documentId: '='
+        documentId: '=',
+        isOnlyPart: '='
       },
       link: link,
       templateUrl: 'templates/part.html'

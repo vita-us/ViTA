@@ -20,7 +20,7 @@
         <div class="dv-menu-fixed-wrap">
           <div data-ng-repeat="part in parts">
             <h3 class="part" data-ng-class="{'active-menu': $first}">
-              <a href="#part-{{part.number}}">
+              <a href="#part-{{part.number}}" ng-show="parts.length > 1">
                 Part {{part.number}} {{part.title ? ' - ' + part.title : ''}}
               </a>
             </h3>
@@ -37,7 +37,7 @@
         data-selected-occurrence-index="selectedOccurrenceIndex"
         data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
         <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
-          data-part-data="part" data-document-id="document.id"></div>
+          data-part-data="part" data-document-id="document.id" data-is-only-part="parts.length > 1"></div>
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@
           <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
         </button>
       </div>
-      <button type="reset" class="btn btn-warning pull-right" ng-click="reset()">
+      <button type="reset" class="btn btn-warning pull-right" ng-show="resultCount > 0" ng-click="reset()">
         <span>Reset Highlighting</span>
       </button>
     </form>

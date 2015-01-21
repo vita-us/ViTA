@@ -1,11 +1,7 @@
 package de.unistuttgart.vis.vita.services.entity;
 
-import java.util.List;
-
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,22 +9,27 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.model.dao.PlaceDao;
+import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.PlacesResponse;
 
 /**
  * Provides a method to GET all places mentioned in the document this service refers to.
  */
 @ManagedBean
-public class PlacesService {
+public class PlacesService extends BaseService {
   
   private String documentId;
 
-  @Inject
-  private EntityManager em;
+  private PlaceDao placeDao;
   
   @Inject
   private PlaceService placeService;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    placeDao = getDaoFactory().getPlaceDao();
+  }
 
   /**
    * Sets the id of the document for which this service should provide the mentioned places.
@@ -53,19 +54,7 @@ public class PlacesService {
   @Produces(MediaType.APPLICATION_JSON)
   public PlacesResponse getPlaces(@QueryParam("offset") int offset,
                                   @QueryParam("count") int count) {
-    List<Place> places = readPlacesFromDatabase(offset, count);
-    
-    return new PlacesResponse(places);
-  }
-  
-  private List<Place> readPlacesFromDatabase(int offset, int count) {
-    TypedQuery<Place> query = em.createNamedQuery("Place.findPlacesInDocument", Place.class);
-    query.setParameter("documentId", documentId);
-    
-    query.setFirstResult(offset);
-    query.setMaxResults(count);
-    
-    return query.getResultList();
+    return new PlacesResponse(placeDao.findInDocument(documentId, offset, count));
   }
 
   /**

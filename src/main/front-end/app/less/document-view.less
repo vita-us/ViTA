@@ -1,8 +1,14 @@
+@bootstrap-screen-sm-min: 768px;
 @document-view-header-height: 65px;
 @document-view-footer-height: 50px;
+@document-view-footer-height-expanded: 95px;
 
 body#document-view {
-  padding: @document-view-header-height 0 @document-view-footer-height 0;
+  padding: @document-view-header-height 0 @document-view-footer-height-expanded 0;
+
+  @media (min-width: @bootstrap-screen-sm-min) {
+    padding-bottom: @document-view-footer-height;
+  }
 }
 
 #document-view-header,
@@ -16,7 +22,7 @@ body#document-view {
   height: @document-view-header-height;
   border-bottom: 1px solid @border-color;
   top: 0;
-  
+
   .document-title {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -28,13 +34,13 @@ body#document-view {
   float: right;
   margin-top: 12px;
   
-  @media (min-width: 768px) {
+  @media (min-width: @bootstrap-screen-sm-min) {
     display: none;
   }
 }
 
 #document-view-footer {
-  height: @document-view-footer-height;
+  height: @document-view-footer-height-expanded;
   bottom: 0;
   border-top: 1px solid @border-color;
   
@@ -42,35 +48,31 @@ body#document-view {
     margin-top: 8px;
     
     .query-input {
+      margin-bottom: 10px;
       display: inline-block;
-      width: 75%;
-      max-width: 180px;
-      vertical-align: middle;
-    }
-    
-    .search-button-label {
-      display: none;
+      width: 100%;
+      vertical-align: top;
     }
     
     .result-count {
       display: inline-block;
-      margin-left: 15px;
+      margin-left: 5px;
     }
     
-    @media (min-width: 768px) {
+    @media (min-width: @bootstrap-screen-sm-min) {
       .query-input {
         width: 25%;
         max-width: none;  
-      }
-      
-      .search-button-label {
-        display: inline;
       }
     }
   }
   
   .up-down-navigation {
     display: inline-block;
+  }
+
+  @media (min-width: @bootstrap-screen-sm-min) {
+    height: @document-view-footer-height;
   }
 }
 
@@ -80,7 +82,6 @@ body#document-view {
   
   .document-view-menu {
     z-index: 100;
-    margin-bottom: 30px;
     
     .chapter {
       padding-left: 3px;
@@ -106,6 +107,7 @@ body#document-view {
  
   .document-view-text {
     background-color: @light-grey-background-color;
+    overflow: hidden;
   
     .chapter-headline, .part-headline {
       font-weight: bold;
@@ -171,12 +173,16 @@ body#document-view {
     border-left: 1px solid @border-color;
     border-right: 1px solid @border-color;
     top: @document-view-header-height;
-    bottom: @document-view-footer-height;
+    bottom: @document-view-footer-height-expanded;
     right: 0;
     padding-left: 10px;
+
+    @media (min-width: @bootstrap-screen-sm-min) {
+      bottom: @document-view-footer-height;
+    }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: @bootstrap-screen-sm-min) {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;

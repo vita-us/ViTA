@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.Query;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -14,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
+import de.unistuttgart.vis.vita.model.dao.TextSpanDao;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -28,10 +29,19 @@ import de.unistuttgart.vis.vita.services.responses.RelationsResponse;
  */
 @ManagedBean
 public class EntityRelationsService extends RangeService {
+  private TextSpanDao textSpanDao;
+
+  private EntityRelationDao entityRelationDao;
   
   @Inject
   private RelationOccurrencesService relationOccurrencesService;
-  
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    textSpanDao = getDaoFactory().getTextSpanDao();
+    entityRelationDao = getDaoFactory().getEntityRelationDao();
+  }
+
   /**
    * Sets the id of the Document this service should refer to
    * 
@@ -114,11 +124,7 @@ public class EntityRelationsService extends RangeService {
   }
 
   private boolean occurrsInRange(String entityId, int startOffset, int endOffset) {
-    Query numberOfTextSpansQuery = em.createNamedQuery("TextSpan.getNumberOfTextSpansForEntity");
-    numberOfTextSpansQuery.setParameter("entityId", entityId);
-    numberOfTextSpansQuery.setParameter("rangeStart", startOffset);
-    numberOfTextSpansQuery.setParameter("rangeEnd", endOffset);
-    return ((long) numberOfTextSpansQuery.getSingleResult() > 0);
+    return ((long) textSpanDao.getNumberOfTextSpansForEntity(entityId, startOffset, endOffset) > 0);
   }
 
   /**
@@ -128,11 +134,8 @@ public class EntityRelationsService extends RangeService {
    * @param ids - the list of entity id to be searched for
    * @return list of EntityRelations matching the given criteria
    */
-  @SuppressWarnings("unchecked")
   private List<EntityRelation> readRelationsFromDatabase(List<String> ids) {
-    Query query = em.createNamedQuery("EntityRelation.findRelationsForEntities");
-    query.setParameter("entityIds", ids);
-    return query.getResultList();
+    return entityRelationDao.findRelationsForEntities(ids);
   }
   
   /**
@@ -143,12 +146,8 @@ public class EntityRelationsService extends RangeService {
    * @param type - the type of the related entities
    * @return list of EntityRelations matching the given criteria
    */
-  @SuppressWarnings("unchecked")
   private List<EntityRelation> readRelationsFromDatabase(List<String> ids, String type) {
-    Query query = em.createNamedQuery("EntityRelation.findRelationsForEntitiesAndType");
-    query.setParameter("entityIds", ids);
-    query.setParameter("type", type);
-    return query.getResultList();
+    return entityRelationDao.findRelationsForEntitiesAndType(ids, type);
   } 
 
   /**

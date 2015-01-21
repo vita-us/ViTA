@@ -1,13 +1,9 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import de.unistuttgart.vis.vita.analysis.Module;
