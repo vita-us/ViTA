@@ -7,10 +7,7 @@ import javax.annotation.ManagedBean;
 
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Occurrence;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.*;
 
 import de.unistuttgart.vis.vita.services.RangeService;
 
@@ -43,11 +40,36 @@ public abstract class OccurrencesService extends RangeService {
     List<Range> ranges = new ArrayList<>();
 
     for (Occurrence occ : occurrences) {
-
       ranges.add(occ.getRange());
 
     }
     return ranges;
+  }
+
+  /**
+   * Converts the occurrences to ranges of their sentences, merging adjacent sentences
+   * @param occurrences the occurrences whose sentences are considered
+   * @return the range of the sentences
+   */
+  protected List<Range> mergeAdjacentSentences(List<Sentence> sentences) {
+    List<Range> newList = new ArrayList<>();
+    int lastSentenceIndex = Integer.MIN_VALUE;
+    Range currentRange = null;
+    for (Sentence sentence : sentences) {
+      if (currentRange != null && sentence.getIndex() == lastSentenceIndex + 1) {
+        currentRange = new Range(currentRange.getStart(), sentence.getRange().getEnd());
+      } else {
+        if (currentRange != null) {
+          newList.add(currentRange);
+        }
+        currentRange = sentence.getRange();
+      }
+      lastSentenceIndex = sentence.getIndex();
+    }
+    if (currentRange != null) {
+      newList.add(currentRange);
+    }
+    return newList;
   }
 
   /**

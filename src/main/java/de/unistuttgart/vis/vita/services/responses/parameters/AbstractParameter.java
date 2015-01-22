@@ -31,6 +31,10 @@ public abstract class AbstractParameter {
     this.attributeType = attributeType;
   }
 
+  public abstract Object getDefaultValue();
+
+  public abstract void setDefaultValue(String defaultValue);
+
   public String getLabel() {
     return label;
   }

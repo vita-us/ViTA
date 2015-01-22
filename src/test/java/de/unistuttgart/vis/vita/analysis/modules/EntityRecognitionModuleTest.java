@@ -11,6 +11,7 @@ import static org.mockito.Mockito.withSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,7 +22,6 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -79,6 +79,7 @@ public class EntityRecognitionModuleTest {
     // mock import result
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    when(importResult.getTotalLength()).thenReturn(CHAPTERS[0].length() + CHAPTERS[1].length());
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
 
     progressListener = mock(ProgressListener.class, withSettings());

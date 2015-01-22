@@ -17,10 +17,13 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
-
+/**
+ * Checks whether word clouds can be caught via REST service.
+ */
 public class WordCloudServiceTest extends ServiceTest {
-  private String docId;
+
   private String entityId;
+  private String path;
 
   @Override
   public void setUp() throws Exception {
@@ -42,8 +45,10 @@ public class WordCloudServiceTest extends ServiceTest {
     person.setWordCloud(entityWordCloud);
     testDoc.getContent().getPersons().add(person);
 
-    docId = testDoc.getId();
+    String docId = testDoc.getId();
     entityId = person.getId();
+
+    path = "documents/" + docId + "/wordcloud";
 
     // persist test data in database
     em.getTransaction().begin();
@@ -62,7 +67,6 @@ public class WordCloudServiceTest extends ServiceTest {
 
   @Test
   public void testGetGlobalWordCloud() {
-    String path = "documents/" + docId + "/wordcloud";
     WordCloud actualResponse = target(path).request().get(WordCloud.class);
 
     assertThat(actualResponse, is(not(nullValue())));
@@ -72,7 +76,6 @@ public class WordCloudServiceTest extends ServiceTest {
 
   @Test
   public void testGetEntityWordCloud() {
-    String path = "documents/" + docId + "/wordcloud";
     WordCloud actualResponse = target(path)
         .queryParam("entityId", entityId)
         .request()

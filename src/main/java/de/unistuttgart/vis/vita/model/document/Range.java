@@ -4,6 +4,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -12,19 +14,21 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * within the bounds.
  */
 @Embeddable
-@Table(indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
+@Table(name = "Ranges", // RANGE is a reserved word in mysql
+indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
+@XmlRootElement
 public class Range implements Comparable<Range> {
 
   // constants
   private static final int MIN_LENGTH = 0;
 
   @Embedded
+  @XmlElement(name = "start")
   private TextPosition start;
 
+  @XmlElement(name = "end")
   @Embedded
   private TextPosition end;
-
-  private int length;
 
   /**
    * Creates a new Range.
@@ -51,7 +55,6 @@ public class Range implements Comparable<Range> {
 
     this.start = pStart;
     this.end = pEnd;
-    this.length = diff;
   }
 
   /**
@@ -85,7 +88,7 @@ public class Range implements Comparable<Range> {
    * @return the length of the Range in characters
    */
   public int getLength() {
-    return length;
+    return end.getOffset() - start.getOffset();
   }
 
   /**

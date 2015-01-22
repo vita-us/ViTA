@@ -1,8 +1,7 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
@@ -11,6 +10,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * range in the book and its unique index in the document.
  */
 @Entity
+@XmlRootElement
 public class Sentence extends AbstractEntityBase {
 
   @Embedded
@@ -19,6 +19,7 @@ public class Sentence extends AbstractEntityBase {
   @ManyToOne
   private Chapter chapter;
 
+  @Column(name = "sentenceIndex")
   private int index;
 
   /**

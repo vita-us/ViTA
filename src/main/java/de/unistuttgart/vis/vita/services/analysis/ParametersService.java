@@ -5,11 +5,11 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
+import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.parameters.AbstractParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.ws.rs.GET;
@@ -78,6 +77,10 @@ public class ParametersService extends BaseService {
 
       if (field.getAnnotation(Label.class) != null) {
         parameter.setLabel(field.getAnnotation(Label.class).value());
+      }
+
+      if (field.getAnnotation(Default.class) != null) {
+        parameter.setDefaultValue(field.getAnnotation(Default.class).value());
       }
 
       parameterList.add(parameter);

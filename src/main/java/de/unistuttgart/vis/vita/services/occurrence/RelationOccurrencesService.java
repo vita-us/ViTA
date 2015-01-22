@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
@@ -93,11 +94,9 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+    List<Sentence> sentences = occurrenceDao.getSentencesForAllEntities(entityIds, startOffset, endOffset);
 
-      List<Occurrence> occurrences = occurrenceDao.getSentencesForAllEntities(entityIds, startOffset, endOffset);
-
-    // convert TextSpans into Occurrences and return them
-    return convertOccurrencesToRanges(occurrences);
+    return mergeAdjacentSentences(sentences);
   }
 
   @Override

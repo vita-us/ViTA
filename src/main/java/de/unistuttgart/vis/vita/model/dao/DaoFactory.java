@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 public class DaoFactory {
   
@@ -15,6 +14,7 @@ public class DaoFactory {
   private AttributeDao attributeDao;
   private PersonDao personDao;
   private PlaceDao placeDao;
+  private WordCloudDao wordCloudDao;
 
   public DaoFactory(EntityManager em) {
     this.em = em;
@@ -82,5 +82,12 @@ public class DaoFactory {
       placeDao = new PlaceDao(em);
     }
     return placeDao;
+  }
+
+  public WordCloudDao getWordCloudDao() {
+    if (wordCloudDao == null) {
+      wordCloudDao = new WordCloudDao(em);
+    }
+    return wordCloudDao;
   }
 }

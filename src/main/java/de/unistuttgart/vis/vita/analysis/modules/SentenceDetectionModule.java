@@ -13,18 +13,19 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
+import gate.Annotation;
+import gate.creole.ANNIEConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import gate.Annotation;
-import gate.creole.ANNIEConstants;
 
 /**
  * Splits the chapters into sentences
@@ -113,16 +114,22 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
         Set<Annotation> anno =
             annieNLPResult.getAnnotationsForChapter(chapter,
                 Arrays.asList(ANNIEConstants.SENTENCE_ANNOTATION_TYPE));
+        List<Annotation> sortedAnnotations = new ArrayList<Annotation>(anno);
+        Collections.sort(sortedAnnotations, new Comparator<Annotation>() {
+          @Override public int compare(Annotation o1, Annotation o2) {
+            return o1.getStartNode().getOffset().intValue() - o2.getStartNode().getOffset().intValue();
+          }
+        });
 
-        for (Annotation annotation : anno) {
+        for (Annotation annotation : sortedAnnotations) {
           int startOffset = annotation.getStartNode().getOffset().intValue();
           int endOffset = annotation.getEndNode().getOffset().intValue();
           int length = endOffset - startOffset;
           TextPosition start =
-              TextPosition.fromGlobalOffset(startOffset,
+              TextPosition.fromLocalOffset(chapter, startOffset,
                   this.importResult.getTotalLength());
           TextPosition end =
-              TextPosition.fromGlobalOffset(startOffset + length,
+              TextPosition.fromLocalOffset(chapter, startOffset + length,
                   this.importResult.getTotalLength());
           Range range = new Range(start, end);
           Sentence sentence = new Sentence(range, chapter, index);
