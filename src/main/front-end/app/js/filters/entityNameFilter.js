@@ -21,9 +21,12 @@
         // Search in attributes for alternative names
         for (var j = 0; j < entity.attributes.length; j++) {
           var attribute = entity.attributes[j];
-          if (attribute.attributetype == 'name' &&
-            containsQueryCaseInsensitive(attribute.content, query)) {
-            if (filteredEntities.indexOf(entity) == -1) {
+          if (attribute.attributetype !== 'name') {
+            continue;
+          }
+
+          if (containsQueryCaseInsensitive(attribute.content, query)) {
+            if (filteredEntities.indexOf(entity) < 0) {
               entity.alternativeName = attribute.content;
               filteredEntities.push(entity);
             }
