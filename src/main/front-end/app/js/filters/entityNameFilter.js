@@ -5,7 +5,13 @@
 
   app.filter('entityNameFilter', function() {
     return function(entities, query) {
-      if (!query || !(entities instanceof Array)) {
+      if (!(entities instanceof Array)) {
+        return entities;
+      }
+
+      resetPreviousModifications(entities);
+
+      if (!query) {
         return entities;
       }
 
@@ -36,6 +42,12 @@
 
       return filteredEntities;
     };
+
+    function resetPreviousModifications(entities) {
+      for (var i = 0, l = entities.length; i < l; i++) {
+        entities[i].alternativeName = undefined;
+      }
+    }
 
     function containsQueryCaseInsensitive(text, query) {
       var lowerCaseText = text.toLowerCase();
