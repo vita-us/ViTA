@@ -8,7 +8,7 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
- * Holds test data for Occurrences and methods to create test TextSpans and to check whether given 
+ * Holds test data for Occurrences and methods to create test Occurrences and to check whether given 
  * data matches this test data.
  */
 public class OccurrenceTestData {

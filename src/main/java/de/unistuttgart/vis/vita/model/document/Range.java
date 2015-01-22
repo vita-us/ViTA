@@ -102,7 +102,7 @@ public class Range implements Comparable<Range> {
     return getStart().compareTo(other.getEnd()) <= 0 && getEnd().compareTo(other.getStart()) >= 0;
   }
 
-  public Range getOverlappingSpan(Range other) {
+  public Range getOverlappingRange(Range other) {
     Range result = null;
 
     if (overlapsWith(other)) {

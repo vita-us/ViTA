@@ -52,8 +52,8 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition rangeEndPos =
         TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
-    testChapter.setRange(chapterRangeSpan);
+    Range chapterRange = new Range(rangeStartPos, rangeEndPos);
+    testChapter.setRange(chapterRange);
 
     Occurrence personOccurrence = testData.createOccurrence(testChapter);
     Person testPerson = new PersonTestData().createTestPerson(1);
@@ -70,7 +70,6 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     // persist it
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(personOccurrence);
     em.persist(testPerson);

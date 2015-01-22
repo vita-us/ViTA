@@ -86,8 +86,8 @@ public class EntityRelationsServiceTest extends ServiceTest {
     TextPosition rangeEndPos =
         TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
-    testChapter.setRange(chapterRangeSpan);
+    Range chapterRange = new Range(rangeStartPos, rangeEndPos);
+    testChapter.setRange(chapterRange);
 
     // set up document part
     DocumentPart docPart = new DocumentPart();
@@ -156,7 +156,6 @@ public class EntityRelationsServiceTest extends ServiceTest {
     // persist persons and their relation
     em.getTransaction().begin();
 
-    em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(docPart);
     em.persist(testPersonOccurrence);

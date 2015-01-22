@@ -33,7 +33,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 public class SearchInDocumentService extends OccurrencesService {
   private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
-  private List<Range> textSpans;
+  private List<Range> ranges;
 
   @Inject
   private Model model;
@@ -96,7 +96,7 @@ public class SearchInDocumentService extends OccurrencesService {
 
     Searcher searcher = new Searcher();
     try {
-      textSpans = searcher.searchString(documentDao.findById(documentId), query, chapters, model);
+      ranges = searcher.searchString(documentDao.findById(documentId), query, chapters, model);
     } catch (ParseException e) {
       LOGGER.log(Level.INFO, "Invalid search query: " + query, e);
       return new OccurrencesResponse(new ArrayList<Range>());
@@ -104,7 +104,7 @@ public class SearchInDocumentService extends OccurrencesService {
 
     List<Range> occs;
     if (steps == 0) {
-      occs = textSpans;
+      occs = ranges;
     } else {
       occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
     }
@@ -136,7 +136,7 @@ public class SearchInDocumentService extends OccurrencesService {
   @Override
   protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
     int count = 0;
-    for (Range span : textSpans) {
+    for (Range span : ranges) {
       if (span.getEnd().getOffset() > stepEnd)
         break;
       if (span.getStart().getOffset() >= stepStart)

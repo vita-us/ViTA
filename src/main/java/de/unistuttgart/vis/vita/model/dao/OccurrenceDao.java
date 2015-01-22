@@ -14,11 +14,11 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 
 /**
- * Represents a data access object for accessing TextSpans.
+ * Represents a data access object for accessing Occurrences.
  */
 @MappedSuperclass
 @NamedQueries({
-    // for returning the exact spans for an entity in a given range
+    // for returning the exact occurrences for an entity in a given range
     @NamedQuery(name = "Occurrence.findOccurrencesForEntity", query = "SELECT occ "
         + "FROM Occurrence occ, Entity e "
         + "WHERE e.id = :entityId "
@@ -29,7 +29,7 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
         // right ordering
         + "ORDER BY occ.range.start.offset"),
 
-    // for checking the amount of spans for an entity in a given range
+    // for checking the amount of occurrences for an entity in a given range
     @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForEntity", query = "SELECT COUNT(occ) "
         + "FROM Occurrence occ, Entity e "
         + "WHERE e.id = :entityId "
@@ -37,7 +37,7 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
         // range checks
         + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "),
 
-    // for returning the exact spans for an attribute in a given range
+    // for returning the exact occurrences for an attribute in a given range
     @NamedQuery(name = "Occurrence.findOccurrencesForAttribute", query = "SELECT occ "
         + "FROM Occurrence occ, Entity e, Attribute a " + "WHERE e.id = :entityId "
         + "AND a MEMBER OF e.attributes "
@@ -48,7 +48,7 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
         // right ordering
         + "ORDER BY occ.range.start.offset"),
 
-    // for checking the amount of spans for an attribute in a given range
+    // for checking the amount of occurrences for an attribute in a given range
     @NamedQuery(name = "Occurrence.getNumberOfOccurrencesForAttribute", query = "SELECT COUNT(occ) "
         + "FROM Occurrence occ, Entity e, Attribute a "
         + "WHERE e.id = :entityId "
@@ -138,27 +138,27 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   private static final String ENTITY_COUNT_PARAMETER = "entityCount";
 
   /**
-   * Creates a new data access object for TextSpans using the given
+   * Creates a new data access object for Occurrences using the given
    * {@link EntityManager}.
    * 
    * @param em
-   *          - the EntityManager to be used in the new TextSpanDao
+   *          - the EntityManager to be used in the new OccurrenceDao
    */
   public OccurrenceDao(EntityManager em) {
     super(Occurrence.class, em);
   }
 
   /**
-   * Finds all TextSpans for an Entity with the given id in an also given
+   * Finds all Occurrences for an Entity with the given id in an also given
    * document range.
    * 
    * @param entityId
-   *          - the id of the entity which TextSpans should be found
+   *          - the id of the entity which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return List of TextSpans for the given Entity in the also given document
+   * @return List of Occurrences for the given Entity in the also given document
    *         range
    */
   public List<Occurrence> findOccurrencesForEntity(String entityId, int rangeStart, int rangeEnd) {
@@ -171,16 +171,16 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   /**
-   * Returns the number of TextSpans for a given Entity in an also given
+   * Returns the number of Occurrences for a given Entity in an also given
    * document range.
    * 
    * @param entityId
-   *          - the id of the entity which TextSpans should be found
+   *          - the id of the entity which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return the number of TextSpans for the given Entity in the also given
+   * @return the number of Occurrences for the given Entity in the also given
    *         document range
    */
   public long getNumberOfOccurrencesForEntity(String entityId, int rangeStart, int rangeEnd) {
@@ -192,15 +192,15 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   /**
-   * Finds all TextSpans for a given Attribute in an also given document range.
+   * Finds all Occurrences for a given Attribute in an also given document range.
    * 
    * @param attrId
-   *          - the id of the Attribute which TextSpans should be found
+   *          - the id of the Attribute which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return List of TextSpans for the given Attribute in the also given
+   * @return List of Occurrences for the given Attribute in the also given
    *         document range
    */
   public List<Occurrence> findOccurrencesForAttribute(String entityId, String attrId,
@@ -215,18 +215,18 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   /**
-   * Returns the number of TextSpans for a given Attribute in an also given
+   * Returns the number of Occurrences for a given Attribute in an also given
    * document range.
    * 
    * @param entityId
    *          - the id of the entity with this attribute
    * @param attrId
-   *          - the id of the attribute which TextSpans should be found
+   *          - the id of the attribute which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return the number of TextSpans for the given Attribute in the also given
+   * @return the number of Occurrences for the given Attribute in the also given
    *         document range
    */
   public long getNumberOfOccurrencesForAttribute(String entityId, String attrId, int rangeStart,
@@ -240,16 +240,16 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   /**
-   * Finds all TextSpans for a given list of Entities in an also given document
+   * Finds all Occurrences for a given list of Entities in an also given document
    * range.
    * 
    * @param eIds
-   *          - the ids of entities which TextSpans should be found
+   *          - the ids of entities which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return List of TextSpans for the given entities in the also given document
+   * @return List of Occurrences for the given entities in the also given document
    *         range
    */
   public List<Occurrence> findOccurrencesForEntities(List<String> eIds, int rangeStart, int rangeEnd) {
@@ -262,16 +262,16 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
   }
 
   /**
-   * Returns the number of TextSpans for a given list of entities in an also
+   * Returns the number of Occurrences for a given list of entities in an also
    * given document range.
    * 
    * @param eIds
-   *          - the ids of entities which TextSpans should be found
+   *          - the ids of entities which Occurrences should be found
    * @param rangeStart
    *          - the start of the document range to search in
    * @param rangeEnd
    *          - the end of the document range to search in
-   * @return the number of TextSpans for the given list of entities in the also
+   * @return the number of Occurrences for the given list of entities in the also
    *         given document range
    */
   public long getNumberOfOccurrencesForEntities(List<String> eIds, int rangeStart, int rangeEnd) {

@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.services.RangeService;
 
 /**
  * Abstract base class of every service dealing with Occurrences. Offers methods
- * to convert Lists of TextSpans into Lists of Occurrences and get the Document
+ * to convert Lists of Occurrences into Lists of Ranges and get the Document
  * length.
  */
 @ManagedBean
@@ -30,10 +30,10 @@ public abstract class OccurrencesService extends RangeService {
   }
 
   /**
-   * Converts a given List of TextSpans into Occurrences.
+   * Converts a given List of Occurrences into Ranges.
    *
-   * @param textSpans
-   *          - the TextSpans to be converted
+   * @param occurrences
+   *          - the Occurrences to be converted
    * @return list of Occurrences
    */
   public List<Range> convertOccurrencesToRanges(List<Occurrence> occurrences) {

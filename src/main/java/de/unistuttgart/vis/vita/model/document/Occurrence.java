@@ -99,7 +99,7 @@ public class Occurrence extends AbstractEntityBase implements Comparable<Occurre
 
   /**
    * Indicates if obj is a Occurrence representing the same range (the person, place, ...) as this
-   * text span.
+   * Occurrence.
    */
   @Override
   public boolean equals(Object obj) {

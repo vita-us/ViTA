@@ -20,7 +20,7 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
- * Performs tests whether instances of TextSpan can be persisted correctly.
+ * Performs tests whether instances of Occurrences can be persisted correctly.
  */
 public class OccurrencePersistenceTest extends AbstractPersistenceTest {
 
@@ -53,7 +53,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   /**
    * Creates a new Occurrence, setting start and end to test values.
    * 
-   * @return test text span
+   * @return test occurrence
    */
   private Occurrence createTestOccurrence() {
     Range range =
@@ -138,7 +138,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     em.persist(testPerson);
     startNewTransaction();
 
-    // read TextSpans from database
+    // read Occurrences from database
     TypedQuery<Occurrence> personQ =
         em.createNamedQuery("Occurrence.findOccurrencesForEntity", Occurrence.class);
     personQ.setParameter("entityId", personId);

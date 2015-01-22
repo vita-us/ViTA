@@ -108,7 +108,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     // set up first person
     Person originPerson = personTestData.createTestPerson(1);
 
-    // non overlapping TextSpan
+    // non overlapping Occurrence
     Range originSeparateSentenceRange =
         new Range(testChapter, SP1_SENTENCE_START_OFFSET, SP1_SENTENCE_END_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -123,7 +123,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     Occurrence originSeparateOccurrence =
         new Occurrence(originSeparateSentence, originSeparateRange);
 
-    // overlapping TextSpan
+    // overlapping Occurrences
     Range originSentenceRange =
         new Range(testChapter, OL_SENTENCE_START_OFFSET, OL_SENTENCE_END_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -137,7 +137,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     Range originRange = new Range(originStart, originEnd);
     Occurrence originOccurrence = new Occurrence(originSentence, originRange);
 
-    // TextSpans next to each other
+    // Occurrences next to each other
     Range originNearSentenceRange =
         new Range(testChapter, NEAR1_SENTENCE_START_OFFSET, NEAR1_SENTENCE_END_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -158,7 +158,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     // set up second person
     Person targetPerson = personTestData.createTestPerson(2);
 
-    // non-overlapping TextSpan
+    // non-overlapping Occurrence
     Range targetSeparateSentenceRange =
         new Range(testChapter, SP2_SENTENCE_START_OFFSET, SP2_SENTENCE_END_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -172,7 +172,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     Range targetSeparateRange = new Range(targetSeparateStart, targetSeparateEnd);
     Occurrence targetSeparateOccurrence = new Occurrence(targetSeparateSentence, targetSeparateRange);
 
-    // overlapping TextSpan
+    // overlapping Occurrence
     TextPosition targetStart =
         TextPosition.fromGlobalOffset(OL2_START_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -182,7 +182,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     Range targetRange = new Range(targetStart, targetEnd);
     Occurrence targetOccurrence = new Occurrence(originSentence, targetRange);
 
-    // TextSpans next to each other
+    // Occurences next to each other
     Range targetNearSentenceRange =
         new Range(testChapter, NEAR2_SENTENCE_START_OFFSET, NEAR2_SENTENCE_END_OFFSET,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
@@ -214,7 +214,6 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     // persist test data
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(chapterRange);
     em.persist(testChapter);
     em.persist(originOccurrence);
     em.persist(originSeparateOccurrence);

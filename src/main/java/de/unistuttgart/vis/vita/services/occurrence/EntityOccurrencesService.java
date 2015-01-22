@@ -97,7 +97,7 @@ public class EntityOccurrencesService extends OccurrencesService {
     List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
                                                                       startOffset, endOffset);
     
-    // convert TextSpans into Occurrences and return them
+    // convert Occurrences into Ranges and return them
     return convertOccurrencesToRanges(readOccurrences);
   }
 
