@@ -11,6 +11,9 @@
           class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">{{person.displayName}}</a>
         </li>
       </ul>
+      <div id="document-loading-spinner" ng-hide="persons.length != 0">
+        <span class="glyphicon glyphicon-refresh spin"></span>
+      </div>
     </div>
   </div>
 </div>

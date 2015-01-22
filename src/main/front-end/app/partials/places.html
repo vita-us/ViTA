@@ -10,6 +10,9 @@
           <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">{{place.displayName}}</a>
         </li>
       </ul>
+      <div id="document-loading-spinner" ng-hide="places.length != 0">
+        <span class="glyphicon glyphicon-refresh spin"></span>
+      </div>
     </div>
   </div>
 </div>

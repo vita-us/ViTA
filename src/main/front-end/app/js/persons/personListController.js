@@ -7,6 +7,8 @@
   vitaControllers.controller('PersonListCtrl', ['$scope', 'Document', 'Page', 'Person',
       '$routeParams', 'CssClass', function($scope, Document, Page, Person, $routeParams, CssClass) {
 
+        $scope.persons = [];
+
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
 
