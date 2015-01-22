@@ -725,11 +725,7 @@
               return d.title;
             })
             .attr('rx', 20)
-            .attr('ry', 10)
-            .append('title')
-            .text(function(d) {
-              return d.name;
-            });
+            .attr('ry', 10);
 
 
         // Iterate over all nodes separately to be able to add a custom sized background for each node
