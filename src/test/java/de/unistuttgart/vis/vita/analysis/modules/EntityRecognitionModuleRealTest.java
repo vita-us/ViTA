@@ -7,6 +7,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -66,6 +67,8 @@ public class EntityRecognitionModuleRealTest {
     loadText();
     fillText();
 
+    when(importResult.getTotalLength()).thenReturn(getDocumentLength());
+    
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
@@ -82,6 +85,10 @@ public class EntityRecognitionModuleRealTest {
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
+    SentenceDetectionModule sentenceDetectionModule = new SentenceDetectionModule();
+    SentenceDetectionResult sentenceResult = sentenceDetectionModule.execute(resultProvider, progressListener);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
+    
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
@@ -106,7 +113,7 @@ public class EntityRecognitionModuleRealTest {
   private static void fillText() {
     DocumentPart part = new DocumentPart();
     parts.add(part);
-
+    
     chapterObjects = new ArrayList<>();
     for (String chapterText : CHAPTERS) {
       Chapter chapter = new Chapter();
@@ -185,7 +192,7 @@ public class EntityRecognitionModuleRealTest {
     return null;
   }
 
-  private int getDocumentLength() {
+  private static int getDocumentLength() {
     int documentLength = 0;
     for (String chapter : CHAPTERS) {
       documentLength += chapter.length();
