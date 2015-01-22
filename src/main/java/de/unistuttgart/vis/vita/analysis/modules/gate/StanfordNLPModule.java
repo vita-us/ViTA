@@ -29,12 +29,8 @@ public class StanfordNLPModule extends AbstractNLPModule<StanfordNLPResult> {
   public static final String PLUGIN_DIR = "Stanford_CoreNLP";
   public static final String DEFAULT_FILE = "stanford_ner_state.xgapp";
 
-  private static final String TYPE_STANFORD_PERSON = "PERSON";
-  private static final String TYPE_STANFORD_LOCATION = "LOCATION";
-
   @Override
-  protected void loadEngine()
-      throws GateException, IOException {
+  protected void loadEngine() throws GateException, IOException {
     if (controller != null) {
       return;
     }
@@ -72,8 +68,8 @@ public class StanfordNLPModule extends AbstractNLPModule<StanfordNLPResult> {
       Document doc = (Document) docObj;
       AnnotationSet defaultAnnotSet = doc.getAnnotations();
       Set<String> annotTypesRequired = new HashSet<>();
-      annotTypesRequired.add(TYPE_STANFORD_PERSON);
-      annotTypesRequired.add(TYPE_STANFORD_LOCATION);
+      annotTypesRequired.add(NLPConstants.TYPE_PERSON_STANFORD);
+      annotTypesRequired.add(NLPConstants.TYPE_LOCATION_STANFORD);
       Set<Annotation> peopleAndPlaces = new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
       chapterToAnnotation.put(docToChapter.get(doc), peopleAndPlaces);
     }
