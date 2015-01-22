@@ -7,21 +7,30 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.dao.PlaceDao;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.PlacesResponse;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides a method to GET all places mentioned in the document this service refers to.
  */
 @ManagedBean
 public class PlacesService extends BaseService {
-  
+
   private String documentId;
 
   private PlaceDao placeDao;
+  private DocumentDao documentDao;
+
+  private final Logger LOGGER = Logger.getLogger(PlacesService.class.getName());
   
   @Inject
   private PlaceService placeService;
@@ -29,6 +38,7 @@ public class PlacesService extends BaseService {
   @Override public void postConstruct() {
     super.postConstruct();
     placeDao = getDaoFactory().getPlaceDao();
+    documentDao = getDaoFactory().getDocumentDao();
   }
 
   /**
@@ -54,6 +64,13 @@ public class PlacesService extends BaseService {
   @Produces(MediaType.APPLICATION_JSON)
   public PlacesResponse getPlaces(@QueryParam("offset") int offset,
                                   @QueryParam("count") int count) {
+
+    if (!documentDao.isAnalysisFinished(documentId)) {
+      LOGGER.log(Level.FINEST, "List of Places requested, but analysis not finished yet.");
+      // send HTTP 409 Conflict instead of empty response to avoid wrong caching
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+    }
+
     return new PlacesResponse(placeDao.findInDocument(documentId, offset, count));
   }
 
