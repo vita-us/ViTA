@@ -46,7 +46,7 @@
 
       var toolTip = d3.tip()
           .attr('class', 'plot-view-tool-tip')
-          .offset([-10,0]) // [y,x]
+          .offset([-10, 0]) // [y,x]
           .html(function(d) {
             var content = 'Characters: ... \n';
             content += 'Places: ...';
@@ -85,6 +85,7 @@
 
         var character_map = create_character_map(data.characters);
         var characters = character_map.values();
+        var place_map = create_place_map(data.places || []); // Only used in ViTA
 
         var scene_nodes = [];
         var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
@@ -108,7 +109,15 @@
             scene.chars[j] = character_map.get(char_id);
           }
 
-          var sceneNode = new SceneNode(scene.chars, start_x, duration, parseInt(scene.id), scene.title);
+          // Only used in ViTA
+          if (scene.places) {
+            for (j = 0; j < scene.places.length; j++) {
+              var place_id = scene.places[j];
+              scene.places[j] = place_map.get(place_id);
+            }
+          }
+
+          var sceneNode = new SceneNode(scene.chars, start_x, duration, parseInt(scene.id), scene.title, scene.places);
           sceneNode.comic_name = safe_name;
           scene_nodes.push(sceneNode);
         }
@@ -189,9 +198,18 @@
         var character_map = d3.map();
         for (var i = 0; i < character_data.length; i++) {
           var character = character_data[i];
-          character_map.set(character.id, new Character(character.name, character.id, character.group));
+          character_map.set(character.id, new Character(character.id, character.name, character.group));
         }
         return character_map;
+      }
+
+      function create_place_map(place_data) {
+        var place_map = d3.map();
+        for (var i = 0, l = place_data.length; i < l; i++) {
+          var place = place_data[i];
+          place_map.set(place.id, new Place(place.id, place.name));
+        }
+        return place_map;
       }
 
 
@@ -209,12 +227,17 @@
       // (the name doesn't make any sense).
       var per_width = 0.3;
 
-      function Character(name, id, group_id) {
-        this.name = name;
+      function Character(id, name, group_id) {
         this.id = id;
+        this.name = name;
         this.group_id = group_id;
         this.first_scene = null;
         this.group_positions = {};
+      }
+
+      function Place(id, name) {
+        this.id = id;
+        this.name = name;
       }
 
       function Link(from, to, group_id, char_id) {
@@ -230,8 +253,9 @@
         this.character = null;
       }
 
-      function SceneNode(chars, start, duration, id, title) {
+      function SceneNode(chars, start, duration, id, title, places) {
         this.chars = chars;
+        this.places = places;
         this.start = start; // Scene starts after this many panels
         this.duration = duration; // Scene lasts for this many panels
         this.id = id;
