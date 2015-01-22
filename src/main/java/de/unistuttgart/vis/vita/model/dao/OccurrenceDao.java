@@ -294,4 +294,15 @@ public class OccurrenceDao extends JpaDao<Occurrence, String> {
     return query.getResultList();
   }
 
+  public boolean hasSentencesForAllEntities(List<String> eIds, int rangeStart, int rangeEnd) {
+    TypedQuery<Sentence> query = em.createNamedQuery("Occurrence.getSentencesForAllEntities",
+        Sentence.class);
+    query.setParameter(ENTITY_IDS_PARAMETER, eIds);
+    query.setParameter(RANGE_START_PARAMETER, rangeStart);
+    query.setParameter(RANGE_END_PARAMETER, rangeEnd);
+    query.setParameter(ENTITY_COUNT_PARAMETER, (long)eIds.size());
+    query.setMaxResults(1);
+    return query.getResultList().size() > 0;
+  }
+
 }

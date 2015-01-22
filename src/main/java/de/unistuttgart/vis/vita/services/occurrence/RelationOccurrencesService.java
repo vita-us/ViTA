@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -12,7 +11,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
@@ -100,8 +98,8 @@ public class RelationOccurrencesService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
-    return occurrenceDao.getSentencesForAllEntities(entityIds, stepStart, stepEnd).size();
+  protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
+    return occurrenceDao.hasSentencesForAllEntities(entityIds, stepStart, stepEnd);
   }
 
 }

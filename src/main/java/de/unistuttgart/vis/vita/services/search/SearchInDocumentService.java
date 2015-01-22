@@ -134,15 +134,14 @@ public class SearchInDocumentService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
-    int count = 0;
+  protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
     for (Range span : ranges) {
       if (span.getEnd().getOffset() > stepEnd)
         break;
       if (span.getStart().getOffset() >= stepStart)
-        count++;
+        return true;
     }
-    return count;
+    return false;
   }
 
 }

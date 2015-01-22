@@ -102,8 +102,8 @@ public class EntityOccurrencesService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex);
+  protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
+    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }
