@@ -41,6 +41,9 @@ import gate.creole.ANNIEConstants;
 @AnalysisModule(dependencies = {ImportResult.class, NLPResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
+  private static final List<String>
+      TYPES_PERSON = Arrays.asList(ANNIEConstants.PERSON_ANNOTATION_TYPE,
+                                   NLPConstants.TYPE_PERSON_STANFORD);
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private Set<BasicEntity> entities = new HashSet<>();
   private ImportResult importResult;
@@ -104,7 +107,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
           entityToRemove.add(entity);
         }
       }
-
       entities.removeAll(entityToRemove);
   }
 
@@ -125,8 +127,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       double chapterFactor = 1. / chapters.size();
 
       for (Chapter chapter : chapters) {
-        Set<Annotation> annotations = filterEntityAnnotations(
-            annieNLPResult.getAnnotationsForChapter(chapter));
+        Set<Annotation> annotations = nlpResult.getAnnotationsForChapter(chapter);
 
         for (Annotation annieAnnotation : annotations) {
           createBasicEntity(annieAnnotation, chapter);
@@ -166,23 +167,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Filters the gate annotations to only contain persons and locations.
-   * @param annotations The gate annotation set.
-   * @return The new filtered set.
-   */
-  private Set<Annotation> filterEntityAnnotations(Set<Annotation> annotations) {
-    Set<Annotation> extracted = new TreeSet<>();
-
-    for (Annotation annotation : annotations) {
-      if ("Person".equals(annotation.getType()) || "Location".equals(annotation.getType())) {
-        extracted.add(annotation);
-      }
-    }
-
-    return extracted;
-  }
-
-  /**
    * Creates a new entity out of the annotation in the given chapter.
    * If the entity already exists it will be updated with the matching position.
    * @param theAnnotation The annotation to work with.
@@ -212,7 +196,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   private EntityType getEntityType(Annotation annotation) {
-    if ("Person".equals(annotation.getType())) {
+    if (TYPES_PERSON.contains(annotation.getType())) {
       return EntityType.PERSON;
     } else {
       return EntityType.PLACE;
