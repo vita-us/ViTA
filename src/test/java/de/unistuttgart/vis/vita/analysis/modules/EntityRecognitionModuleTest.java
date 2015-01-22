@@ -11,6 +11,7 @@ import static org.mockito.Mockito.withSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,6 +51,7 @@ public class EntityRecognitionModuleTest {
     resultProvider = mock(ModuleResultProvider.class);
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    when(importResult.getTotalLength()).thenReturn(CHAPTERS[0].length() + CHAPTERS[1].length());
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     progressListener = mock(ProgressListener.class, withSettings());
 
@@ -70,6 +72,10 @@ public class EntityRecognitionModuleTest {
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+
+    SentenceDetectionModule sentenceModule = new SentenceDetectionModule();
+    SentenceDetectionResult sentenceResult = sentenceModule.execute(resultProvider, progressListener);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
 
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
