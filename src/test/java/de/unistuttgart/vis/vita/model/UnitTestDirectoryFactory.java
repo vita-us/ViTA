@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,10 @@ public class UnitTestDirectoryFactory implements DirectoryFactory {
   
   public void remove() {
     try {
-      FileUtils.deleteDirectory(rootPath.toFile());
+      File fileToDelete = rootPath.toFile();
+      if (fileToDelete.exists()) {
+        FileUtils.deleteDirectory(fileToDelete);
+      }
     } catch (IOException e) {
       throw new RuntimeException("Error cleaning up lucene index directory", e);
     }
