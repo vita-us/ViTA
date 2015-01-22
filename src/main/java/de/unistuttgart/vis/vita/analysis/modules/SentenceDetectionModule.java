@@ -107,10 +107,10 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
           int endOffset = annotation.getEndNode().getOffset().intValue();
           int length = endOffset - startOffset;
           TextPosition start =
-              TextPosition.fromGlobalOffset(startOffset,
+              TextPosition.fromLocalOffset(chapter, startOffset,
                   this.importResult.getTotalLength());
           TextPosition end =
-              TextPosition.fromGlobalOffset(startOffset + length,
+              TextPosition.fromLocalOffset(chapter, startOffset + length,
                   this.importResult.getTotalLength());
           Range range = new Range(start, end);
           Sentence sentence = new Sentence(range, chapter, index);
