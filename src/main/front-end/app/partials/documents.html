@@ -10,6 +10,9 @@
           data-document="document" ng-class="{active: isDocumentSelected(document)}"
           data-reload-documents="loadDocuments()" ng-click="setSelectedDocument(document)"></a>
       </div>
+      <div id="document-loading-spinner" ng-show="documents == undefined">
+        <span class="glyphicon glyphicon-refresh spin"></span>
+      </div>
     </div>
   </div>
 
