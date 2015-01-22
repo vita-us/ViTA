@@ -10,7 +10,7 @@
           <a href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
             class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
             {{person.displayName}} 
-            <span ng-hide="person.alternativeName===undefined">({{person.alternativeName}})</span>
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
         </a>
         </li>
       </ul>

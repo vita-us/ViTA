@@ -41,7 +41,7 @@
             ng-class="{active: activeFingerprints.indexOf(person) > -1}"
             ng-click="toggleFingerprint(person)">
             {{person.displayName}}
-            <span ng-hide="person.alternativeName===undefined">({{person.alternativeName}})</span>
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
           </a>
         </div>
       </div>

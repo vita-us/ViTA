@@ -24,7 +24,7 @@
         ng-click="loadPersonWordcloud(person)" ng-class="{'active': activeWordcloud == person.id}"
         class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
         {{person.displayName}}
-        <span ng-hide="person.alternativeName===undefined">({{person.alternativeName}})</span>
+        <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
       </a>
     </div>
   </div>

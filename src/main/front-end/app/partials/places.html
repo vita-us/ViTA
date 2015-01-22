@@ -9,7 +9,7 @@
         <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' ">
           <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">
             {{place.displayName}}
-            <span ng-hide="place.alternativeName===undefined">({{place.alternativeName}})</span>
+            <span ng-show="place.alternativeName">({{place.alternativeName}})</span>
           </a>
         </li>
       </ul>
