@@ -48,10 +48,23 @@
           .attr('class', 'plot-view-tool-tip')
           .offset([-10, 0]) // [y,x]
           .html(function(d) {
-            var content = 'Characters: ... \n';
-            content += 'Places: ...';
+            var character_string = create_entity_tooltip_string(d.chars);
+            var place_string = create_entity_tooltip_string(d.places);
+
+            var content = '<p>Characters: ' + character_string + ' </p>';
+            if (d.places.length) {
+              content += '<p>Places: ' + place_string + ' </p>';
+            }
             return content;
           });
+
+      function create_entity_tooltip_string(entities) {
+        var names = entities.map(function(e) {
+          return e.name;
+        });
+        names.sort();
+        return names.join(', ');
+      }
 
 
       function create_link_path(link) {
