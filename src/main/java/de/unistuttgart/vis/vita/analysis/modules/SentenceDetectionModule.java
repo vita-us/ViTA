@@ -122,20 +122,19 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
         });
 
         for (Annotation annotation : sortedAnnotations) {
-          int startOffset = annotation.getStartNode().getOffset().intValue();
-          int endOffset = annotation.getEndNode().getOffset().intValue();
-          int length = endOffset - startOffset;
+          int localStartOffset = annotation.getStartNode().getOffset().intValue();
+          int localEndOffset = annotation.getEndNode().getOffset().intValue();
           TextPosition start =
-              TextPosition.fromLocalOffset(chapter, startOffset,
+              TextPosition.fromLocalOffset(chapter, localStartOffset,
                   this.importResult.getTotalLength());
           TextPosition end =
-              TextPosition.fromLocalOffset(chapter, startOffset + length,
+              TextPosition.fromLocalOffset(chapter, localEndOffset,
                   this.importResult.getTotalLength());
           Range range = new Range(start, end);
           Sentence sentence = new Sentence(range, chapter, index);
           index++;
           sentences.add(sentence);
-          startOffsetToSentence.put(startOffset, sentence);
+          startOffsetToSentence.put(start.getOffset(), sentence);
         }
 
         chapterToSentence.put(chapter, sentences);
