@@ -1,6 +1,5 @@
-package de.unistuttgart.vis.vita.analysis.modules.nlp;
+package de.unistuttgart.vis.vita.analysis.modules.gate;
 
-import de.unistuttgart.vis.vita.analysis.modules.gate.OpenNLPModule;
 import de.unistuttgart.vis.vita.analysis.results.OpenNLPResult;
 
 import org.junit.BeforeClass;

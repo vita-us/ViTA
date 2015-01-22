@@ -1,4 +1,4 @@
-package de.unistuttgart.vis.vita.analysis.modules;
+package de.unistuttgart.vis.vita.analysis.modules.gate;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;

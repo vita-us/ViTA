@@ -1,6 +1,5 @@
-package de.unistuttgart.vis.vita.analysis.modules.nlp;
+package de.unistuttgart.vis.vita.analysis.modules.gate;
 
-import de.unistuttgart.vis.vita.analysis.modules.gate.StanfordNLPModule;
 import de.unistuttgart.vis.vita.analysis.results.StanfordNLPResult;
 
 import org.junit.BeforeClass;

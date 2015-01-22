@@ -1,6 +1,5 @@
-package de.unistuttgart.vis.vita.analysis.modules.nlp;
+package de.unistuttgart.vis.vita.analysis.modules.gate;
 
-import de.unistuttgart.vis.vita.analysis.modules.gate.ANNIEModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 
 import org.junit.BeforeClass;
