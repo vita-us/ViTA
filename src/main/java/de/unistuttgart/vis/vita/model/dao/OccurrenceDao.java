@@ -119,15 +119,17 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
     @NamedQuery(name = "Occurrence.findOccurrenceById", query = "SELECT occ "
         + "FROM Occurrence occ " + "WHERE occ.id = :occurrenceId"),
 
-    @NamedQuery(name = "Occurrence.getSentencesForAllEntities", query =
-        "SELECT sentence "
-        + "FROM Sentence sentence "
-        + "GROUP BY sentence "
-        + "HAVING (SELECT COUNT(DISTINCT e) "
-        + "FROM Entity e INNER JOIN e.occurrences occ2 WHERE occ2.sentence = sentence AND e.id IN (:entityIds)) = :entityCount "
-        // range checks
-        + "AND sentence.range.start.offset >= :rangeStart AND sentence.range.start.offset < :rangeEnd "
-        + "ORDER BY sentence.index ASC")})
+    @NamedQuery(name = "Occurrence.getSentencesForAllEntities",
+        query =
+         "SELECT DISTINCT sentence "
+         + "FROM Entity e, Sentence sentence "
+         + "INNER JOIN e.occurrences occ "
+         + "WHERE e.id IN (:entityIds) "
+         + "AND occ.sentence = sentence "
+         + "AND sentence.range.start.offset >= :rangeStart AND sentence.range.start.offset < :rangeEnd "
+         + "GROUP BY sentence "
+         + "HAVING COUNT(DISTINCT e) = :entityCount "
+         + "ORDER BY sentence.index ASC")})
 public class OccurrenceDao extends JpaDao<Occurrence, String> {
 
   private static final String ENTITY_ID_PARAMETER    = "entityId";
