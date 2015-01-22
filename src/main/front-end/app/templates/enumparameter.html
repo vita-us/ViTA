@@ -1,0 +1,13 @@
+<div class="enum-parameter form-group" title="{{parameter.description}}">
+  <label class="parameter-label col-sm-6">
+    {{parameter.label}}
+  </label>
+  <div class="col-sm-6">
+    <div class="input">
+      <span ng-repeat="value in parameter.values" class="enum-input">
+        <label for="{{value.name}}">{{value.label}}</label>
+        <input type="radio" ng-model="parameter['value']" value="{{value.name}}" id="{{value.name}}">
+      </span>
+    </div>
+  </div>
+</div>
