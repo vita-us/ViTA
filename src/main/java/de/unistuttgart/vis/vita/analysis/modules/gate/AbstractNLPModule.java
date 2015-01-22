@@ -36,6 +36,8 @@ import gate.util.GateException;
  *
  */
 public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
+
+  private final String CORPUS_NAME = "ViTA Corpus";
   protected ImportResult importResult;
   protected ProgressListener progressListener;
   protected ConditionalSerialAnalyserController controller;
@@ -74,7 +76,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
    * Creates the Gate corpus out of the available chapters.
    */
   protected void createCorpus() throws ResourceInstantiationException {
-    corpus = Factory.newCorpus("ViTA Corpus");
+    corpus = Factory.newCorpus(CORPUS_NAME);
 
     for (DocumentPart part : importResult.getParts()) {
       for (Chapter chapter : part.getChapters()) {

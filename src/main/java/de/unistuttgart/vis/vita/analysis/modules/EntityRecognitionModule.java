@@ -9,9 +9,10 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.modules.gate.NLPConstants;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextSpan;
@@ -21,6 +22,7 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,27 +31,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import gate.Annotation;
+import gate.creole.ANNIEConstants;
 
 /**
  *
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class}, weight = 0.1)
+@AnalysisModule(dependencies = {ImportResult.class, NLPResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private Set<BasicEntity> entities = new HashSet<>();
   private ImportResult importResult;
-  private AnnieNLPResult annieNLPResult;
+  private NLPResult nlpResult;
   private ProgressListener progressListener;
 
   @Override
   public BasicEntityCollection execute(ModuleResultProvider result,
                                        ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
-    annieNLPResult = result.getResultFor(AnnieNLPResult.class);
+    nlpResult = result.getResultFor(NLPResult.class);
     this.progressListener = progressListener;
 
     startAnalysis();
@@ -67,7 +69,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   private void mergeSameEntities() {
     EntityMerger merger = new EntityMerger();
     merger.addAll(entities);
-    entities = new HashSet<BasicEntity>(merger.getResult());
+    entities = new HashSet<>(merger.getResult());
   }
 
   /**
