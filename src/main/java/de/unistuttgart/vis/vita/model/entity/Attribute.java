@@ -1,13 +1,13 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -24,27 +24,6 @@ import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 @Table(indexes={
     @Index(columnList="type")
 })
-@NamedQueries({
-    @NamedQuery(name = "Attribute.findAllAttributes",
-                query = "SELECT a "
-                      + "FROM Attribute a"),
-
-    @NamedQuery(name = "Attribute.findAttributeById",
-                query = "SELECT a "
-                      + "FROM Attribute a "
-                      + "WHERE a.id = :attributeId"),
-
-    @NamedQuery(name = "Attribute.findAttributesForEntity",
-                query = "SELECT a "
-                      + "FROM Attribute a, Entity e "
-                      + "WHERE e.id = :entityId "
-                      + "AND a MEMBER OF e.attributes"),
-
-    @NamedQuery(name = "Attribute.findAttributeByType",
-                query = "SELECT a "
-                      + "FROM Attribute a "
-                      + "WHERE a.type = :attributeType")}
-)
 public class Attribute extends AbstractEntityBase {
 
   // there is another "type" in Entity, so this must be named differently!
@@ -130,6 +109,32 @@ public class Attribute extends AbstractEntityBase {
    */
   public BasicAttribute toBasicAttribute() {
     return new BasicAttribute(getId(), type.toString(), content);
+  }
+
+  /**
+   * Merges the occurrences of all attributes with the same type and content
+   * @param attributes
+   * @return
+   */
+  public static Set<Attribute> merge(Iterable<Attribute> attributes) {
+    Set<Attribute> result = new HashSet<>();
+    for (Attribute attr : attributes) {
+      boolean exists = false;
+      for (Attribute existing : result) {
+        if (existing.getType() == attr.getType()
+            && existing.getContent().equals(attr.getContent())) {
+          existing.getOccurrences().addAll(attr.getOccurrences());
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        Attribute newAttr = new Attribute(attr.getType(), attr.getContent());
+        newAttr.getOccurrences().addAll(attr.getOccurrences());
+        result.add(newAttr);
+      }
+    }
+    return result;
   }
 
 }

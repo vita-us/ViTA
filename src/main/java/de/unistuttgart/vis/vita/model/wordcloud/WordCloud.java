@@ -7,8 +7,6 @@ import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,16 +19,6 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * depending on how often they are used in a document.
  */
 @Entity
-@NamedQueries({
-  @NamedQuery(name = "WordCloud.getGlobal",
-    query = "SELECT doc.content.globalWordCloud "
-    + "FROM Document doc "
-    + "WHERE doc.id = :documentId"),
-  @NamedQuery(name = "WordCloud.getForEntity",
-    query = "SELECT ent.wordCloud "
-    + "FROM Entity ent "
-    + "WHERE ent.id = :entityId")
-})
 @XmlRootElement
 public class WordCloud extends AbstractEntityBase {
   @OneToMany(cascade = CascadeType.ALL)

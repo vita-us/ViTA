@@ -2,11 +2,13 @@
   <div class="col-md-2">
     <div ng-include="'partials/menu.html'"></div>
   </div>
-  <div class="col-md-10">
+  <div class="col-md-10" id="fingerprint-page">
     <div class="row">
       <div class="col-md-9">
-        <button id="fp-separator-toggle-button" class="btn btn-default"
-          ng-click="FingerprintSynchronizer.toggle()">Toggle separators</button>
+        <div data-fingerprint-top-row></div>
+        <div ng-show="activeFingerprintIds.length == 0" class="text-center help-text">
+          Select characters on the right to see their fingerprints
+        </div>
         <div class="row" ng-show="activeFingerprints.length >= 2">
           <h3 class="col-md-2">Combination</h3>
           <div class="col-md-10">
@@ -16,7 +18,11 @@
           </div>
         </div>
         <div class="row" ng-repeat="active in activeFingerprints">
-          <h3 class="col-md-2">{{active.displayName}}</h3>
+          <h3 class="col-md-2">
+            <a href="#/documents/{{Page.documentId}}/characters/{{active.id}}"
+               class="listed-character {{CssClass.forRankingValue(active.rankingValue)}}">
+              {{active.displayName}}</a>
+          </h3>
           <div class="col-md-10">
             <div data-fingerprint
               class="fingerprint-container" data-entity-ids="[active.id]"

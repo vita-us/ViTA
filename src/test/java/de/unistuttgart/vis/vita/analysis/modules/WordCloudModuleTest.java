@@ -15,9 +15,11 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.results.LuceneResult;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.UnitTestModel;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
@@ -28,6 +30,7 @@ public class WordCloudModuleTest {
   private TextRepository textRepository;
   private ModuleResultProvider resultProvider;
   private ProgressListener progressListener;
+  private AnalysisParameters parameters;
 
   private static final String DOCUMENT_ID = "thedocumentid";
   // "such" and "a" are stop words
@@ -37,28 +40,52 @@ public class WordCloudModuleTest {
   @Before
   public void setUp() throws IOException {
     model = new UnitTestModel();
-    UnitTestModel.startNewSession();
     textRepository = model.getTextRepository();
+    UnitTestModel.startNewSession();
     textRepository.storeChaptersTexts(getChapters(), DOCUMENT_ID);
+  }
+
+  private void createWordCloudModule(boolean stopWordListEnabled) throws IOException {
+
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(Model.class)).thenReturn(model);
     IndexSearcher searcher = textRepository.getIndexSearcherForDocument(DOCUMENT_ID);
-    when(resultProvider.getResultFor(IndexSearcher.class)).thenReturn(searcher);
+    LuceneResult luceneResult = mock(LuceneResult.class);
+    when(luceneResult.getIndexReader()).thenReturn(searcher.getIndexReader());
+    when(resultProvider.getResultFor(LuceneResult.class)).thenReturn(luceneResult);
+    parameters = new AnalysisParameters();
+    parameters.setStopWordListEnabled(stopWordListEnabled);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
     progressListener = mock(ProgressListener.class);
 
     module = new WordCloudModule();
+
   }
 
   @Test
   public void testWordCloud() throws Exception {
-    Set<WordCloudItem> wordCloud = module.execute(resultProvider, progressListener)
-          .getGlobalWordCloud().getItems();
+    createWordCloudModule(true);
+    Set<WordCloudItem> wordCloud =
+        module.execute(resultProvider, progressListener).getGlobalWordCloud().getItems();
     // items with same frequency are sorted alphabetically, but backwards
-    assertThat(wordCloud, contains(
-        new WordCloudItem("gandalf", 3),
-        new WordCloudItem("bilbo", 2),
-        new WordCloudItem("mordor", 1),
-        new WordCloudItem("frodo", 1)));
+    assertThat(
+        wordCloud,
+        contains(new WordCloudItem("gandalf", 3), new WordCloudItem("bilbo", 2), new WordCloudItem(
+            "mordor", 1), new WordCloudItem("frodo", 1)));
+
+  }
+
+  @Test
+  public void testWordCloudWithStopWords() throws IOException {
+    createWordCloudModule(false);
+    Set<WordCloudItem> wordCloud =
+        module.execute(resultProvider, progressListener).getGlobalWordCloud().getItems();
+    // items with same frequency are sorted alphabetically, but backwards
+    assertThat(
+        wordCloud,
+        contains(new WordCloudItem("gandalf", 3), new WordCloudItem("bilbo", 2), new WordCloudItem(
+            "such", 1), new WordCloudItem("mordor", 1), new WordCloudItem("frodo", 1),
+            new WordCloudItem("a", 1)));
 
   }
 

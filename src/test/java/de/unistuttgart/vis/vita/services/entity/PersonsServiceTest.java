@@ -10,20 +10,29 @@ import javax.ws.rs.core.Application;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.Test;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Person;
+import de.unistuttgart.vis.vita.services.AnalysisAware;
 import de.unistuttgart.vis.vita.services.ServiceTest;
-import de.unistuttgart.vis.vita.services.entity.PersonsService;
 import de.unistuttgart.vis.vita.services.responses.PersonsResponse;
 
 /**
- * Performs test on the PersonsService
+ * Performs test on the PersonsService.
  */
-public class PersonsServiceTest extends ServiceTest {
+public class PersonsServiceTest extends ServiceTest implements AnalysisAware {
 
-  private String docId;
+  public static final int DEFAULT_OFFSET = 0;
+  public static final int DEFAULT_COUNT = 10;
+
+  public static final String PATH_PREFIX = "documents/";
+  public static final String PATH_SUFFIX = "/persons";
+
+  protected String docId;
+  protected String path;
+
   private PersonTestData testData;
 
   @Override
@@ -36,8 +45,11 @@ public class PersonsServiceTest extends ServiceTest {
     Person testPerson = testData.createTestPerson();
     Document testDoc = new DocumentTestData().createTestDocument(1);
     testDoc.getContent().getPersons().add(testPerson);
+    testDoc.getProgress().setStatus(getCurrentAnalysisStatus());
     
     docId = testDoc.getId();
+
+    path = PATH_PREFIX + docId + PATH_SUFFIX;
     
     em.getTransaction().begin();
     em.persist(testPerson);
@@ -50,15 +62,18 @@ public class PersonsServiceTest extends ServiceTest {
   protected Application configure() {
     return new ResourceConfig(PersonsService.class);
   }
-  
+
+  public AnalysisStatus getCurrentAnalysisStatus() {
+    return AnalysisStatus.FINISHED;
+  }
+
   /**
    * Tests whether persons can be caught using the REST interface.
    */
   @Test
   public void testGetPersons() {
-    String path = "documents/" + docId + "/persons";
-    PersonsResponse actualResponse = target(path).queryParam("offset", 0)
-                                                  .queryParam("count", 10)
+    PersonsResponse actualResponse = target(path).queryParam("offset", DEFAULT_OFFSET)
+                                                  .queryParam("count", DEFAULT_COUNT)
                                                   .request().get(PersonsResponse.class);
     assertEquals(1, actualResponse.getTotalCount());
     List<Person> persons = actualResponse.getPersons();

@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.lucene.queryparser.classic.ParseException;
 
@@ -30,13 +31,20 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 @ManagedBean
 public class SearchInDocumentService extends OccurrencesService {
-  private static final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
   private List<TextSpan> textSpans;
 
   @Inject
   private Model model;
 
+  private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
+
+  /**
+   * Sets the id of the document in which this service should search in.
+   *
+   * @param documentId - the id of the document to search in
+   * @return this SearchInDocumentService
+   */
   public SearchInDocumentService setDocumentId(String documentId) {
     this.documentId = documentId;
     return this;
@@ -69,6 +77,11 @@ public class SearchInDocumentService extends OccurrencesService {
       throw new WebApplicationException(ire);
     }
 
+    if (!documentDao.isAnalysisFinished(documentId)) {
+      LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+    }
+
     Chapter startChapter = getSurroundingChapter(startOffset);
     Chapter endChapter = getSurroundingChapter(endOffset);
     List<Chapter> chapters = getChaptersInRange(startChapter, endChapter);
@@ -81,21 +94,19 @@ public class SearchInDocumentService extends OccurrencesService {
       return new OccurrencesResponse(new ArrayList<Occurrence>());
     }
 
-    List<Occurrence> occs = null;
+    List<Occurrence> occurrences;
     if (steps == 0) {
-      occs = convertSpansToOccurrences(textSpans);
+      occurrences = convertSpansToOccurrences(textSpans);
     } else {
-      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
+      occurrences = getGranularEntityOccurrences(steps, startOffset, endOffset);
     }
 
     // put occurrences into a response and send it
-    return new OccurrencesResponse(occs);
+    return new OccurrencesResponse(occurrences);
   }
 
   private List<Chapter> getChaptersInRange(Chapter startChapter, Chapter endChapter) {
-    Document document =
-        em.createNamedQuery("Document.findDocumentById", Document.class)
-        .setParameter("documentId", documentId).getSingleResult();
+    Document document = documentDao.findById(documentId);
     boolean within = false;
     List<Chapter> chapters = new ArrayList<>();
     for (DocumentPart part : document.getContent().getParts()) {

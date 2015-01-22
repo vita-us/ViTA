@@ -5,14 +5,15 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 /**
@@ -20,23 +21,7 @@ import javax.persistence.OneToOne;
  * content of this eBook.
  */
 @Entity
-@NamedQueries({
-    @NamedQuery(name = "Document.findAllDocuments",
-                query = "SELECT d "
-                      + "FROM Document d "
-                      + "ORDER BY d.uploadDate DESC"),
-
-    @NamedQuery(name = "Document.findDocumentById",
-                query = "SELECT d "
-                      + "FROM Document d "
-                      + "WHERE d.id = :documentId"),
-
-    @NamedQuery(name = "Document.findDocumentByTitle",
-                query = "SELECT d "
-                      + "FROM Document d "
-                      + "WHERE d.metadata.title = :documentTitle")})
 public class Document extends AbstractEntityBase {
-
   @Embedded
   private DocumentMetadata metadata;
   @Embedded
@@ -46,12 +31,17 @@ public class Document extends AbstractEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  private AnalysisParameters parameters;
+
   private String filePath;
   
   @Column(length = 1000)
   private Date uploadDate;
 
   private String fileName;
+
+  private UUID contentID;
 
   /**
    * Creates a new empty document, setting all fields to default values.
@@ -61,6 +51,8 @@ public class Document extends AbstractEntityBase {
     this.content = new DocumentContent();
     this.metadata = new DocumentMetadata();
     this.progress = new AnalysisProgress();
+    this.parameters = new AnalysisParameters();
+    contentID = UUID.randomUUID();
   }
 
   /**
@@ -169,5 +161,65 @@ public class Document extends AbstractEntityBase {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  public UUID getContentID() {
+    return contentID;
+  }
+
+  /**
+   * Gets the parameters that should be used in the analysis of this document
+   * @return
+   */
+  public AnalysisParameters getParameters() {
+    return parameters;
+  }
+
+  /**
+   * Sets the parameters that should be used in the analysis of this document
+   * @param parameters
+   */
+  public void setParameters(AnalysisParameters parameters) {
+    this.parameters = parameters;
+  }
+
+  /**
+   * Find the chapter for a given global offset.
+   * @param globalOffset The offset to search the chapter.
+   * @return
+   */
+  public Chapter getChapterAt(int globalOffset) {
+    List<Chapter> allChapters = new ArrayList<>();
+
+    for (DocumentPart documentPart : content.getParts()) {
+      allChapters.addAll(documentPart.getChapters());
+    }
+
+    int lo = 0;
+    int hi = allChapters.size() - 1;
+
+    boolean toHigh = allChapters.get(hi).getRange().getEnd().getOffset() < globalOffset;
+    boolean negative = globalOffset < 0;
+
+    if (toHigh || negative) {
+      throw new IndexOutOfBoundsException("Offset is not in range.");
+    }
+
+    while (lo <= hi) {
+      int mid = lo + (hi - lo) / 2;
+      TextSpan range = allChapters.get(mid).getRange();
+      int start = range.getStart().getOffset();
+      int end = range.getEnd().getOffset();
+
+      if (globalOffset < start) {
+        hi = mid - 1;
+      } else if (globalOffset > end) {
+        lo = mid + 1;
+      } else {
+        return allChapters.get(mid);
+      }
+    }
+
+    throw new IllegalStateException("Not found the correct chapter");
   }
 }

@@ -2,27 +2,31 @@ package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.PlaceDao;
 import de.unistuttgart.vis.vita.model.entity.Place;
+import de.unistuttgart.vis.vita.services.BaseService;
 
 /**
  * Provides methods to GET a place with the current id.
  */
 @ManagedBean
-public class PlaceService {
+public class PlaceService extends BaseService {
   
   private String placeId;
 
-  @Inject
-  private EntityManager em;
+  private PlaceDao placeDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    placeDao = getDaoFactory().getPlaceDao();
+  }
 
   /**
    * Sets the id of the Place this resource should represent.
@@ -42,21 +46,15 @@ public class PlaceService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Place getPlace() {
-    Place readPlace = null;
+    Place readPlace;
     
     try {
-      readPlace = readPlaceFromDatabase();
+      readPlace = placeDao.findById(placeId);
     } catch (NoResultException e) {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
     
     return readPlace;
-  }
-  
-  private Place readPlaceFromDatabase() {
-    TypedQuery<Place> query = em.createNamedQuery("Place.findPlaceById", Place.class);
-    query.setParameter("placeId", placeId);
-    return query.getSingleResult();
   }
 
 }

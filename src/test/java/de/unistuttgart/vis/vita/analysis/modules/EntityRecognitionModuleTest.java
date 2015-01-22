@@ -1,5 +1,19 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
@@ -71,7 +85,7 @@ public class EntityRecognitionModuleTest {
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
-  
+
   private static void fillText() {
     DocumentPart part = new DocumentPart();
     parts.add(part);
@@ -93,7 +107,7 @@ public class EntityRecognitionModuleTest {
   @Test
   public void checkEntitiesAreDetectedAcrossChapters() throws Exception {
     BasicEntity person = getEntityByName("Alice");
-
+    assertThat(person, not(nullValue()));
     assertThat(person.getOccurences(), hasSize(2));
   }
 

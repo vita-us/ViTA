@@ -6,7 +6,8 @@
   vitaServices.factory('DocumentParts', ['$resource', function($resource) {
     return $resource('webapi/documents/:documentId/parts', {}, {
       get: {
-        method: 'GET'
+        method: 'GET',
+        cache: true
       }
     });
   }]);
