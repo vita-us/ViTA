@@ -46,5 +46,9 @@
             $scope.wordcloud = response.items;
           });
         }
+
+        $scope.loaded = function() {
+          return $scope.wordcloud !== undefined;
+        };
       }]);
 })(angular);
