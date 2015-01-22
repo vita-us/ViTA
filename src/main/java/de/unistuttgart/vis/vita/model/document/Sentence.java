@@ -11,6 +11,11 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  */
 @Entity
 @XmlRootElement
+@Table(indexes = {
+    @Index(columnList = "range.start.offset"),
+    @Index(columnList = "range.end.offset"),
+    @Index(columnList = "sentenceIndex")
+})
 public class Sentence extends AbstractEntityBase {
 
   @Embedded
@@ -19,7 +24,7 @@ public class Sentence extends AbstractEntityBase {
   @ManyToOne
   private Chapter chapter;
 
-  @Column(name = "sentenceIndex")
+  @Column(name="sentenceIndex")
   private int index;
 
   /**

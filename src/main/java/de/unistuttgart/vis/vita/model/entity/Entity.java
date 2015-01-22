@@ -29,7 +29,8 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  */
 @javax.persistence.Entity
 @Table(indexes={
-    @Index(columnList="rankingValue")
+    @Index(columnList="rankingValue"),
+    @Index(columnList="frequency")
   })
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)

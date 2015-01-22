@@ -1,7 +1,7 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.TextRepository;
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,16 +13,17 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import de.unistuttgart.vis.vita.model.TextRepository;
-import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @Table(indexes={
-  @Index(columnList="number")
+    @Index(columnList="number"),
+    @Index(columnList = "range.start.offset"),
+    @Index(columnList = "range.end.offset"),
 })
 @XmlRootElement
 public class Chapter extends AbstractEntityBase {

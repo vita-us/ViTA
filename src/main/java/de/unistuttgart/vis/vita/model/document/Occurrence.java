@@ -4,7 +4,9 @@ package de.unistuttgart.vis.vita.model.document;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -15,6 +17,7 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
  * the sentence this block is located in. Is not aware of the actual text within the bounds.
  */
 @Entity
+@Table(indexes = {@Index(columnList = "range.start.offset"), @Index(columnList = "range.end.offset")})
 public class Occurrence extends AbstractEntityBase implements Comparable<Occurrence> {
 
   @ManyToOne(cascade = CascadeType.ALL)

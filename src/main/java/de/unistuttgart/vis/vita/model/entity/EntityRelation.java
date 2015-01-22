@@ -4,14 +4,17 @@ import org.hibernate.annotations.Target;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Index;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Represents a Relation between two Entities.
  *
  * @param <Entity> - the type of the other entity
  */
+@Table(indexes = { @Index(columnList = "weight")})
 @javax.persistence.Entity
 public class EntityRelation extends AbstractEntityBase {
 
@@ -26,13 +29,9 @@ public class EntityRelation extends AbstractEntityBase {
   private double[] weightOverTime;
 
   @ManyToOne
-  @JoinTable(name="OriginId")
   private Entity originEntity;
 
-  // only entity relations will be persisted
-  @Target(Entity.class)
   @ManyToOne
-  @JoinTable(name="TargetId")
   private Entity relatedEntity;
 
   public Entity getOriginEntity() {

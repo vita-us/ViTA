@@ -14,8 +14,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * within the bounds.
  */
 @Embeddable
-@Table(name = "Ranges", // RANGE is a reserved word in mysql
-indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
 @XmlRootElement
 public class Range implements Comparable<Range> {
 
