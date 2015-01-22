@@ -41,6 +41,9 @@
             ng-class="{active: activeFingerprints.indexOf(person) > -1}"
             ng-click="toggleFingerprint(person)">{{person.displayName}}</a>   
         </div>
+        <div id="document-loading-spinner" ng-hide="persons.length == 0">
+          <span class="glyphicon glyphicon-refresh spin"></span>
+        </div>
       </div>
     </div>
   </div>
