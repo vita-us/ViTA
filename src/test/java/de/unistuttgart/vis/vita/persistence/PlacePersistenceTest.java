@@ -140,21 +140,17 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     Occurrence occurrence2 = new Occurrence(sentence1, range2);
     Occurrence occurrence3 = new Occurrence(sentence2, range3);
 
-    Range span1 = new Range(pos1, pos4);
-    Range span2 = new Range(pos2, pos4);
-    Range span3 = new Range(pos3, pos4);
-
     Place p = new Place();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurrences().add(occurrence1);
     p.getOccurrences().add(occurrence2);
+    p.getOccurrences().add(occurrence1);
     p.getOccurrences().add(occurrence3);
 
     em.persist(doc);
     em.persist(chapter);
-    em.persist(span1);
-    em.persist(span3);
-    em.persist(span2);
+    em.persist(occurrence1);
+    em.persist(occurrence2);
+    em.persist(occurrence3);
     em.persist(p);
     startNewTransaction();
 
@@ -162,5 +158,4 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     assertThat(dbPlace.getOccurrences(),
         IsIterableContainingInOrder.contains(occurrence1, occurrence2, occurrence3));
   }
-
 }

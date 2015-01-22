@@ -148,8 +148,8 @@ public class AttributePersistenceTest extends AbstractPersistenceTest {
     Occurrence occurrence3 = new Occurrence(sentence2, range3);
     
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    attribute.getOccurrences().add(occurrence1);
     attribute.getOccurrences().add(occurrence2);
+    attribute.getOccurrences().add(occurrence1);
     attribute.getOccurrences().add(occurrence3);
 
     em.persist(doc);

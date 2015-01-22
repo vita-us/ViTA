@@ -1,23 +1,19 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
  */
-@Entity
+@Embeddable
 @Table(indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
-@XmlRootElement
-public class Range extends AbstractEntityBase implements Comparable<Range> {
+public class Range implements Comparable<Range> {
 
   // constants
   private static final int MIN_LENGTH = 0;

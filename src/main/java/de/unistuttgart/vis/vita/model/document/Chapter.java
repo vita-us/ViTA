@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
-
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -23,7 +22,6 @@ import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 @Table(indexes={
   @Index(columnList="number")
 })
-
 public class Chapter extends AbstractEntityBase {
 
   private int number;
@@ -37,7 +35,7 @@ public class Chapter extends AbstractEntityBase {
   @Transient
   private String text;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @Embedded
   private Range range;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapter")

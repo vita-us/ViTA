@@ -50,7 +50,7 @@ public abstract class Entity extends AbstractEntityBase {
   private Set<Attribute> attributes;
 
   @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("start.offset ASC")
+  @OrderBy("range.start.offset ASC")
   private List<Occurrence> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")

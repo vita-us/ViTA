@@ -33,16 +33,16 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   private Chapter chapter = new Chapter();
 
   @Test
-  public void testPersistOneTextSpan() {
-    // first set up a TextSpan
+  public void testPersistOneOccurrence() {
+    // first set up an Occurrence
     em.persist(chapter);
     Occurrence oc = createTestOccurrence();
 
-    // persist this TextSpan
+    // persist this Occurrence
     em.persist(oc);
     startNewTransaction();
 
-    // read persisted TextSpans from database
+    // read persisted Occurrences from database
     Occurrence readOccurrence = readOccurrenceFromDb(oc.getId());
 
     // check whether data is correct
@@ -50,7 +50,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Creates a new TextSpan, setting start and end to test values.
+   * Creates a new Occurrence, setting start and end to test values.
    * 
    * @return test text span
    */
@@ -71,7 +71,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
    * @return the occurrence
    */
   private Occurrence readOccurrenceFromDb(String id) {
-    return em.createNamedQuery("Occurrence.findTextSpanById", Occurrence.class)
+    return em.createNamedQuery("Occurrence.findOccurrenceById", Occurrence.class)
         .setParameter("occurrenceId", id).getSingleResult();
   }
 
@@ -88,7 +88,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     int end = occurrenceToCheck.getRange().getEnd().getOffset();
     int diff = end - start;
     int sentenceStart = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
-    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
+    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getEnd().getOffset();
 
     assertEquals(TEST_RANGE_START, start);
     assertEquals(TEST_RANGE_END, end);
@@ -98,12 +98,12 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether all Named Queries of TextSpan are working correctly.
+   * Checks whether all Named Queries of Occurrence are working correctly.
    * 
    * @throws Exception
    */
   @Test
-  public void testFindingAllAndSpecificTextSpans() {
+  public void testFindingAllAndSpecificOccurrence() {
     Occurrence testOccurrence = createTestOccurrence();
 
     em.persist(chapter);
