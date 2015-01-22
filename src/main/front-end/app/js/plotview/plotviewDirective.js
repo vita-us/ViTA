@@ -104,6 +104,8 @@
         var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
         for (var i = 0; i < scenes.length; i++) {
           var scene = scenes[i];
+          var scene_characters = [];
+          var scene_places = [];
           var duration = parseInt(scene.duration);
           var start_x;
           if (USE_EQUAL_SCENE_WIDTHS) {
@@ -119,18 +121,18 @@
 
           for (var j = 0; j < scene.chars.length; j++) {
             var char_id = scene.chars[j];
-            scene.chars[j] = character_map.get(char_id);
+            scene_characters[j] = character_map.get(char_id);
           }
 
           // Only used in ViTA
           if (scene.places) {
             for (j = 0; j < scene.places.length; j++) {
               var place_id = scene.places[j];
-              scene.places[j] = place_map.get(place_id);
+              scene_places[j] = place_map.get(place_id);
             }
           }
 
-          var sceneNode = new SceneNode(scene.chars, start_x, duration, parseInt(scene.id), scene.title, scene.places);
+          var sceneNode = new SceneNode(scene_characters, start_x, duration, parseInt(scene.id), scene.title, scene_places);
           sceneNode.comic_name = safe_name;
           scene_nodes.push(sceneNode);
         }
