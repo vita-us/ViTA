@@ -109,10 +109,10 @@ public class EntityDao extends JpaDao<Entity, String> {
 
     switch (type) {
       case PERSON:
-        query = em.createNamedQuery("TextSpan.getOccurringPersons");
+        query = em.createNamedQuery("Occurrence.getOccurringPersons");
         break;
       case PLACE:
-        query = em.createNamedQuery("TextSpan.getOccurringPlaces");
+        query = em.createNamedQuery("Occurrence.getOccurringPlaces");
         break;
       default:
         throw new IllegalArgumentException("Unknown type of entity");

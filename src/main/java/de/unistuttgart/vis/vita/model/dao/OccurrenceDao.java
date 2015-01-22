@@ -78,8 +78,8 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
         + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "),
 
     // gets the entities that occur within a given range
-    @NamedQuery(name = "Occurrence.getOccurringEntities", query = "SELECT DISTINCT e "
-        + "FROM Entity e "
+    @NamedQuery(name = "Occurrence.getOccurringPersons", query = "SELECT DISTINCT e "
+        + "FROM Person e "
         + "INNER JOIN e.occurrences occ "
         + "WHERE e IN :entities "
         // range checks
@@ -93,6 +93,25 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
         + ") / ("
         + "SELECT COUNT(DISTINCT p) "
         + "FROM Person p "
+        + "INNER JOIN p.occurrences occ2 "
+        + "WHERE occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
+        + ")"),
+
+    @NamedQuery(name = "Occurrence.getOccurringPlaces", query = "SELECT DISTINCT e "
+        + "FROM Place e "
+        + "INNER JOIN e.occurrences occ "
+        + "WHERE e IN :entities "
+        // range checks
+        + "AND occ.sentence.range.start.offset >= :rangeStart AND occ.sentence.range.start.offset < :rangeEnd "
+        + "GROUP BY e "
+        + "HAVING COUNT(occ) > 0.25 * ("
+        + "SELECT COUNT(occ2) "
+        + "FROM Place p "
+        + "INNER JOIN p.occurrences occ2 "
+        + "WHERE occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
+        + ") / ("
+        + "SELECT COUNT(DISTINCT p) "
+        + "FROM Place p "
         + "INNER JOIN p.occurrences occ2 "
         + "WHERE occ2.sentence.range.start.offset >= :rangeStart AND occ2.sentence.range.start.offset < :rangeEnd "
         + ")"),
