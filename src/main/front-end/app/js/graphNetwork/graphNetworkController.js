@@ -7,6 +7,8 @@
       'Document', 'Page', 'Person', 'CssClass', 'FingerprintSynchronizer',
       function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass, FingerprintSynchronizer) {
 
+        $scope.loaded = false;
+
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
         $scope.FingerprintSynchronizer = FingerprintSynchronizer;
