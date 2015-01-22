@@ -1,16 +1,5 @@
 package de.unistuttgart.vis.vita.services.document;
 
-import javax.annotation.ManagedBean;
-import javax.inject.Inject;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
-import javax.persistence.RollbackException;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
@@ -18,7 +7,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
-import de.unistuttgart.vis.vita.services.analysis.ParametersService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
@@ -27,14 +15,31 @@ import de.unistuttgart.vis.vita.services.entity.PlotViewService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
-import org.apache.commons.io.FilenameUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+
+import javax.annotation.ManagedBean;
+import javax.inject.Inject;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.RollbackException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
@@ -42,6 +47,7 @@ import java.util.UUID;
 @ManagedBean
 public class DocumentService extends BaseService {
 
+  private static final Logger LOGGER = Logger.getLogger(DocumentService.class);
   private String id;
 
   private DocumentDao documentDao;
@@ -146,14 +152,27 @@ public class DocumentService extends BaseService {
    */
   @DELETE
   public Response deleteDocument() {
-    Response response = null;
+    Response response;
 
     try {
       // first cancel a running analysis
       analysisController.cancelAnalysis(id);
 
+      Document byId = documentDao.findById(id);
+
       // then remove it from the database
-      documentDao.remove(documentDao.findById(id));
+      documentDao.remove(byId);
+      List<Document> sameTitle = documentDao.findDocumentsByFilename(byId.getFileName());
+
+      if (sameTitle.size() == 0 && byId.getFilePath() != null) {
+        // Can remove the file from HDD.
+        File file = new File(byId.getFilePath().toUri());
+        boolean delete = file.delete();
+
+        if (!delete) {
+          LOGGER.info("Could not delete file: " + byId.getFilePath());
+        }
+      }
 
       // create the response
       response = Response.noContent().build();
