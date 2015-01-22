@@ -687,6 +687,8 @@
       }
 
       function draw_nodes(scenes, svg, chart_width, chart_height) {
+        var additional_height = 8;
+
         var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
             .enter().append('g')
@@ -711,11 +713,12 @@
             .on('mouseout', toolTip.hide);
 
         nodes.append('rect')
+            .attr('y', -additional_height / 2)
             .attr('width', function(d) {
               return d.width;
             })
             .attr('height', function(d) {
-              return d.height;
+              return d.height + additional_height;
             })
             .attr('class', 'scene')
             .attr('title', function(d) {
