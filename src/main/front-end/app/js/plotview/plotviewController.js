@@ -14,6 +14,10 @@
         Page.setUpForDocument(document);
       });
 
+      $scope.loading = function() {
+        return $('#plotview-wrapper').has('svg').length != 1;
+      };
+
       setPlotviewDimensions();
       $(window).resize(function() {
         setPlotviewDimensions();

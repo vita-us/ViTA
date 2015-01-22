@@ -6,7 +6,7 @@
     <div data-plotview data-height="plotviewHeight" data-width="plotviewWidth"
          id="plotview-wrapper"></div>
     </div>
-    <div id="document-loading-spinner" ng-hide="$(#plotview-wrapper).has(svg).length == 1">
+    <div id="document-loading-spinner" ng-show="loading()">
       <span class="glyphicon glyphicon-refresh spin"></span>
     </div>
 </div>
