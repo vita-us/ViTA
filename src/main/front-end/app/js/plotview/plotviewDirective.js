@@ -44,6 +44,15 @@
       var USE_EQUAL_SCENE_WIDTHS = false;
       var CHARACTER_LABEL_LEFT_SHIFT = 10;
 
+      var toolTip = d3.tip()
+          .attr('class', 'plot-view-tool-tip')
+          .offset([-10,0]) // [y,x]
+          .html(function(d) {
+            var content = 'Characters: ... \n';
+            content += 'Places: ...';
+            return content;
+          });
+
 
       function create_link_path(link) {
         var x0 = link.x0,
@@ -654,7 +663,9 @@
                   // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
-                .on('drag', dragmove));
+                .on('drag', dragmove))
+            .on('mouseover', toolTip.show)
+            .on('mouseout', toolTip.hide);
 
         nodes.append('rect')
             .attr('width', function(d) {
