@@ -51,7 +51,8 @@
             var character_string = create_entity_tooltip_string(d.chars);
             var place_string = create_entity_tooltip_string(d.places);
 
-            var content = '<p>Characters: ' + character_string + ' </p>';
+            var content = '<p>Title: ' + d.title + '</p>';
+            content += '<p>Characters: ' + character_string + ' </p>';
             if (d.places.length) {
               content += '<p>Places: ' + place_string + ' </p>';
             }
@@ -721,9 +722,6 @@
               return d.height + additional_height;
             })
             .attr('class', 'scene')
-            .attr('title', function(d) {
-              return d.title;
-            })
             .attr('rx', 20)
             .attr('ry', 10);
 
