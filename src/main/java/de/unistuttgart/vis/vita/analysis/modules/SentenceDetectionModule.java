@@ -8,7 +8,6 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
@@ -71,11 +70,32 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       }
 
       @Override
-      public Occurrence createOccurrence(int startOffset) {
+      public Occurrence createOccurrence(Chapter chapter, int startOffset, int endOffset) {
+        // check relative offsets are inside of chapter
+        if(startOffset >= chapter.getLength() || startOffset < 0){
+          throw new IllegalArgumentException("startOffset must not lie outside of the chapter");
+        }else if(endOffset >= chapter.getLength() || endOffset < 0){
+          throw new IllegalArgumentException("endOffset must not lie outside of the chapter.");
+        }
+        
+        // get global positions and documentLength
+        int chapterStartOffset = chapter.getRange().getStart().getOffset();
+        int documentLength = importResult.getTotalLength();
+        int globalStartOffsetOfOccurrence = chapterStartOffset + startOffset;
+        int globalEndOffsetOfOccurrence = chapterStartOffset + endOffset;
+        
+        // check offsets are inside of the document and chapter.
+        if(globalStartOffsetOfOccurrence >= documentLength){
+          throw new IllegalArgumentException("startOffset must not lie outside of the document.");
+        } else if(globalEndOffsetOfOccurrence >= documentLength){
+          throw new IllegalArgumentException("endOffset must not lie outside of the document.");
+        }
+        
+        // create occurrence
         Sentence sentence = getSentenceAt(
-            TextPosition.fromGlobalOffset(startOffset, importResult.getTotalLength()));
-
-        return new Occurrence(sentence, sentence.getRange());
+            TextPosition.fromGlobalOffset(globalStartOffsetOfOccurrence, documentLength));
+        Range rangeOfOccurrence = new Range(chapter, startOffset, endOffset, documentLength);
+        return new Occurrence(sentence, rangeOfOccurrence);
       }
     };
   }
