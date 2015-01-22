@@ -19,6 +19,23 @@
           Page.setUpForDocument(document);
         });
 
+        $scope.alternativeNames = function(person, searchQuery) {
+          for (var i = 0; i < person.attributes.length; i++) {
+            var attribute = person.attributes[i];
+            if (attribute.attributetype == 'name' &&
+              containsQueryCaseInsensitive(attribute.content, searchQuery)) {
+              person.alternativeName = attribute.content;
+            }
+          }
+        };
+
+        var containsQueryCaseInsensitive = function(text, query) {
+          var lowerCaseText = text.toLowerCase();
+          var lowerCaseQuery = query.toLowerCase();
+
+          return lowerCaseText.indexOf(lowerCaseQuery) > -1;
+        };
+
         $scope.activeFingerprints = [];
         $scope.activeFingerprintIds = [];
         $scope.toggleFingerprint = function(person) {

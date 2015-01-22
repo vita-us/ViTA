@@ -10,6 +10,23 @@
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
 
+        $scope.alternativeNames = function(person, searchQuery) {
+          for (var i = 0; i < person.attributes.length; i++) {
+            var attribute = person.attributes[i];
+            if (attribute.attributetype == 'name' &&
+              containsQueryCaseInsensitive(attribute.content, searchQuery)) {
+              person.alternativeName = attribute.content;
+            }
+          }
+        };
+
+        var containsQueryCaseInsensitive = function(text, query) {
+          var lowerCaseText = text.toLowerCase();
+          var lowerCaseQuery = query.toLowerCase();
+
+          return lowerCaseText.indexOf(lowerCaseQuery) > -1;
+        };
+
         Document.get({
           documentId: $routeParams.documentId
         }, function(document) {
