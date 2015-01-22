@@ -664,7 +664,11 @@
                   this.parentNode.appendChild(this);
                 })
                 .on('drag', dragmove))
-            .on('mouseover', toolTip.show)
+            .on('mouseover', function(d) {
+              if (!d.char_node) {
+                toolTip.show(d);
+              }
+            })
             .on('mouseout', toolTip.hide);
 
         nodes.append('rect')
