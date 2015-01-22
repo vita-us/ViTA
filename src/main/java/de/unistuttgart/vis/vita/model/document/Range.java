@@ -32,8 +32,6 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
   @Embedded
   private TextPosition end;
 
-  private int length;
-
   /**
    * Creates a new Range.
    */
@@ -59,7 +57,6 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
 
     this.start = pStart;
     this.end = pEnd;
-    this.length = diff;
   }
 
   /**
@@ -93,7 +90,7 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
    * @return the length of the Range in characters
    */
   public int getLength() {
-    return length;
+    return end.getOffset() - start.getOffset();
   }
 
   /**
