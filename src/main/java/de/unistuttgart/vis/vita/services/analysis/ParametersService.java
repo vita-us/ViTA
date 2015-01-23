@@ -5,19 +5,25 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.parameters.AbstractParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
+import de.unistuttgart.vis.vita.services.responses.parameters.EnumParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.ParametersResponse;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -27,6 +33,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Service for the parameters. Provides a GET method for all available parameters.
@@ -56,7 +63,7 @@ public class ParametersService extends BaseService {
       field.setAccessible(true);
 
       if (field.getType() == boolean.class) {
-        parameter = new BooleanParameter(field.getName(), field.getType());
+        parameter = new BooleanParameter(field.getName(), "boolean");
       } else if (field.getType() == int.class || field.getType() == long.class) {
         long min = Integer.MIN_VALUE;
         long max = Integer.MAX_VALUE;
@@ -66,7 +73,12 @@ public class ParametersService extends BaseService {
         if (field.getAnnotation(Max.class) != null) {
           max = field.getAnnotation(Max.class).value();
         }
-        parameter = new MinMaxParameter(field.getName(), field.getType(), min, max);
+        parameter = new MinMaxParameter(field.getName(), "int", min, max);
+      } else if (field.getType() == EnumNLP.class) {
+        parameter = new EnumParameter(field.getName(), "enum");
+        EnumParameter temp = (EnumParameter) parameter;
+        EnumNLP[] enumConstants = (EnumNLP[]) field.getType().getEnumConstants();
+        temp.getValues().addAll(Arrays.asList(enumConstants));
       } else {
         continue;
       }
