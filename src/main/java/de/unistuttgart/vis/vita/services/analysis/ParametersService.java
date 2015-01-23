@@ -54,7 +54,7 @@ public class ParametersService extends BaseService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public ParametersResponse getAvailableParameters() {
+  public Response getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
     List<AbstractParameter> parameterList = new ArrayList<>();
     AbstractParameter parameter;
@@ -97,7 +97,12 @@ public class ParametersService extends BaseService {
 
       parameterList.add(parameter);
     }
+    ObjectMapper mapper = new ObjectMapper();
 
-    return new ParametersResponse(parameterList);
+    try {
+      return Response.ok(mapper.writeValueAsString(new ParametersResponse(parameterList))).build();
+    } catch (JsonProcessingException e) {
+      return Response.serverError().build();
+    }
   }
 }
