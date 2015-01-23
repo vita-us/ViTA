@@ -118,8 +118,9 @@ public class EntityServiceTest extends AbstractEntityServiceTest {
 
     assertThat(wordCloudDao.findAll().size(), is(1));
 
-    for(WordCloudItem item: wordCloudDao.getGlobalWordCloud(docId).getItems()){
+    for (WordCloudItem item : wordCloudDao.getGlobalWordCloud(docId).getItems()) {
       assertThat(item.getEntityId(), nullValue());
     }
+    em.close();
   }
 }
