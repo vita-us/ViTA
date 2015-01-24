@@ -54,22 +54,38 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     documentIdModule = results.getResultFor(DocumentPersistenceContext.class);
     storeModule = results.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
-    String documentName = documentIdModule.getFileName();
+    String contentId = documentIdModule.getDocumentContentId();
 
-    corpus = storeModule.getStoredAnalysis(documentName);
+    corpus = storeModule.getStoredAnalysis(contentId);
 
     // Persist the analysis into the datastore with the document id
     if (corpus == null) {
       loadEngine();
       createCorpus();
       startAnalysis();
-      storeModule.storeResult(corpus, documentName);
+      storeModule.storeResult(corpus, contentId);
+    } else {
+      fillCorpusMap();
     }
 
     createResultMap();
 
     progressListener.observeProgress(1);
     return buildResult();
+  }
+
+  /**
+   * Refills the needed map from the datastore for the result.
+   */
+  protected void fillCorpusMap() {
+    int i = 0;
+
+    for (DocumentPart part : importResult.getParts()) {
+      for (Chapter chapter : part.getChapters()) {
+        docToChapter.put(corpus.get(i), chapter);
+        i++;
+      }
+    }
   }
 
   /**
@@ -91,6 +107,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
    * Creates the result mapping.
    */
   protected void createResultMap() {
+
     for (Object docObj : corpus) {
       Document doc = (Document) docObj;
       AnnotationSet defaultAnnotSet = doc.getAnnotations();
