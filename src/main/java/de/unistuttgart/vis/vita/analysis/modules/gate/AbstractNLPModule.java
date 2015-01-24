@@ -54,16 +54,16 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     documentIdModule = results.getResultFor(DocumentPersistenceContext.class);
     storeModule = results.getResultFor(AnnieDatastore.class);
     this.progressListener = progressListener;
-    String contentId = documentIdModule.getDocumentContentId();
+    String persistID = documentIdModule.getDocumentContentId();
 
-    corpus = storeModule.getStoredAnalysis(contentId);
+    corpus = storeModule.getStoredAnalysis(persistID);
 
     // Persist the analysis into the datastore with the document id
     if (corpus == null) {
       loadEngine();
       createCorpus();
       startAnalysis();
-      storeModule.storeResult(corpus, contentId);
+      storeModule.storeResult(corpus, persistID);
     } else {
       fillCorpusMap();
     }

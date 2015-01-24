@@ -58,10 +58,10 @@ public class AnnieStoreModule extends Module<AnnieDatastore> {
   private AnnieDatastore buildResult() {
     return new AnnieDatastore() {
       @Override
-      public Corpus getStoredAnalysis(String documentName) throws PersistenceException {
+      public Corpus getStoredAnalysis(String persistId) throws PersistenceException {
         serialDataStore.open();
         FeatureMap corpFeatures = Factory.newFeatureMap();
-        corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, documentName);
+        corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, persistId);
         corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, serialDataStore);
 
         try {
