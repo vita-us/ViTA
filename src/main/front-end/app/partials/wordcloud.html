@@ -23,7 +23,8 @@
       <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
         ng-click="loadPersonWordcloud(person)" ng-class="{'active': activeWordcloud == person.id}"
         class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
-            {{person.displayName}}
+        {{person.displayName}}
+        <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
       </a>
     </div>
   </div>
