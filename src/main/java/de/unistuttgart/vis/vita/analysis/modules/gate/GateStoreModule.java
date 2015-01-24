@@ -29,9 +29,9 @@ import gate.persist.SerialDataStore;
  *
  */
 @AnalysisModule(dependencies = {GateInitializeModule.class, Model.class})
-public class AnnieStoreModule extends Module<AnnieDatastore> {
+public class GateStoreModule extends Module<AnnieDatastore> {
 
-  private static final Logger LOGGER = Logger.getLogger(AnnieStoreModule.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(GateStoreModule.class.getName());
   private static final String LR_TYPE_CORP = "gate.corpora.SerialCorpusImpl";
   private SerialDataStore serialDataStore;
 

@@ -2,8 +2,6 @@ package de.unistuttgart.vis.vita.analysis.modules.gate;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
-import de.unistuttgart.vis.vita.analysis.modules.gate.AnnieStoreModule;
-import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.model.GateDatastoreLocation;
 import de.unistuttgart.vis.vita.model.Model;
@@ -26,11 +24,11 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AnnieStoreModuleTest {
+public class GateStoreModuleTest {
 
   private static final String TESTID = "test123";
   private static DataStore dataStore;
-  private static AnnieStoreModule module;
+  private static GateStoreModule module;
   private static ModuleResultProvider resultProvider;
   private static ProgressListener progressListener;
   private static AnnieDatastore storeModule;
@@ -43,7 +41,7 @@ public class AnnieStoreModuleTest {
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
-    module = new AnnieStoreModule();
+    module = new GateStoreModule();
     String userDir = System.getProperty("user.dir");
     File testDir = new File(userDir + File.separator + "testDS");
 
