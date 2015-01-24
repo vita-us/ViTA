@@ -58,6 +58,11 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       @Override
       public Sentence getSentenceAt(TextPosition pos) {
         int offset = pos.getOffset();
+
+        if (offset > importResult.getTotalLength()) {
+          throw new IllegalStateException("Offset is higher than document length!");
+        }
+
         Sentence sentence;
 
         if (startOffsetToSentence.containsKey(offset)) {
