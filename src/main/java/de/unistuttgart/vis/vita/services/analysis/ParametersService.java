@@ -5,9 +5,6 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
@@ -33,7 +30,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * Service for the parameters. Provides a GET method for all available parameters.
@@ -54,7 +50,7 @@ public class ParametersService extends BaseService {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getAvailableParameters() {
+  public ParametersResponse getAvailableParameters() {
     Class<AnalysisParameters> params = AnalysisParameters.class;
     List<AbstractParameter> parameterList = new ArrayList<>();
     AbstractParameter parameter;
@@ -78,7 +74,7 @@ public class ParametersService extends BaseService {
         parameter = new EnumParameter(field.getName(), "enum");
         EnumParameter temp = (EnumParameter) parameter;
         EnumNLP[] enumConstants = (EnumNLP[]) field.getType().getEnumConstants();
-        temp.getValues().addAll(Arrays.asList(enumConstants));
+        temp.addValues(Arrays.asList(enumConstants));
       } else {
         continue;
       }
@@ -97,12 +93,6 @@ public class ParametersService extends BaseService {
 
       parameterList.add(parameter);
     }
-    ObjectMapper mapper = new ObjectMapper();
-
-    try {
-      return Response.ok(mapper.writeValueAsString(new ParametersResponse(parameterList))).build();
-    } catch (JsonProcessingException e) {
-      return Response.serverError().build();
-    }
+    return new ParametersResponse(parameterList);
   }
 }
