@@ -14,6 +14,7 @@ import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 
 /**
  * Module which starts the correct nlp module depending on the setted parameter in the parameters.
@@ -28,10 +29,9 @@ public class NLPStarterModule extends Module<NLPResult> {
       throws Exception {
     AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
     AbstractNLPModule module;
+    EnumNLP nlpTool = parameters.getNlpTool();
 
-    MockParameterEnum testEnum = MockParameterEnum.STANFORD;
-
-    switch (testEnum) {
+    switch (nlpTool) {
       case ANNIE:
         module = new ANNIEModule();
         break;
@@ -42,7 +42,7 @@ public class NLPStarterModule extends Module<NLPResult> {
         module = new OpenNLPModule();
         break;
       default:
-        throw new IllegalStateException("Not registered nlp module " + testEnum + "!");
+        throw new IllegalStateException("Not registered nlp module " + nlpTool + "!");
     }
 
     return module.execute(results, progressListener);
