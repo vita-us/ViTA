@@ -83,7 +83,7 @@ public class DaoFactory {
     }
     return placeDao;
   }
-
+  
   public WordCloudDao getWordCloudDao() {
     if (wordCloudDao == null) {
       wordCloudDao = new WordCloudDao(em);

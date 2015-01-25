@@ -1,29 +1,32 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import java.util.List;
+import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
+import de.unistuttgart.vis.vita.model.entity.Person;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityType;
-import de.unistuttgart.vis.vita.model.entity.Person;
+import java.util.List;
 
 /**
  * Represents a generic data access object for entities.
  */
 @MappedSuperclass
-@NamedQueries(
+@NamedQueries({
     @NamedQuery(name = "Entity.findEntityById",
             query = "SELECT e "
                   + "FROM Entity e "
-                  + "WHERE e.id = :entityId")
-)
+                  + "WHERE e.id = :entityId"),
+                  
+    @NamedQuery(name = "Entity.deleteEntityById",
+                query = "DELETE "
+                    + "FROM Entity e "
+                    + "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
   
   private static final String ENTITIES_PARAMETER = "entities";
@@ -124,5 +127,13 @@ public class EntityDao extends JpaDao<Entity, String> {
 
     return (List<Entity>) query.getResultList();
   }
-
+  
+  public void deleteEntityById(String entityId){
+    try {
+      Entity entity = findById(entityId);
+      remove(entity);
+    } catch (NoResultException e) {
+      // nothing to do
+    }
+  }
 }

@@ -50,7 +50,7 @@ public abstract class Entity extends AbstractEntityBase {
   @XmlElement(required = true)
   private Set<Attribute> attributes;
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @OrderBy("range.start.offset ASC")
   private List<Occurrence> occurrences;
 
