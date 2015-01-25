@@ -129,7 +129,7 @@ public class EntityService extends BaseService {
   public Response deleteEntity(@PathParam("entityId") String entityId) {
 
     Response response;
-    wordCloudDao.updateEntityIdOfItems(entityId);
+    wordCloudDao.removeEntityIdOfItems(entityId);
     wordCloudDao.remove(wordCloudDao.findByEntity(entityId));
     entityRelationDao.deleteEntityRelations(entityId);
     entityDao.deleteEntityById(entityId);

@@ -17,7 +17,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
     @NamedQuery(name = "WordCloud.getForEntity", query = "SELECT ent.wordCloud "
         + "FROM Entity ent "
         + "WHERE ent.id = :entityId"),
-    @NamedQuery(name = "WordCloud.updateEntityIdOfItems",
+    @NamedQuery(name = "WordCloud.removeEntityIdOfItems",
         query = "UPDATE WordCloudItem AS wordCloudItem "
             + "SET wordCloudItem.entityId = null "
             + "WHERE wordCloudItem.entityId = :entityId")
@@ -57,9 +57,13 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
     return entityQuery.getSingleResult();
   }
 
-  public void updateEntityIdOfItems(String entityId){
+  /**
+   * Removes the entityId of all items in this word cloud that have it set to the given value
+   * @param entityId the entityId which will be set to null
+   */
+  public void removeEntityIdOfItems(String entityId){
     Query entityQuery =
-        em.createNamedQuery("WordCloud.updateEntityIdOfItems");
+        em.createNamedQuery("WordCloud.removeEntityIdOfItems");
     entityQuery.setParameter("entityId", entityId).executeUpdate();
   }
   
