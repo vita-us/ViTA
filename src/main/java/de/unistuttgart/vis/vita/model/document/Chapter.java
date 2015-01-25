@@ -1,25 +1,31 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlElement;
-
 import de.unistuttgart.vis.vita.model.TextRepository;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @Table(indexes={
-  @Index(columnList="number")
+    @Index(columnList="number"),
+    @Index(columnList = "range.start.offset"),
+    @Index(columnList = "range.end.offset"),
 })
+@XmlRootElement
 public class Chapter extends AbstractEntityBase {
 
   private int number;
@@ -33,18 +39,46 @@ public class Chapter extends AbstractEntityBase {
   @Transient
   private String text;
 
-  // is required for getOccurrence()
-  private int documentLength;
+  @Embedded
+  private Range range;
 
-  @OneToOne(cascade=CascadeType.ALL)
-  private TextSpan range;
+  @XmlTransient
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapter")
+  private List<Sentence> sentences;
 
   /**
    * Creates a new Chapter, setting all fields to default values.
    */
   public Chapter() {
-    range = new TextSpan(TextPosition.fromGlobalOffset(this, 0),
-        TextPosition.fromGlobalOffset(this, 0));
+    range =
+        new Range(TextPosition.fromGlobalOffset(0, 1), TextPosition.fromGlobalOffset(0,
+            1));
+    sentences = new ArrayList<Sentence>();
+  }
+
+  /**
+   * Get a list of all sentences in this chapter. The sentences are sorted, so the n-th sentence in
+   * the chapter is the n-th sentence in the list. The sentences don't know their text, only the
+   * position of the text.
+   * 
+   * @return all sentences of this chapter.
+   */
+  @XmlTransient
+  public List<Sentence> getSentences() {
+    return sentences;
+  }
+
+  /**
+   * Set the list of sentences. The sentences are sorted, so the n-th sentence in the chapter is the
+   * n-th sentence in the list.
+   * 
+   * @param sentences - all sentences of this chapter.
+   */
+  public void setSentences(List<Sentence> sentences) {
+    if (sentences == null) {
+      throw new IllegalArgumentException("sentences must not be null!");
+    }
+    this.sentences = sentences;
   }
 
   /**
@@ -120,7 +154,7 @@ public class Chapter extends AbstractEntityBase {
   /**
    * @return the range of this Chapter in the whole Document
    */
-  public TextSpan getRange() {
+  public Range getRange() {
     return range;
   }
 
@@ -129,24 +163,7 @@ public class Chapter extends AbstractEntityBase {
    *
    * @param range - the range of this Chapter in the whole Document
    */
-  public void setRange(TextSpan range) {
+  public void setRange(Range range) {
     this.range = range;
-  }
-
-  /**
-   * Gets the range of this chapter, as an {@link Occurrence} object that contains the progress
-   * property. Only exists in persisted objects.
-   */
-  @XmlElement(name = "range")
-  public Occurrence getRangeAsOccurrence() {
-    return range.toOccurrence(documentLength);
-  }
-
-  /**
-   *
-   * @param length
-   */
-  public void setDocumentLength(int length) {
-    this.documentLength = length;
   }
 }
