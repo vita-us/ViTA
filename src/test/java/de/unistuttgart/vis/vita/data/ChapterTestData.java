@@ -3,7 +3,7 @@ package de.unistuttgart.vis.vita.data;
 import static org.junit.Assert.*;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Holds test data for chapters and methods to create test chapters and check whether given data
@@ -31,10 +31,8 @@ public class ChapterTestData {
     chapter.setNumber(TEST_CHAPTER_NUMBER);
     chapter.setText(TEST_CHAPTER_TEXT);
     chapter.setTitle(TEST_CHAPTER_TITLE);
-    chapter.setRange(new TextSpan(
-        TextPosition.fromGlobalOffset(chapter, 0),
-        TextPosition.fromGlobalOffset(chapter, TEST_CHAPTER_LENGTH)));
-    chapter.setDocumentLength(TEST_CHAPTER_RANGE_END);
+    chapter.setRange(new Range(TextPosition.fromGlobalOffset(0, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT),
+        TextPosition.fromGlobalOffset(TEST_CHAPTER_LENGTH, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT)));
 
     return chapter;
   }

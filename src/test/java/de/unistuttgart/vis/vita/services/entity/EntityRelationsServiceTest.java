@@ -21,8 +21,10 @@ import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.model.entity.Place;
@@ -78,10 +80,14 @@ public class EntityRelationsServiceTest extends ServiceTest {
     testChapter.setTitle("First Chapter");
 
     // Set range of the chapter
-    TextPosition rangeStartPos = TextPosition.fromGlobalOffset(testChapter, 0);
-    TextPosition rangeEndPos = TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    TextSpan chapterRangeSpan = new TextSpan(rangeStartPos, rangeEndPos);
-    testChapter.setRange(chapterRangeSpan);
+    TextPosition rangeStartPos =
+        TextPosition.fromGlobalOffset(0,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition rangeEndPos =
+        TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range chapterRange = new Range(rangeStartPos, rangeEndPos);
+    testChapter.setRange(chapterRange);
 
     // set up document part
     DocumentPart docPart = new DocumentPart();
@@ -97,17 +103,25 @@ public class EntityRelationsServiceTest extends ServiceTest {
     ids.add(relatedPerson.getId());
     targetPersonId = relatedPerson.getId();
 
-    EntityRelation testPersonRelation = relationTestData.createTestRelation(testPerson, relatedPerson);
+    EntityRelation testPersonRelation =
+        relationTestData.createTestRelation(testPerson, relatedPerson);
     testPerson.getEntityRelations().add(testPersonRelation);
     // back-relation
-    testPerson.getEntityRelations().add(relationTestData.createTestRelation(relatedPerson, testPerson));
+    testPerson.getEntityRelations().add(
+        relationTestData.createTestRelation(relatedPerson, testPerson));
 
+    // create sentence
+    Range testPersonSentenceRange = new Range(testChapter, 0, 1500, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence testPersonSentence = new Sentence(testPersonSentenceRange, testChapter, 0);
+    
     // add occurrences
-    TextSpan testPersonOcc = new TextSpan(testChapter, 0, 1000);
-    testPerson.getOccurrences().add(testPersonOcc);
+    Range testPersonRange = new Range(testChapter, 0, 1000, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Occurrence testPersonOccurrence = new Occurrence(testPersonSentence, testPersonRange);
+    testPerson.getOccurrences().add(testPersonOccurrence);
 
-    TextSpan relatedPersonOcc = new TextSpan(testChapter, 500, 1500);
-    relatedPerson.getOccurrences().add(relatedPersonOcc);
+    Range relatedPersonRange = new Range(testChapter, 500, 1500, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Occurrence relatedPersonOccurrence = new Occurrence(testPersonSentence, relatedPersonRange);
+    relatedPerson.getOccurrences().add(relatedPersonOccurrence);
 
     // set up test place and relation
     Place testPlace = placeTestData.createTestPlace(1);
@@ -121,26 +135,32 @@ public class EntityRelationsServiceTest extends ServiceTest {
     EntityRelation testPlaceRelation = relationTestData.createTestRelation(testPlace, relatedPlace);
     testPlace.getEntityRelations().add(testPlaceRelation);
     // back-relation
-    testPlace.getEntityRelations().add(relationTestData.createTestRelation(relatedPlace, testPlace));
+    testPlace.getEntityRelations()
+        .add(relationTestData.createTestRelation(relatedPlace, testPlace));
 
+    // create sentence
+    Range testPlaceSentenceRange = new Range(testChapter, 1500, 3000, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence testPlaceSentence = new Sentence(testPlaceSentenceRange, testChapter, 0);
+    
     // add occurrences
-    TextSpan testPlaceOcc = new TextSpan(testChapter, 1500, 2500);
-    testPlace.getOccurrences().add(testPlaceOcc);
+    Range testPlaceRange = new Range(testChapter, 1500, 2500, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Occurrence testPlaceOccurrence = new Occurrence(testPlaceSentence, testPlaceRange);
+    testPlace.getOccurrences().add(testPlaceOccurrence);
 
-    TextSpan relatedPlaceOcc = new TextSpan(testChapter, 2000, 3000);
-    relatedPlace.getOccurrences().add(relatedPlaceOcc);
+    Range relatedPlaceRange = new Range(testChapter, 2000, 3000, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Occurrence relatedPlaceOccurrence = new Occurrence(testPlaceSentence, relatedPlaceRange);
+    relatedPlace.getOccurrences().add(relatedPlaceOccurrence);
 
     EntityManager em = getModel().getEntityManager();
 
     // persist persons and their relation
     em.getTransaction().begin();
 
-    em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(docPart);
-    em.persist(testPersonOcc);
+    em.persist(testPersonOccurrence);
     em.persist(testPerson);
-    em.persist(relatedPersonOcc);
+    em.persist(relatedPersonOccurrence);
     em.persist(relatedPerson);
     em.persist(testPersonRelation);
     em.persist(testDoc);
@@ -149,9 +169,9 @@ public class EntityRelationsServiceTest extends ServiceTest {
 
     // persist places and their relation
     em.getTransaction().begin();
-    em.persist(testPlaceOcc);
+    em.persist(testPlaceOccurrence);
     em.persist(testPlace);
-    em.persist(relatedPlaceOcc);
+    em.persist(relatedPlaceOccurrence);
     em.persist(relatedPlace);
     em.persist(testPlaceRelation);
     em.getTransaction().commit();
@@ -172,11 +192,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetPersonRelations() {
-    RelationsResponse actualResponse = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                                    .queryParam("rangeEnd", TEST_RANGE_END)
-                                                    .queryParam("entityIds", ids)
-                                                    .queryParam("type", TEST_RELATION_TYPE)
-                                                    .request().get(RelationsResponse.class);
+    RelationsResponse actualResponse =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", ids)
+            .queryParam("type", TEST_RELATION_TYPE).request().get(RelationsResponse.class);
 
     // check list of entity ids
     List<String> actualEntityIds = actualResponse.getEntityIds();
@@ -197,9 +216,8 @@ public class EntityRelationsServiceTest extends ServiceTest {
       assertEquals(originPersonId, actualConfig.getEntityBId());
       assertEquals(targetPersonId, actualConfig.getEntityAId());
     }
-    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT,
-                  actualConfig.getWeight(),
-                  EntityRelationTestData.DELTA);
+    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, actualConfig.getWeight(),
+        EntityRelationTestData.DELTA);
   }
 
   /**
@@ -207,11 +225,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetPlaceRelations() {
-    RelationsResponse actualResponse = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                                    .queryParam("rangeEnd", TEST_RANGE_END)
-                                                    .queryParam("entityIds", ids)
-                                                    .queryParam("type", "place")
-                                                    .request().get(RelationsResponse.class);
+    RelationsResponse actualResponse =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", ids)
+            .queryParam("type", "place").request().get(RelationsResponse.class);
 
     // check list of entity ids
     List<String> actualEntityIds = actualResponse.getEntityIds();
@@ -232,9 +249,8 @@ public class EntityRelationsServiceTest extends ServiceTest {
       assertEquals(originPlaceId, actualConfig.getEntityBId());
       assertEquals(targetPlaceId, actualConfig.getEntityAId());
     }
-    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT,
-                  actualConfig.getWeight(),
-                  EntityRelationTestData.DELTA);
+    assertEquals(EntityRelationTestData.TEST_ENTITY_RELATION_WEIGHT, actualConfig.getWeight(),
+        EntityRelationTestData.DELTA);
   }
 
   /**
@@ -242,11 +258,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetAllRelations() {
-    RelationsResponse actualResponse = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                                    .queryParam("rangeEnd", TEST_RANGE_END)
-                                                    .queryParam("entityIds", ids)
-                                                    .queryParam("type", TEST_RELATION_TYPE_ALL)
-                                                    .request().get(RelationsResponse.class);
+    RelationsResponse actualResponse =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", ids)
+            .queryParam("type", TEST_RELATION_TYPE_ALL).request().get(RelationsResponse.class);
     assertNotNull(actualResponse);
     assertEquals(2, actualResponse.getRelations().size());
   }
@@ -256,18 +271,16 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetRelationsWithIllegalRange() {
-    Response response1 = target(path).queryParam("rangeStart", TEST_RANGE_ILLEGAL)
-                                      .queryParam("rangeEnd", TEST_RANGE_END)
-                                      .queryParam("entityIds", ids)
-                                      .queryParam("type", TEST_RELATION_TYPE)
-                                      .request().get();
+    Response response1 =
+        target(path).queryParam("rangeStart", TEST_RANGE_ILLEGAL)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", ids)
+            .queryParam("type", TEST_RELATION_TYPE).request().get();
     assertEquals(ERROR_STATUS, response1.getStatus());
 
-    Response response2 = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                      .queryParam("rangeEnd", TEST_RANGE_ILLEGAL)
-                                      .queryParam("entityIds", ids)
-                                      .queryParam("type", TEST_RELATION_TYPE)
-                                      .request().get();
+    Response response2 =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_ILLEGAL).queryParam("entityIds", ids)
+            .queryParam("type", TEST_RELATION_TYPE).request().get();
     assertEquals(ERROR_STATUS, response2.getStatus());
   }
 
@@ -276,11 +289,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetRelationsWithoutEntities() {
-    Response actualResponse = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                          .queryParam("rangeEnd", TEST_RANGE_END)
-                                          .queryParam("entityIds", TEST_NO_ENTITY_IDS)
-                                          .queryParam("type", TEST_RELATION_TYPE)
-                                          .request().get();
+    Response actualResponse =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", TEST_NO_ENTITY_IDS)
+            .queryParam("type", TEST_RELATION_TYPE).request().get();
     assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
 
@@ -289,11 +301,10 @@ public class EntityRelationsServiceTest extends ServiceTest {
    */
   @Test
   public void testGetRelationsWithIllegalType() {
-    Response actualResponse = target(path).queryParam("rangeStart", TEST_RANGE_START)
-                                          .queryParam("rangeEnd", TEST_RANGE_END)
-                                          .queryParam("entityIds", ids)
-                                          .queryParam("type", TEST_RELATION_TYPE_ILLEGAL)
-                                          .request().get();
+    Response actualResponse =
+        target(path).queryParam("rangeStart", TEST_RANGE_START)
+            .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", ids)
+            .queryParam("type", TEST_RELATION_TYPE_ILLEGAL).request().get();
     assertEquals(ERROR_STATUS, actualResponse.getStatus());
   }
 

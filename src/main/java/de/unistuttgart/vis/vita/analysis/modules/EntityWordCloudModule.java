@@ -19,8 +19,10 @@ import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
+import de.unistuttgart.vis.vita.model.document.Chapter;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
@@ -30,20 +32,23 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
  * Calculates a word cloud for each entity. This is done by looking at the text around the entity
  * occurrences.
  */
-
 @AnalysisModule(dependencies = {BasicEntityCollection.class, AnalysisParameters.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
+  List<Chapter> allChapters;
+  int documentLength;
   private static final int RADIUS = 100;
   private int count;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws IOException {
+
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
     boolean stopWordListEnabled =
         results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
     count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
+
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
 
     for (BasicEntity entity : entities) {
@@ -58,9 +63,11 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     };
   }
 
+
   private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities,
       boolean stopWordListEnabled) throws IOException {
-    List<TextSpan> spans = getTextSpansAroundEntity(entity);
+
+    List<Sentence> sentences = new ArrayList<Sentence>(getSentencesOfEntityOccurrences(entity));
     Map<String, Integer> frequencies = new HashMap<>();
 
     Set<String> stopWordList;
@@ -76,15 +83,17 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       entityNameTokens.addAll(Arrays.asList(tokenize(attr.getContent())));
     }
 
-    for (TextSpan span : spans) {
-      String text = span.getStart().getChapter().getText();
+    for (Sentence sentence : sentences) {
+
+      Chapter currentChapter = sentence.getChapter();
+      String text = currentChapter.getText();
       String substr =
-          text.substring(span.getStart().getLocalOffset(), span.getEnd().getLocalOffset());
+          text.substring(sentence.getRange().getStart().getLocalOffset(currentChapter),
+              sentence.getRange().getEnd().getLocalOffset(currentChapter));
 
       String[] tokens = tokenize(substr);
-
-      // Do not include first and last token, they may not be complete
-      for (int i = 1; i < tokens.length - 1; i++) {
+  
+      for (int i = 0; i < tokens.length; i++) {
         String token = tokens[i].trim();
         if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
             && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
@@ -115,12 +124,13 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     return str.toLowerCase().replaceAll("\\W", " ").split("\\s+?");
   }
 
-  private List<TextSpan> getTextSpansAroundEntity(BasicEntity entity) {
-    List<TextSpan> spans = new ArrayList<>(entity.getOccurences().size());
-    for (TextSpan span : entity.getOccurences()) {
-      spans.add(span.widen(100));
+  private Set<Sentence> getSentencesOfEntityOccurrences(BasicEntity entity) {
+
+    Set<Sentence> sentences = new HashSet<Sentence>();
+    for (Occurrence occurrence : entity.getOccurences()) {
+      sentences.add(occurrence.getSentence());
     }
-    return TextSpan.normalizeOverlaps(spans);
+    return sentences;
   }
 
   /**
