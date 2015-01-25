@@ -98,7 +98,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     Query countQuery = em.createNamedQuery("DocumentPart.getNumberOfPartsInDocument");
     countQuery.setParameter(DOCUMENT_ID_PARAMETER, docId);
     try {
-      number = (int) countQuery.getSingleResult();
+      number = ((Number) countQuery.getSingleResult()).intValue();
     } catch (NoResultException nre) {
       number = 0;
     }
