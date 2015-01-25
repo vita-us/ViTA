@@ -12,9 +12,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.dao.EntityDao;
 import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
 import de.unistuttgart.vis.vita.model.dao.WordCloudDao;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
@@ -30,16 +32,15 @@ public class EntityService extends BaseService {
   private String entityId;
 
   private EntityDao entityDao;
+  private DocumentDao documentDao;
+  private EntityRelationDao entityRelationDao;
+  private WordCloudDao wordCloudDao;
 
   @Inject
   private AttributesService attributesService;
 
   @Inject
   private EntityOccurrencesService entityOccurrencesService;
-
-  private EntityRelationDao entityRelationDao;
-
-  private WordCloudDao wordCloudDao;
 
   @Inject
   SearchEntityService searchEntityService;
@@ -50,6 +51,7 @@ public class EntityService extends BaseService {
     entityDao = getDaoFactory().getEntityDao();
     entityRelationDao = getDaoFactory().getEntityRelationDao();
     wordCloudDao = getDaoFactory().getWordCloudDao();
+    documentDao = getDaoFactory().getDocumentDao();
   }
 
   /**
@@ -127,6 +129,17 @@ public class EntityService extends BaseService {
    */
   @DELETE
   public Response deleteEntity(@PathParam("entityId") String entityId) {
+    Document doc = documentDao.findById(documentId);
+    Entity entity = entityDao.findById(entityId);
+    switch (entity.getType()) {
+      case PERSON:
+        doc.getContent().getPersons().remove(entity);
+        break;
+      case PLACE:
+        doc.getContent().getPlaces().remove(entity);
+        break;
+    }
+    getEntityManager().merge(doc);
 
     Response response;
     wordCloudDao.removeEntityIdOfItems(entityId);
