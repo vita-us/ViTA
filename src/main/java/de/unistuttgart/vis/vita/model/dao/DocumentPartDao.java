@@ -2,11 +2,12 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -35,7 +36,15 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
   @NamedQuery(name = "DocumentPart.findPartByTitle",
               query = "SELECT dp "
                     + "FROM DocumentPart dp "
-                    + "WHERE dp.title = :partTitle")})
+                    + "WHERE dp.title = :partTitle"),
+
+  @NamedQuery(name = "DocumentPart.getNumberOfPartsInDocument",
+              query = "SELECT COUNT(dp) "
+                    + "FROM DocumentPart dp, Document d "
+                    + "WHERE d.id = :documentId "
+                    + "AND dp MEMBER OF d.content.parts "
+                    + "GROUP BY dp.number "
+                    + "ORDER BY dp.number")})
 public class DocumentPartDao extends JpaDao<DocumentPart, String> {
 
   private static final String DOCUMENTPART_TITLE_PARAMETER = "partTitle";
@@ -76,6 +85,24 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     partQuery.setParameter(DOCUMENTPART_TITLE_PARAMETER, partTitle);
     
     return partQuery.getSingleResult();
+  }
+
+  /**
+   * Returns the number of parts in a Document with the given id.
+   *
+   * @param docId - the id of the Document to search in
+   * @return number of DocumentParts
+   */
+  public int getNumberOfParts(String docId) {
+    int number;
+    Query countQuery = em.createNamedQuery("DocumentPart.getNumberOfPartsInDocument");
+    countQuery.setParameter(DOCUMENT_ID_PARAMETER, docId);
+    try {
+      number = ((Number) countQuery.getSingleResult()).intValue();
+    } catch (NoResultException nre) {
+      number = 0;
+    }
+    return number;
   }
 
 }

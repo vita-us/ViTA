@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.DocumentPartDao;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
@@ -38,11 +39,13 @@ public class SearchInDocumentService extends OccurrencesService {
   @Inject
   private Model model;
 
+  private DocumentPartDao documentPartDao;
   private DocumentDao documentDao;
 
   @Override public void postConstruct() {
     super.postConstruct();
     documentDao = getDaoFactory().getDocumentDao();
+    documentPartDao = getDaoFactory().getDocumentPartDao();
   }
 
   /**
@@ -86,8 +89,12 @@ public class SearchInDocumentService extends OccurrencesService {
     
 
     if (!documentDao.isAnalysisFinished(documentId)) {
-      LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+
+      // check whether there are parts in the current Document
+      if (documentPartDao.getNumberOfParts(documentId) == 0) {
+        LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
+        throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+      }
     }
 
     Chapter startChapter = getSurroundingChapter(startOffset);
