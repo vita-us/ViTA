@@ -7,7 +7,7 @@ public class DaoFactory {
   private EntityManager em;
   private DocumentDao documentDao;
   private EntityDao entityDao;
-  private TextSpanDao textSpanDao;
+  private OccurrenceDao occurrenceDao;
   private DocumentPartDao documentPartDao;
   private ChapterDao chapterDao;
   private EntityRelationDao entityRelationDao;
@@ -35,11 +35,11 @@ public class DaoFactory {
     return entityDao;
   }
 
-  public TextSpanDao getTextSpanDao() {
-    if (textSpanDao == null) {
-      textSpanDao = new TextSpanDao(em);
+  public OccurrenceDao getOccurrenceDao() {
+    if (occurrenceDao == null) {
+      occurrenceDao = new OccurrenceDao(em);
     }
-    return textSpanDao;
+    return occurrenceDao;
   }
 
   public DocumentPartDao getDocumentPartDao() {

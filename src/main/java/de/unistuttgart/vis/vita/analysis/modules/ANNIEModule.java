@@ -18,6 +18,10 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
 import java.io.File;
 import java.io.IOException;
+
+
+import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -54,6 +58,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
   private int documentsFinished = 0;
   private int maxDocuments;
   private double progressSteps;
+  private Map<Chapter, Document> chapterToDoc = new HashMap<>();
 
   @Override
   public AnnieNLPResult execute(ModuleResultProvider result, ProgressListener progressListener)
@@ -154,6 +159,7 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
       for (Chapter chapter : part.getChapters()) {
         Document doc = Factory.newDocument(chapter.getText());
         docToChapter.put(doc, chapter);
+        chapterToDoc.put(chapter, doc);
         corpus.add(doc);
       }
     }
@@ -193,6 +199,25 @@ public class ANNIEModule extends Module<AnnieNLPResult> {
         }
 
         return chapterToAnnotation.get(chapter);
+      }
+
+      @Override
+      public Set<Annotation> getAnnotationsForChapter(Chapter chapter,
+                                                      Collection<String> type) {
+        if (!chapterToAnnotation.containsKey(chapter)) {
+          throw new IllegalArgumentException("This chapter has not been analyzed");
+        }
+
+        Document document = chapterToDoc.get(chapter);
+
+        AnnotationSet defaultAnnotSet = document.getAnnotations();
+        Set<String> annotTypesRequired = new HashSet<>();
+
+        for (String s : type) {
+          annotTypesRequired.add(s);
+        }
+
+        return new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
       }
     };
   }

@@ -10,7 +10,7 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgressTest;
  * Test suite which runs all tests related to model classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({EntityRelationTest.class, TextPositionTest.class, TextSpanTest.class,
+@SuiteClasses({EntityRelationTest.class, TextPositionTest.class, RangeTest.class,
     FeatureProgressTest.class, TextRepositoryTest.class})
 public class ModelTests {
 
