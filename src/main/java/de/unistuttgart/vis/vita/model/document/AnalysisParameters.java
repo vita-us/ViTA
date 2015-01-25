@@ -36,6 +36,20 @@ public class AnalysisParameters extends AbstractEntityBase {
   @Default("true")
   private boolean stopWordListEnabled = true;
 
+  @XmlElement
+  @Description("Decide which NLP tool should be used for named entity recognition.")
+  @Label("Choose NLP tool")
+  @Default("annie")
+  private EnumNLP nlpTool = EnumNLP.ANNIE;
+
+  public EnumNLP getNlpTool() {
+    return nlpTool;
+  }
+
+  public void setNlpTool(EnumNLP nlpTool) {
+    this.nlpTool = nlpTool;
+  }
+
   public int getRelationTimeStepCount() {
     return relationTimeStepCount;
   }

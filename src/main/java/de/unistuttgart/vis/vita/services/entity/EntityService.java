@@ -3,14 +3,20 @@ package de.unistuttgart.vis.vita.services.entity;
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.dao.EntityDao;
+import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
+import de.unistuttgart.vis.vita.model.dao.WordCloudDao;
+import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
@@ -21,11 +27,14 @@ import de.unistuttgart.vis.vita.services.search.SearchEntityService;
  */
 @ManagedBean
 public class EntityService extends BaseService {
-  
+
   private String documentId;
   private String entityId;
 
   private EntityDao entityDao;
+  private DocumentDao documentDao;
+  private EntityRelationDao entityRelationDao;
+  private WordCloudDao wordCloudDao;
 
   @Inject
   private AttributesService attributesService;
@@ -36,9 +45,13 @@ public class EntityService extends BaseService {
   @Inject
   SearchEntityService searchEntityService;
 
-  @Override public void postConstruct() {
+  @Override
+  public void postConstruct() {
     super.postConstruct();
     entityDao = getDaoFactory().getEntityDao();
+    entityRelationDao = getDaoFactory().getEntityRelationDao();
+    wordCloudDao = getDaoFactory().getWordCloudDao();
+    documentDao = getDaoFactory().getDocumentDao();
   }
 
   /**
@@ -93,7 +106,7 @@ public class EntityService extends BaseService {
   public AttributesService getAttributes() {
     return attributesService.setDocumentId(documentId).setEntityId(entityId);
   }
-  
+
   /**
    * Returns the EntityOccurrencesService for the current Entity.
    * 
@@ -103,9 +116,39 @@ public class EntityService extends BaseService {
   public EntityOccurrencesService getOccurrences() {
     return entityOccurrencesService.setEntityId(entityId).setDocumentId(documentId);
   }
-  
+
   public SearchEntityService getSearch() {
     return searchEntityService.setDocumentId(documentId).setEntityId(entityId);
   }
 
+  /**
+   * Deletes the entity and actualize the entity relations and wordclouds
+   *
+   * @return a response with no content if removal was successful, status 404 if document was not
+   *         found
+   */
+  @DELETE
+  public Response deleteEntity(@PathParam("entityId") String entityId) {
+    Document doc = documentDao.findById(documentId);
+    Entity entity = entityDao.findById(entityId);
+    switch (entity.getType()) {
+      case PERSON:
+        doc.getContent().getPersons().remove(entity);
+        break;
+      case PLACE:
+        doc.getContent().getPlaces().remove(entity);
+        break;
+    }
+    getEntityManager().merge(doc);
+
+    Response response;
+    wordCloudDao.removeEntityIdOfItems(entityId);
+    wordCloudDao.remove(wordCloudDao.findByEntity(entityId));
+    entityRelationDao.deleteEntityRelations(entityId);
+    entityDao.deleteEntityById(entityId);
+    // create the response
+    response = Response.noContent().build();
+
+    return response;
+  }
 }
