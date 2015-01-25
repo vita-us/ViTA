@@ -1,10 +1,5 @@
 package de.unistuttgart.vis.vita.services.entity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -21,9 +16,6 @@ import de.unistuttgart.vis.vita.model.dao.EntityDao;
 import de.unistuttgart.vis.vita.model.dao.EntityRelationDao;
 import de.unistuttgart.vis.vita.model.dao.WordCloudDao;
 import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
-import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
 import de.unistuttgart.vis.vita.services.search.SearchEntityService;

@@ -24,7 +24,9 @@ import de.unistuttgart.vis.vita.model.entity.Person;
                   + "WHERE e.id = :entityId"),
                   
     @NamedQuery(name = "Entity.deleteEntityById",
-                query = "DELETE "+ "FROM Entity e "+ "WHERE e.id = :entityId")})
+                query = "DELETE "
+                    + "FROM Entity e "
+                    + "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
   
   private static final String ENTITIES_PARAMETER = "entities";

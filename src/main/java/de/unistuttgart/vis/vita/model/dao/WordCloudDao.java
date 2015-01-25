@@ -12,11 +12,14 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 @MappedSuperclass
 @NamedQueries({
     @NamedQuery(name = "WordCloud.getGlobal", query = "SELECT doc.content.globalWordCloud "
-        + "FROM Document doc " + "WHERE doc.id = :documentId"),
+        + "FROM Document doc "
+        + "WHERE doc.id = :documentId"),
     @NamedQuery(name = "WordCloud.getForEntity", query = "SELECT ent.wordCloud "
-        + "FROM Entity ent " + "WHERE ent.id = :entityId"),
+        + "FROM Entity ent "
+        + "WHERE ent.id = :entityId"),
     @NamedQuery(name = "WordCloud.updateEntityIdOfItems",
-        query = "UPDATE WordCloudItem AS wordCloudItem SET wordCloudItem.entityId = null "
+        query = "UPDATE WordCloudItem AS wordCloudItem "
+            + "SET wordCloudItem.entityId = null "
             + "WHERE wordCloudItem.entityId = :entityId")
 
 })

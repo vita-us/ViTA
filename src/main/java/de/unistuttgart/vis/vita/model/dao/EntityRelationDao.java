@@ -18,23 +18,32 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  */
 @MappedSuperclass
 @NamedQueries({
-    @NamedQuery(name = "EntityRelation.findAllEntityRelations", query = "SELECT er "
+    @NamedQuery(name = "EntityRelation.findAllEntityRelations", query =
+        "SELECT er "
         + "FROM EntityRelation er"),
 
-    @NamedQuery(name = "EntityRelation.findRelationsForEntities", query = "SELECT er "
-        + "FROM Entity e JOIN e.entityRelations er " + "WHERE e.id IN :entityIds "
+    @NamedQuery(name = "EntityRelation.findRelationsForEntities", query =
+        "SELECT er "
+        + "FROM Entity e JOIN e.entityRelations er "
+        + "WHERE e.id IN :entityIds "
         + "AND er.relatedEntity.id < e.id"), // only one relation per pair
 
-    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType", query = "SELECT er "
-        + "FROM Entity e JOIN e.entityRelations er " + "WHERE e.id IN :entityIds "
-        + "AND er.relatedEntity.id IN :entityIds " + "AND er.relatedEntity.class = :type "
+    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType", query =
+        "SELECT er "
+        + "FROM Entity e JOIN e.entityRelations er "
+            + "WHERE e.id IN :entityIds "
+        + "AND er.relatedEntity.id IN :entityIds "
+            + "AND er.relatedEntity.class = :type "
         + "AND er.relatedEntity.id < e.id"), // only one relation per pair
 
-    @NamedQuery(name = "EntityRelation.findEntityRelationById", query = "SELECT er "
-        + "FROM EntityRelation er " + "WHERE er.id = :entityRelationId"),
+    @NamedQuery(name = "EntityRelation.findEntityRelationById", query =
+        "SELECT er "
+        + "FROM EntityRelation er "
+        + "WHERE er.id = :entityRelationId"),
 
     @NamedQuery(name = "EntityRelation.deleteEntityRelations",
-        query = "DELETE FROM EntityRelation er " + "WHERE er.originEntity.id = :entityId "
+        query = "DELETE FROM EntityRelation er "
+            + "WHERE er.originEntity.id = :entityId "
             + "OR er.relatedEntity.id = :entityId")})
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
