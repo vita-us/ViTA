@@ -2,18 +2,28 @@ package de.unistuttgart.vis.vita.model.document;
 
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+
+/**
+ * Defines the bounds of a text block (the Place, Person,... the Occurrence belongs to) as Range and
+ * the sentence this block is located in. Is not aware of the actual text within the bounds.
+ */
 @Entity
-public class Occurrence extends AbstractEntityBase {
+@Table(indexes = {@Index(columnList = "range.start.offset"), @Index(columnList = "range.end.offset")})
+public class Occurrence extends AbstractEntityBase implements Comparable<Occurrence> {
 
   @ManyToOne(cascade = CascadeType.ALL)
   private Sentence sentence;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @Embedded
   private Range range;
 
   /**
@@ -84,4 +94,34 @@ public class Occurrence extends AbstractEntityBase {
 
     this.range = range;
   }
+
+  @Override
+  public int compareTo(Occurrence otherOccurrence) {
+    return range.compareTo(otherOccurrence.getRange());
+  }
+
+  /**
+   * Indicates if obj is a Occurrence representing the same range (the person, place, ...) as this
+   * Occurrence.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Occurrence)) {
+      return false;
+    }
+
+    Occurrence other = (Occurrence) obj;
+    return range.equals(other.getRange());
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(range.getStart()).append(range.getEnd()).hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Occurrence %s ... %s", range.getStart(), range.getEnd());
+  }
+
 }

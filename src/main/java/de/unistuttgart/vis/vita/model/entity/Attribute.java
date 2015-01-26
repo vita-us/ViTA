@@ -35,8 +35,8 @@ public class Attribute extends AbstractEntityBase {
   @Column(length = 1000)
   private String content;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("start.offset ASC")
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OrderBy("range.start.offset ASC")
   private List<Occurrence> occurrences;
 
   /**

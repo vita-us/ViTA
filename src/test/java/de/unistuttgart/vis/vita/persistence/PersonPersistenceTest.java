@@ -135,9 +135,6 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
         TextPosition.fromGlobalOffset(30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     TextPosition pos4 =
         TextPosition.fromGlobalOffset(40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    Range span1 = new Range(pos1, pos4);
-    Range span2 = new Range(pos2, pos4);
-    Range span3 = new Range(pos3, pos4);
 
     Range sentenceRange1 = new Range(pos1, pos4);
     Range sentenceRange2 = new Range(pos3, pos4);
@@ -154,15 +151,15 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
 
     Person p = new Person();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurrences().add(occurrence1);
     p.getOccurrences().add(occurrence2);
+    p.getOccurrences().add(occurrence1);
     p.getOccurrences().add(occurrence3);
 
     em.persist(doc);
     em.persist(chapter);
-    em.persist(span1);
-    em.persist(span3);
-    em.persist(span2);
+    em.persist(occurrence1);
+    em.persist(occurrence2);
+    em.persist(occurrence3);
     em.persist(p);
     startNewTransaction();
 

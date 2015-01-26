@@ -7,6 +7,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -14,7 +15,6 @@ import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,19 +27,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for analysis modules
@@ -50,6 +42,7 @@ public class EntityRecognitionModuleRealTest {
   private final static String[] CHAPTERS = {""};
 
   private static List<DocumentPart> parts = new ArrayList<>();
+  private static int totalLength;
   private static ModuleResultProvider resultProvider;
   private static ProgressListener progressListener;
   private static List<Chapter> chapterObjects;
@@ -57,15 +50,21 @@ public class EntityRecognitionModuleRealTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
+    loadText();
+    fillText();
+
     resultProvider = mock(ModuleResultProvider.class);
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    when(importResult.getTotalLength()).thenReturn(totalLength);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     progressListener = mock(ProgressListener.class, withSettings());
 
     loadText();
     fillText();
 
+    when(importResult.getTotalLength()).thenReturn(getDocumentLength());
+    
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
@@ -82,6 +81,10 @@ public class EntityRecognitionModuleRealTest {
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
+    SentenceDetectionModule sentenceDetectionModule = new SentenceDetectionModule();
+    SentenceDetectionResult sentenceResult = sentenceDetectionModule.execute(resultProvider, progressListener);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
+    
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
@@ -106,14 +109,16 @@ public class EntityRecognitionModuleRealTest {
   private static void fillText() {
     DocumentPart part = new DocumentPart();
     parts.add(part);
-
+    
     chapterObjects = new ArrayList<>();
+    totalLength = 0;
     for (String chapterText : CHAPTERS) {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
       part.getChapters().add(chapter);
       chapterObjects.add(chapter);
+      totalLength += chapterText.length();
     }
   }
 
@@ -185,7 +190,7 @@ public class EntityRecognitionModuleRealTest {
     return null;
   }
 
-  private int getDocumentLength() {
+  private static int getDocumentLength() {
     int documentLength = 0;
     for (String chapter : CHAPTERS) {
       documentLength += chapter.length();

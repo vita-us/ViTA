@@ -42,9 +42,9 @@ public class SearchEntityService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int stepStart, int stepEnd) {
+  protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
     // TODO Auto-generated method stub
-    return 0;
+    return false;
   }
 
 }

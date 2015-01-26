@@ -54,25 +54,25 @@ public class RangeTest {
 
   @Test
   public void testStartAndEnd() {
-    Range span = new Range(pos1, pos2);
-    assertEquals(pos1, span.getStart());
-    assertEquals(pos2, span.getEnd());
+    Range range = new Range(pos1, pos2);
+    assertEquals(pos1, range.getStart());
+    assertEquals(pos2, range.getEnd());
   }
 
   @Test
   public void testUtilityConstructor() {
     chapter.setRange(new Range(pos1, pos4));
 
-    Range span = new Range(chapter, OFFSET_2, OFFSET_3, DOCUMENT_LENGTH);
-    assertThat(span.getStart().getOffset(), is(OFFSET_1 + OFFSET_2));
-    assertThat(span.getEnd().getOffset(), is(OFFSET_1 + OFFSET_3));
+    Range range = new Range(chapter, OFFSET_2, OFFSET_3, DOCUMENT_LENGTH);
+    assertThat(range.getStart().getOffset(), is(OFFSET_1 + OFFSET_2));
+    assertThat(range.getEnd().getOffset(), is(OFFSET_1 + OFFSET_3));
   }
 
   /**
    * Checks whether an exception is thrown if start position > end position
    */
   @Test(expected = IllegalArgumentException.class)
-  public void testIllegalTextSpan() {
+  public void testIllegalRanges() {
     new Range(pos2, pos1);
   }
 
@@ -80,7 +80,7 @@ public class RangeTest {
    * Checks whether an IllegalArgumentException is thrown if fist parameter is null.
    */
   @Test(expected = IllegalArgumentException.class)
-  public void testFirstNullTextSpan() {
+  public void testFirstNullRange() {
     new Range(null, pos1);
   }
 
@@ -88,7 +88,7 @@ public class RangeTest {
    * Checks whether an IllegalArgumentException is thrown if the second parameter is null.
    */
   @Test(expected = IllegalArgumentException.class)
-  public void testSecondNullTextSpan() {
+  public void testSecondNullRange() {
     new Range(pos1, null);
   }
 
@@ -96,73 +96,73 @@ public class RangeTest {
    * Checks whether an IllegalArgumentException is thrown if both parameters are null
    */
   @Test(expected = IllegalArgumentException.class)
-  public void testBothNullTextSpan() {
+  public void testBothNullRange() {
     new Range(null, null);
   }
 
   /**
-   * Checks whether TextSpan is empty if start and end position are the same.
+   * Checks whether Range is empty if start and end position are the same.
    */
   @Test
-  public void testEmptyTextSpan() {
-    Range emptyTestSpan = new Range(pos2, pos2);
-    assertEquals(0, emptyTestSpan.getLength());
+  public void testEmptyRange() {
+    Range emptyRange = new Range(pos2, pos2);
+    assertEquals(0, emptyRange.getLength());
   }
 
   /**
-   * Checks whether TextSpan length is calculated correctly.
+   * Checks whether Range length is calculated correctly.
    */
   @Test
-  public void testTextSpan() {
-    Range testTextSpan = new Range(pos2, pos3);
-    assertEquals(DIFF, testTextSpan.getLength());
+  public void testRange() {
+    Range testRange = new Range(pos2, pos3);
+    assertEquals(DIFF, testRange.getLength());
   }
 
   @Test
   public void testCompareTo() {
-    Range span1 = new Range(pos1, pos2);
-    Range span2 = new Range(pos2, pos3);
-    Range span1Duplicate = new Range(pos1, pos2);
+    Range range1 = new Range(pos1, pos2);
+    Range range2 = new Range(pos2, pos3);
+    Range range1Duplicate = new Range(pos1, pos2);
 
-    assertEquals(1, span1.compareTo(null));
-    assertEquals(-1, span1.compareTo(span2));
-    assertEquals(1, span2.compareTo(span1));
-    assertEquals(0, span1.compareTo(span1Duplicate));
+    assertEquals(1, range1.compareTo(null));
+    assertEquals(-1, range1.compareTo(range2));
+    assertEquals(1, range2.compareTo(range1));
+    assertEquals(0, range1.compareTo(range1Duplicate));
   }
 
   @Test
   public void testCompareToWithEqualStartPositions() {
-    Range span1 = new Range(pos1, pos2);
-    Range span2 = new Range(pos1, pos3);
+    Range range1 = new Range(pos1, pos2);
+    Range range2 = new Range(pos1, pos3);
 
-    assertEquals(-1, span1.compareTo(span2));
-    assertEquals(1, span2.compareTo(span1));
+    assertEquals(-1, range1.compareTo(range2));
+    assertEquals(1, range2.compareTo(range1));
   }
 
   @Test
   public void testEquals() {
-    Range span1 = new Range(pos1, pos2);
-    Range span2 = new Range(pos2, pos3);
-    Range span3 = new Range(pos1, pos3);
-    Range span1Duplicate = new Range(pos1, pos2);
+    Range range1 = new Range(pos1, pos2);
+    Range range2 = new Range(pos2, pos3);
+    Range range3 = new Range(pos1, pos3);
+    Range range1Duplicate = new Range(pos1, pos2);
 
-    assertTrue(span1.equals(span1Duplicate));
-    assertFalse(span1.equals(pos2));
-    assertFalse(span2.equals(span1));
-    assertFalse(span2.equals(span3));
-    assertFalse(span1.equals(null));
-    assertFalse(span1.equals("an object of a different class"));
+    assertTrue(range1.equals(range1Duplicate));
+    assertFalse(range1.equals(pos2));
+    assertFalse(range2.equals(range1));
+    assertFalse(range2.equals(range3));
+    assertFalse(range1.equals(null));
+    assertFalse(range1.equals("an object of a different class"));
   }
 
   @Test
   public void testHashCode() {
-    Range span1 = new Range(pos1, pos2);
-    Range span2 = new Range(pos2, pos3);
-    Range span3 = new Range(pos1, pos3);
-    Range span1Duplicate = new Range(pos1, pos2);
+    Range range1 = new Range(pos1, pos2);
+    Range range2 = new Range(pos2, pos3);
+    Range range3 = new Range(pos1, pos3);
+    Range range1Duplicate = new Range(pos1, pos2);
 
-    assertEquals(span1.hashCode(), span1Duplicate.hashCode());
-    assertNotEquals(span1.hashCode(), pos2.hashCode());
-    assertNotEquals(span2.hashCode(), span3.hashCode());
+    assertEquals(range1.hashCode(), range1Duplicate.hashCode());
+    assertNotEquals(range1.hashCode(), pos2.hashCode());
+    assertNotEquals(range2.hashCode(), range3.hashCode());
   }
 }

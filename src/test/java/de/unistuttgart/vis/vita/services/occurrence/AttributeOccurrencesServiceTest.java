@@ -55,8 +55,8 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
         TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
 
-    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
-    testChapter.setRange(chapterRangeSpan);
+    Range chapterRange = new Range(rangeStartPos, rangeEndPos);
+    testChapter.setRange(chapterRange);
 
     Occurrence attributeOccurrence = testData.createOccurrence(testChapter);
     Person testEntity = new PersonTestData().createTestPerson(1);
@@ -77,7 +77,6 @@ public class AttributeOccurrencesServiceTest extends OccurrencesServiceTest {
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
 
-    em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(attributeOccurrence);
     em.persist(testEntity);

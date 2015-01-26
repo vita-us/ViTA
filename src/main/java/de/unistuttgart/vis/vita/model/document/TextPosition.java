@@ -72,7 +72,7 @@ public class TextPosition implements Comparable<TextPosition> {
   public static TextPosition fromGlobalOffset(int globalOffset, int documentLength) {
     if (globalOffset > documentLength) {
       throw new IllegalArgumentException(
-          "The global offset can not be higher then the document length!");
+          "The global offset can not be higher than the document length!");
     }
     return new TextPosition(globalOffset, documentLength);
   }

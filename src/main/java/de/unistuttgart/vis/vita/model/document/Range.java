@@ -1,34 +1,32 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
  */
-@Entity
-@Table(indexes = {@Index(columnList = "start.offset"), @Index(columnList = "end.offset")})
+@Embeddable
 @XmlRootElement
-public class Range extends AbstractEntityBase implements Comparable<Range> {
+public class Range implements Comparable<Range> {
 
   // constants
   private static final int MIN_LENGTH = 0;
 
   @Embedded
+  @XmlElement(name = "start")
   private TextPosition start;
 
+  @XmlElement(name = "end")
   @Embedded
   private TextPosition end;
-
-  private int length;
 
   /**
    * Creates a new Range.
@@ -55,7 +53,6 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
 
     this.start = pStart;
     this.end = pEnd;
-    this.length = diff;
   }
 
   /**
@@ -89,7 +86,7 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
    * @return the length of the Range in characters
    */
   public int getLength() {
-    return length;
+    return end.getOffset() - start.getOffset();
   }
 
   /**
@@ -103,7 +100,7 @@ public class Range extends AbstractEntityBase implements Comparable<Range> {
     return getStart().compareTo(other.getEnd()) <= 0 && getEnd().compareTo(other.getStart()) >= 0;
   }
 
-  public Range getOverlappingSpan(Range other) {
+  public Range getOverlappingRange(Range other) {
     Range result = null;
 
     if (overlapsWith(other)) {

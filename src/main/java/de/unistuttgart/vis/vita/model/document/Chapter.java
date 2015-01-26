@@ -1,29 +1,31 @@
 package de.unistuttgart.vis.vita.model.document;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.unistuttgart.vis.vita.model.TextRepository;
+import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
-
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import de.unistuttgart.vis.vita.model.TextRepository;
-import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a chapter in a Document. It can hold its text content but does not persist it.
  */
 @Entity
 @Table(indexes={
-  @Index(columnList="number")
+    @Index(columnList="number"),
+    @Index(columnList = "range.start.offset"),
+    @Index(columnList = "range.end.offset"),
 })
-
+@XmlRootElement
 public class Chapter extends AbstractEntityBase {
 
   private int number;
@@ -37,9 +39,10 @@ public class Chapter extends AbstractEntityBase {
   @Transient
   private String text;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @Embedded
   private Range range;
 
+  @XmlTransient
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "chapter")
   private List<Sentence> sentences;
 
@@ -60,6 +63,7 @@ public class Chapter extends AbstractEntityBase {
    * 
    * @return all sentences of this chapter.
    */
+  @XmlTransient
   public List<Sentence> getSentences() {
     return sentences;
   }

@@ -8,7 +8,7 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
- * Holds test data for Occurrences and methods to create test TextSpans and to check whether given 
+ * Holds test data for Occurrences and methods to create test Occurrences and to check whether given 
  * data matches this test data.
  */
 public class OccurrenceTestData {
@@ -55,10 +55,10 @@ public class OccurrenceTestData {
     assertEquals(TEST_RANGE_END, actualEnd.getOffset());
         
     TextPosition actualSentenceStart = occurrenceToCheck.getSentence().getRange().getStart();
-    assertEquals(TEST_RANGE_START, actualSentenceStart.getOffset());
+    assertEquals(TEST_SENTENCE_START, actualSentenceStart.getOffset());
     
     TextPosition actualSentenceEnd = occurrenceToCheck.getSentence().getRange().getEnd();
-    assertEquals(TEST_RANGE_END, actualSentenceEnd.getOffset());
+    assertEquals(TEST_SENTENCE_END, actualSentenceEnd.getOffset());
     
     assertEquals(chapterId, occurrenceToCheck.getSentence().getChapter().getId());
     

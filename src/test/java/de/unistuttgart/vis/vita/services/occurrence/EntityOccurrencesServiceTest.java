@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition rangeEndPos =
         TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    Range chapterRangeSpan = new Range(rangeStartPos, rangeEndPos);
-    testChapter.setRange(chapterRangeSpan);
+    Range chapterRange = new Range(rangeStartPos, rangeEndPos);
+    testChapter.setRange(chapterRange);
 
     Occurrence personOccurrence = testData.createOccurrence(testChapter);
     Person testPerson = new PersonTestData().createTestPerson(1);
@@ -69,7 +70,6 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     // persist it
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(chapterRangeSpan);
     em.persist(testChapter);
     em.persist(personOccurrence);
     em.persist(testPerson);
@@ -97,7 +97,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
             .queryParam("rangeEnd", DEFAULT_RANGE_END).request().get(OccurrencesResponse.class);
 
     // check response and amount of occurrences
-    assertNotNull(actualResponse);
+    assertThat(actualResponse, notNullValue());
     checkOccurrences(actualResponse.getOccurrences(), true);
   }
 
@@ -112,7 +112,7 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
             .queryParam("rangeEnd", DEFAULT_RANGE_END).request().get(OccurrencesResponse.class);
 
     // check response and amount of occurrences
-    assertNotNull(actualResponse);
+    assertThat(actualResponse, notNullValue());
     checkOccurrences(actualResponse.getOccurrences(), false);
   }
 
@@ -130,13 +130,14 @@ public class EntityOccurrencesServiceTest extends OccurrencesServiceTest {
     TextPosition absoluteEnd = receivedOccurence.getEnd();
 
     if (exact) {
-      assertEquals(ABSOLUTE_START_OFFSET, absoluteStart.getOffset());
-      assertEquals(ABSOLUTE_END_OFFSET, absoluteEnd.getOffset());
-      assertEquals(OccurrenceTestData.TEST_RANGE_LENGTH, receivedOccurence.getLength());
+      assertThat(absoluteStart.getOffset(), is(ABSOLUTE_START_OFFSET));
+      assertThat(absoluteEnd.getOffset(), is(ABSOLUTE_END_OFFSET));
+      assertThat(receivedOccurence.getLength(), is(OccurrenceTestData.TEST_RANGE_LENGTH));
     } else {
-      assertTrue(ABSOLUTE_START_OFFSET >= absoluteStart.getOffset());
-      assertTrue(ABSOLUTE_END_OFFSET <= absoluteEnd.getOffset());
-      assertTrue(OccurrenceTestData.TEST_RANGE_LENGTH <= receivedOccurence.getLength());
+      assertThat(absoluteStart.getOffset(), lessThanOrEqualTo(ABSOLUTE_START_OFFSET));
+      assertThat(absoluteEnd.getOffset(), greaterThanOrEqualTo(ABSOLUTE_END_OFFSET));
+      assertThat(receivedOccurence.getLength(), greaterThanOrEqualTo(
+              OccurrenceTestData.TEST_RANGE_LENGTH));
     }
   }
 }

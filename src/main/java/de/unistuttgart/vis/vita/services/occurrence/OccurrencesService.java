@@ -7,17 +7,14 @@ import javax.annotation.ManagedBean;
 
 import de.unistuttgart.vis.vita.model.dao.ChapterDao;
 import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
-import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.Occurrence;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.*;
 
 import de.unistuttgart.vis.vita.services.RangeService;
 
 
 /**
  * Abstract base class of every service dealing with Occurrences. Offers methods
- * to convert Lists of TextSpans into Lists of Occurrences and get the Document
+ * to convert Lists of Occurrences into Lists of Ranges and get the Document
  * length.
  */
 @ManagedBean
@@ -33,21 +30,46 @@ public abstract class OccurrencesService extends RangeService {
   }
 
   /**
-   * Converts a given List of TextSpans into Occurrences.
+   * Converts a given List of Occurrences into Ranges.
    *
-   * @param textSpans
-   *          - the TextSpans to be converted
+   * @param occurrences
+   *          - the Occurrences to be converted
    * @return list of Occurrences
    */
   public List<Range> convertOccurrencesToRanges(List<Occurrence> occurrences) {
     List<Range> ranges = new ArrayList<>();
 
     for (Occurrence occ : occurrences) {
-
       ranges.add(occ.getRange());
 
     }
     return ranges;
+  }
+
+  /**
+   * Converts the occurrences to ranges of their sentences, merging adjacent sentences
+   * @param occurrences the occurrences whose sentences are considered
+   * @return the range of the sentences
+   */
+  protected List<Range> mergeAdjacentSentences(List<Sentence> sentences) {
+    List<Range> newList = new ArrayList<>();
+    int lastSentenceIndex = Integer.MIN_VALUE;
+    Range currentRange = null;
+    for (Sentence sentence : sentences) {
+      if (currentRange != null && sentence.getIndex() == lastSentenceIndex + 1) {
+        currentRange = new Range(currentRange.getStart(), sentence.getRange().getEnd());
+      } else {
+        if (currentRange != null) {
+          newList.add(currentRange);
+        }
+        currentRange = sentence.getRange();
+      }
+      lastSentenceIndex = sentence.getIndex();
+    }
+    if (currentRange != null) {
+      newList.add(currentRange);
+    }
+    return newList;
   }
 
   /**
@@ -86,7 +108,7 @@ public abstract class OccurrencesService extends RangeService {
       int stepStart = startOffset + (stepSize * step);
       int stepEnd = startOffset + (stepSize * (step + 1));
 
-      if (getNumberOfOccurrencesInStep(stepStart, stepEnd) > 0) {
+      if (hasOccurrencesInStep(stepStart, stepEnd)) {
         if (!includesLastStep) {
           // Start a new step
           includesLastStep = true;
@@ -111,5 +133,5 @@ public abstract class OccurrencesService extends RangeService {
     return stepSpans;
   }
 
-  protected abstract long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex);
+  protected abstract boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex);
 }

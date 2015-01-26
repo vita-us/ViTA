@@ -29,7 +29,8 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  */
 @javax.persistence.Entity
 @Table(indexes={
-    @Index(columnList="rankingValue")
+    @Index(columnList="rankingValue"),
+    @Index(columnList="frequency")
   })
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
@@ -49,8 +50,8 @@ public abstract class Entity extends AbstractEntityBase {
   @XmlElement(required = true)
   private Set<Attribute> attributes;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("start.offset ASC")
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OrderBy("range.start.offset ASC")
   private List<Occurrence> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")

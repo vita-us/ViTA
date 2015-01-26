@@ -122,8 +122,9 @@ public class AttributeOccurrencesService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForAttribute(entityId, attributeId, firstSentenceIndex, lastSentenceIndex);
+  protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
+    return occurrenceDao.getNumberOfOccurrencesForAttribute(
+        entityId, attributeId, firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }

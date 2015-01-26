@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import de.unistuttgart.vis.vita.model.dao.OccurrenceDao;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.data.ChapterTestData;
@@ -19,7 +20,7 @@ import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
- * Performs tests whether instances of TextSpan can be persisted correctly.
+ * Performs tests whether instances of Occurrences can be persisted correctly.
  */
 public class OccurrencePersistenceTest extends AbstractPersistenceTest {
 
@@ -33,26 +34,26 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   private Chapter chapter = new Chapter();
 
   @Test
-  public void testPersistOneTextSpan() {
-    // first set up a TextSpan
+  public void testPersistOneOccurrence() {
+    // first set up an Occurrence
     em.persist(chapter);
     Occurrence oc = createTestOccurrence();
 
-    // persist this TextSpan
+    // persist this Occurrence
     em.persist(oc);
     startNewTransaction();
 
-    // read persisted TextSpans from database
-    Occurrence readOccurrence = readOccurrenceFromDb(oc.getId());
+    // read persisted Occurrence from database
+    Occurrence readOccurrence = new OccurrenceDao(em).findById(oc.getId());
 
     // check whether data is correct
     checkData(readOccurrence);
   }
 
   /**
-   * Creates a new TextSpan, setting start and end to test values.
+   * Creates a new Occurrence, setting start and end to test values.
    * 
-   * @return test text span
+   * @return test occurrence
    */
   private Occurrence createTestOccurrence() {
     Range range =
@@ -63,16 +64,6 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
             DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
     Sentence sentence = new Sentence(sentenceRange, chapter,0);
     return new Occurrence(sentence, range);
-  }
-
-  /**
-   * Read a specific Occurrence from database and returns it.
-   * 
-   * @return the occurrence
-   */
-  private Occurrence readOccurrenceFromDb(String id) {
-    return em.createNamedQuery("Occurrence.findTextSpanById", Occurrence.class)
-        .setParameter("occurrenceId", id).getSingleResult();
   }
 
   /**
@@ -88,7 +79,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     int end = occurrenceToCheck.getRange().getEnd().getOffset();
     int diff = end - start;
     int sentenceStart = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
-    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getStart().getOffset();
+    int sentenceEnd = occurrenceToCheck.getSentence().getRange().getEnd().getOffset();
 
     assertEquals(TEST_RANGE_START, start);
     assertEquals(TEST_RANGE_END, end);
@@ -98,12 +89,12 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
   }
 
   /**
-   * Checks whether all Named Queries of TextSpan are working correctly.
+   * Checks whether all Named Queries of Occurrence are working correctly.
    * 
    * @throws Exception
    */
   @Test
-  public void testFindingAllAndSpecificTextSpans() {
+  public void testFindingAllAndSpecificOccurrence() {
     Occurrence testOccurrence = createTestOccurrence();
 
     em.persist(chapter);
@@ -111,8 +102,8 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     startNewTransaction();
 
     // check Named Query finding all chapters
-    TypedQuery<Occurrence> allQ = em.createNamedQuery("Occurrence.findAllOccurences", Occurrence.class);
-    List<Occurrence> allOccurrences = allQ.getResultList();
+    OccurrenceDao occurrenceDao = new OccurrenceDao(em);
+    List<Occurrence> allOccurrences = occurrenceDao.findAll();
 
     assertTrue(allOccurrences.size() > 0);
     Occurrence readOccurrence = allOccurrences.get(0);
@@ -121,10 +112,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     String id = readOccurrence.getId();
 
     // check Named Query finding occurrences by id
-    TypedQuery<Occurrence> idQ = em.createNamedQuery("Occurrence.findOccurrenceById", Occurrence.class);
-    idQ.setParameter("occurrenceId", id);
-    Occurrence idOccurrence = idQ.getSingleResult();
-
+    Occurrence idOccurrence = occurrenceDao.findById(id);
     checkData(idOccurrence);
   }
 
@@ -150,7 +138,7 @@ public class OccurrencePersistenceTest extends AbstractPersistenceTest {
     em.persist(testPerson);
     startNewTransaction();
 
-    // read TextSpans from database
+    // read Occurrences from database
     TypedQuery<Occurrence> personQ =
         em.createNamedQuery("Occurrence.findOccurrencesForEntity", Occurrence.class);
     personQ.setParameter("entityId", personId);

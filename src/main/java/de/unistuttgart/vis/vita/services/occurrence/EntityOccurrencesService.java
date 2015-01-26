@@ -97,13 +97,13 @@ public class EntityOccurrencesService extends OccurrencesService {
     List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
                                                                       startOffset, endOffset);
     
-    // convert TextSpans into Occurrences and return them
+    // convert Occurrences into Ranges and return them
     return convertOccurrencesToRanges(readOccurrences);
   }
 
   @Override
-  protected long getNumberOfOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex);
+  protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
+    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }

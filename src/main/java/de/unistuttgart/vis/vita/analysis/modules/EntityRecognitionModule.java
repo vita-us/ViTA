@@ -35,18 +35,19 @@ import java.util.TreeSet;
 import gate.Annotation;
 
 /**
- * 
+ * Searches for Entities in the document. Also merges entities and decides which name they should
+ * use. Rare Entites will be filtered to improve the result.
  */
-@AnalysisModule(dependencies = { ImportResult.class, SentenceDetectionResult.class,
-    AnnieNLPResult.class }, weight = 0.1)
+@AnalysisModule(dependencies = {ImportResult.class, SentenceDetectionResult.class,
+    AnnieNLPResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
-  private Map<Integer, BasicEntity> idMap    = new HashMap<>();
-  private Set<BasicEntity>          entities = new HashSet<>();
-  private ImportResult              importResult;
-  private SentenceDetectionResult   sentenceDetectionResult;
-  private AnnieNLPResult            annieNLPResult;
-  private ProgressListener          progressListener;
+  private Map<Integer, BasicEntity> idMap = new HashMap<>();
+  private Set<BasicEntity> entities = new HashSet<>();
+  private ImportResult importResult;
+  private SentenceDetectionResult sentenceDetectionResult;
+  private AnnieNLPResult annieNLPResult;
+  private ProgressListener progressListener;
   private AnalysisParameters analysisParameters;
 
   @Override
@@ -291,8 +292,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Creates an Occurrence for the given annotation. The Occurrence has the
-   * offset in the given chapter.
+   * Creates an Occurrence for the given annotation. The Occurrence has the offset in the given
+   * chapter.
    * 
    * @param theAnnotation
    *          The annotation to work with.
@@ -301,9 +302,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * @return The Occurrence of the annotation.
    */
   private Occurrence getOccurences(Annotation theAnnotation, Chapter chapter) {
-    int chapterStartOffset = chapter.getRange().getStart().getOffset();
-    return sentenceDetectionResult.createOccurrence(chapterStartOffset
-        + theAnnotation.getStartNode().getOffset().intValue());
+    return sentenceDetectionResult.createOccurrence(chapter, theAnnotation.getStartNode()
+        .getOffset().intValue(), theAnnotation.getEndNode().getOffset().intValue());
   }
 
   /**
