@@ -33,7 +33,8 @@ import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 
 /**
- *
+ * Abstract module for nlp tools. Implements the most common needed methods for the analysis.
+ * Can be overwritten if needed.
  */
 public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 

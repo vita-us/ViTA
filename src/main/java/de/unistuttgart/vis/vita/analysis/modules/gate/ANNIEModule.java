@@ -10,7 +10,6 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
-import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import java.io.File;

@@ -23,7 +23,7 @@ import gate.util.GateException;
 import gate.util.persistence.PersistenceManager;
 
 /**
- *
+ * StanfordCoreNLP module to analyse the text.
  */
 public class StanfordNLPModule extends AbstractNLPModule<StanfordNLPResult> {
 
