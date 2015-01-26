@@ -31,6 +31,20 @@ public class AnalysisParameters extends AbstractEntityBase {
   @Description("Check to hide the most common words in the word cloud to focus on more special words")
   @Label("Enable stop word list")
   private boolean stopWordListEnabled = true;
+  
+  @XmlElement
+  @Description("Heuristics to filter out names that probably wrong, check for more accurate results")
+  @Label("Enable stop entity filter")
+  private boolean stopEntityFilter = true;
+  
+
+  public boolean getStopEntityFilter() {
+    return stopEntityFilter;
+  }
+
+  public void setStopEntityFilter(boolean stopEntityFilter) {
+    this.stopEntityFilter = stopEntityFilter;
+  }
 
   public int getRelationTimeStepCount() {
     return relationTimeStepCount;
@@ -48,7 +62,7 @@ public class AnalysisParameters extends AbstractEntityBase {
     this.wordCloudItemsCount = wordCloudItemsCount;
   }
 
-  public boolean isStopWordListEnabled() {
+  public boolean getStopWordListEnabled() {
     return stopWordListEnabled;
   }
 
