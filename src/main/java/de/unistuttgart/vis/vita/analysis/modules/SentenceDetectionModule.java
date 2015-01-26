@@ -78,9 +78,9 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       @Override
       public Occurrence createOccurrence(Chapter chapter, int startOffset, int endOffset) {
         // check relative offsets are inside of chapter
-        if(startOffset >= chapter.getLength() || startOffset < 0){
+        if (startOffset > chapter.getLength() || startOffset < 0){
           throw new IllegalArgumentException("startOffset must not lie outside of the chapter");
-        }else if(endOffset >= chapter.getLength() || endOffset < 0){
+        } else if (endOffset > chapter.getLength() || endOffset < 0){
           throw new IllegalArgumentException("endOffset must not lie outside of the chapter.");
         }
         
@@ -91,9 +91,9 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
         int globalEndOffsetOfOccurrence = chapterStartOffset + endOffset;
         
         // check offsets are inside of the document and chapter.
-        if(globalStartOffsetOfOccurrence >= documentLength){
+        if (globalStartOffsetOfOccurrence > documentLength) {
           throw new IllegalArgumentException("startOffset must not lie outside of the document.");
-        } else if(globalEndOffsetOfOccurrence >= documentLength){
+        } else if (globalEndOffsetOfOccurrence > documentLength) {
           throw new IllegalArgumentException("endOffset must not lie outside of the document.");
         }
         
