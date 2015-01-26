@@ -10,13 +10,18 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Document;
 import gate.Gate;
 import gate.creole.ANNIEConstants;
 import gate.creole.ConditionalSerialAnalyserController;
@@ -49,9 +54,6 @@ public class ANNIEModule extends AbstractNLPModule<AnnieNLPResult> {
         (ConditionalSerialAnalyserController) PersistenceManager.loadObjectFromFile(annieGapp);
   }
 
-  /**
-   * @return The result with a set of annotations.
-   */
   @Override
   protected AnnieNLPResult buildResult() {
     return new AnnieNLPResult() {
@@ -63,6 +65,26 @@ public class ANNIEModule extends AbstractNLPModule<AnnieNLPResult> {
 
         return chapterToAnnotation.get(chapter);
       }
+
+      @Override
+      public Set<Annotation> getAnnotationsForChapter(Chapter chapter,
+                                                      Collection<String> type) {
+        if (!chapterToAnnotation.containsKey(chapter)) {
+          throw new IllegalArgumentException("This chapter has not been analyzed");
+        }
+
+        Document document = chapterToDoc.get(chapter);
+
+        AnnotationSet defaultAnnotSet = document.getAnnotations();
+        Set<String> annotTypesRequired = new HashSet<>();
+
+        for (String s : type) {
+          annotTypesRequired.add(s);
+        }
+
+        return new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
+      }
     };
   }
+
 }

@@ -42,6 +42,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
   protected ProgressListener progressListener;
   protected ConditionalSerialAnalyserController controller;
   protected Map<Document, Chapter> docToChapter = new HashMap<>();
+  protected Map<Chapter, Document> chapterToDoc = new HashMap<>();
   protected Map<Chapter, Set<Annotation>> chapterToAnnotation = new HashMap<>();
   protected Corpus corpus;
   protected DocumentPersistenceContext documentIdModule;
@@ -98,6 +99,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
       for (Chapter chapter : part.getChapters()) {
         Document doc = Factory.newDocument(chapter.getText());
         docToChapter.put(doc, chapter);
+        chapterToDoc.put(chapter, doc);
         corpus.add(doc);
       }
     }
@@ -142,5 +144,8 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
   protected abstract void loadEngine() throws GateException, IOException;
 
+  /**
+   * @return The result with a set of annotations.
+   */
   protected abstract T buildResult();
 }
