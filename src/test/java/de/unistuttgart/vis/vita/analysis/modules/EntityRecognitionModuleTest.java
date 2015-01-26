@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -21,13 +22,13 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
-
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -49,6 +50,7 @@ public class EntityRecognitionModuleTest {
   public static void setUp() throws Exception {
     resultProvider = mock(ModuleResultProvider.class);
     ImportResult importResult = mock(ImportResult.class);
+    AnalysisParameters analysisParameters = mock(AnalysisParameters.class);
     when(importResult.getParts()).thenReturn(parts);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     progressListener = mock(ProgressListener.class, withSettings());
@@ -115,5 +117,19 @@ public class EntityRecognitionModuleTest {
     }
 
     return null;
+  }
+  
+  @Test
+  public void checkRegexWithDefaultName() {
+    
+    String testString = "eduard";
+    assertTrue(testString.matches("[a-z0-9\\W]"));
+  }
+  
+  @Test
+  public void checkRegexWithCorrectName() {
+    
+    String testString = "Eduard";
+    assertTrue(testString.matches("[a-z0-9\\W]"));
   }
 }

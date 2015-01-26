@@ -12,6 +12,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -36,15 +37,17 @@ import gate.Annotation;
 /**
  * 
  */
-@AnalysisModule(dependencies = {ImportResult.class, SentenceDetectionResult.class, AnnieNLPResult.class}, weight = 0.1)
+@AnalysisModule(dependencies = { ImportResult.class, SentenceDetectionResult.class,
+    AnnieNLPResult.class }, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
-  private Map<Integer, BasicEntity> idMap = new HashMap<>();
-  private Set<BasicEntity> entities = new HashSet<>();
-  private ImportResult importResult;
-  private SentenceDetectionResult sentenceDetectionResult;
-  private AnnieNLPResult annieNLPResult;
-  private ProgressListener progressListener;
+  private Map<Integer, BasicEntity> idMap    = new HashMap<>();
+  private Set<BasicEntity>          entities = new HashSet<>();
+  private ImportResult              importResult;
+  private SentenceDetectionResult   sentenceDetectionResult;
+  private AnnieNLPResult            annieNLPResult;
+  private ProgressListener          progressListener;
+  private AnalysisParameters analysisParameters;
 
   @Override
   public BasicEntityCollection execute(ModuleResultProvider result,
@@ -52,6 +55,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     importResult = result.getResultFor(ImportResult.class);
     sentenceDetectionResult = result.getResultFor(SentenceDetectionResult.class);
     annieNLPResult = result.getResultFor(AnnieNLPResult.class);
+    analysisParameters = result.getResultFor(AnalysisParameters.class);
     this.progressListener = progressListener;
 
     startAnalysis();
@@ -93,8 +97,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Removes those entities which has only one or less occurrences. Reduces the chance from getting
-   * wrong entities based on NLP failure.
+   * Removes those entities which has only one or less occurrences. Reduces the
+   * chance from getting wrong entities based on NLP failure.
    */
   private void filterEntities() {
     Set<BasicEntity> entityToRemove = new HashSet<>();
@@ -109,8 +113,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Starts the analysis by going through all annotations and create or update the necessary
-   * entities.
+   * Starts the analysis by going through all annotations and create or update
+   * the necessary entities.
    */
   private void startAnalysis() {
     double currentProgress;
@@ -125,10 +129,21 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       double chapterFactor = 1. / chapters.size();
 
       for (Chapter chapter : chapters) {
-        Set<Annotation> annotations =
-            filterEntityAnnotations(annieNLPResult.getAnnotationsForChapter(chapter));
+        Set<Annotation> annotations = filterEntityAnnotations(annieNLPResult
+            .getAnnotationsForChapter(chapter));
 
         for (Annotation annieAnnotation : annotations) {
+          String firstChar= "" + getAnnotatedText(chapter.getText(), annieAnnotation).charAt(0);
+          
+          
+          //Regex to filter wrong names with start char a-z or 0-9 
+          if (analysisParameters.getStopEntityFilter()) { 
+            if (firstChar.matches("[a-z0-9\\W]")) {
+              continue;
+            }
+          }
+         
+          
           createBasicEntity(annieAnnotation, chapter);
           double partProgress = ((double) currentPart) / documentParts.size();
           double chapterProgress = partFactor * ((double) currentChapter) / chapters.size();
@@ -168,7 +183,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   /**
    * Filters the gate annotations to only contain persons and locations.
    * 
-   * @param annotations The gate annotation set.
+   * @param annotations
+   *          The gate annotation set.
    * @return The new filtered set.
    */
   private Set<Annotation> filterEntityAnnotations(Set<Annotation> annotations) {
@@ -184,11 +200,13 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Creates a new entity out of the annotation in the given chapter. If the entity already exists
-   * it will be updated with the matching position.
+   * Creates a new entity out of the annotation in the given chapter. If the
+   * entity already exists it will be updated with the matching position.
    * 
-   * @param theAnnotation The annotation to work with.
-   * @param chapter The chapter in which the annotation can be found.
+   * @param theAnnotation
+   *          The annotation to work with.
+   * @param chapter
+   *          The chapter in which the annotation can be found.
    */
   private void createBasicEntity(Annotation theAnnotation, Chapter chapter) {
     BasicEntity entity = getExistingEntityForAnnotation(theAnnotation);
@@ -224,9 +242,12 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   /**
    * Updates the name attributes for the given entity.
    * 
-   * @param entity The entity to be updated.
-   * @param annotatedText The extracted name.
-   * @param occurrence The position of the name.
+   * @param entity
+   *          The entity to be updated.
+   * @param annotatedText
+   *          The extracted name.
+   * @param occurrence
+   *          The position of the name.
    */
   private void updateNameAttributes(BasicEntity entity, String annotatedText, Occurrence occurrence) {
     for (Attribute currentAttribute : entity.getNameAttributes()) {
@@ -245,7 +266,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   /**
    * Searches for an already existing entity in the map.
    *
-   * @param theAnnotation The annotation to work with.
+   * @param theAnnotation
+   *          The annotation to work with.
    * @return The existing entity if found else null.
    */
   @SuppressWarnings("unchecked")
@@ -265,27 +287,32 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
     // TODO relations, ...
 
-
     return null;
   }
 
   /**
-   * Creates an Occurrence for the given annotation. The Occurrence has the offset in the given chapter.
+   * Creates an Occurrence for the given annotation. The Occurrence has the
+   * offset in the given chapter.
    * 
-   * @param theAnnotation The annotation to work with.
-   * @param chapter The chapter in which the annotation can be found.
+   * @param theAnnotation
+   *          The annotation to work with.
+   * @param chapter
+   *          The chapter in which the annotation can be found.
    * @return The Occurrence of the annotation.
    */
   private Occurrence getOccurences(Annotation theAnnotation, Chapter chapter) {
     int chapterStartOffset = chapter.getRange().getStart().getOffset();
-    return sentenceDetectionResult.createOccurrence(chapterStartOffset+theAnnotation.getStartNode().getOffset().intValue());
+    return sentenceDetectionResult.createOccurrence(chapterStartOffset
+        + theAnnotation.getStartNode().getOffset().intValue());
   }
 
   /**
    * Extract the annotated text.
    * 
-   * @param text The text to cut out the annotated part.
-   * @param theAnnotation The annotation to work with.
+   * @param text
+   *          The text to cut out the annotated part.
+   * @param theAnnotation
+   *          The annotation to work with.
    * @return The annotated text.
    */
   private String getAnnotatedText(String text, Annotation theAnnotation) {
