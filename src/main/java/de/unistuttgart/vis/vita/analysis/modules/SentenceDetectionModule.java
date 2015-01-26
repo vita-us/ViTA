@@ -4,8 +4,8 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -13,8 +13,6 @@ import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import gate.Annotation;
-import gate.creole.ANNIEConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,14 +25,17 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import gate.Annotation;
+import gate.creole.ANNIEConstants;
+
 /**
  * Splits the chapters into sentences
  */
-@AnalysisModule(dependencies = {AnnieNLPResult.class, ImportResult.class})
+@AnalysisModule(dependencies = {NLPResult.class, ImportResult.class})
 public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
 
   private ProgressListener progressListener;
-  private AnnieNLPResult annieNLPResult;
+  private NLPResult nlpResult;
   private ImportResult importResult;
   private Map<Chapter, List<Sentence>> chapterToSentence;
   private Map<Integer, Sentence> startOffsetToSentence;
@@ -44,7 +45,7 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
   public SentenceDetectionResult execute(ModuleResultProvider results,
       ProgressListener progressListener) throws Exception {
     importResult = results.getResultFor(ImportResult.class);
-    annieNLPResult = results.getResultFor(AnnieNLPResult.class);
+    nlpResult = results.getResultFor(NLPResult.class);
     this.progressListener = progressListener;
     buildResults();
     this.progressListener.observeProgress(1);
@@ -116,8 +117,7 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       for (Chapter chapter : documentPart.getChapters()) {
         sentences = new ArrayList<>();
 
-        Set<Annotation> anno =
-            annieNLPResult.getAnnotationsForChapter(chapter,
+        Set<Annotation> anno = nlpResult.getAnnotationsForChapter(chapter,
                 Arrays.asList(ANNIEConstants.SENTENCE_ANNOTATION_TYPE));
         List<Annotation> sortedAnnotations = new ArrayList<Annotation>(anno);
         Collections.sort(sortedAnnotations, new Comparator<Annotation>() {
