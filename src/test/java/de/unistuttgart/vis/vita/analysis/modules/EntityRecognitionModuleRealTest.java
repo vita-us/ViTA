@@ -2,11 +2,14 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.ANNIEModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -78,7 +81,7 @@ public class EntityRecognitionModuleRealTest {
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
-    when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
+    when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
     SentenceDetectionModule sentenceDetectionModule = new SentenceDetectionModule();
