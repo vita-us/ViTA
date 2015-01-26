@@ -46,7 +46,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
     boolean stopWordListEnabled =
-        results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
+        results.getResultFor(AnalysisParameters.class).getStopWordListEnabled();
     count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();

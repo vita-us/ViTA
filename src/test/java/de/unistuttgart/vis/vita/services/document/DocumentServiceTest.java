@@ -160,7 +160,7 @@ public class DocumentServiceTest extends ServiceTest {
     assertNotNull(actualResponse);
     assertThat(actualResponse.getRelationTimeStepCount(), is(20));
     assertThat(actualResponse.getWordCloudItemsCount(), is(100));
-    assertThat(actualResponse.isStopWordListEnabled(), is(true));
+    assertThat(actualResponse.getStopWordListEnabled(), is(true));
   }
 
   /**
