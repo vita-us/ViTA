@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
+
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -67,15 +69,16 @@ public class EntityRecognitionModuleTest {
       // Sentence 1
       {0, 13}};
 
-  private static List<Sentence> sentences = new ArrayList<>();
-  private static List<DocumentPart> parts = new ArrayList<>();
-  private static ModuleResultProvider resultProvider;
-  private static ProgressListener progressListener;
-  private static List<Chapter> chapterObjects;
-  private static BasicEntityCollection collection;
+  private List<Sentence> sentences = new ArrayList<>();
+  private List<DocumentPart> parts = new ArrayList<>();
+  private ModuleResultProvider resultProvider;
+  private ProgressListener progressListener;
+  private List<Chapter> chapterObjects;
+  private BasicEntityCollection collection;
+ 
 
-  @BeforeClass
-  public static void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     resultProvider = mock(ModuleResultProvider.class);
 
     // mock import result
@@ -109,6 +112,7 @@ public class EntityRecognitionModuleTest {
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+    
 
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
@@ -120,7 +124,7 @@ public class EntityRecognitionModuleTest {
    * @param sentenceResult - the mocked result of the sentence detection.
    * @param chapters - the mocked chapters.
    */
-  private static void mockOccurrenceResults(SentenceDetectionResult sentenceResult,
+  private void mockOccurrenceResults(SentenceDetectionResult sentenceResult,
       List<Chapter> chapters) {
     if (!(chapters.size() == RELATIVE_ENTITY_OFFSETS.length)) {
       throw new IllegalArgumentException("chapters size does not fit to relative entity offsets");
@@ -154,7 +158,7 @@ public class EntityRecognitionModuleTest {
     }
   }
 
-  private static List<Chapter> fillText() {
+  private List<Chapter> fillText() {
     List<Chapter> chapters = new ArrayList<Chapter>();
 
     DocumentPart part = new DocumentPart();
