@@ -1,22 +1,7 @@
 package de.unistuttgart.vis.vita.services.document;
 
-import de.unistuttgart.vis.vita.analysis.AnalysisController;
-import de.unistuttgart.vis.vita.model.dao.DocumentDao;
-import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
-import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.services.BaseService;
-import de.unistuttgart.vis.vita.services.WordCloudService;
-import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
-import de.unistuttgart.vis.vita.services.analysis.ProgressService;
-import de.unistuttgart.vis.vita.services.entity.EntitiesService;
-import de.unistuttgart.vis.vita.services.entity.PersonsService;
-import de.unistuttgart.vis.vita.services.entity.PlacesService;
-import de.unistuttgart.vis.vita.services.entity.PlotViewService;
-import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
-import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
-import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
-
-import org.apache.log4j.Logger;
+import gate.persist.PersistenceException;
+import gate.persist.SerialDataStore;
 
 import java.io.File;
 import java.util.List;
@@ -41,6 +26,25 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+
+import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.services.BaseService;
+import de.unistuttgart.vis.vita.services.WordCloudService;
+import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
+import de.unistuttgart.vis.vita.services.analysis.ProgressService;
+import de.unistuttgart.vis.vita.services.entity.EntitiesService;
+import de.unistuttgart.vis.vita.services.entity.PersonsService;
+import de.unistuttgart.vis.vita.services.entity.PlacesService;
+import de.unistuttgart.vis.vita.services.entity.PlotViewService;
+import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
+import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
+import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
+
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
  */
@@ -48,6 +52,8 @@ import javax.ws.rs.core.Response;
 public class DocumentService extends BaseService {
 
   private static final Logger LOGGER = Logger.getLogger(DocumentService.class);
+  private static final String LR_TYPE_CORP = "gate.corpora.SerialCorpusImpl";
+
   private String id;
 
   private DocumentDao documentDao;
@@ -84,6 +90,9 @@ public class DocumentService extends BaseService {
 
   @Inject
   PlotViewService plotViewService;
+
+  @Inject
+  private Model model;
 
   @Override
   public void postConstruct() {
@@ -149,15 +158,17 @@ public class DocumentService extends BaseService {
    *
    * @return a response with no content if removal was successful, status 404 if document was not
    *         found
+   * @throws PersistenceException
    */
   @DELETE
-  public Response deleteDocument() {
+  public Response deleteDocument() throws PersistenceException {
     Response response;
+    SerialDataStore dataStore = null;
+    String gatedataStoreLocation;
 
     try {
       // first cancel a running analysis
       analysisController.cancelAnalysis(id);
-
       Document byId = documentDao.findById(id);
 
       // then remove it from the database
@@ -168,6 +179,15 @@ public class DocumentService extends BaseService {
         // Can remove the file from HDD.
         File file = new File(byId.getFilePath().toUri());
         boolean delete = file.delete();
+
+        gatedataStoreLocation = model.getGateDatastoreLocation().getLocation().toString();
+
+        if (!gatedataStoreLocation.isEmpty()) {
+          dataStore = new SerialDataStore(gatedataStoreLocation);
+          dataStore.open();
+          dataStore.delete(LR_TYPE_CORP, id);
+          LOGGER.info("Corpus with ID: " + id + " removed!");
+        }
 
         if (!delete) {
           LOGGER.info("Could not delete file: " + byId.getFilePath());
@@ -324,8 +344,9 @@ public class DocumentService extends BaseService {
     DocumentIdResponse response = null;
 
     // schedule analysis
-    String id = analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(),
-        readDoc.getFileName(), parameters);
+    String id =
+        analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(), readDoc.getFileName(),
+            parameters);
 
     // set up Response
     return new DocumentIdResponse(id);
