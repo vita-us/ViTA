@@ -89,6 +89,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     for (DocumentPart part : importResult.getParts()) {
       for (Chapter chapter : part.getChapters()) {
         docToChapter.put(corpus.get(i), chapter);
+        chapterToDoc.put(chapter, corpus.get(i));
         i++;
       }
     }
