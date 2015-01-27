@@ -130,9 +130,9 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
   /**
    * Starts the analysis with the initialized controller.
    *
-   * @throws ExecutionException If an exception occurs during execution of the controller.
+   * @throws ExecutionException If an exception occurs during execution of the controller or the controller gets interrupted.
    */
-  protected void startAnalysis() throws ExecutionException {
+  protected void startAnalysis() throws InterruptedException, ExecutionException {
     controller.setCorpus(corpus);
 
     int maxDocuments = corpus.size();
@@ -141,10 +141,11 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
     try {
       controller.execute();
-    } catch (IllegalStateException e) {
-      // This needs testing somehow. TODO
-      System.out.println(e.getCause().toString());
+    } catch (SoftInterruptedException e) {
       controller.interrupt();
+      InterruptedException ex = new InterruptedException(e.getMessage());
+      ex.addSuppressed(e); // no cause argument to InterruptedException's constructor
+      throw ex;
     }
   }
 
