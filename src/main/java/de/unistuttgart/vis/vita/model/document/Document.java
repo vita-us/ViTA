@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -40,7 +41,6 @@ public class Document extends AbstractEntityBase {
   private Date uploadDate;
 
   private String fileName;
-
   private UUID contentID;
 
   /**
@@ -53,6 +53,27 @@ public class Document extends AbstractEntityBase {
     this.progress = new AnalysisProgress();
     this.parameters = new AnalysisParameters();
     contentID = UUID.randomUUID();
+  }
+
+  /**
+   * Copy the corresponding objects of the document into the new one.
+   * The content id stays also the same which allows faster nlp analysis because of caching.
+   * @param document The document to take the data from.
+   * @return New Document object which can be modified for derive analysis.
+   */
+  public static Document copy(Document document) {
+    Document newDoc = new Document();
+    newDoc.setFileName(document.getFileName());
+    newDoc.setFilePath(document.getFilePath());
+    newDoc.setUploadDate(new Date());
+    document.getProgress().setStatus(AnalysisStatus.READY);
+    document.setMetadata(document.getMetadata());
+    document.setContent(document.getContent());
+    // This is important step to allow use of caching.
+    document.setContentID(document.getContentID());
+    document.setMetrics(document.getMetrics());
+
+    return document;
   }
 
   /**
@@ -165,6 +186,10 @@ public class Document extends AbstractEntityBase {
 
   public UUID getContentID() {
     return contentID;
+  }
+
+  public void setContentID(UUID contentID) {
+    this.contentID = contentID;
   }
 
   /**
