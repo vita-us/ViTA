@@ -40,7 +40,8 @@ import gate.creole.ANNIEConstants;
  * Searches for Entities in the document. Also merges entities and decides which name they should
  * use. Rare Entites will be filtered to improve the result.
  */
-@AnalysisModule(dependencies = {ImportResult.class, NLPResult.class, SentenceDetectionResult.class}, weight = 0.1)
+@AnalysisModule(dependencies = {ImportResult.class, NLPResult.class, SentenceDetectionResult.class,
+    AnalysisParameters.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
   private static final List<String>
