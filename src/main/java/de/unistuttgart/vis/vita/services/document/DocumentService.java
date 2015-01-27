@@ -323,6 +323,7 @@ public class DocumentService extends BaseService {
 
     Document derived = Document.copy(readDoc);
     derived.setParameters(parameters);
+    getDaoFactory().getDocumentDao().save(derived);
 
     // schedule analysis
     String id = analysisController.reScheduleDocumentAnalysis(derived);
