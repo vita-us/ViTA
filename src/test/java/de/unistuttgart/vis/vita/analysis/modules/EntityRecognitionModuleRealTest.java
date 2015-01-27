@@ -167,7 +167,7 @@ public class EntityRecognitionModuleRealTest {
   public void testProgressIsReported() throws Exception {
     // Check that the 0%-100% range is covered approximately
     // This does not test smoothness as the call times are not considered.
-    int steps = 100;
+    int steps = 10;
     for (int i = 0; i < steps; i++) {
       verify(progressListener, atLeastOnce()).observeProgress(
           doubleThat(closeTo((double) i / steps, (double) 1 / steps)));
