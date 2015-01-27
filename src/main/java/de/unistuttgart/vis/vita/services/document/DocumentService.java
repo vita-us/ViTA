@@ -324,6 +324,9 @@ public class DocumentService extends BaseService {
     Document derived = Document.copy(readDoc);
     derived.setParameters(parameters);
     getDaoFactory().getDocumentDao().save(derived);
+    // Make sure that the controller cann access the document
+    getEntityManager().getTransaction().commit();
+    getEntityManager().getTransaction().begin();
 
     // schedule analysis
     String id = analysisController.reScheduleDocumentAnalysis(derived);
