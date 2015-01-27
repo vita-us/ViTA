@@ -33,11 +33,18 @@
           </div>
         </div>
       </div>
-      <div data-document-view-highlighter data-parts="parts" data-document-id="document.id"
-        data-selected-occurrence-index="selectedOccurrenceIndex"
-        data-occurrences="occurrences"  data-entities="entities" class="col-sm-9 document-view-text">
-        <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
-          data-part-data="part" data-document-id="document.id" data-is-only-part="parts.length > 1"></div>
+      <div class="col-sm-9">
+          <div data-document-view-highlighter data-parts="parts" data-document-id="document.id"
+               data-selected-occurrence-index="selectedOccurrenceIndex"
+               data-occurrences="occurrences"  data-entities="entities" class="document-view-text">
+            <div id="part-{{part.number}}" data-part data-ng-repeat="part in parts"
+                 data-part-data="part" data-document-id="document.id" data-is-only-part="parts.length > 1">
+            </div>
+          </div>
+          <div data-document-fingerprint data-occurrences="occurrences"
+               data-parts="parts" class="document-fingerprint">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -68,6 +75,7 @@
   <script src="js/jquery.mousewheel.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="js/d3.js"></script>
+  <script src="js/index.js"></script>
   <script src="js/angular.js"></script>
   <script src="js/angular-route.js"></script>
   <script src="js/angular-resource.js"></script>
