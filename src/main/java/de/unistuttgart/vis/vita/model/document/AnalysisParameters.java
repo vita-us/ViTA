@@ -37,8 +37,8 @@ public class AnalysisParameters extends AbstractEntityBase {
   private boolean stopWordListEnabled = true;
   
   @XmlElement
-  @Description("Heuristics to filter out names that probably wrong, check for more accurate results")
-  @Label("Enable stop entity filter")
+  @Description("Check to remove person and place names that start with a lowercase letter")
+  @Label("Remove unlikely person and place names")
   private boolean stopEntityFilter = true;
   
 
