@@ -48,7 +48,9 @@ import static org.mockito.Matchers.anyString;
 public class EntityRecognitionModuleTest {
 
   // Short story: The Cunning Fox and the Clever Stork
-  private final static String[] CHAPTERS = {"Alice went to the party.", "Alice met Bob."};
+  private final static String[] CHAPTERS = {
+      "Alice went to the party.",
+      "Alice met Bob. Frodo is rain. rain is Frodo."};
 
   // Position of the Person/Place Names (relative)
   private final static int[][] RELATIVE_ENTITY_OFFSETS = {
@@ -216,25 +218,23 @@ public class EntityRecognitionModuleTest {
   }
   
   @Test
-  public void checkRegexWithDefaultName() throws Exception {
+  public void testWithStopEntityFilter() throws Exception {
     when(analysisParameters.getStopEntityFilter()).thenReturn(true);
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
-    String testString = "eduard";
-    assertTrue(testString.matches("[a-z0-9\\W]"));
+
+    BasicEntity person1 = getEntityByName("rain");
+    assertThat(person1, nullValue());
     
   }
   
   @Test
-  public void checkRegexWithCorrectValues() throws Exception {
+  public void testWithoutStopEntityFilter() throws Exception {
     System.out.println(analysisParameters);
     when(analysisParameters.getStopEntityFilter()).thenReturn(false);
-    
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
-    for(BasicEntity entity: collection.getEntities()) {
-      for (Attribute attribute : entity.getNameAttributes()) {
-        assertTrue(!(attribute.getContent().matches("^[a-z0-9\\W]")));
-      }
-    }
+
+    BasicEntity person1 = getEntityByName("rain");
+    assertThat(person1, not(nullValue()));
   }
   
 
