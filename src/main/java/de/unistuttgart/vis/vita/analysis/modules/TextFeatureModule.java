@@ -56,7 +56,6 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
     for (DocumentPart part : importResult.getParts()) {
       em.persist(part);
       for (Chapter chapter : part.getChapters()) {
-        chapter.setDocumentLength(document.getMetrics().getCharacterCount());
         em.persist(chapter);
       }
     }

@@ -13,18 +13,20 @@ import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PlaceTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Place;
 
 public class PlacePersistenceTest extends AbstractPersistenceTest {
-  
+
   private PlaceTestData testData;
-  
+
   @Override
   public void setUp() {
     super.setUp();
-    
+
     this.testData = new PlaceTestData();
   }
 
@@ -65,10 +67,10 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
   public void testNamedQueries() {
     Place testPlace = testData.createTestPlace(1);
     Place docTestPlace = testData.createTestPlace(2);
-    
+
     Document testDoc = new DocumentTestData().createTestDocument(1);
     testDoc.getContent().getPlaces().add(docTestPlace);
-    
+
     String documentId = testDoc.getId();
 
     em.persist(testPlace);
@@ -85,13 +87,13 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
     testData.checkData(readPlace, 1);
 
     String id = readPlace.getId();
-    
+
     // check NamedQuery finding all places in a document
     TypedQuery<Place> query = em.createNamedQuery("Place.findPlacesInDocument", Place.class);
     query.setParameter("documentId", documentId);
-    
+
     List<Place> docPlaces = query.getResultList();
-    
+
     assertEquals(1, docPlaces.size());
     testData.checkData(docTestPlace, 2);
 
@@ -116,30 +118,44 @@ public class PlacePersistenceTest extends AbstractPersistenceTest {
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
     Chapter chapter = new Chapter();
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, 10);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, 20);
-    TextPosition pos3 = TextPosition.fromGlobalOffset(chapter, 30);
-    TextPosition pos4 = TextPosition.fromGlobalOffset(chapter, 40);
-    TextSpan span1 = new TextSpan(pos1, pos4);
-    TextSpan span2 = new TextSpan(pos2, pos4);
-    TextSpan span3 = new TextSpan(pos3, pos4);
+    TextPosition pos1 =
+        TextPosition.fromGlobalOffset(10, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos2 =
+        TextPosition.fromGlobalOffset(20, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos3 =
+        TextPosition.fromGlobalOffset(30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos4 =
+        TextPosition.fromGlobalOffset(40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+
+    Range sentenceRange1 = new Range(pos1, pos4);
+    Range sentenceRange2 = new Range(pos3, pos4);
+    Sentence sentence1 = new Sentence(sentenceRange1, chapter, 0);
+    Sentence sentence2 = new Sentence(sentenceRange2, chapter, 1);
+
+    Range range1 = new Range(pos1, pos4);
+    Range range2 = new Range(pos2, pos4);
+    Range range3 = new Range(pos3, pos4);
+
+    Occurrence occurrence1 = new Occurrence(sentence1, range1);
+    Occurrence occurrence2 = new Occurrence(sentence1, range2);
+    Occurrence occurrence3 = new Occurrence(sentence2, range3);
 
     Place p = new Place();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurrences().add(span1);
-    p.getOccurrences().add(span3);
-    p.getOccurrences().add(span2);
+    p.getOccurrences().add(occurrence2);
+    p.getOccurrences().add(occurrence1);
+    p.getOccurrences().add(occurrence3);
 
     em.persist(doc);
     em.persist(chapter);
-    em.persist(span1);
-    em.persist(span3);
-    em.persist(span2);
+    em.persist(occurrence1);
+    em.persist(occurrence2);
+    em.persist(occurrence3);
     em.persist(p);
     startNewTransaction();
 
     Place dbPlace = em.createNamedQuery("Place.findAllPlaces", Place.class).getSingleResult();
-    assertThat(dbPlace.getOccurrences(), IsIterableContainingInOrder.contains(span1, span2, span3));
+    assertThat(dbPlace.getOccurrences(),
+        IsIterableContainingInOrder.contains(occurrence1, occurrence2, occurrence3));
   }
-
 }

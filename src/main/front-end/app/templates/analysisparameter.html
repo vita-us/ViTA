@@ -1,0 +1,18 @@
+<div class="analysis-parameter">
+  <div class="parameter-list">
+    <div ng-repeat="parameter in analysisParameters">
+      <div ng-if="parameter.attributeType === 'int'">
+        <div data-number-parameter data-parameter="parameter"></div>
+      </div>
+      <div ng-if="parameter.attributeType === 'string'">
+        <div data-string-parameter data-parameter="parameter"></div>
+      </div>
+      <div ng-if="parameter.attributeType === 'boolean'">
+        <div data-boolean-parameter data-parameter="parameter"></div>
+      </div>
+      <div ng-if="parameter.attributeType === 'enum'">
+        <div data-enum-parameter data-parameter="parameter"></div>
+      </div>
+    </div>
+  </div>
+</div>

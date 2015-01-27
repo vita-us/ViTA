@@ -15,9 +15,12 @@ import de.unistuttgart.vis.vita.analysis.results.EntityAttributes;
 import de.unistuttgart.vis.vita.analysis.results.EntityRanking;
 import de.unistuttgart.vis.vita.analysis.results.EntityRelations;
 import de.unistuttgart.vis.vita.analysis.results.EntityWordCloudResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
+import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
@@ -33,12 +36,13 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
  * the result.
  *
  * This depends on the text feature module because the chapters must have been stored for the
- * TextSpans to be persistable
+ * Ranges/Occurrences to be persistable
  */
 @AnalysisModule(dependencies = {EntityAttributes.class, EntityRanking.class, EntityRelations.class,
-                                BasicEntityCollection.class, DocumentPersistenceContext.class,
-                                Model.class, TextFeatureModule.class, EntityWordCloudResult.class},
-                                weight = 0.1)
+    BasicEntityCollection.class, DocumentPersistenceContext.class,
+    Model.class, TextFeatureModule.class, EntityWordCloudResult.class,
+    SentenceDetectionResult.class},
+    weight = 0.1)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
@@ -49,6 +53,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     EntityAttributes entityAttributes = result.getResultFor(EntityAttributes.class);
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     EntityWordCloudResult wordClouds = result.getResultFor(EntityWordCloudResult.class);
+    SentenceDetectionResult sentences = result.getResultFor(SentenceDetectionResult.class);
 
     int currentPersonRanking = 1;
     int currentPlaceRanking = 1;
@@ -84,6 +89,13 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
       DocumentMetrics metrics = document.getMetrics();
       metrics.setPersonCount(document.getContent().getPersons().size());
       metrics.setPlaceCount(document.getContent().getPlaces().size());
+
+      // Save sentences into chapter
+      for (DocumentPart documentPart : document.getContent().getParts()) {
+        for (Chapter chapter : documentPart.getChapters()) {
+          chapter.setSentences(sentences.getSentencesInChapter(chapter));
+        }
+      }
 
       em.persist(entity);
       em.persist(entity.getWordCloud());

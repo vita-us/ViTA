@@ -2,12 +2,15 @@ package de.unistuttgart.vis.vita.services.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import de.unistuttgart.vis.vita.model.dao.*;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -45,6 +48,8 @@ public class PlotViewService extends BaseService {
 
   private EntityDao entityDao;
 
+  private final Logger LOGGER = Logger.getLogger(PlotViewService.class.getName());
+
   @Override public void postConstruct() {
     super.postConstruct();
     documentDao = getDaoFactory().getDocumentDao();
@@ -71,6 +76,13 @@ public class PlotViewService extends BaseService {
   @Produces(MediaType.APPLICATION_JSON)
   @GET
   public PlotViewResponse getPlotView() {
+
+    if (!documentDao.isAnalysisFinished(documentId)) {
+      LOGGER.log(Level.FINEST, "Plot view requested, but analysis not finished yet.");
+      // send HTTP 409 Conflict instead of empty response to avoid wrong caching
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+    }
+
     PlotViewResponse response = new PlotViewResponse();
 
     List<Entity> entities = new ArrayList<>();

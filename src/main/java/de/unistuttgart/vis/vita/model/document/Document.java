@@ -207,7 +207,7 @@ public class Document extends AbstractEntityBase {
 
     while (lo <= hi) {
       int mid = lo + (hi - lo) / 2;
-      TextSpan range = allChapters.get(mid).getRange();
+      Range range = allChapters.get(mid).getRange();
       int start = range.getStart().getOffset();
       int end = range.getEnd().getOffset();
 

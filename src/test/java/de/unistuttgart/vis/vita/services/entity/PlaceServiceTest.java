@@ -12,7 +12,7 @@ import de.unistuttgart.vis.vita.model.entity.Place;
 /**
  * Performs tests on PlaceService to check whether GET works correctly.
  */
-public class PlaceServiceTest extends EntityServiceTest {
+public class PlaceServiceTest extends AbstractEntityServiceTest {
 
   @Override
   protected Application configure() {

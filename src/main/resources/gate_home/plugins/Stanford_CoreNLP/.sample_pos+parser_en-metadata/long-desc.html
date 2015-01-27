@@ -1,0 +1,16 @@
+<p>Parse text using the
+<a href="http://nlp.stanford.edu/software/lex-parser.shtml">Stanford
+Parser</a>.  This application produces the following output annotations:</p>
+<ul>
+  <li><em>Token</em> annotations with part-of-speech tags</li>
+  <li><em>Sentence</em> annotations</li>
+  <li><em>SyntaxTreeNode</em> annotations encoding the phrase structure tree,
+  in a form compatible with the syntax tree viewer in the GATE Developer
+  "Tools" plugin</li>
+  <li><em>Dependency</em> annotations encoding dependency-style parse
+  information.</li>
+</ul>
+
+<p>This application uses the standard ANNIE POS tagger to generate the POS
+tags, and the parser uses these tags rather than generating its own, making the
+parsing process more efficient.</p>

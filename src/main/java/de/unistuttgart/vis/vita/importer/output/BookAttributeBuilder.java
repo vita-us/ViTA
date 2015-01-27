@@ -5,7 +5,7 @@ import java.util.List;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * Computes the remaining attributes of the book, which are not text or metadata, for example range
@@ -28,7 +28,8 @@ public class BookAttributeBuilder extends AbstractBuilder {
    */
   public void buildAttributes() {
     setChapterLength();
-    setChapterRange();
+    int documentLength = this.getDocumentLength();
+    setChapterRange(documentLength);
   }
 
   /**
@@ -44,16 +45,31 @@ public class BookAttributeBuilder extends AbstractBuilder {
   }
 
   /**
+   * Get the total length of all chapters.
+   * 
+   * @return length of all chapters as number of characters.
+   */
+  private int getDocumentLength(){
+    int totalLength = 0;
+    for(DocumentPart part : this.parts){
+      for(Chapter chapter : part.getChapters()){
+        totalLength = totalLength + chapter.getLength();
+      }
+    }
+    return totalLength;
+  }
+  
+  /**
    * Set the range of all chapters.
    */
-  private void setChapterRange() {
+  private void setChapterRange(int documentLength) {
     int currentPosition = 0;
     for (DocumentPart part : this.parts) {
       for (Chapter chapter : part.getChapters()) {
-        TextPosition startPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
+        TextPosition startPosition = TextPosition.fromGlobalOffset(currentPosition, documentLength);
         currentPosition += chapter.getLength();
-        TextPosition endPosition = TextPosition.fromGlobalOffset(chapter, currentPosition);
-        chapter.setRange(new TextSpan(startPosition, endPosition));
+        TextPosition endPosition = TextPosition.fromGlobalOffset(currentPosition, documentLength);
+        chapter.setRange(new Range(startPosition, endPosition));
       }
     }
   }

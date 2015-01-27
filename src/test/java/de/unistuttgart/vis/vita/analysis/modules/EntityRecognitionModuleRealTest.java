@@ -2,18 +2,23 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.ANNIEModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,19 +31,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for analysis modules
@@ -46,11 +43,10 @@ import static org.mockito.Mockito.withSettings;
 public class EntityRecognitionModuleRealTest {
 
   // Short story: The Cunning Fox and the Clever Stork
-  private final static String[]
-      CHAPTERS =
-      {""};
+  private final static String[] CHAPTERS = {""};
 
   private static List<DocumentPart> parts = new ArrayList<>();
+  private static int totalLength;
   private static ModuleResultProvider resultProvider;
   private static ProgressListener progressListener;
   private static List<Chapter> chapterObjects;
@@ -58,15 +54,21 @@ public class EntityRecognitionModuleRealTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
+    loadText();
+    fillText();
+
     resultProvider = mock(ModuleResultProvider.class);
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    when(importResult.getTotalLength()).thenReturn(totalLength);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     progressListener = mock(ProgressListener.class, withSettings());
 
     loadText();
     fillText();
 
+    when(importResult.getTotalLength()).thenReturn(getDocumentLength());
+    
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
@@ -80,9 +82,15 @@ public class EntityRecognitionModuleRealTest {
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
-    when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
+    when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
+    SentenceDetectionModule sentenceDetectionModule = new SentenceDetectionModule();
+    SentenceDetectionResult sentenceResult = sentenceDetectionModule.execute(resultProvider, progressListener);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
+
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(new AnalysisParameters());
+    
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
@@ -93,8 +101,8 @@ public class EntityRecognitionModuleRealTest {
     String bigString = "";
 
     try {
-      List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()),
-                                              Charset.defaultCharset());
+      List<String> lines =
+          Files.readAllLines(Paths.get(file.getAbsolutePath()), Charset.defaultCharset());
       for (String line : lines) {
         bigString = bigString.concat(line + " ");
       }
@@ -107,14 +115,16 @@ public class EntityRecognitionModuleRealTest {
   private static void fillText() {
     DocumentPart part = new DocumentPart();
     parts.add(part);
-
+    
     chapterObjects = new ArrayList<>();
+    totalLength = 0;
     for (String chapterText : CHAPTERS) {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
       part.getChapters().add(chapter);
       chapterObjects.add(chapter);
+      totalLength += chapterText.length();
     }
   }
 
@@ -122,9 +132,16 @@ public class EntityRecognitionModuleRealTest {
   public void checkPersonRecognition() throws Exception {
     BasicEntity person = getEntityByName("Frodo");
 
+    int documentLength = getDocumentLength();
+    List<Range> occurrenceRanges = new ArrayList<Range>();
+    for (Occurrence occurrence : person.getOccurences()) {
+      occurrenceRanges.add(occurrence.getRange());
+    }
+
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PERSON));
-    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 5750, 5759)));
+    assertThat(occurrenceRanges, hasItem(new Range(chapterObjects.get(0), 5750, 5759,
+        documentLength)));
     assertTrue(checkIfNameExists(person, "Frodo"));
     assertTrue(checkIfNameExists(person, "Mr. Frodo"));
   }
@@ -133,9 +150,16 @@ public class EntityRecognitionModuleRealTest {
   public void checkPlaceRecognition() throws Exception {
     BasicEntity person = getEntityByName("Buckland");
 
+    int documentLength = getDocumentLength();
+    List<Range> occurrenceRanges = new ArrayList<Range>();
+    for (Occurrence occurrence : person.getOccurences()) {
+      occurrenceRanges.add(occurrence.getRange());
+    }
+
     assertNotNull(person);
     assertThat(person.getType(), is(EntityType.PLACE));
-    assertThat(person.getOccurences(), hasItem(new TextSpan(chapterObjects.get(0), 4103, 4111)));
+    assertThat(occurrenceRanges, hasItem(new Range(chapterObjects.get(0), 4103, 4111,
+        documentLength)));
     assertTrue(checkIfNameExists(person, "Buckland"));
   }
 
@@ -143,16 +167,16 @@ public class EntityRecognitionModuleRealTest {
   public void testProgressIsReported() throws Exception {
     // Check that the 0%-100% range is covered approximately
     // This does not test smoothness as the call times are not considered.
-    int steps = 100;
+    int steps = 10;
     for (int i = 0; i < steps; i++) {
-      verify(progressListener, atLeastOnce()).observeProgress(doubleThat(
-          closeTo((double) i / steps, (double) 1 / steps)));
+      verify(progressListener, atLeastOnce()).observeProgress(
+          doubleThat(closeTo((double) i / steps, (double) 1 / steps)));
     }
   }
 
   private boolean checkIfNameExists(BasicEntity entity, String nameToSearch) {
-    for(Attribute attribute : entity.getNameAttributes()) {
-      if(attribute.getContent().equals(nameToSearch)) {
+    for (Attribute attribute : entity.getNameAttributes()) {
+      if (attribute.getContent().equals(nameToSearch)) {
         return true;
       }
     }
@@ -161,14 +185,22 @@ public class EntityRecognitionModuleRealTest {
   }
 
   private BasicEntity getEntityByName(String name) {
-    for(BasicEntity entity : collection.getEntities()) {
-      for(Attribute attribute : entity.getNameAttributes()) {
-          if(attribute.getContent().equals(name)) {
-            return entity;
-          }
+    for (BasicEntity entity : collection.getEntities()) {
+      for (Attribute attribute : entity.getNameAttributes()) {
+        if (attribute.getContent().equals(name)) {
+          return entity;
+        }
       }
     }
 
     return null;
+  }
+
+  private static int getDocumentLength() {
+    int documentLength = 0;
+    for (String chapter : CHAPTERS) {
+      documentLength += chapter.length();
+    }
+    return documentLength;
   }
 }
