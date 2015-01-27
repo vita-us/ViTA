@@ -321,11 +321,11 @@ public class DocumentService extends BaseService {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
 
-    DocumentIdResponse response = null;
+    Document derived = Document.copy(readDoc);
+    derived.setParameters(parameters);
 
     // schedule analysis
-    String id = analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(),
-        readDoc.getFileName(), parameters);
+    String id = analysisController.reScheduleDocumentAnalysis(derived);
 
     // set up Response
     return new DocumentIdResponse(id);
