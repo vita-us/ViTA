@@ -139,7 +139,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
           
           //Regex to filter wrong names with start char a-z or 0-9 
           if (analysisParameters.getStopEntityFilter()) { 
-            if (firstChar.matches("[a-z0-9\\W]")) {
+            if (firstChar.matches("^[a-z0-9\\W]")) {
               continue;
             }
           }
