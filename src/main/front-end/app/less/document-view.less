@@ -3,6 +3,10 @@
 @document-view-footer-height: 50px;
 @document-view-footer-height-expanded: 95px;
 
+body {
+  overflow-x: hidden;
+}
+
 body#document-view {
   padding: @document-view-header-height 0 @document-view-footer-height-expanded 0;
 
@@ -104,11 +108,14 @@ body#document-view {
       font-weight: bold;
     }
   }
- 
+
+  .document-view-text-col {
+    padding-right: 30px;
+  }
+
   .document-view-text {
     background-color: @light-grey-background-color;
     overflow: hidden;
-    padding-right: 30px;
   
     .chapter-headline, .part-headline {
       font-weight: bold;
