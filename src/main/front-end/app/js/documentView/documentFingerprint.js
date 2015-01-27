@@ -55,7 +55,10 @@
 
       var $documentMain = $('#document-view-main');
 
+      var occurrences;
+
       scope.$watch('occurrences', function() {
+        occurrences = angular.copy(scope.occurrences);
         if (!angular.isUndefined(scope.occurrences)) {
           updateOccurrenceRects();
         }
@@ -93,7 +96,7 @@
 
       function updateOccurrenceRects() {
         var rect = rectGroup.selectAll('rect')
-            .data(scope.occurrences);
+            .data(occurrences);
         //Update
         updateOccurrenceRect(rect);
         //Enter
@@ -120,8 +123,9 @@
           return Math.max(heightScale(occurrence.end.progress - occurrence.start.progress), 5);
         })
         .classed('occurrence-rect', true)
-        .on('click', function(occurrence, i) {
-          getOccurrenceSpan(i)[0].scrollIntoView();
+        .on('click', function(occurrence, index) {
+          getOccurrenceSpan(index)[0].scrollIntoView();
+          scope.onOccurrenceClick({index: index});
         })
         .on('mouseover', toolTip.show)
         .on('mouseout', toolTip.hide);
@@ -136,15 +140,15 @@
         // Compute how much space we have behind and in front of this occurrence
         var beforeSpace;
         if (i !== 0) {
-          var prevOccurrence = scope.occurrences[i - 1];
+          var prevOccurrence = occurrences[i - 1];
           beforeSpace = occurrence.start.offset - prevOccurrence.end.offset;
         } else {
           beforeSpace = occurrence.start.offset;
         }
 
         var afterSpace;
-        if (i !== scope.occurrences.length - 1) {
-          var nextOccurrence = scope.occurrences[i + 1];
+        if (i !== occurrences.length - 1) {
+          var nextOccurrence = occurrences[i + 1];
           afterSpace = nextOccurrence.start.offset - occurrence.end.offset;
         } else {
           afterSpace = lastChapter.range.end.offset - occurrence.end.offset;
@@ -180,7 +184,8 @@
       restrict: 'A',
       scope: {
         occurrences: '=',
-        parts: '='
+        parts: '=',
+        onOccurrenceClick: '&'
       },
       link: link
     };
