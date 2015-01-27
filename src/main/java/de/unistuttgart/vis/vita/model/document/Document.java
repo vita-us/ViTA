@@ -73,7 +73,7 @@ public class Document extends AbstractEntityBase {
     document.setContentID(document.getContentID());
     document.setMetrics(document.getMetrics());
 
-    return document;
+    return newDoc;
   }
 
   /**
