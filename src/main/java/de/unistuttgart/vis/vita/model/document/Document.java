@@ -58,6 +58,7 @@ public class Document extends AbstractEntityBase {
   /**
    * Copy the corresponding objects of the document into the new one.
    * The content id stays also the same which allows faster nlp analysis because of caching.
+   * This is <b>NOT</b> a deep copy of the document. Content, Metadata and Metrics are missing!
    * @param document The document to take the data from.
    * @return New Document object which can be modified for derive analysis.
    */
@@ -66,12 +67,10 @@ public class Document extends AbstractEntityBase {
     newDoc.setFileName(document.getFileName());
     newDoc.setFilePath(document.getFilePath());
     newDoc.setUploadDate(new Date());
-    document.getProgress().setStatus(AnalysisStatus.READY);
-    document.setMetadata(document.getMetadata());
-    document.setContent(document.getContent());
+    newDoc.getProgress().setStatus(AnalysisStatus.READY);
+    newDoc.getMetadata().setTitle(document.getMetadata().getTitle());
     // This is important step to allow use of caching.
-    document.setContentID(document.getContentID());
-    document.setMetrics(document.getMetrics());
+    newDoc.setContentID(document.getContentID());
 
     return newDoc;
   }
