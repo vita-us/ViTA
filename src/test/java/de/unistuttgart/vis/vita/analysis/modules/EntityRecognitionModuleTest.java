@@ -22,11 +22,14 @@ import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.ANNIEModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
@@ -87,8 +90,6 @@ public class EntityRecognitionModuleTest {
 
     // mock import result
     ImportResult importResult = mock(ImportResult.class);
-
-
     when(importResult.getParts()).thenReturn(parts);
     when(importResult.getTotalLength()).thenReturn(CHAPTERS[0].length() + CHAPTERS[1].length());
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
@@ -114,7 +115,7 @@ public class EntityRecognitionModuleTest {
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
-    when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
+    when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
     
     analysisParameters = mock(AnalysisParameters.class);

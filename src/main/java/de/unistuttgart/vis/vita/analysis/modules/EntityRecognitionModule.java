@@ -8,9 +8,10 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.modules.gate.NLPConstants;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
@@ -22,6 +23,7 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,23 +32,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import gate.Annotation;
+import gate.creole.ANNIEConstants;
 
 /**
  * Searches for Entities in the document. Also merges entities and decides which name they should
  * use. Rare Entites will be filtered to improve the result.
  */
-@AnalysisModule(dependencies = {ImportResult.class, SentenceDetectionResult.class,
-    AnnieNLPResult.class}, weight = 0.1)
+@AnalysisModule(dependencies = {ImportResult.class, NLPResult.class, SentenceDetectionResult.class}, weight = 0.1)
 public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
+  private static final List<String>
+      TYPES_PERSON = Arrays.asList(ANNIEConstants.PERSON_ANNOTATION_TYPE,
+                                   NLPConstants.TYPE_PERSON_STANFORD);
   private Map<Integer, BasicEntity> idMap = new HashMap<>();
   private Set<BasicEntity> entities = new HashSet<>();
   private ImportResult importResult;
   private SentenceDetectionResult sentenceDetectionResult;
-  private AnnieNLPResult annieNLPResult;
+  private NLPResult nlpResult;
   private ProgressListener progressListener;
   private AnalysisParameters analysisParameters;
 
@@ -54,8 +58,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   public BasicEntityCollection execute(ModuleResultProvider result,
       ProgressListener progressListener) throws Exception {
     importResult = result.getResultFor(ImportResult.class);
+    nlpResult = result.getResultFor(NLPResult.class);
     sentenceDetectionResult = result.getResultFor(SentenceDetectionResult.class);
-    annieNLPResult = result.getResultFor(AnnieNLPResult.class);
     analysisParameters = result.getResultFor(AnalysisParameters.class);
     this.progressListener = progressListener;
 
@@ -74,7 +78,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   private void mergeSameEntities() {
     EntityMerger merger = new EntityMerger();
     merger.addAll(entities);
-    entities = new HashSet<BasicEntity>(merger.getResult());
+    entities = new HashSet<>(merger.getResult());
   }
 
   /**
@@ -130,8 +134,8 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       double chapterFactor = 1. / chapters.size();
 
       for (Chapter chapter : chapters) {
-        Set<Annotation> annotations = filterEntityAnnotations(annieNLPResult
-            .getAnnotationsForChapter(chapter));
+        Set<Annotation> annotations =
+            nlpResult.getAnnotationsForChapter(chapter);
 
         for (Annotation annieAnnotation : annotations) {
           String firstChar= "" + getAnnotatedText(chapter.getText(), annieAnnotation).charAt(0);
@@ -182,32 +186,10 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   /**
-   * Filters the gate annotations to only contain persons and locations.
-   * 
-   * @param annotations
-   *          The gate annotation set.
-   * @return The new filtered set.
-   */
-  private Set<Annotation> filterEntityAnnotations(Set<Annotation> annotations) {
-    Set<Annotation> extracted = new TreeSet<>();
-
-    for (Annotation annotation : annotations) {
-      if ("Person".equals(annotation.getType()) || "Location".equals(annotation.getType())) {
-        extracted.add(annotation);
-      }
-    }
-
-    return extracted;
-  }
-
-  /**
-   * Creates a new entity out of the annotation in the given chapter. If the
-   * entity already exists it will be updated with the matching position.
-   * 
-   * @param theAnnotation
-   *          The annotation to work with.
-   * @param chapter
-   *          The chapter in which the annotation can be found.
+   * Creates a new entity out of the annotation in the given chapter.
+   * If the entity already exists it will be updated with the matching position.
+   * @param theAnnotation The annotation to work with.
+   * @param chapter The chapter in which the annotation can be found.
    */
   private void createBasicEntity(Annotation theAnnotation, Chapter chapter) {
     BasicEntity entity = getExistingEntityForAnnotation(theAnnotation);
@@ -233,7 +215,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   }
 
   private EntityType getEntityType(Annotation annotation) {
-    if ("Person".equals(annotation.getType())) {
+    if (TYPES_PERSON.contains(annotation.getType())) {
       return EntityType.PERSON;
     } else {
       return EntityType.PLACE;
@@ -244,11 +226,11 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * Updates the name attributes for the given entity.
    * 
    * @param entity
-   *          The entity to be updated.
-   * @param annotatedText
+   * @param entity The entity to be updated.
+   * @param annotatedText The extracted name.
    *          The extracted name.
    * @param occurrence
-   *          The position of the name.
+   * @param occurrence The position of the name.
    */
   private void updateNameAttributes(BasicEntity entity, String annotatedText, Occurrence occurrence) {
     for (Attribute currentAttribute : entity.getNameAttributes()) {
@@ -268,7 +250,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * Searches for an already existing entity in the map.
    *
    * @param theAnnotation
-   *          The annotation to work with.
+   * @param theAnnotation The annotation to work with.
    * @return The existing entity if found else null.
    */
   @SuppressWarnings("unchecked")
@@ -302,8 +284,9 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
    * @return The Occurrence of the annotation.
    */
   private Occurrence getOccurences(Annotation theAnnotation, Chapter chapter) {
-    return sentenceDetectionResult.createOccurrence(chapter, theAnnotation.getStartNode()
-        .getOffset().intValue(), theAnnotation.getEndNode().getOffset().intValue());
+    return sentenceDetectionResult
+        .createOccurrence(chapter, theAnnotation.getStartNode().getOffset().intValue(),
+            theAnnotation.getEndNode().getOffset().intValue());
   }
 
   /**
