@@ -12,6 +12,8 @@ import static org.mockito.Mockito.withSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.MatchesPattern;
+
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 
 import org.junit.Before;
@@ -34,6 +36,7 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+import de.unistuttgart.vis.vita.model.entity.Entity;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -75,7 +78,8 @@ public class EntityRecognitionModuleTest {
   private ProgressListener progressListener;
   private List<Chapter> chapterObjects;
   private BasicEntityCollection collection;
- 
+  private AnalysisParameters analysisParameters;
+  private EntityRecognitionModule entityRecognitionModule;
 
   @Before
   public void setUp() throws Exception {
@@ -83,7 +87,8 @@ public class EntityRecognitionModuleTest {
 
     // mock import result
     ImportResult importResult = mock(ImportResult.class);
-    AnalysisParameters analysisParameters = mock(AnalysisParameters.class);
+
+
     when(importResult.getParts()).thenReturn(parts);
     when(importResult.getTotalLength()).thenReturn(CHAPTERS[0].length() + CHAPTERS[1].length());
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
@@ -95,7 +100,6 @@ public class EntityRecognitionModuleTest {
     SentenceDetectionResult sentenceResult = mock(SentenceDetectionResult.class);
     mockOccurrenceResults(sentenceResult, chapters);
     when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
-
 
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
@@ -113,9 +117,11 @@ public class EntityRecognitionModuleTest {
     when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
     
+    analysisParameters = mock(AnalysisParameters.class);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(analysisParameters);
+    
+    entityRecognitionModule = new EntityRecognitionModule();
 
-    EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
-    collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
 
   /**
@@ -184,6 +190,7 @@ public class EntityRecognitionModuleTest {
 
   @Test
   public void checkEntitiesAreDetectedAcrossChapters() throws Exception {
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
     BasicEntity person1 = getEntityByName("Alice");
     assertThat(person1, not(nullValue()));
     assertThat(person1.getOccurences(), hasSize(2));
@@ -191,6 +198,7 @@ public class EntityRecognitionModuleTest {
 
   @Test
   public void checkEntitiesWithOneOccurrenceAreRemoved() throws Exception {
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
     BasicEntity person2 = getEntityByName("Bob");
     assertThat(person2, nullValue());
   }
@@ -207,18 +215,27 @@ public class EntityRecognitionModuleTest {
   }
   
   @Test
-  public void checkRegexWithDefaultName() {
-    
+  public void checkRegexWithDefaultName() throws Exception {
+    when(analysisParameters.getStopEntityFilter()).thenReturn(true);
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
     String testString = "eduard";
     assertTrue(testString.matches("[a-z0-9\\W]"));
+    
   }
   
   @Test
-  public void checkRegexWithCorrectName() {
+  public void checkRegexWithCorrectValues() throws Exception {
+    System.out.println(analysisParameters);
+    when(analysisParameters.getStopEntityFilter()).thenReturn(false);
     
-    String testString = "Eduard";
-    assertTrue(testString.matches("[a-z0-9\\W]"));
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
+    for(BasicEntity entity: collection.getEntities()) {
+      for (Attribute attribute : entity.getNameAttributes()) {
+        assertTrue(!(attribute.getContent().matches("^[a-z0-9\\W]")));
+      }
+    }
   }
+  
 
   private static int getDocumentLength() {
     int documentLength = 0;
