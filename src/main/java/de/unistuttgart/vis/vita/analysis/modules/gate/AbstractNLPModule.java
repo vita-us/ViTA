@@ -64,11 +64,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     if (corpus == null) {
       loadEngine();
       createCorpus();
-      try {
-        startAnalysis();
-      } catch (ExecutionException e) {
-        throw new InterruptedException("NLP analysis interrupted.");
-      }
+      startAnalysis();
       storeModule.storeResult(corpus, persistID);
     } else {
       fillCorpusMap();
@@ -132,7 +128,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
    *
    * @throws ExecutionException If an exception occurs during execution of the controller or the controller gets interrupted.
    */
-  protected void startAnalysis() throws ExecutionException {
+  protected void startAnalysis() throws InterruptedException, ExecutionException {
     controller.setCorpus(corpus);
 
     int maxDocuments = corpus.size();
@@ -141,9 +137,11 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
     try {
       controller.execute();
-    } catch (IllegalStateException e) {
+    } catch (SoftInterruptedException e) {
       controller.interrupt();
-      throw new ExecutionException(e.getCause());
+      InterruptedException ex = new InterruptedException(e.getMessage());
+      ex.addSuppressed(e); // no cause argument to InterruptedException's constructor
+      throw ex;
     }
   }
 
