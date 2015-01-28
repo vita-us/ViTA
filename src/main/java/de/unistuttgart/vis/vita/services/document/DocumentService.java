@@ -1,9 +1,15 @@
 package de.unistuttgart.vis.vita.services.document;
 
+import gate.Corpus;
+import gate.DataStore;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.creole.ResourceInstantiationException;
 import gate.persist.PersistenceException;
 import gate.persist.SerialDataStore;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +35,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.analysis.modules.gate.NLPConstants;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
@@ -52,7 +59,6 @@ import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
 public class DocumentService extends BaseService {
 
   private static final Logger LOGGER = Logger.getLogger(DocumentService.class);
-  private static final String LR_TYPE_CORP = "gate.corpora.SerialCorpusImpl";
 
   private String id;
 
@@ -162,8 +168,6 @@ public class DocumentService extends BaseService {
   @DELETE
   public Response deleteDocument() {
     Response response;
-    SerialDataStore dataStore = null;
-    String gatedataStoreLocation;
 
     try {
       // first cancel a running analysis
@@ -179,17 +183,12 @@ public class DocumentService extends BaseService {
         File file = new File(byId.getFilePath().toUri());
         boolean delete = file.delete();
 
-        gatedataStoreLocation = model.getGateDatastoreLocation().getLocation().toString();
-
-        if (!gatedataStoreLocation.isEmpty()) {
-          dataStore = new SerialDataStore(gatedataStoreLocation);
-          dataStore.open();
-          dataStore.delete(LR_TYPE_CORP, id);
-          LOGGER.info("Corpus with ID: " + id + " removed!");
-        }
+        cleanGateDatastore(byId);
 
         if (!delete) {
           LOGGER.info("Could not delete file: " + byId.getFilePath());
+        } else {
+          LOGGER.info("Document file " + byId.getFileName() + " removed!");
         }
       }
 
@@ -197,10 +196,54 @@ public class DocumentService extends BaseService {
       response = Response.noContent().build();
     } catch (NoResultException nre) {
       throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
+    } catch (PersistenceException | ResourceInstantiationException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
     }
 
     // send response
     return response;
+  }
+
+  private void cleanGateDatastore(Document removed)
+      throws PersistenceException, ResourceInstantiationException {
+    SerialDataStore dataStore;
+    String gatedataStoreLocation = model.getGateDatastoreLocation().getLocation().toString();
+
+    if (!gatedataStoreLocation.isEmpty()) {
+      dataStore = new SerialDataStore(gatedataStoreLocation);
+
+      try {
+        dataStore.open();
+
+        for (String type : dataStore.getLrTypes()) {
+          for (String lrId : dataStore.getLrIds(type)) {
+
+            if (lrId.contains(removed.getContentID().toString())) {
+              FeatureMap corpFeatures = Factory.newFeatureMap();
+              corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, lrId);
+              corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, dataStore);
+              Corpus resource =
+                  (Corpus) Factory.createResource(NLPConstants.LR_TYPE_CORP, corpFeatures);
+              List<String> docIdRemove = new ArrayList<>();
+
+              for (gate.Document document : resource) {
+                docIdRemove.add(document.getLRPersistenceId().toString());
+              }
+
+              for (String docId : docIdRemove) {
+                dataStore.delete(NLPConstants.LR_TYPE_DOC, docId);
+                LOGGER.info("Deleted document with ID: " + docId);
+              }
+
+              dataStore.delete(type, lrId);
+              LOGGER.info("Deleted corpus with ID: " + lrId);
+            }
+          }
+        }
+      } finally {
+        dataStore.close();
+      }
+    }
   }
 
   /**
