@@ -102,7 +102,6 @@ public class EntityMerger {
    */
   private void addEntityNames(BasicEntity entity) {
     for (Attribute attr : entity.getNameAttributes()) {
-      System.out.println(attr.getContent() + " -> " + entity.getEntityId());
       entitiesByName.put(new EntityIdentifier(attr.getContent(), entity.getType()), entity);
     }
   }

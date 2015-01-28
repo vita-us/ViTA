@@ -35,6 +35,34 @@ public class AnalysisParameters extends AbstractEntityBase {
   @Label("Enable stop word list")
   @Default("true")
   private boolean stopWordListEnabled = true;
+  
+  @XmlElement
+  @Description("Check to remove person and place names that start with a lowercase letter")
+  @Label("Remove unlikely person and place names")
+  private boolean stopEntityFilter = true;
+  
+
+  public boolean getStopEntityFilter() {
+    return stopEntityFilter;
+  }
+
+  public void setStopEntityFilter(boolean stopEntityFilter) {
+    this.stopEntityFilter = stopEntityFilter;
+  }
+
+  @XmlElement
+  @Description("Decide which NLP tool should be used for named entity recognition.")
+  @Label("Choose NLP tool")
+  @Default("annie")
+  private EnumNLP nlpTool = EnumNLP.ANNIE;
+
+  public EnumNLP getNlpTool() {
+    return nlpTool;
+  }
+
+  public void setNlpTool(EnumNLP nlpTool) {
+    this.nlpTool = nlpTool;
+  }
 
   public int getRelationTimeStepCount() {
     return relationTimeStepCount;
@@ -52,7 +80,7 @@ public class AnalysisParameters extends AbstractEntityBase {
     this.wordCloudItemsCount = wordCloudItemsCount;
   }
 
-  public boolean isStopWordListEnabled() {
+  public boolean getStopWordListEnabled() {
     return stopWordListEnabled;
   }
 

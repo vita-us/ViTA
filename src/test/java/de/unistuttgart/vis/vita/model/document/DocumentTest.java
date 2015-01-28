@@ -22,6 +22,8 @@ public class DocumentTest {
   private Chapter chapter1;
   private Chapter chapter2;
   private Chapter chapter3;
+  
+  private final static int DOCUMENT_LENGTH = 367;
 
   @Before
   public void setUp() {
@@ -30,25 +32,25 @@ public class DocumentTest {
     DocumentPart documentPart = new DocumentPart();
 
     chapter1 = new Chapter();
-    TextSpan
-        span1 =
-        new TextSpan(TextPosition.fromGlobalOffset(chapter1, 0),
-                     TextPosition.fromGlobalOffset(chapter1, 250));
-    chapter1.setRange(span1);
+    Range
+        range1 =
+        new Range(TextPosition.fromGlobalOffset(0, DOCUMENT_LENGTH),
+                     TextPosition.fromGlobalOffset(250, DOCUMENT_LENGTH));
+    chapter1.setRange(range1);
 
     chapter2 = new Chapter();
-    TextSpan
-        span2 =
-        new TextSpan(TextPosition.fromGlobalOffset(chapter2, 251),
-                     TextPosition.fromGlobalOffset(chapter2, 300));
-    chapter2.setRange(span2);
+    Range
+        range2 =
+        new Range(TextPosition.fromGlobalOffset(251, DOCUMENT_LENGTH),
+                     TextPosition.fromGlobalOffset(300, DOCUMENT_LENGTH));
+    chapter2.setRange(range2);
 
     chapter3 = new Chapter();
-    TextSpan
-        span3 =
-        new TextSpan(TextPosition.fromGlobalOffset(chapter3, 301),
-                     TextPosition.fromGlobalOffset(chapter3, 366));
-    chapter3.setRange(span3);
+    Range
+        range3 =
+        new Range(TextPosition.fromGlobalOffset(301, DOCUMENT_LENGTH),
+                     TextPosition.fromGlobalOffset(366, DOCUMENT_LENGTH));
+    chapter3.setRange(range3);
 
     documentPart.getChapters().addAll(Arrays.asList(chapter1, chapter2, chapter3));
     content.getParts().add(documentPart);

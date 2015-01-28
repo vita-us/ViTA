@@ -10,8 +10,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -102,7 +102,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
       throw new WebApplicationException(e);
     }
     
-    List<Occurrence> occs = null;
+    List<Range> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -112,18 +112,19 @@ public class AttributeOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
-    // get the TextSpans
-    List<TextSpan> readTextSpans = textSpanDao.findTextSpansForAttribute(entityId, attributeId, 
+  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+    // get the Occurrences
+    List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForAttribute(entityId, attributeId, 
                                                                           startOffset, endOffset);
     
-    // convert TextSpans into Occurrences and return them
-    return convertSpansToOccurrences(readTextSpans);
+    // convert Occurrences into Ranges and return them
+    return convertOccurrencesToRanges(readOccurrences);
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return textSpanDao.getNumberOfTextSpansForAttribute(entityId, attributeId, stepStart, stepEnd);
+  protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
+    return occurrenceDao.getNumberOfOccurrencesForAttribute(
+        entityId, attributeId, firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }

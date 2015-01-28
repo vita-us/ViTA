@@ -5,8 +5,6 @@
 
 package de.unistuttgart.vis.vita.services.responses.parameters;
 
-import java.lang.reflect.Type;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,7 +21,7 @@ public class MinMaxParameter extends AbstractParameter {
   public MinMaxParameter() {
   }
 
-  public MinMaxParameter(String name, Type type, long min, long max) {
+  public MinMaxParameter(String name, String type, long min, long max) {
     super(name, type);
     this.min = min;
     this.max = max;

@@ -1,9 +1,9 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 /**
@@ -29,7 +29,8 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
  */
 @javax.persistence.Entity
 @Table(indexes={
-    @Index(columnList="rankingValue")
+    @Index(columnList="rankingValue"),
+    @Index(columnList="frequency")
   })
 @Inheritance
 @DiscriminatorColumn(name = "TYPE", discriminatorType = DiscriminatorType.STRING)
@@ -49,9 +50,9 @@ public abstract class Entity extends AbstractEntityBase {
   @XmlElement(required = true)
   private Set<Attribute> attributes;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("start.offset ASC")
-  private SortedSet<TextSpan> occurrences;
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OrderBy("range.start.offset ASC")
+  private List<Occurrence> occurrences;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "originEntity")
   @XmlElement(name = "entityRelations")
@@ -66,7 +67,7 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public Entity() {
     attributes = new HashSet<>();
-    occurrences = new TreeSet<>();  
+    occurrences = new ArrayList<Occurrence>();  
     entityRelations = new HashSet<>();
   }
 
@@ -137,7 +138,7 @@ public abstract class Entity extends AbstractEntityBase {
   /**
    * @return Set of all occurrences of this entity in the document
    */
-  public SortedSet<TextSpan> getOccurrences() {
+  public List<Occurrence> getOccurrences() {
     return occurrences;
   }
 

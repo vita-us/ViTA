@@ -10,14 +10,17 @@ import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.responses.parameters.AbstractParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
+import de.unistuttgart.vis.vita.services.responses.parameters.EnumParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.ParametersResponse;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -56,7 +59,7 @@ public class ParametersService extends BaseService {
       field.setAccessible(true);
 
       if (field.getType() == boolean.class) {
-        parameter = new BooleanParameter(field.getName(), field.getType());
+        parameter = new BooleanParameter(field.getName(), "boolean");
       } else if (field.getType() == int.class || field.getType() == long.class) {
         long min = Integer.MIN_VALUE;
         long max = Integer.MAX_VALUE;
@@ -66,7 +69,12 @@ public class ParametersService extends BaseService {
         if (field.getAnnotation(Max.class) != null) {
           max = field.getAnnotation(Max.class).value();
         }
-        parameter = new MinMaxParameter(field.getName(), field.getType(), min, max);
+        parameter = new MinMaxParameter(field.getName(), "int", min, max);
+      } else if (field.getType() == EnumNLP.class) {
+        parameter = new EnumParameter(field.getName(), "enum");
+        EnumParameter temp = (EnumParameter) parameter;
+        EnumNLP[] enumConstants = (EnumNLP[]) field.getType().getEnumConstants();
+        temp.addValues(Arrays.asList(enumConstants));
       } else {
         continue;
       }
@@ -85,7 +93,6 @@ public class ParametersService extends BaseService {
 
       parameterList.add(parameter);
     }
-
     return new ParametersResponse(parameterList);
   }
 }

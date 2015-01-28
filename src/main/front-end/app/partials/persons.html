@@ -8,7 +8,10 @@
       <ul>
         <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' ">
           <a href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
-          class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">{{person.displayName}}</a>
+            class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
+            {{person.displayName}} 
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
+        </a>
         </li>
       </ul>
     </div>

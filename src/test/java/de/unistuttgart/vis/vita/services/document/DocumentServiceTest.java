@@ -3,6 +3,7 @@ package de.unistuttgart.vis.vita.services.document;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.services.ServiceTest;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
@@ -190,7 +191,8 @@ public class DocumentServiceTest extends ServiceTest {
     assertNotNull(actualResponse);
     assertThat(actualResponse.getRelationTimeStepCount(), is(20));
     assertThat(actualResponse.getWordCloudItemsCount(), is(100));
-    assertThat(actualResponse.isStopWordListEnabled(), is(true));
+    assertThat(actualResponse.getStopWordListEnabled(), is(true));
+    assertThat(actualResponse.getNlpTool(), is(EnumNLP.ANNIE));
   }
 
   /**

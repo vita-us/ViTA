@@ -9,10 +9,11 @@ import de.unistuttgart.vis.vita.analysis.Module;
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
+import de.unistuttgart.vis.vita.analysis.modules.gate.NLPConstants;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.EntityAttributes;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -31,12 +32,12 @@ import gate.Annotation;
 /**
  * This module is dependent for finding all possible attributes like gender,... for the entities.
  */
-@AnalysisModule(dependencies = {ImportResult.class, AnnieNLPResult.class,
+@AnalysisModule(dependencies = {ImportResult.class, NLPResult.class,
                                 BasicEntityCollection.class}, weight = 0.1)
 public class EntityAttributeModule extends Module<EntityAttributes> {
 
   private ImportResult importResult;
-  private AnnieNLPResult annieNLPResult;
+  private NLPResult nlpResult;
   private BasicEntityCollection entities;
   private Map<BasicEntity, Set<AttributeType>> containedTypes;
   private Map<BasicEntity, Set<Attribute>> entityToAttribute;
@@ -45,7 +46,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
   public EntityAttributes execute(ModuleResultProvider results, ProgressListener progressListener)
       throws Exception {
     importResult = results.getResultFor(ImportResult.class);
-    annieNLPResult = results.getResultFor(AnnieNLPResult.class);
+    nlpResult = results.getResultFor(NLPResult.class);
     entities = results.getResultFor(BasicEntityCollection.class);
     containedTypes = new HashMap<>();
     entityToAttribute = new HashMap<>();
@@ -76,10 +77,10 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
 
       for (Chapter chapter : chapters) {
         Set<Annotation> annotations = filterEntityAnnotations(
-            annieNLPResult.getAnnotationsForChapter(chapter));
+            nlpResult.getAnnotationsForChapter(chapter));
 
         for (Annotation annieAnnotation : annotations) {
-          if (annieAnnotation.getFeatures().containsKey("gender")) {
+          if (annieAnnotation.getFeatures().containsKey(NLPConstants.FEATURE_GENDER)) {
             String annotatedText = getAnnotatedText(chapter.getText(), annieAnnotation);
             applyGender(annotatedText, annieAnnotation);
           }
@@ -100,7 +101,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
 
     if (theEntity != null) {
       if (!containedTypes.get(theEntity).contains(AttributeType.GENDER)) {
-        Object gender = annieAnnotation.getFeatures().get("gender");
+        Object gender = annieAnnotation.getFeatures().get(NLPConstants.FEATURE_GENDER);
 
         if (gender != null) {
           entityToAttribute.get(theEntity).add(new Attribute(AttributeType.GENDER, gender.toString()));
