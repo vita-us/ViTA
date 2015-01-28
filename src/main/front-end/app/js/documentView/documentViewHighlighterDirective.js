@@ -17,7 +17,7 @@
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
-              highlight(scope.occurrences, scope.documentId, scope.entities);
+              highlight(scope.occurrences, scope.documentId, scope.entities, scope.parts);
             }
           }, true);
 
@@ -34,7 +34,7 @@
           }, true);
         }
 
-        function highlight(occurrences, documentId, entities) {
+        function highlight(occurrences, documentId, entities, parts) {
           occurrences = angular.isUndefined(occurrences) ? [] : occurrences;
 
           occurrences = occurrences.sort(function(a, b) {
@@ -45,7 +45,7 @@
             occurrence.index = i;
           });
 
-          var chapterOccurrences = getOccurrencesByChapterId(occurrences);
+          var chapterOccurrences = getOccurrencesByChapterId(occurrences, parts);
 
           // Highlight each chapter that contains occurrence(s)
           Object.keys(chapterOccurrences).forEach(function(chapterId, i) {
@@ -178,11 +178,11 @@
           newSelectedOccurrence[0].scrollIntoView();
         }
 
-        function getOccurrencesByChapterId(occurrences) {
+        function getOccurrencesByChapterId(occurrences, parts) {
           var chapterOccurrences = {};
 
           occurrences.forEach(function(occurrence) {
-            var chapterId = occurrence.start.chapter;
+            var chapterId = getChapterAtOffset(occurrence.start.offset, parts).id;
 
             if (angular.isUndefined(chapterOccurrences[chapterId])) {
               chapterOccurrences[chapterId] = [];
@@ -213,6 +213,19 @@
               chapterMap[chapter.id] = chapter;
             }
           }
+        }
+
+        function getChapterAtOffset(offset, parts) {
+          for (var i = 0; i < parts.length; i++) {
+            var part = parts[i];
+            for (var j = 0; j < part.chapters.length; j++) {
+              var chapter = part.chapters[j];
+              if (chapter.range.end.offset > offset) {
+                return chapter;
+              }
+            }
+          }
+          throw new Error('No chapter at offset ' + offset);
         }
 
         return {

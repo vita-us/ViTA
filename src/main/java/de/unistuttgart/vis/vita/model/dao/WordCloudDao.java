@@ -4,20 +4,24 @@ import javax.annotation.ManagedBean;
 import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
+import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 
 /**
  * Represents a data access object for accessing WordClouds.
  */
 @MappedSuperclass
 @NamedQueries({
-  @NamedQuery(name = "WordCloud.getGlobal",
-    query = "SELECT doc.content.globalWordCloud "
-    + "FROM Document doc "
-    + "WHERE doc.id = :documentId"),
-  @NamedQuery(name = "WordCloud.getForEntity",
-    query = "SELECT ent.wordCloud "
-    + "FROM Entity ent "
-    + "WHERE ent.id = :entityId")
+    @NamedQuery(name = "WordCloud.getGlobal", query = "SELECT doc.content.globalWordCloud "
+        + "FROM Document doc "
+        + "WHERE doc.id = :documentId"),
+    @NamedQuery(name = "WordCloud.getForEntity", query = "SELECT ent.wordCloud "
+        + "FROM Entity ent "
+        + "WHERE ent.id = :entityId"),
+    @NamedQuery(name = "WordCloud.removeEntityIdOfItems",
+        query = "UPDATE WordCloudItem AS wordCloudItem "
+            + "SET wordCloudItem.entityId = null "
+            + "WHERE wordCloudItem.entityId = :entityId")
+
 })
 public class WordCloudDao extends JpaDao<WordCloud, String> {
 
@@ -39,7 +43,7 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
     docQuery.setParameter(DOCUMENT_ID_PARAMETER, docId);
     return docQuery.getSingleResult();
   }
-  
+
   /**
    * Finds the entity-specific WordCloud for the entity with the given id.
    * 
@@ -47,9 +51,27 @@ public class WordCloudDao extends JpaDao<WordCloud, String> {
    * @return the WordCloud for the given entity
    */
   public WordCloud findByEntity(String entityId) {
-    TypedQuery<WordCloud> entityQuery = em.createNamedQuery("WordCloud.getForEntity", WordCloud.class);
+    TypedQuery<WordCloud> entityQuery =
+        em.createNamedQuery("WordCloud.getForEntity", WordCloud.class);
     entityQuery.setParameter(ENTITY_ID_PARAMETER, entityId);
     return entityQuery.getSingleResult();
   }
 
+  /**
+   * Removes the entityId of all items in this word cloud that have it set to the given value
+   * @param entityId the entityId which will be set to null
+   */
+  public void removeEntityIdOfItems(String entityId){
+    Query entityQuery =
+        em.createNamedQuery("WordCloud.removeEntityIdOfItems");
+    entityQuery.setParameter("entityId", entityId).executeUpdate();
+  }
+  
+  public WordCloud getGlobalWordCloud(String documentId){
+    TypedQuery<WordCloud> wordCloudQuery =
+        em.createNamedQuery("WordCloud.getGlobal", WordCloud.class);
+    wordCloudQuery.setParameter("documentId", documentId);
+    
+    return wordCloudQuery.getSingleResult();
+  }
 }

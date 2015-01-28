@@ -10,8 +10,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -80,7 +80,7 @@ public class EntityOccurrencesService extends OccurrencesService {
       throw new WebApplicationException(ire);
     }
     
-    List<Occurrence> occs = null;
+    List<Range> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -91,18 +91,19 @@ public class EntityOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
+  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-    List<TextSpan> readTextSpans = textSpanDao.findTextSpansForEntity(entityId, 
+
+    List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
                                                                       startOffset, endOffset);
     
-    // convert TextSpans into Occurrences and return them
-    return convertSpansToOccurrences(readTextSpans);
+    // convert Occurrences into Ranges and return them
+    return convertOccurrencesToRanges(readOccurrences);
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return textSpanDao.getNumberOfTextSpansForEntity(entityId, stepStart, stepEnd);
+  protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
+    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }

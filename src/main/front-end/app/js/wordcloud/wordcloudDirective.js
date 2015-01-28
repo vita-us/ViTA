@@ -38,7 +38,6 @@
           .attr('width', SVG_WIDTH)
           .attr('height', SVG_HEIGHT)
           .append('g')
-          // >> 1 because we want to start positioning words from the center of the svg
           .attr('transform', 'translate(' + [SVG_WIDTH / 2, SVG_HEIGHT / 2] + ')')
           .call(toolTip);
 
