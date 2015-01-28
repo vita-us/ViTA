@@ -124,7 +124,10 @@
         })
         .classed('occurrence-rect', true)
         .on('click', function(occurrence, index) {
-          getOccurrenceSpan(index)[0].scrollIntoView();
+          var occurrenceSpan = getOccurrenceSpan(index);
+          occurrenceSpan[0].scrollIntoView();
+          $('span.selected').removeClass('selected') ;
+          occurrenceSpan.addClass('selected');
           scope.onOccurrenceClick({index: index});
         })
         .on('mouseover', toolTip.show)
