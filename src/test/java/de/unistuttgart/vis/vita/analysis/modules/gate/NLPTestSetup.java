@@ -11,9 +11,11 @@ import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,11 +85,14 @@ public class NLPTestSetup {
     };
     AnnieDatastore datastore = mock(AnnieDatastore.class);
     when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
+    AnalysisParameters parameters = mock(AnalysisParameters.class);
+    when(parameters.getNlpTool()).thenReturn(EnumNLP.ANNIE);
 
     resultProvider = mock(ModuleResultProvider.class);
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
     when(resultProvider.getResultFor(DocumentPersistenceContext.class)).thenReturn(testingID);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
 
     progressListener = mock(ProgressListener.class, withSettings());
     fillText();
