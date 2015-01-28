@@ -716,6 +716,8 @@
                   return d;
                 })
                 .on('dragstart', function() {
+                  // Prevent panning when dragging nodes
+                  d3.event.sourceEvent.stopPropagation();
                   // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
