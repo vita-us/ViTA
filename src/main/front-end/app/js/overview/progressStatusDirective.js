@@ -35,6 +35,7 @@
         scope.statusText = 'failed';
       } else {
         var progressPercentage = +status.progress * 100;
+        scope.progressInPercentage = progressPercentage;
 
         // round on 2 decimal places
         scope.statusText = Math.round(progressPercentage * 100) / 100 + '%';
