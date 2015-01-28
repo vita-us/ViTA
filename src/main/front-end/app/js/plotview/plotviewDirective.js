@@ -30,6 +30,7 @@
         draw_chart(container, 'plotview', plotviewData, true, false, false);
       }
 
+      var MARGIN = {top: 20, right: 25, bottom: 20, left: 1};
       var LINK_WIDTH = 1.8;
       var LINK_GAP = 2;
 
@@ -67,6 +68,10 @@
         return names.join(', ');
       }
 
+      var zoom = d3.behavior.zoom()
+          .scaleExtent([1, 3])
+          .on('zoom', zoomed);
+
 
       function create_link_path(link) {
         var x0 = link.x0,
@@ -84,9 +89,8 @@
 
 
       function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
-        var margin = {top: 20, right: 25, bottom: 20, left: 1};
-        var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
-        var width = RAW_CHART_WIDTH - margin.left - margin.right;
+        var height = RAW_CHART_HEIGHT - MARGIN.top - MARGIN.bottom;
+        var width = RAW_CHART_WIDTH - MARGIN.left - MARGIN.right;
 
         var scenes = data.scenes;
 
@@ -143,13 +147,14 @@
         });
 
         var svg = container.append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
+            .attr('width', width + MARGIN.left + MARGIN.right)
+            .attr('height', height + MARGIN.top + MARGIN.bottom)
             .attr('class', 'chart')
             .attr('id', safe_name)
             .call(toolTip)
+            .call(zoom)
             .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .attr('transform', 'translate(' + MARGIN.left + ',' + MARGIN.top + ')');
 
         var groups = define_groups(characters);
         find_median_groups(groups, scene_nodes, tie_breaker);
@@ -226,6 +231,15 @@
           place_map.set(place.id, new Place(place.id, place.name));
         }
         return place_map;
+      }
+
+      function zoomed() {
+        var container = d3.select(this).select('g');
+
+        var translateX = d3.event.translate[0] + MARGIN.left;
+        var translateY = d3.event.translate[1] + MARGIN.right;
+
+        container.attr('transform', 'translate(' + translateX + ',' + translateY + ')scale(' + d3.event.scale + ')');
       }
 
 

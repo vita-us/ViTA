@@ -12,6 +12,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.NLPResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -41,6 +42,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
   private final String CORPUS_NAME = "ViTA Corpus";
   protected ImportResult importResult;
   protected ProgressListener progressListener;
+  protected AnalysisParameters parameters;
   protected ConditionalSerialAnalyserController controller;
   protected Map<Document, Chapter> docToChapter = new HashMap<>();
   protected Map<Chapter, Document> chapterToDoc = new HashMap<>();
@@ -55,8 +57,10 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     importResult = results.getResultFor(ImportResult.class);
     documentIdModule = results.getResultFor(DocumentPersistenceContext.class);
     storeModule = results.getResultFor(AnnieDatastore.class);
+    parameters = results.getResultFor(AnalysisParameters.class);
     this.progressListener = progressListener;
-    String persistID = documentIdModule.getDocumentContentId();
+    String persistID = documentIdModule.getDocumentContentId() + "-"
+                       + parameters.getNlpTool().getName();
 
     corpus = storeModule.getStoredAnalysis(persistID);
 
@@ -85,6 +89,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     for (DocumentPart part : importResult.getParts()) {
       for (Chapter chapter : part.getChapters()) {
         docToChapter.put(corpus.get(i), chapter);
+        chapterToDoc.put(chapter, corpus.get(i));
         i++;
       }
     }
@@ -125,9 +130,9 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
   /**
    * Starts the analysis with the initialized controller.
    *
-   * @throws ExecutionException If an exception occurs during execution of the controller.
+   * @throws ExecutionException If an exception occurs during execution of the controller or the controller gets interrupted.
    */
-  protected void startAnalysis() throws ExecutionException {
+  protected void startAnalysis() throws InterruptedException, ExecutionException {
     controller.setCorpus(corpus);
 
     int maxDocuments = corpus.size();
@@ -136,10 +141,11 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
     try {
       controller.execute();
-    } catch (IllegalStateException e) {
-      // This needs testing somehow. TODO
-      System.out.println(e.getCause().toString());
+    } catch (SoftInterruptedException e) {
       controller.interrupt();
+      InterruptedException ex = new InterruptedException(e.getMessage());
+      ex.addSuppressed(e); // no cause argument to InterruptedException's constructor
+      throw ex;
     }
   }
 

@@ -11,8 +11,10 @@ import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
@@ -79,6 +81,10 @@ public class EntityRecognitionModuleRealTest {
     when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
+    AnalysisParameters parameters = mock(AnalysisParameters.class);
+    when(parameters.getNlpTool()).thenReturn(EnumNLP.ANNIE);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
+
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
@@ -87,6 +93,8 @@ public class EntityRecognitionModuleRealTest {
     SentenceDetectionModule sentenceDetectionModule = new SentenceDetectionModule();
     SentenceDetectionResult sentenceResult = sentenceDetectionModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
+
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(new AnalysisParameters());
     
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
@@ -164,7 +172,7 @@ public class EntityRecognitionModuleRealTest {
   public void testProgressIsReported() throws Exception {
     // Check that the 0%-100% range is covered approximately
     // This does not test smoothness as the call times are not considered.
-    int steps = 100;
+    int steps = 10;
     for (int i = 0; i < steps; i++) {
       verify(progressListener, atLeastOnce()).observeProgress(
           doubleThat(closeTo((double) i / steps, (double) 1 / steps)));

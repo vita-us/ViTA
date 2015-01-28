@@ -158,10 +158,9 @@ public class DocumentService extends BaseService {
    *
    * @return a response with no content if removal was successful, status 404 if document was not
    *         found
-   * @throws PersistenceException
    */
   @DELETE
-  public Response deleteDocument() throws PersistenceException {
+  public Response deleteDocument() {
     Response response;
     SerialDataStore dataStore = null;
     String gatedataStoreLocation;
@@ -341,12 +340,15 @@ public class DocumentService extends BaseService {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
 
-    DocumentIdResponse response = null;
+    Document derived = Document.copy(readDoc);
+    derived.setParameters(parameters);
+    getDaoFactory().getDocumentDao().save(derived);
+    // Make sure that the controller cann access the document
+    getEntityManager().getTransaction().commit();
+    getEntityManager().getTransaction().begin();
 
     // schedule analysis
-    String id =
-        analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(), readDoc.getFileName(),
-            parameters);
+    String id = analysisController.reScheduleDocumentAnalysis(derived);
 
     // set up Response
     return new DocumentIdResponse(id);

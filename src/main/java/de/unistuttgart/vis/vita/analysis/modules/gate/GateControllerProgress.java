@@ -40,8 +40,7 @@ public class GateControllerProgress implements ProgressListener {
   @Override
   public void progressChanged(int i) {
     if (Thread.currentThread().isInterrupted()) {
-      throw new IllegalStateException(
-          new InterruptedException("Thread was interrupted. Interrupt controller!"));
+      throw new SoftInterruptedException("Thread was interrupted. Interrupt controller!");
     }
 
     calcProgress(i);
