@@ -781,6 +781,7 @@
 
 
         function dragmove(scene) {
+          toolTip.hide();
           var old_y = scene.y;
 
           scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
