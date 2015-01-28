@@ -11,11 +11,7 @@
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
 
-        Person.get({
-          documentId: $routeParams.documentId
-        }, function(response) {
-          $scope.persons = response.persons;
-        });
+        loadPersons();
 
         Document.get({
           documentId: $routeParams.documentId
@@ -36,6 +32,17 @@
             documentId: $routeParams.documentId
           }, function(progress) {
             $scope.progress = progress;
+            if (progress.persons.isReady && !$scope.persons) {
+              loadPersons();
+            }
+          });
+        }
+
+        function loadPersons() {
+          Person.get({
+            documentId: $routeParams.documentId
+          }, function(response) {
+            $scope.persons = response.persons;
           });
         }
 
