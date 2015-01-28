@@ -53,6 +53,10 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
     return new SentenceDetectionResult() {
       @Override
       public List<Sentence> getSentencesInChapter(Chapter chapter) {
+        if (!chapterToSentence.containsKey(chapter)) {
+          throw new IllegalStateException("Sentences map does not contain this chapter: " + chapter);
+        }
+
         return chapterToSentence.get(chapter);
       }
 
