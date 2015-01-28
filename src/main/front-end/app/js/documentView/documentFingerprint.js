@@ -126,7 +126,7 @@
         .on('click', function(occurrence, index) {
           var occurrenceSpan = getOccurrenceSpan(index);
           occurrenceSpan[0].scrollIntoView();
-          $('span.selected').removeClass('selected') ;
+          $('span.selected').removeClass('selected');
           occurrenceSpan.addClass('selected');
           scope.onOccurrenceClick({index: index});
         })
