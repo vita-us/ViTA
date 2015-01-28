@@ -11,6 +11,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -108,6 +109,11 @@ public class EntityDao extends JpaDao<Entity, String> {
       int endOffset,
       List<?> entities,
       EntityType type) {
+    if (entities.isEmpty()) {
+      // combination of mysql and hibernate does not like empty WHERE IN statements
+      return new ArrayList<>();
+    }
+
     Query query;
 
     switch (type) {
