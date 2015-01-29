@@ -29,12 +29,13 @@
   <div class="col-md-2">
     <div class="row">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
-      <ul class="list-group scrollable-list-group">
-        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' "
-          ng-click="select(place)" class="list-group-item" ng-class="{active: isSelected(place)}">
+      <div class="list-group scrollable-list-group">
+        <a ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' "
+        class="list-group-item" ng-class="{active: isSelected(place)}"
+        ng-href="#/documents/{{document.id}}/places/{{place.id}}">
           {{place.displayName}}
-        </li>
-      </ul>
+        </a>
+      </div>
     </div>
   </div>
 </div>
