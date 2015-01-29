@@ -33,12 +33,12 @@
   <div class="col-md-2">
     <div class="row">
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
-      <ul class="list-group scrollable-list-group">
-        <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
-          ng-click="select(person)" class="list-group-item" ng-class="{active: isSelected(person)}">
+      <div class="list-group scrollable-list-group">
+        <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
+          class="list-group-item" ng-class="{active: isSelected(person)}" ng-href="#/documents/{{document.id}}/characters/{{person.id}}">
           {{person.displayName}}
-        </li>
-      </ul>
+        </a>
+      </div>
     </div>
   </div>
 </div>
