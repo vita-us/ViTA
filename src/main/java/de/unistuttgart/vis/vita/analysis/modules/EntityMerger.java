@@ -7,47 +7,59 @@ import de.unistuttgart.vis.vita.model.entity.BasicEntity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
 
 /**
- * Merges entities with the same names into each other
+ * Merges entities with the same names into each other.
  */
 public class EntityMerger {
+  // The map is used to assure no name of a known entity is used twice.
   private Map<EntityIdentifier, BasicEntity> entitiesByName = new HashMap<>();
   private List<BasicEntity> result = new ArrayList<BasicEntity>();
 
+  /**
+   * The Entity Identifier defines whether an Entity equals another Entity or not. To do so, this
+   * class needs some attributes of the entity, but does not know the entity itself.
+   */
   private static class EntityIdentifier {
-    public String name;
-    public EntityType type;
+    private String name;
+    private EntityType type;
 
     public EntityIdentifier(String name, EntityType type) {
       this.name = name;
       this.type = type;
     }
 
-    @Override public boolean equals(Object o) {
-      if (this == o)
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
         return true;
-      if (o == null || getClass() != o.getClass())
+      }
+      if (o == null || getClass() != o.getClass()) {
         return false;
+      }
 
       EntityIdentifier that = (EntityIdentifier) o;
 
-      if (!name.equals(that.name))
+      if (!name.equals(that.name)) {
         return false;
-      if (type != that.type)
+      }
+      if (type != that.type) {
         return false;
+      }
 
       return true;
     }
 
-    @Override public int hashCode() {
-      int result = name.hashCode();
-      result = 31 * result + type.hashCode();
-      return result;
+    @Override
+    public int hashCode() {
+      int hashCode = name.hashCode();
+      hashCode = 31 * hashCode + type.hashCode();
+      return hashCode;
     }
   }
 
   /**
-   * Adds all the entities
-   * @param entities
+   * Adds all the Entities and merges them into the already added Entities.
+   * 
+   * @param entities - The new Entities.
    */
   public void addAll(Iterable<BasicEntity> entities) {
     for (BasicEntity entity : entities) {
@@ -56,14 +68,15 @@ public class EntityMerger {
   }
 
   /**
-   * Adds and merges an entity
-   * @param entity
+   * Adds an Entity and merges it into the already added Entities.
+   * 
+   * @param entity - The new Entity.
    */
   public void add(BasicEntity entity) {
-    Set<BasicEntity> existing = getEntitiesCalledAs(entity);
+    Set<BasicEntity> existingEntitiesWithSameName = getEntitiesCalledAs(entity);
 
     // Merge all old entities in the new one, and re-point the names to the new one
-    for (BasicEntity existingEntity : existing) {
+    for (BasicEntity existingEntity : existingEntitiesWithSameName) {
       entity.merge(existingEntity);
       result.remove(existingEntity);
     }
@@ -73,31 +86,35 @@ public class EntityMerger {
   }
 
   /**
-   * Gets all the entities that have a name the given entity also has
+   * Gets all the known entities that have a name the given entity also has.
+   * 
    * @param entity the entity whose names to look for
    * @return the set of entities that match
    */
   private Set<BasicEntity> getEntitiesCalledAs(BasicEntity entity) {
-    Set<BasicEntity> result = new HashSet<>();
+    Set<BasicEntity> entitiesWithSameName = new HashSet<>();
     for (Attribute attr : entity.getNameAttributes()) {
       EntityIdentifier identifier = new EntityIdentifier(attr.getContent(), entity.getType());
       if (entitiesByName.containsKey(identifier)) {
-        result.add(entitiesByName.get(identifier));
+        entitiesWithSameName.add(entitiesByName.get(identifier));
       }
     }
-    return result;
+    return entitiesWithSameName;
   }
 
   /**
-   * Gets a view of the merged entity list
-   * @return
+   * Gets a view of the merged entity list. Make sure all entities were added, otherwise this is not
+   * the final result!
+   * 
+   * @return The merged Entities at this moment.
    */
   public List<BasicEntity> getResult() {
     return Collections.unmodifiableList(result);
   }
 
   /**
-   * Adds references for all the names
+   * Adds references for all the names. Will override already existing references.
+   * 
    * @param entity the entity whose names to add
    */
   private void addEntityNames(BasicEntity entity) {
