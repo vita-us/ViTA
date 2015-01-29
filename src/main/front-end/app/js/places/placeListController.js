@@ -34,13 +34,16 @@
             // move relations with high weights to the front
             return b.weight - a.weight;
           });
+
+          // get the related entities from the server
           var displayedOccurrenceCount = Math.min(relations.length, MAX_DISPLAYED_COOCCURRENCES);
           for (var i = 0; i < displayedOccurrenceCount; i++) {
-            retrieveEntity(relations[i].relatedEntity, i);
+            retrieveEntity(relations[i].relatedEntity);
           }
         };
 
-        var retrieveEntity = function(id, index) {
+        // Load an Entity from the server and add it to the related entities if not already there
+        var retrieveEntity = function(id) {
           var entity = Entity.get({
             documentId: $routeParams.documentId,
             entityId: id
@@ -51,6 +54,7 @@
           });
         };
 
+        // Adds the entity to the fingerprint
         $scope.setFingerprint = function(id) {
           var position = $scope.fingerprintIds.indexOf(id);
           if (position > -1) {
@@ -60,10 +64,12 @@
           }
         };
 
+        // Returns true if the given place is the same as the one currently displayed
         $scope.isSelected = function(place) {
           return place == $scope.selected;
         };
 
+        // Returns true if the Entity is visualized in the fingerprint
         $scope.isMarked = function(id) {
           return ($scope.fingerprintIds.indexOf(id) > -1);
         };
@@ -73,14 +79,19 @@
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.places = response.places;
+
+          // select the place specified in the id
+          // if not specified use the place with the highest ranking value
           var selectedPlace = getPlaceById($routeParams.placeId);
+
           if (selectedPlace) {
             $scope.select(selectedPlace);
           } else {
-          $scope.select(response.places[0]);
+            $scope.select(response.places[0]);
           }
         });
 
+        // Retrieve a place from all places by the given id
         var getPlaceById = function(id) {
           for (var i = 0; i < $scope.places.length; i++) {
             if ($scope.places[i].id == id) {
@@ -90,6 +101,7 @@
           return undefined;
         };
 
+        // Get the Entity-Type string of an entity used in the url
         $scope.getEntityType = function(entity) {
           if (entity.type === 'person') {
             return 'characters';
@@ -108,6 +120,7 @@
           Page.setUpForDocument(document);
         });
 
+        // Get the parts of the currect document from the server
         DocumentParts.get({
           documentId: $routeParams.documentId
         }, function(response) {
