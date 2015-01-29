@@ -53,14 +53,15 @@ public class TextRepository {
   }
 
   /**
-   * Sets the text of the commited chapter with the related chapter text of lucene index
+   * Sets the text of the committed chapter with the related chapter text of lucene index
    */
-  public void populateChapterText(Chapter chapterToPopulate, String documentId) throws IOException {
-    Directory directory = directoryFactory.getDirectory(documentId);
+  public void populateChapterText(Chapter chapterToPopulate, String docId) throws IOException {
+    Directory directory = directoryFactory.getDirectory(docId);
     IndexReader indexReader = DirectoryReader.open(directory);
     IndexSearcher indexSearcher = new IndexSearcher(indexReader);
     CharArraySet charArraySet = new CharArraySet(0, true);
-    QueryParser queryParser = new QueryParser(CHAPTER_ID_FIELD, new StandardAnalyzer(charArraySet));
+    QueryParser queryParser = new QueryParser(CHAPTER_ID_FIELD,
+                                              new StandardAnalyzer(charArraySet));
     Query query;
     try {
       query = queryParser.parse(chapterToPopulate.getId());
@@ -82,7 +83,8 @@ public class TextRepository {
       throws IOException {
 
     CharArraySet charArraySet = new CharArraySet(0, true);
-    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION, new StandardAnalyzer(charArraySet));
+    IndexWriterConfig config = new IndexWriterConfig(LUCENE_VERSION,
+                                                     new StandardAnalyzer(charArraySet));
     Directory directory = directoryFactory.getDirectory(documentId);
     IndexWriter indexWriter = new IndexWriter(directory, config);
     for (Chapter chapterToStore : chaptersToStore) {
