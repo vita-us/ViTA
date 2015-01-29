@@ -12,7 +12,7 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 /**
  * Performs tests on PersonService to check whether GET works correctly.
  */
-public class PersonServiceTest extends EntityServiceTest {
+public class PersonServiceTest extends AbstractEntityServiceTest {
   
   @Override
   protected Application configure() {

@@ -23,7 +23,6 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
-import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 
 import static com.jayway.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 public class AnalysisResetter {
   DocumentDao documentDao;
   EntityDao entityDao;
-  TextSpanDao textSpanDao;
+  OccurrenceDao occurrenceDao;
   DocumentPartDao partDao;
   ChapterDao chapterDao;
   EntityRelationDao entityRelationDao;
@@ -20,7 +20,7 @@ public class AnalysisResetter {
     DaoFactory daoFactory = new DaoFactory(em);
     this.documentDao = daoFactory.getDocumentDao();
     this.entityDao = daoFactory.getEntityDao();
-    this.textSpanDao = daoFactory.getTextSpanDao();
+    this.occurrenceDao = daoFactory.getOccurrenceDao();
     this.partDao = daoFactory.getDocumentPartDao();
     this.chapterDao = daoFactory.getChapterDao();
     this.entityRelationDao = daoFactory.getEntityRelationDao();
@@ -35,11 +35,11 @@ public class AnalysisResetter {
     for (Person person : document.getContent().getPersons()) {
       removeEntityData(person);
     }
-    
+
     for (Place place : document.getContent().getPlaces()) {
       removeEntityData(place);
     }
-    
+
     document.getContent().getParts().clear();
     document.getContent().getPersons().clear();
     document.getContent().getPlaces().clear();
@@ -50,21 +50,21 @@ public class AnalysisResetter {
     document.getProgress().setStatus(AnalysisStatus.READY);
     document.setMetrics(new DocumentMetrics());
     documentDao.save(document);
-    
+
     for (DocumentPart part : document.getContent().getParts()) {
       partDao.remove(part);
       for (Chapter chapter : part.getChapters()) {
         chapterDao.remove(chapter);
       }
     }
-    
+
     for (Person person : document.getContent().getPersons()) {
       entityDao.remove(person);
     }
     for (Place place : document.getContent().getPlaces()) {
       entityDao.remove(place);
     }
-    
+
   }
 
   /**
@@ -85,7 +85,7 @@ public class AnalysisResetter {
     for (Attribute attr : entity.getAttributes()) {
       attributeDao.remove(attr);
     }
-    
+
     for (EntityRelation rel : entity.getEntityRelations()) {
       entityRelationDao.remove(rel);
     }

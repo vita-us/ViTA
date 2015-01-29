@@ -205,12 +205,12 @@ public class AnalysisExecutor {
   }
 
   private synchronized void onModuleFailed(ModuleExecutionState moduleState, Exception e) {
-    LOGGER.log(Level.SEVERE, "Module " + moduleState.getModuleClass() + " failed", e);
-
     // Ignore results produced after failure / cancel
     if (status != AnalysisStatus.RUNNING) {
       return;
     }
+
+    LOGGER.log(Level.SEVERE, "Module " + moduleState.getModuleClass() + " failed", e);
 
     runningModules.remove(moduleState);
     failedModules.put(moduleState.getModuleClass(), e);
@@ -254,6 +254,8 @@ public class AnalysisExecutor {
    * starting
    */
   public synchronized void cancel() {
+    LOGGER.log(Level.INFO, "Analysis cancelled");
+
     if (status != AnalysisStatus.FAILED) {
       status = AnalysisStatus.CANCELLED;
     }

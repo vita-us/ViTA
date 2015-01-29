@@ -1,0 +1,50 @@
+.analysis-parameter {
+
+  .analysis-parameter-title {
+    font-weight: bold;
+    color: gray;
+    font-size: 18px;
+  }
+
+  .parameter-list {
+    border: 1px solid @border-color;
+    padding: 10px 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    label {
+      font-weight: inherit;
+    }
+
+    .parameter-label {
+      padding-right: 5px;
+    }
+
+    .input {
+      width: 80%;
+    }
+
+    .number-parameter {
+      input {
+        text-align: center;
+      }
+    }
+
+    .enum-parameter {
+      .enum-input {
+        padding-right: 10px;
+      }
+    }
+
+    .string-parameter {
+      textarea {
+        resize:vertical;
+      }
+    }
+
+  }
+}
+
+#show-analysis-parameters {
+  margin-bottom: 15px;
+}

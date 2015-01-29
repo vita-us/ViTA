@@ -1,0 +1,51 @@
+<p>The Dutch <em>tokeniser</em>, <em>sentence splitter</em>, <em>POS
+tagger</em>, <em>phrase chunker</em> and <em>named-entity recogniser</em> from
+<a href="http://opennlp.apache.org/">Apache OpenNLP</a>. The components are
+based on the maxent machine learning algorithm, and produce Token and Sentence
+annotations in a form compatible with other standard GATE tools.</p>
+
+<p><button class="btn btn-info" data-toggle="collapse" data-target="#ldAnnotationDetails"><i class="icon-info-sign icon-white"></i> Annotation details</button></p>
+
+<div class="collapse clearfix" id="ldAnnotationDetails">
+<table>
+  <tr>
+    <td colspan="2"><b>Default annotations</b></td>
+  </tr>
+  <tr>
+    <td><tt>:Person</tt></td>
+    <td rowspan="4">Standard named entity types</td>
+  </tr>
+  <tr>
+    <td><tt>:Location</tt></td>
+  </tr>
+  <tr>
+    <td><tt>:Organization</tt></td>
+  </tr>
+  <tr>
+    <td><tt>:Date</tt></td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>Additional annotations available if selected</b></td>
+  </tr>
+  <tr>
+    <td><tt>:Money</tt></td>
+    <td>Monetary amounts</td>
+  </tr>
+  <tr>
+    <td><tt>:Percentage</tt></td>
+    <td>Expressions representing percentages</td>
+  </tr>
+  <tr>
+    <td><tt>:Time</tt></td>
+    <td>Time expressions</td>
+  </tr>
+  <tr>
+    <td><tt>:Sentence</tt></td>
+    <td>Sentences detected by the sentence splitter</td>
+  </tr>
+  <tr>
+    <td><tt>:Token</tt></td>
+    <td>The individual tokens of the text, with "category" feature for POS and "chunk" feature for for the I/O/B-style chunk tags.  Complete chunks derived from the tags are also available as their respective annotation types (e.g. a sequence of tokens tagged B-NP, I-NP, I-NP gives rise to an "NP" annotation spanning the sequence).</td>
+  </tr>
+</table>
+</div>

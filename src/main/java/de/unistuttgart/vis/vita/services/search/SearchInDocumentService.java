@@ -19,25 +19,34 @@ import javax.ws.rs.core.Response;
 import org.apache.lucene.queryparser.classic.ParseException;
 
 import de.unistuttgart.vis.vita.model.Model;
+import de.unistuttgart.vis.vita.model.dao.DocumentPartDao;
+import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.search.Searcher;
 import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 @ManagedBean
 public class SearchInDocumentService extends OccurrencesService {
+  private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
-  private List<TextSpan> textSpans;
+  private List<Range> ranges;
 
   @Inject
   private Model model;
 
-  private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
+  private DocumentPartDao documentPartDao;
+  private DocumentDao documentDao;
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+    documentDao = getDaoFactory().getDocumentDao();
+    documentPartDao = getDaoFactory().getDocumentPartDao();
+  }
 
   /**
    * Sets the id of the document in which this service should search in.
@@ -76,10 +85,16 @@ public class SearchInDocumentService extends OccurrencesService {
     } catch(IllegalRangeException ire) {
       throw new WebApplicationException(ire);
     }
+    
+    
 
     if (!documentDao.isAnalysisFinished(documentId)) {
-      LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+
+      // check whether there are parts in the current Document
+      if (documentPartDao.getNumberOfParts(documentId) == 0) {
+        LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
+        throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+      }
     }
 
     Chapter startChapter = getSurroundingChapter(startOffset);
@@ -88,21 +103,21 @@ public class SearchInDocumentService extends OccurrencesService {
 
     Searcher searcher = new Searcher();
     try {
-      textSpans = searcher.searchString(documentId, query, chapters, model);
+      ranges = searcher.searchString(documentDao.findById(documentId), query, chapters, model);
     } catch (ParseException e) {
       LOGGER.log(Level.INFO, "Invalid search query: " + query, e);
-      return new OccurrencesResponse(new ArrayList<Occurrence>());
+      return new OccurrencesResponse(new ArrayList<Range>());
     }
 
-    List<Occurrence> occurrences;
+    List<Range> occs;
     if (steps == 0) {
-      occurrences = convertSpansToOccurrences(textSpans);
+      occs = ranges;
     } else {
-      occurrences = getGranularEntityOccurrences(steps, startOffset, endOffset);
+      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
     }
 
     // put occurrences into a response and send it
-    return new OccurrencesResponse(occurrences);
+    return new OccurrencesResponse(occs);
   }
 
   private List<Chapter> getChaptersInRange(Chapter startChapter, Chapter endChapter) {
@@ -126,15 +141,14 @@ public class SearchInDocumentService extends OccurrencesService {
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    int count = 0;
-    for (TextSpan span : textSpans) {
+  protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
+    for (Range span : ranges) {
       if (span.getEnd().getOffset() > stepEnd)
         break;
       if (span.getStart().getOffset() >= stepStart)
-        count++;
+        return true;
     }
-    return count;
+    return false;
   }
 
 }

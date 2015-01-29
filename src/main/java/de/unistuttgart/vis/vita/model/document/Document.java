@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -40,7 +41,6 @@ public class Document extends AbstractEntityBase {
   private Date uploadDate;
 
   private String fileName;
-
   private UUID contentID;
 
   /**
@@ -53,6 +53,26 @@ public class Document extends AbstractEntityBase {
     this.progress = new AnalysisProgress();
     this.parameters = new AnalysisParameters();
     contentID = UUID.randomUUID();
+  }
+
+  /**
+   * Copy the corresponding objects of the document into the new one.
+   * The content id stays also the same which allows faster nlp analysis because of caching.
+   * This is <b>NOT</b> a deep copy of the document. Content, Metadata and Metrics are missing!
+   * @param document The document to take the data from.
+   * @return New Document object which can be modified for derive analysis.
+   */
+  public static Document copy(Document document) {
+    Document newDoc = new Document();
+    newDoc.setFileName(document.getFileName());
+    newDoc.setFilePath(document.getFilePath());
+    newDoc.setUploadDate(new Date());
+    newDoc.getProgress().setStatus(AnalysisStatus.READY);
+    newDoc.getMetadata().setTitle(document.getMetadata().getTitle());
+    // This is important step to allow use of caching.
+    newDoc.setContentID(document.getContentID());
+
+    return newDoc;
   }
 
   /**
@@ -167,6 +187,10 @@ public class Document extends AbstractEntityBase {
     return contentID;
   }
 
+  public void setContentID(UUID contentID) {
+    this.contentID = contentID;
+  }
+
   /**
    * Gets the parameters that should be used in the analysis of this document
    * @return
@@ -207,7 +231,7 @@ public class Document extends AbstractEntityBase {
 
     while (lo <= hi) {
       int mid = lo + (hi - lo) / 2;
-      TextSpan range = allChapters.get(mid).getRange();
+      Range range = allChapters.get(mid).getRange();
       int start = range.getStart().getOffset();
       int end = range.getEnd().getOffset();
 
