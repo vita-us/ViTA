@@ -19,11 +19,12 @@ import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
 import de.unistuttgart.vis.vita.model.entity.Person;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
@@ -32,34 +33,48 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  */
 public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
 
+  // TODO: Check test data and result, especially for sentences
+
   /*
-   * SP for the separate TextSpans without an overlap
+   * SP for the separate Occurrences without an overlap
    */
+  private static final int SP1_SENTENCE_START_OFFSET = 90000;
   private static final int SP1_START_OFFSET = 100000;
-  private static final int SP1_END_OFFSET   = 101000;
+  private static final int SP1_END_OFFSET = 101000;
+  private static final int SP1_SENTENCE_END_OFFSET = 102000;
 
+  private static final int SP2_SENTENCE_START_OFFSET = 122000;
   private static final int SP2_START_OFFSET = 122000;
-  private static final int SP2_END_OFFSET   = 123000;
+  private static final int SP2_END_OFFSET = 123000;
+  private static final int SP2_SENTENCE_END_OFFSET = 124000;
 
   /*
-   * OL for overlapping TextSpans with an overlap
+   * OL for overlapping Occurrences with an overlap
    */
+  private static final int OL_SENTENCE_START_OFFSET = 104000;
   private static final int OL1_START_OFFSET = 105000;
-  private static final int OL1_END_OFFSET   = 115000;
+  private static final int OL1_END_OFFSET = 115000;
 
   private static final int OL2_START_OFFSET = 110000;
-  private static final int OL2_END_OFFSET   = 120000;
+  private static final int OL2_END_OFFSET = 120000;
+  private static final int OL_SENTENCE_END_OFFSET = 121000;
 
   /*
-   * NEAR for TextSpans that are near to each other
+   * NEAR for Occurrences that are near to each other
    */
   private static final int NEAR1_START_OFFSET = 2000000;
   private static final int NEAR1_END_OFFSET = 2000100;
 
+  private static final int NEAR1_SENTENCE_START_OFFSET = 1900000;
+  private static final int NEAR1_SENTENCE_END_OFFSET = 2000110;
+
   private static final int NEAR2_START_OFFSET = 2000200;
   private static final int NEAR2_END_OFFSET = 2000300;
 
-  private static final int OL_LENGTH = OL1_END_OFFSET - OL2_START_OFFSET;
+  private static final int NEAR2_SENTENCE_START_OFFSET = 2000190;
+  private static final int NEAR2_SENTENCE_END_OFFSET = 2000900;
+
+  private static final int OL_LENGTH = OL_SENTENCE_END_OFFSET - OL_SENTENCE_START_OFFSET;
 
   private PersonTestData personTestData;
   private EntityRelationTestData relationTestData;
@@ -81,58 +96,111 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
 
     // set up test chapter
     Chapter testChapter = new ChapterTestData().createTestChapter();
-    TextPosition chapterStart = TextPosition.fromGlobalOffset(testChapter, 0);
-    TextPosition chapterEnd = TextPosition.fromGlobalOffset(testChapter, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
-    TextSpan chapterRange = new TextSpan(chapterStart, chapterEnd);
+    TextPosition chapterStart =
+        TextPosition.fromGlobalOffset(0,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition chapterEnd =
+        TextPosition.fromGlobalOffset(DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range chapterRange = new Range(chapterStart, chapterEnd);
     testChapter.setRange(chapterRange);
 
     // set up first person
     Person originPerson = personTestData.createTestPerson(1);
 
-    // non overlapping TextSpan
-    TextPosition originSeparateStart = TextPosition.fromGlobalOffset(testChapter, SP1_START_OFFSET);
-    TextPosition originSeparateEnd = TextPosition.fromGlobalOffset(testChapter, SP1_END_OFFSET);
-    TextSpan originSeparateSpan = new TextSpan(originSeparateStart, originSeparateEnd);
+    // non overlapping Occurrence
+    Range originSeparateSentenceRange =
+        new Range(testChapter, SP1_SENTENCE_START_OFFSET, SP1_SENTENCE_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence originSeparateSentence = new Sentence(originSeparateSentenceRange, testChapter, 0);
+    TextPosition originSeparateStart =
+        TextPosition.fromGlobalOffset(SP1_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition originSeparateEnd =
+        TextPosition.fromGlobalOffset(SP1_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range originSeparateRange = new Range(originSeparateStart, originSeparateEnd);
+    Occurrence originSeparateOccurrence =
+        new Occurrence(originSeparateSentence, originSeparateRange);
 
-    // overlapping TextSpan
-    TextPosition originStart = TextPosition.fromGlobalOffset(testChapter, OL1_START_OFFSET);
-    TextPosition originEnd = TextPosition.fromGlobalOffset(testChapter, OL1_END_OFFSET);
-    TextSpan originSpan = new TextSpan(originStart, originEnd);
+    // overlapping Occurrences
+    Range originSentenceRange =
+        new Range(testChapter, OL_SENTENCE_START_OFFSET, OL_SENTENCE_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence originSentence = new Sentence(originSentenceRange, testChapter, 4);
+    TextPosition originStart =
+        TextPosition.fromGlobalOffset(OL1_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition originEnd =
+        TextPosition.fromGlobalOffset(OL1_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range originRange = new Range(originStart, originEnd);
+    Occurrence originOccurrence = new Occurrence(originSentence, originRange);
 
-    // TextSpans next to each other
-    TextPosition originNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR1_START_OFFSET);
-    TextPosition originNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR1_END_OFFSET);
-    TextSpan originNearSpan = new TextSpan(originNearStart, originNearEnd);
+    // Occurrences next to each other
+    Range originNearSentenceRange =
+        new Range(testChapter, NEAR1_SENTENCE_START_OFFSET, NEAR1_SENTENCE_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence originNearSentence = new Sentence(originNearSentenceRange, testChapter, 6);
+    TextPosition originNearStart =
+        TextPosition.fromGlobalOffset(NEAR1_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition originNearEnd =
+        TextPosition.fromGlobalOffset(NEAR1_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range originNearRange = new Range(originNearStart, originNearEnd);
+    Occurrence originNearOccurrence = new Occurrence(originNearSentence, originNearRange);
 
-    originPerson.getOccurrences().add(originSpan);
-    originPerson.getOccurrences().add(originSeparateSpan);
-    originPerson.getOccurrences().add(originNearSpan);
+    originPerson.getOccurrences().add(originOccurrence);
+    originPerson.getOccurrences().add(originSeparateOccurrence);
+    originPerson.getOccurrences().add(originNearOccurrence);
 
     // set up second person
     Person targetPerson = personTestData.createTestPerson(2);
 
-    // non-overlapping TextSpan
-    TextPosition targetSeparateStart = TextPosition.fromGlobalOffset(testChapter, SP2_START_OFFSET);
-    TextPosition targetSeparateEnd  = TextPosition.fromGlobalOffset(testChapter, SP2_END_OFFSET);
-    TextSpan targetSeparateSpan = new TextSpan(targetSeparateStart, targetSeparateEnd);
+    // non-overlapping Occurrence
+    Range targetSeparateSentenceRange =
+        new Range(testChapter, SP2_SENTENCE_START_OFFSET, SP2_SENTENCE_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Sentence targetSeparateSentence = new Sentence(targetSeparateSentenceRange, testChapter, 2);
+    TextPosition targetSeparateStart =
+        TextPosition.fromGlobalOffset(SP2_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition targetSeparateEnd =
+        TextPosition.fromGlobalOffset(SP2_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range targetSeparateRange = new Range(targetSeparateStart, targetSeparateEnd);
+    Occurrence targetSeparateOccurrence = new Occurrence(targetSeparateSentence, targetSeparateRange);
 
-    // overlapping TextSpan
-    TextPosition targetStart = TextPosition.fromGlobalOffset(testChapter, OL2_START_OFFSET);
-    TextPosition targetEnd = TextPosition.fromGlobalOffset(testChapter, OL2_END_OFFSET);
-    TextSpan targetSpan = new TextSpan(targetStart, targetEnd);
+    // overlapping Occurrence
+    TextPosition targetStart =
+        TextPosition.fromGlobalOffset(OL2_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition targetEnd =
+        TextPosition.fromGlobalOffset(OL2_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range targetRange = new Range(targetStart, targetEnd);
+    Occurrence targetOccurrence = new Occurrence(originSentence, targetRange);
 
-    // TextSpans next to each other
-    TextPosition targetNearStart = TextPosition.fromGlobalOffset(testChapter, NEAR2_START_OFFSET);
-    TextPosition targetNearEnd = TextPosition.fromGlobalOffset(testChapter, NEAR2_END_OFFSET);
-    TextSpan targetNearSpan = new TextSpan(targetNearStart, targetNearEnd);
+    // Occurences next to each other
+    Range targetNearSentenceRange =
+        new Range(testChapter, NEAR2_SENTENCE_START_OFFSET, NEAR2_SENTENCE_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition targetNearStart =
+        TextPosition.fromGlobalOffset(NEAR2_START_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition targetNearEnd =
+        TextPosition.fromGlobalOffset(NEAR2_END_OFFSET,
+            DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    Range targetNearRange = new Range(targetNearStart, targetNearEnd);
+    Occurrence targetNearOccurrence = new Occurrence(originNearSentence, targetNearRange);
 
-    targetPerson.getOccurrences().add(targetSpan);
-    targetPerson.getOccurrences().add(targetSeparateSpan);
-    targetPerson.getOccurrences().add(targetNearSpan);
+    targetPerson.getOccurrences().add(targetOccurrence);
+    targetPerson.getOccurrences().add(targetSeparateOccurrence);
+    targetPerson.getOccurrences().add(targetNearOccurrence);
 
     // set up relation between them
-    EntityRelation testRelation = relationTestData.createTestRelation(originPerson,
-                                                                              targetPerson);
+    EntityRelation testRelation = relationTestData.createTestRelation(originPerson, targetPerson);
 
     // save ids for query
     docId = testDoc.getId();
@@ -146,16 +214,15 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
     // persist test data
     EntityManager em = getModel().getEntityManager();
     em.getTransaction().begin();
-    em.persist(chapterRange);
     em.persist(testChapter);
-    em.persist(originSpan);
-    em.persist(originSeparateSpan);
-    em.persist(originNearSpan);
+    em.persist(originOccurrence);
+    em.persist(originSeparateOccurrence);
+    em.persist(originNearOccurrence);
     em.persist(originPerson);
-    em.persist(targetSpan);
-    em.persist(targetSeparateSpan);
+    em.persist(targetOccurrence);
+    em.persist(targetSeparateOccurrence);
     em.persist(targetPerson);
-    em.persist(targetNearSpan);
+    em.persist(targetNearOccurrence);
     em.persist(testRelation);
     em.persist(testPart);
     em.persist(testDoc);
@@ -187,7 +254,7 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
 
   @Override
   protected String getPath() {
-    return "/documents/"+ docId +"/entities/relations/occurrences";
+    return "/documents/" + docId + "/entities/relations/occurrences";
   }
 
   @Override
@@ -197,35 +264,32 @@ public class RelationOccurrencesServiceTest extends OccurrencesServiceTest {
 
   @Override
   public void testGetExactOccurrences() {
-    OccurrencesResponse actualResponse = target(getPath())
-                                          .queryParam("rangeStart", DEFAULT_RANGE_START)
-                                          .queryParam("rangeEnd", DEFAULT_RANGE_END)
-                                          .queryParam("entityIds", entityIds)
-                                          .request().get(OccurrencesResponse.class);
+    OccurrencesResponse actualResponse =
+        target(getPath()).queryParam("rangeStart", DEFAULT_RANGE_START)
+            .queryParam("rangeEnd", DEFAULT_RANGE_END).queryParam("entityIds", entityIds).request()
+            .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
-    List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
+    List<Range> receivedOccurrences = actualResponse.getOccurrences();
 
     assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
-    Occurrence receivedOccurrence = receivedOccurrences.get(0);
-    assertEquals(OL_LENGTH + RelationOccurrencesService.HIGHLIGHT_LENGTH,
-        receivedOccurrence.getLength());
+    Range receivedOccurrence = receivedOccurrences.get(0);
+    assertEquals(OL_LENGTH, receivedOccurrence.getLength());
   }
 
   @Override
   public void testGetStepwiseOccurences() {
-    OccurrencesResponse actualResponse = prepareWebTarget(DEFAULT_STEP_AMOUNT,
-                                                            DEFAULT_RANGE_START,
-                                                            DEFAULT_RANGE_END).request()
-                                                            .get(OccurrencesResponse.class);
+    OccurrencesResponse actualResponse =
+        prepareWebTarget(DEFAULT_STEP_AMOUNT, DEFAULT_RANGE_START, DEFAULT_RANGE_END).request()
+            .get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
-    List<Occurrence> receivedOccurrences = actualResponse.getOccurrences();
+    List<Range> receivedOccurrences = actualResponse.getOccurrences();
 
     assertThat(receivedOccurrences, hasSize(2));
 
     // check content of response
-    Occurrence receivedOccurrence = receivedOccurrences.get(0);
+    Range receivedOccurrence = receivedOccurrences.get(0);
     assertTrue(OL_LENGTH <= receivedOccurrence.getLength());
   }
 

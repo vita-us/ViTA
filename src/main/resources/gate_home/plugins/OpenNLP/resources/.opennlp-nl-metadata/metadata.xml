@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadata xmlns="http://gate.ac.uk/ns/pipeline-metadata">
+  <pipeline-name>OpenNLP Dutch Pipeline</pipeline-name>
+  <slug>opennlp-dutch-pipeline</slug>
+  <ordering>50</ordering>
+  <annotation-selectors>:Date, :Location, :Organization, :Person</annotation-selectors>
+  <additional-annotations>:Money, :Percentage, :Time, :Sentence, :Token</additional-annotations>
+  <tags>
+    <tag>Dutch</tag>
+    <tag>OpenNLP</tag>
+    <tag>Named Entity</tag>
+  </tags>  
+</metadata>

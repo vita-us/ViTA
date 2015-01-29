@@ -1,5 +1,18 @@
 package de.unistuttgart.vis.vita.services.document;
 
+import gate.Corpus;
+import gate.DataStore;
+import gate.Factory;
+import gate.FeatureMap;
+import gate.creole.ResourceInstantiationException;
+import gate.persist.PersistenceException;
+import gate.persist.SerialDataStore;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.ManagedBean;
 import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
@@ -7,18 +20,29 @@ import javax.persistence.NoResultException;
 import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+
 import de.unistuttgart.vis.vita.analysis.AnalysisController;
+import de.unistuttgart.vis.vita.analysis.modules.gate.NLPConstants;
+import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.WordCloudService;
 import de.unistuttgart.vis.vita.services.analysis.AnalysisService;
-import de.unistuttgart.vis.vita.services.analysis.ParametersService;
 import de.unistuttgart.vis.vita.services.analysis.ProgressService;
 import de.unistuttgart.vis.vita.services.entity.EntitiesService;
 import de.unistuttgart.vis.vita.services.entity.PersonsService;
@@ -27,20 +51,14 @@ import de.unistuttgart.vis.vita.services.entity.PlotViewService;
 import de.unistuttgart.vis.vita.services.requests.DocumentRenameRequest;
 import de.unistuttgart.vis.vita.services.responses.DocumentIdResponse;
 import de.unistuttgart.vis.vita.services.search.SearchInDocumentService;
-import org.apache.commons.io.FilenameUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Provides methods for GET, PUT and DELETE a document with a specific id.
  */
 @ManagedBean
 public class DocumentService extends BaseService {
+
+  private static final Logger LOGGER = Logger.getLogger(DocumentService.class);
 
   private String id;
 
@@ -78,6 +96,9 @@ public class DocumentService extends BaseService {
 
   @Inject
   PlotViewService plotViewService;
+
+  @Inject
+  private Model model;
 
   @Override
   public void postConstruct() {
@@ -146,23 +167,83 @@ public class DocumentService extends BaseService {
    */
   @DELETE
   public Response deleteDocument() {
-    Response response = null;
+    Response response;
 
     try {
       // first cancel a running analysis
       analysisController.cancelAnalysis(id);
+      Document byId = documentDao.findById(id);
 
       // then remove it from the database
-      documentDao.remove(documentDao.findById(id));
+      documentDao.remove(byId);
+      List<Document> sameTitle = documentDao.findDocumentsByFilename(byId.getFileName());
+
+      if (sameTitle.size() == 0 && byId.getFilePath() != null) {
+        // Can remove the file from HDD.
+        File file = new File(byId.getFilePath().toUri());
+        boolean delete = file.delete();
+
+        cleanGateDatastore(byId);
+
+        if (!delete) {
+          LOGGER.info("Could not delete file: " + byId.getFilePath());
+        } else {
+          LOGGER.info("Document file " + byId.getFileName() + " removed!");
+        }
+      }
 
       // create the response
       response = Response.noContent().build();
     } catch (NoResultException nre) {
       throw new WebApplicationException(nre, Response.status(Response.Status.NOT_FOUND).build());
+    } catch (PersistenceException | ResourceInstantiationException e) {
+      throw new WebApplicationException(e, Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
     }
 
     // send response
     return response;
+  }
+
+  private void cleanGateDatastore(Document removed)
+      throws PersistenceException, ResourceInstantiationException {
+    SerialDataStore dataStore;
+    String gatedataStoreLocation = model.getGateDatastoreLocation().getLocation().toString();
+
+    if (!gatedataStoreLocation.isEmpty()) {
+      dataStore = new SerialDataStore(gatedataStoreLocation);
+
+      try {
+        dataStore.open();
+
+        for (String type : dataStore.getLrTypes()) {
+          for (String lrId : dataStore.getLrIds(type)) {
+
+            if (lrId.contains(removed.getContentID().toString())) {
+              FeatureMap corpFeatures = Factory.newFeatureMap();
+              corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, lrId);
+              corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, dataStore);
+              Corpus resource =
+                  (Corpus) Factory.createResource(NLPConstants.LR_TYPE_CORP, corpFeatures);
+              List<String> docIdRemove = new ArrayList<>();
+
+              for (gate.Document document : resource) {
+                docIdRemove.add(document.getLRPersistenceId().toString());
+              }
+
+              for (String docId : docIdRemove) {
+                dataStore.delete(NLPConstants.LR_TYPE_DOC, docId);
+                LOGGER.info("Deleted document with ID: " + docId);
+              }
+
+              dataStore.delete(type, lrId);
+              LOGGER.info("Deleted corpus with ID: " + lrId);
+            }
+          }
+        }
+      } finally {
+        dataStore.close();
+      }
+    }
   }
 
   /**
@@ -302,11 +383,15 @@ public class DocumentService extends BaseService {
       throw new WebApplicationException(e, Response.status(Response.Status.NOT_FOUND).build());
     }
 
-    DocumentIdResponse response = null;
+    Document derived = Document.copy(readDoc);
+    derived.setParameters(parameters);
+    getDaoFactory().getDocumentDao().save(derived);
+    // Make sure that the controller cann access the document
+    getEntityManager().getTransaction().commit();
+    getEntityManager().getTransaction().begin();
 
     // schedule analysis
-    String id = analysisController.scheduleDocumentAnalysis(readDoc.getFilePath(),
-        readDoc.getFileName(), parameters);
+    String id = analysisController.reScheduleDocumentAnalysis(derived);
 
     // set up Response
     return new DocumentIdResponse(id);

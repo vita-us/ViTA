@@ -2,7 +2,7 @@
   <div class="col-md-2">
     <div ng-include="'partials/menu.html'"></div>
   </div>
-  <div class="col-md-8">
+  <div class="col-md-8" id="graph-network-page">
     <div data-fingerprint-top-row></div>
     <div class="text-center">
       <span ng-show="!fingerprintEntityIds" class="help-text">
@@ -41,7 +41,8 @@
         <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
           ng-click="loadGraphNetwork(person)" ng-class="{'active': isActive(person)}"
           class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
-            {{person.displayName}}
+          {{person.displayName}}
+          <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
         </a>
       </div>
     </div>

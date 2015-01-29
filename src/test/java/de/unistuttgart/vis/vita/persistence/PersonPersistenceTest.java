@@ -13,8 +13,10 @@ import de.unistuttgart.vis.vita.data.DocumentTestData;
 import de.unistuttgart.vis.vita.data.PersonTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Person;
 
 /**
@@ -23,11 +25,11 @@ import de.unistuttgart.vis.vita.model.entity.Person;
 public class PersonPersistenceTest extends AbstractPersistenceTest {
 
   private PersonTestData testData;
-  
+
   @Override
   public void setUp() {
     super.setUp();
-    
+
     this.testData = new PersonTestData();
   }
 
@@ -70,10 +72,10 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   public void testNamedQueries() {
     Person testPerson = testData.createTestPerson(1);
     Person docTestPerson = testData.createTestPerson(2);
-    
+
     Document testDoc = new DocumentTestData().createTestDocument(1);
     testDoc.getContent().getPersons().add(docTestPerson);
-    
+
     String documentId = testDoc.getId();
 
     em.persist(testPerson);
@@ -91,13 +93,13 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
     testData.checkData(readPerson, 1);
 
     String id = readPerson.getId();
-    
+
     // check Named Query finding all persons mentioned in a document
     TypedQuery<Person> query = em.createNamedQuery("Person.findPersonsInDocument", Person.class);
     query.setParameter("documentId", documentId);
-    
+
     List<Person> docPersons = query.getResultList();
-    
+
     assertEquals(1, docPersons.size());
     testData.checkData(docTestPerson, 2);
 
@@ -125,30 +127,45 @@ public class PersonPersistenceTest extends AbstractPersistenceTest {
   public void testOcurrencesAreSorted() {
     Document doc = new Document();
     Chapter chapter = new Chapter();
-    TextPosition pos1 = TextPosition.fromGlobalOffset(chapter, 10);
-    TextPosition pos2 = TextPosition.fromGlobalOffset(chapter, 20);
-    TextPosition pos3 = TextPosition.fromGlobalOffset(chapter, 30);
-    TextPosition pos4 = TextPosition.fromGlobalOffset(chapter, 40);
-    TextSpan span1 = new TextSpan(pos1, pos4);
-    TextSpan span2 = new TextSpan(pos2, pos4);
-    TextSpan span3 = new TextSpan(pos3, pos4);
+    TextPosition pos1 =
+        TextPosition.fromGlobalOffset(10, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos2 =
+        TextPosition.fromGlobalOffset(20, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos3 =
+        TextPosition.fromGlobalOffset(30, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+    TextPosition pos4 =
+        TextPosition.fromGlobalOffset(40, DocumentTestData.TEST_DOCUMENT_CHARACTER_COUNT);
+
+    Range sentenceRange1 = new Range(pos1, pos4);
+    Range sentenceRange2 = new Range(pos3, pos4);
+    Sentence sentence1 = new Sentence(sentenceRange1, chapter, 0);
+    Sentence sentence2 = new Sentence(sentenceRange2, chapter, 1);
+
+    Range range1 = new Range(pos1, pos4);
+    Range range2 = new Range(pos2, pos4);
+    Range range3 = new Range(pos3, pos4);
+
+    Occurrence occurrence1 = new Occurrence(sentence1, range1);
+    Occurrence occurrence2 = new Occurrence(sentence1, range2);
+    Occurrence occurrence3 = new Occurrence(sentence2, range3);
 
     Person p = new Person();
     // Add the occurrences in an order that is neither the correct one, nor the reverse
-    p.getOccurrences().add(span1);
-    p.getOccurrences().add(span3);
-    p.getOccurrences().add(span2);
+    p.getOccurrences().add(occurrence2);
+    p.getOccurrences().add(occurrence1);
+    p.getOccurrences().add(occurrence3);
 
     em.persist(doc);
     em.persist(chapter);
-    em.persist(span1);
-    em.persist(span3);
-    em.persist(span2);
+    em.persist(occurrence1);
+    em.persist(occurrence2);
+    em.persist(occurrence3);
     em.persist(p);
     startNewTransaction();
 
     Person dbPerson = em.createNamedQuery("Person.findAllPersons", Person.class).getSingleResult();
-    assertThat(dbPerson.getOccurrences(), IsIterableContainingInOrder.contains(span1, span2, span3));
+    assertThat(dbPerson.getOccurrences(),
+        IsIterableContainingInOrder.contains(occurrence1, occurrence2, occurrence3));
   }
 
 }

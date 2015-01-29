@@ -2,7 +2,7 @@
   <div class="col-md-2">
     <div ng-include="'partials/menu.html'"></div>
   </div>
-  <div class="col-md-10">
+  <div class="col-md-10" id="fingerprint-page">
     <div class="row">
       <div class="col-md-9">
         <div data-fingerprint-top-row></div>
@@ -39,7 +39,10 @@
           <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
             class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
             ng-class="{active: activeFingerprints.indexOf(person) > -1}"
-            ng-click="toggleFingerprint(person)">{{person.displayName}}</a>   
+            ng-click="toggleFingerprint(person)">
+            {{person.displayName}}
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
+          </a>
         </div>
       </div>
     </div>

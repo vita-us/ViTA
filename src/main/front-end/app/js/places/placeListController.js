@@ -6,6 +6,7 @@
   // Controller responsible for the places page
   vitaControllers.controller('PlaceListCtrl', ['$scope', 'Document', 'Page', 'Place',
       '$routeParams', function($scope, Document, Page, Place, $routeParams) {
+
         Place.get({
           documentId: $routeParams.documentId
         }, function(placesWrapper) {

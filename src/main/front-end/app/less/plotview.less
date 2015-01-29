@@ -1,0 +1,62 @@
+@import "wordcloud-directive";
+
+#plotview-wrapper {
+  border: 1px solid @border-color;
+
+  // copied from the narrative.css
+  .scene {
+    color: #787878;
+    cursor: move;
+    fill-opacity: .15;
+    shape-rendering: auto;
+  }
+
+  .scene:hover {
+    color: #FFFF00;
+    fill-opacity: 0.6;
+  }
+
+  .node .label-group {
+    rect {
+      fill: white;
+    }
+
+    text {
+      dominant-baseline: central;
+      font-family: 'Walter Turncoat', sans-serif;
+      font-size: 10px;
+      pointer-events: none;
+      text-shadow: 1px 1px #fff;
+    }
+  }
+
+  .link {
+    fill: none;
+    stroke-linecap: round;
+    stroke-opacity: 0.6;
+  }
+
+  .link.hovered {
+    stroke-opacity: 1;
+  }
+
+  //  Unused in ViTA
+  .comic-title {
+    cursor: pointer;
+    font-family: 'Cutive Mono', sans-serif;
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: -1px;
+    line-height: 1em;
+    pointer-events: all;
+  }
+
+}
+
+.plot-view-tool-tip {
+  .wordcloud-tool-tip;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

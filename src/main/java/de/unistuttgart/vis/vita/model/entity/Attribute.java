@@ -1,9 +1,11 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,7 +15,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.BasicAttribute;
 
 /**
@@ -33,15 +35,15 @@ public class Attribute extends AbstractEntityBase {
   @Column(length = 1000)
   private String content;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @OrderBy("start.offset ASC")
-  private SortedSet<TextSpan> occurrences;
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OrderBy("range.start.offset ASC")
+  private List<Occurrence> occurrences;
 
   /**
    * Creates a new attribute, setting all fields to default values.
    */
   public Attribute() {
-    occurrences = new TreeSet<>();
+    occurrences = new ArrayList<Occurrence>();
   }
 
   /**
@@ -98,7 +100,7 @@ public class Attribute extends AbstractEntityBase {
   /**
    * @return a Set of all occurrences in the text which are related to this Attribute
    */
-  public SortedSet<TextSpan> getOccurrences() {
+  public List<Occurrence> getOccurrences() {
     return occurrences;
   }
 

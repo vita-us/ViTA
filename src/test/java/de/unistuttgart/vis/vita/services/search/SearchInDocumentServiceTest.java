@@ -11,25 +11,26 @@ import org.junit.Before;
 
 import com.google.common.collect.ImmutableList;
 
-import de.unistuttgart.vis.vita.analysis.modules.LuceneModule;
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.data.ChapterTestData;
 import de.unistuttgart.vis.vita.data.DocumentPartTestData;
 import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.data.TextSpanTestData;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.services.AnalysisAware;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.services.document.DocumentService;
 import de.unistuttgart.vis.vita.services.occurrence.OccurrencesServiceTest;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
+/**
+ * Performs some simple tests on SearchInDocumentService.
+ */
+public class SearchInDocumentServiceTest extends OccurrencesServiceTest implements AnalysisAware {
 
-public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
   private String documentId;
-  private String chapterId;
 
   @Override
   @Before
@@ -38,20 +39,19 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
 
     // first set up test data
     Document testDoc = new DocumentTestData().createTestDocument(1);
+    testDoc.getProgress().setStatus(getCurrentAnalysisStatus());
     DocumentPart testPart = new DocumentPartTestData().createTestDocumentPart();
     testDoc.getContent().getParts().add(testPart);
     Chapter testChapter = new ChapterTestData().createTestChapter();
     testChapter.setLength(testChapter.getText().length());
-    testChapter.setRange(new TextSpan(
-        TextPosition.fromGlobalOffset(testChapter, 0),
-        TextPosition.fromGlobalOffset(testChapter, testChapter.getLength())));
-    testChapter.setDocumentLength(testChapter.getLength());
+    testChapter.setRange(new Range(
+        TextPosition.fromGlobalOffset(0, testChapter.getLength()),
+        TextPosition.fromGlobalOffset(testChapter.getLength(), testChapter.getLength())));
     testDoc.getMetrics().setCharacterCount(testChapter.getLength());
     testPart.getChapters().add(testChapter);
 
     // id for query
     documentId = testDoc.getId();
-    chapterId = testChapter.getId();
 
     // persist it
     EntityManager em = getModel().getEntityManager();
@@ -68,6 +68,11 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
   @Override
   protected Application configure() {
     return new ResourceConfig(SearchInDocumentService.class, DocumentService.class);
+  }
+
+  @Override
+  public AnalysisStatus getCurrentAnalysisStatus() {
+    return AnalysisStatus.FINISHED;
   }
 
   /**
@@ -87,9 +92,9 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    Occurrence occurrence = actualResponse.getOccurrences().get(0);
+    Range occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(10));
-    assertThat(occurrence.getEnd().getOffset(), is(13));
+    assertThat(occurrence.getEnd().getOffset(), is(14));
   }
 
   @Override
@@ -102,7 +107,7 @@ public class SearchInDocumentServiceTest extends OccurrencesServiceTest {
         .request().get(OccurrencesResponse.class);
     assertNotNull(actualResponse);
     assertThat(actualResponse.getOccurrences(), hasSize(1));
-    Occurrence occurrence = actualResponse.getOccurrences().get(0);
+    Range occurrence = actualResponse.getOccurrences().get(0);
     assertThat(occurrence.getStart().getOffset(), is(0));
     assertThat(occurrence.getEnd().getOffset(), is(14));
   }

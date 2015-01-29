@@ -1,28 +1,33 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import java.util.List;
+import de.unistuttgart.vis.vita.model.entity.Entity;
+import de.unistuttgart.vis.vita.model.entity.EntityType;
+import de.unistuttgart.vis.vita.model.entity.Person;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
-import de.unistuttgart.vis.vita.model.entity.Entity;
-import de.unistuttgart.vis.vita.model.entity.Person;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a generic data access object for entities.
  */
 @MappedSuperclass
-@NamedQueries(
+@NamedQueries({
     @NamedQuery(name = "Entity.findEntityById",
             query = "SELECT e "
                   + "FROM Entity e "
-                  + "WHERE e.id = :entityId")
-)
+                  + "WHERE e.id = :entityId"),
+                  
+    @NamedQuery(name = "Entity.deleteEntityById",
+                query = "DELETE "
+                    + "FROM Entity e "
+                    + "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
   
   private static final String ENTITIES_PARAMETER = "entities";
@@ -83,11 +88,58 @@ public class EntityDao extends JpaDao<Entity, String> {
   
   @SuppressWarnings("unchecked")
   public List<Entity> findOccurringPersons(int startOffset, int endOffset, List<Person> entities) {
-    Query query = em.createNamedQuery("TextSpan.getOccurringEntities");
+    Query query = em.createNamedQuery("Occurence.getOccurringEntities");
     query.setParameter(ENTITIES_PARAMETER, entities);
     query.setParameter(RANGE_START_PARAMETER, startOffset);
     query.setParameter(RANGE_END_PARAMETER, endOffset);
     return (List<Entity>) query.getResultList();
   }
 
+  /**
+   * Returns a the sublist of given entities occurring in a given range.
+   *
+   * @param startOffset - the start offset of the range
+   * @param endOffset - the end offset of the range
+   * @param entities - the list of entities to search for
+   * @param type - the type of entities to be returned
+   * @return sublist of occurring entities
+   */
+  @SuppressWarnings("unchecked")
+  public List<Entity> getOccurringEntities(int startOffset,
+      int endOffset,
+      List<?> entities,
+      EntityType type) {
+    if (entities.isEmpty()) {
+      // combination of mysql and hibernate does not like empty WHERE IN statements
+      return new ArrayList<>();
+    }
+
+    Query query;
+
+    switch (type) {
+      case PERSON:
+        query = em.createNamedQuery("Occurrence.getOccurringPersons");
+        break;
+      case PLACE:
+        query = em.createNamedQuery("Occurrence.getOccurringPlaces");
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown type of entity");
+    }
+
+    query.setParameter("entities", entities);
+    query.setParameter("rangeStart", startOffset);
+    query.setParameter("rangeEnd", endOffset);
+
+    return (List<Entity>) query.getResultList();
+  }
+  
+  public void deleteEntityById(String entityId){
+    try {
+      Entity entity = findById(entityId);
+      remove(entity);
+    } catch (NoResultException e) {
+      // nothing to do
+    }
+  }
 }

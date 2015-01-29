@@ -15,14 +15,20 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
     Closeable {
   @Inject private Model model;
   @Inject private CloseableService closeableService;
+  @Inject private EntityManager em;
 
-  private EntityManager em;
   private DaoFactory daoFactory;
 
+  @javax.annotation.PostConstruct
+  public void postConstructCaller() {
+    postConstruct();
+  }
+
   @Override
-  @javax.annotation.PostConstruct public void postConstruct() {
-    this.em = model.getEntityManager();
-    em.getTransaction().begin();
+   public void postConstruct() {
+    if (!em.getTransaction().isActive()) {
+      em.getTransaction().begin();
+    }
     daoFactory = new DaoFactory(em);
     closeableService.add(this);
   }
@@ -30,9 +36,9 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
   @Override
   @PreDestroy public void preDestroy() {
     if (em != null) {
-      em.getTransaction().commit();
-      em.close();
-      em = null;
+      if (em.getTransaction().isActive()) {
+        em.getTransaction().commit();
+      }
     }
   }
 
@@ -46,5 +52,9 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
 
   @Override public void close() throws IOException {
     preDestroy();
+  }
+
+  protected EntityManager getEntityManager() {
+    return em;
   }
 }

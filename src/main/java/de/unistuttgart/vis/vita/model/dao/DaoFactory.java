@@ -1,20 +1,20 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 public class DaoFactory {
   
   private EntityManager em;
   private DocumentDao documentDao;
   private EntityDao entityDao;
-  private TextSpanDao textSpanDao;
+  private OccurrenceDao occurrenceDao;
   private DocumentPartDao documentPartDao;
   private ChapterDao chapterDao;
   private EntityRelationDao entityRelationDao;
   private AttributeDao attributeDao;
   private PersonDao personDao;
   private PlaceDao placeDao;
+  private WordCloudDao wordCloudDao;
 
   public DaoFactory(EntityManager em) {
     this.em = em;
@@ -35,11 +35,11 @@ public class DaoFactory {
     return entityDao;
   }
 
-  public TextSpanDao getTextSpanDao() {
-    if (textSpanDao == null) {
-      textSpanDao = new TextSpanDao(em);
+  public OccurrenceDao getOccurrenceDao() {
+    if (occurrenceDao == null) {
+      occurrenceDao = new OccurrenceDao(em);
     }
-    return textSpanDao;
+    return occurrenceDao;
   }
 
   public DocumentPartDao getDocumentPartDao() {
@@ -78,9 +78,16 @@ public class DaoFactory {
   }
 
   public PlaceDao getPlaceDao() {
-    if (personDao == null) {
+    if (placeDao == null) {
       placeDao = new PlaceDao(em);
     }
     return placeDao;
+  }
+  
+  public WordCloudDao getWordCloudDao() {
+    if (wordCloudDao == null) {
+      wordCloudDao = new WordCloudDao(em);
+    }
+    return wordCloudDao;
   }
 }
