@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.*;
 
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
@@ -12,23 +11,28 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 @NamedQueries({
   @NamedQuery(name = "AnalysisProgress.findAllProgresses",
               query = "SELECT p "
-                    + "FROM AnalysisProgress p"),
+                      + "FROM AnalysisProgress p"),
 
   @NamedQuery(name = "AnalysisProgress.findProgressById",
               query = "SELECT p "
-                    + "FROM AnalysisProgress p "
-                    + "WHERE p.id = :progressId"),
+                      + "FROM AnalysisProgress p "
+                      + "WHERE p.id = :progressId"),
 
   @NamedQuery(name = "AnalysisProgress.findProgressByDocumentId",
               query = "SELECT p "
-                    + "FROM AnalysisProgress p, Document d "
-                    + "WHERE d.id = :documentId "
-                    + "AND d.progress = p")
+                      + "FROM AnalysisProgress p, Document d "
+                      + "WHERE d.id = :documentId "
+                      + "AND d.progress = p")
 })
 public class AnalysisProgressDao extends JpaDao<AnalysisProgress, String> {
 
   private static final String DOC_ID_PARAMETER = "documentId";
 
+  /**
+   * Creates a new data access object for accessing the progress of the analysis.
+   *
+   * @param em - the EntityManager to use
+   */
   public AnalysisProgressDao(EntityManager em) {
     super(AnalysisProgress.class, em);
   }

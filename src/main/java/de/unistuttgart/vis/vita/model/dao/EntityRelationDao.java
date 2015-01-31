@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
 
-import javax.annotation.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
@@ -11,40 +10,41 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import de.unistuttgart.vis.vita.model.entity.EntityRelation;
-import de.unistuttgart.vis.vita.model.wordcloud.WordCloud;
 
 /**
  * Represents a data access object for accessing EntityRelations.
  */
 @MappedSuperclass
 @NamedQueries({
-    @NamedQuery(name = "EntityRelation.findAllEntityRelations", query =
-        "SELECT er "
-        + "FROM EntityRelation er"),
+    @NamedQuery(name = "EntityRelation.findAllEntityRelations",
+        query = "SELECT er "
+                + "FROM EntityRelation er"),
 
-    @NamedQuery(name = "EntityRelation.findRelationsForEntities", query =
-        "SELECT er "
-        + "FROM Entity e JOIN e.entityRelations er "
-        + "WHERE e.id IN :entityIds "
-        + "AND er.relatedEntity.id < e.id"), // only one relation per pair
+    @NamedQuery(name = "EntityRelation.findRelationsForEntities",
+        query = "SELECT er "
+                + "FROM Entity e JOIN e.entityRelations er "
+                + "WHERE e.id IN :entityIds "
+                // only one relation per pair
+                + "AND er.relatedEntity.id < e.id"),
 
-    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType", query =
-        "SELECT er "
-        + "FROM Entity e JOIN e.entityRelations er "
-            + "WHERE e.id IN :entityIds "
-        + "AND er.relatedEntity.id IN :entityIds "
-            + "AND er.relatedEntity.class = :type "
-        + "AND er.relatedEntity.id < e.id"), // only one relation per pair
+    @NamedQuery(name = "EntityRelation.findRelationsForEntitiesAndType",
+        query = "SELECT er "
+                + "FROM Entity e JOIN e.entityRelations er "
+                + "WHERE e.id IN :entityIds "
+                + "AND er.relatedEntity.id IN :entityIds "
+                + "AND er.relatedEntity.class = :type "
+                // only one relation per pair
+                + "AND er.relatedEntity.id < e.id"),
 
-    @NamedQuery(name = "EntityRelation.findEntityRelationById", query =
-        "SELECT er "
-        + "FROM EntityRelation er "
-        + "WHERE er.id = :entityRelationId"),
+    @NamedQuery(name = "EntityRelation.findEntityRelationById",
+        query = "SELECT er "
+                + "FROM EntityRelation er "
+                + "WHERE er.id = :entityRelationId"),
 
     @NamedQuery(name = "EntityRelation.deleteEntityRelations",
         query = "DELETE FROM EntityRelation er "
-            + "WHERE er.originEntity.id = :entityId "
-            + "OR er.relatedEntity.id = :entityId")})
+                + "WHERE er.originEntity.id = :entityId "
+                + "OR er.relatedEntity.id = :entityId")})
 public class EntityRelationDao extends JpaDao<EntityRelation, String> {
 
   private static final String ENTITY_IDS_PARAMETER = "entityIds";
@@ -88,10 +88,14 @@ public class EntityRelationDao extends JpaDao<EntityRelation, String> {
     return relationTypeQuery.getResultList();
   }
 
+  /**
+   * Deletes the EntityRelations for the entity with the given id.
+   *
+   * @param entityId - the Entity which relations should be deleted
+   */
   public void deleteEntityRelations(String entityId) {
     Query relationTypeQuery = em.createNamedQuery("EntityRelation.deleteEntityRelations");
     relationTypeQuery.setParameter("entityId", entityId).executeUpdate();
-
   }
 
 }

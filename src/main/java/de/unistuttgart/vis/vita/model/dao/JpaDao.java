@@ -1,12 +1,8 @@
 package de.unistuttgart.vis.vita.model.dao;
 
-import de.unistuttgart.vis.vita.model.document.Document;
-
 import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.inject.Typed;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -23,8 +19,14 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
 
   protected EntityManager em;
 
-  public JpaDao(Class<T> persClass, EntityManager em) {
-    this.persistentClass = persClass;
+  /**
+   * Creates a new instance of JpaDao for the given class using the also given EntityManager.
+   *
+   * @param persistedClass - the class of the entities to be accessed via this new dao
+   * @param em - the EntityManager to be used
+   */
+  public JpaDao(Class<T> persistedClass, EntityManager em) {
+    this.persistentClass = persistedClass;
     this.em = em;
   }
 
@@ -80,7 +82,13 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   public void save(T entity) {
     em.persist(entity);
   }
-  
+
+  /**
+   * Updates the values of the given entity in the database.
+   *
+   * @param entity - the entity and its values to be updated in the database
+   */
+  @Override
   public void update(T entity) {
     em.merge(entity);
   }
@@ -92,19 +100,40 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
    */
   @Override
   public void remove(T entity) {
-    em.remove(entity);;
+    em.remove(entity);
   }
 
+  /**
+   * Returns the single result of a given query.
+   *
+   * @param queryName - the name of the NamedQuery to be performed
+   * @param parameters - parameters as name and value pairs, so the amount must be even
+   * @return the single result for the given query
+   */
   protected T queryOne(String queryName, Object... parameters) {
     TypedQuery<T> query = buildQuery(queryName, parameters);
     return query.getSingleResult();
   }
 
+  /**
+   * Returns a list of results for the given query.
+   *
+   * @param queryName - the name of the NamedQuery to be performed
+   * @param parameters - a list of parameters as name and value pairs, so the amount must be even
+   * @return a list of results for the given query
+   */
   protected List<T> queryAll(String queryName, Object... parameters) {
     TypedQuery<T> query = buildQuery(queryName, parameters);
     return query.getResultList();
   }
 
+  /**
+   * Builds a TypedQuery for the given name and parameters and returns it.
+   *
+   * @param queryName - the name of the NamedQuery to be executed
+   * @param parameters - parameters as name and value pairs, so the amount must be even
+   * @return a TypedQuery with all the given parameters set
+   */
   protected TypedQuery<T> buildQuery(String queryName, Object... parameters) {
     TypedQuery<T> query = em.createNamedQuery(queryName, persistentClass);
     if (parameters.length % 2 != 0) {

@@ -2,6 +2,10 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import javax.persistence.EntityManager;
 
+/**
+ * Represents a Factory for data access objects (dao), ensuring that there is only one dao for each
+ * type of persisted entity.
+ */
 public class DaoFactory {
   
   private EntityManager em;
@@ -16,6 +20,11 @@ public class DaoFactory {
   private PlaceDao placeDao;
   private WordCloudDao wordCloudDao;
 
+  /**
+   * Creates a new instance of DaoFactory, using the given EntityManager.
+   *
+   * @param em - the EntityManager to be used in the DAOs created by this factory
+   */
   public DaoFactory(EntityManager em) {
     this.em = em;
   }
@@ -24,7 +33,6 @@ public class DaoFactory {
     if (documentDao == null) {
       documentDao = new DocumentDao(em);
     }
-    
     return documentDao;
   }
 
@@ -90,4 +98,5 @@ public class DaoFactory {
     }
     return wordCloudDao;
   }
+
 }
