@@ -11,10 +11,40 @@
       display: block;
       position: relative;
     }
-  
-    img {
-      border: 1px solid @border-color;
-      max-width: @preview-image-width;
+
+    .image-overlay-wrap {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+
+        img {
+            border: 1px solid @border-color;
+            max-width: @preview-image-width;
+        }
+
+        .status-wrap {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid grey;
+            border-bottom: 1px solid grey;
+
+            .status {
+                display: block;
+                font-size: 32px;
+                color: white;
+                text-align: center;
+                text-shadow: 1px 1px 0 black;
+            }
+
+            .progress-border {
+                display: block;
+                border-top: 4px solid dodgerblue;
+            }
+
+        }
     }
     
     .description {
@@ -27,17 +57,6 @@
       text-align: center;
       margin-top: 10px;
       margin-bottom: 20px;
-    }
-
-    .status {
-      position: absolute;
-      top: 15px;
-      left: 0;
-      font-size: 32px;
-      width: @preview-image-width;
-      text-align: center;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
     }
     
     img, h4, .status {

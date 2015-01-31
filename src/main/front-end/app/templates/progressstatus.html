@@ -1,3 +1,8 @@
-<img ng-src="{{image}}">
-<span class="status" ng-show="isVisible">{{statusText}}</span>
+<div class="image-overlay-wrap">
+    <img ng-src="{{image}}">
+    <div class="status-wrap" ng-show="isVisible">
+        <span class="progress-border" style="width: {{progressInPercentage}}%"></span>
+        <span class="status">{{statusText}}</span>
+    </div>
+</div>
 <h4>{{title}}</h4>
