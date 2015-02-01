@@ -39,6 +39,7 @@ public class Searcher {
   private static final String NO_SPECIAL_CHARACTERS = "[\\d\\s\\p{Alpha}]+";
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
+  private static final String SPECIAL_CHARACTERS = "[\\p{Punct}]*";
 
   public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document, String searchString,
       List<Chapter> chapters, Model model) throws IOException, ParseException {
@@ -51,8 +52,9 @@ public class Searcher {
     StandardAnalyzer analyzer = new StandardAnalyzer(charArraySet);
     List<Range> ranges = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
-    Query query = queryParser.parse(searchString);
+    Query query = queryParser.parse(QueryParser.escape(searchString));
     IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(document.getId());
+
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
@@ -96,7 +98,6 @@ public class Searcher {
         continue;
       }
 
-      // TODO: document Length übergeben.
       addRangesToList(tokenizer, searchString, words,
           getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), ranges, chapterText,documentLength );
     }
@@ -164,7 +165,7 @@ public class Searcher {
       while (tokenizer.incrementToken()) {
         position++;
 
-        if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
+        if (charTermAttrib.toString().toLowerCase().matches(SPECIAL_CHARACTERS+ words[0].toLowerCase()+ SPECIAL_CHARACTERS)) {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           tokens.add(charTermAttrib.toString());
 
@@ -172,7 +173,7 @@ public class Searcher {
           Phrase tokenInfo = phraseExtracter.extractPhrase(words, tokens,position,chapterText,tokenizer.getClass().toString());
           String phrase = tokenInfo.getPhrase();
 
-          if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
+          if ((phrase.toLowerCase().matches(SPECIAL_CHARACTERS+searchString.toLowerCase()+SPECIAL_CHARACTERS))) {
             int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
             ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
