@@ -47,7 +47,7 @@
         }
 
         $scope.prepareAttributeForView = function(attribute) {
-          return attribute != null ? attribute : "-";
+          return attribute ? attribute : "-";
         };
 
         $scope.$on('$destroy', function() {
