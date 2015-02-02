@@ -7,16 +7,64 @@
 <div id="tutorial-navigation">
   <h3>Contents</h3>
   <ul>
-    <li><a ng-href="#/tutorial#overview">Overview</a></li>
-    <li><a ng-href="#/tutorial#graphnetwork">Graph Network</a></li>
-    <li><a ng-href="#/tutorial#wordcloud">Word Cloud</a></li>
-    <li><a ng-href="#/tutorial#wordcloud">Fingerprint</a></li>
+  	<li><a ng-href="#/tutorial#preview">The Preview</a></li>
+    <li><a ng-href="#/tutorial#overview">The Overview</a></li>
+    <li><a ng-href="#/tutorial#graphnetwork">The Graph Network</a></li>
+    <li><a ng-href="#/tutorial#wordcloud">The Word Cloud</a></li>
+    <li><a ng-href="#/tutorial#fingerprint">The Fingerprint</a></li>
   </ul>
 </div>
 
-
 <div class="tutorial-section">
-  <h2 id="overview" class="section-headline">Overview</h2>
+  <h2 id="preview" class="section-headline">The Preview</h2>
+  <div class="section-image">
+    <img src="/img/tutorial/tutorial--preview.png" alt="Image for the preview">
+  </div>
+
+  <p class="section-paragraph">
+    <span class="number">1</span>
+    <span class="text">
+	  The Import Panel – the user can set the desired analysis parameters
+    </span>
+    <br/>
+    <br/>
+    <span class="number">2</span>
+    <span class="text">
+	  The list of imported documents, correctly imported documents are marked with a checkmark, failed documents with an exclamation mark and still non-completed with the play icon
+    </span>
+    <br/>
+    <br/>
+    <span class="number">3</span>
+    <span class="text">
+	  A short preview of the imported/chosen document
+    </span>
+    <br/>
+    <br/>
+    <span class="number">4</span>
+    <span class="text">
+	  The user can set the analysis parameters to reanalyze the document
+    </span>
+    <br/>
+    <br/>
+      ViTA allows the import of text-, epub2- and epub3-documents.
+	  Before the import the user has the possibility before the import to set the analysis parameters. 
+	  The user can set the count for the Word Cloud items and the granularity in the Graph Network. 
+	  He can enable the stop word list and the filter for unlikely person and place names. At last he can choose between three NLP tools: ANNIE, OpenNLP and Stanford.
+	  <br/>
+	  The Preview also provides the user with a list of all documents which he had imported. 
+	  If there is a checkmark before the title of the document in the list, the analysis was correctly executed. 
+	  If there is an exclamation mark before the title, the analysis has failed. 
+	  The play icon before the title illustrates the procedure of the analysis.
+	  The user has the ability to cancel the analysis of processing documents by clicking on the cancel icon next to the trash icon.
+	  He also has the ability to restart the analysis of the canceled documents, by clicking in the restart icon next to the trash icon.
+	  <br/>
+	  On the right, there is a preview of the chosen document displayed. 
+	  Again the user has the possibility to restart the analysis, but with new analysis parameters by clicking on Analysis Parameters next to the Rename button below the preview. 
+	  The new analyzed document will be add to the list.
+  </p>
+</div>
+<div class="tutorial-section">
+  <h2 id="overview" class="section-headline">The Overview</h2>
   <div class="section-image">
     <img src="/img/tutorial/tutorial--overview.png" alt="Image for the fingerprint visualization">
   </div>
@@ -47,7 +95,7 @@
   </p>
 </div>
 <div class="tutorial-section">
-  <h2 id="graphnetwork" class="section-headline">Graph Network</h2>
+  <h2 id="graphnetwork" class="section-headline">The Graph Network</h2>
   <div class="section-image">
     <img src="/img/tutorial/tutorial--graphnetwork.png" alt="Image for the graphnetwork visualization">
   </div>
@@ -89,7 +137,7 @@
   </p>
 </div>
 <div class="tutorial-section">
-  <h2 id="wordcloud" class="section-headline">Word Cloud</h2>
+  <h2 id="wordcloud" class="section-headline">The Word Cloud</h2>
   <div class="section-image">
     <img src="/img/tutorial/tutorial--wordcloud.png" alt="Image for the word cloud visualization">
   </div>
