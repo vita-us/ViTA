@@ -2,8 +2,6 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -100,21 +98,26 @@ public class Range implements Comparable<Range> {
     return getStart().compareTo(other.getEnd()) <= 0 && getEnd().compareTo(other.getStart()) >= 0;
   }
 
-  public Range getOverlappingRange(Range other) {
+  /**
+   * Returns the intersection of this Range and a given one.
+   *
+   * @param otherRange - the other Range with which the intersection should be computed
+   */
+  public Range getOverlappingRange(Range otherRange) {
     Range result = null;
 
-    if (overlapsWith(other)) {
+    if (overlapsWith(otherRange)) {
       TextPosition latestStart, earliestEnd;
-      if (start.compareTo(other.getStart()) > 0) {
+      if (start.compareTo(otherRange.getStart()) > 0) {
         latestStart = this.getStart();
       } else {
-        latestStart = other.getStart();
+        latestStart = otherRange.getStart();
       }
 
-      if (getEnd().compareTo(other.getEnd()) < 0) {
+      if (getEnd().compareTo(otherRange.getEnd()) < 0) {
         earliestEnd = this.getEnd();
       } else {
-        earliestEnd = other.getEnd();
+        earliestEnd = otherRange.getEnd();
       }
 
       result = new Range(latestStart, earliestEnd);
@@ -164,4 +167,5 @@ public class Range implements Comparable<Range> {
   public String toString() {
     return String.format("Range %s ... %s", start, end);
   }
+
 }

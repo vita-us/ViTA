@@ -165,4 +165,5 @@ public class RangeTest {
     assertNotEquals(range1.hashCode(), pos2.hashCode());
     assertNotEquals(range2.hashCode(), range3.hashCode());
   }
+
 }
