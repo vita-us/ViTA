@@ -83,7 +83,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     
     Set<String> stopWordList = prepareStopWordsSet(stopWordListEnabled);
     List<WordCloudItem> items = createWordCloudItemsFromTerms(reader, stopWordList, terms);
-    sortAndFilter(items);
+    items = sortAndFilter(items);
     
     return new WordCloud(items);
   }
@@ -126,7 +126,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
    * @throws IOException - Thrown if this methods was unable to get the stop words.
    */
   private Set<String> prepareStopWordsSet(boolean stopWordListEnabled) throws IOException {
-    Set<String> stopWordList = new HashSet<String>();
+    Set<String> stopWordList;
     if (stopWordListEnabled) {
       stopWordList = StopWordList.getStopWords();
     } else {
@@ -139,13 +139,16 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
    * Sorts the WordCloudItems in reversed order (highest first). The most rare items may be removed,
    * if there are more items than allowed.
    * 
-   * @param items - The WordCloudItems.
+   * @param items - The WordCloudItems, will be sorted.
+   * @return The sorted and filtered items.
    */
-  private void sortAndFilter(List<WordCloudItem> items) {
-    Collections.sort(items, Collections.reverseOrder());
-    if (items.size() > maxWordCloudItemsCount) {
-      items = items.subList(0, maxWordCloudItemsCount);
+  private List<WordCloudItem> sortAndFilter(List<WordCloudItem> items) {
+    List<WordCloudItem> filteredItems = items;
+    Collections.sort(filteredItems, Collections.reverseOrder());
+    if (filteredItems.size() > maxWordCloudItemsCount) {
+      filteredItems = filteredItems.subList(0, maxWordCloudItemsCount);
     }
+    return filteredItems;
   }
 
 }
