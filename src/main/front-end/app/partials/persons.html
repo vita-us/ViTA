@@ -35,8 +35,8 @@
       <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
       <div class="list-group scrollable-list-group">
         <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
-          class="list-group-item" ng-class="{active: isSelected(person)}"
-          ng-href="#/documents/{{Page.documentId}}/characters/{{person.id}}">
+          class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
+          ng-class="{active: isSelected(person)}" ng-href="#/documents/{{Page.documentId}}/characters/{{person.id}}">
           {{person.displayName}}
         </a>
       </div>
