@@ -43,6 +43,16 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
   private NavigableSet<Integer> sortedStartOffset;
 
   /**
+   * Compares Annotations depending on their start position.
+   */
+  private static class AnnotationComparator implements Comparator<Annotation> {
+    @Override
+    public int compare(Annotation o1, Annotation o2) {
+      return o1.getStartNode().getOffset().intValue() - o2.getStartNode().getOffset().intValue();
+    }
+  }
+  
+  /**
    * An Implementation of {@link SentenceDetectionResult} which should be returned at the end of
    * this modules execution.
    */
@@ -117,18 +127,6 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
       return offset >= chapter.getLength() || offset < 0;
     }
   }
-
-
-  /**
-   * Compares Annotations depending on their start position.
-   */
-  private class AnnotationComparator implements Comparator<Annotation> {
-    @Override
-    public int compare(Annotation o1, Annotation o2) {
-      return o1.getStartNode().getOffset().intValue() - o2.getStartNode().getOffset().intValue();
-    }
-  }
-
 
   @Override
   public SentenceDetectionResult execute(ModuleResultProvider results,
