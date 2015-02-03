@@ -66,11 +66,20 @@ public class DocumentContent {
     return places;
   }
 
+  /**
+   * @return the global word cloud for this Document
+   */
   public WordCloud getGlobalWordCloud() {
     return globalWordCloud;
   }
 
+  /**
+   * Sets the global word cloud for this Document.
+   *
+   * @param globalWordCloud - the global word cloud representing this Document
+   */
   public void setGlobalWordCloud(WordCloud globalWordCloud) {
     this.globalWordCloud = globalWordCloud;
   }
+
 }

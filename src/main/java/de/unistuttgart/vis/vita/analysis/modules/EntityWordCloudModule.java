@@ -211,7 +211,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
    */
   private Set<Sentence> getSentencesOfEntityOccurrences(BasicEntity entity) {
     Set<Sentence> sentences = new HashSet<Sentence>();
-    for (Occurrence occurrence : entity.getOccurences()) {
+    for (Occurrence occurrence : entity.getOccurrences()) {
       sentences.add(occurrence.getSentence());
     }
     return sentences;

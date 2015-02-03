@@ -127,11 +127,11 @@ public class EntityRelationModuleTest {
 
     entity1 = new BasicEntity();
     entity1.setDisplayName("entity1");
-    entity1.getOccurences().add(
+    entity1.getOccurrences().add(
         new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
-    entity1.getOccurences().add(
+    entity1.getOccurrences().add(
         new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY1_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
@@ -139,11 +139,11 @@ public class EntityRelationModuleTest {
 
     entity2 = new BasicEntity();
     entity2.setDisplayName("entity2");
-    entity2.getOccurences().add(
+    entity2.getOccurrences().add(
         new Occurrence(sentences.get(0), new Range(TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
-    entity2.getOccurences().add(
+    entity2.getOccurrences().add(
         new Occurrence(sentences.get(2), new Range(TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY2_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));
@@ -151,11 +151,11 @@ public class EntityRelationModuleTest {
 
     entity3 = new BasicEntity();
     entity3.setDisplayName("entity3");
-    entity3.getOccurences().add(
+    entity3.getOccurrences().add(
         new Occurrence(sentences.get(1), new Range(TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE1_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE1_END_OFFSET, DOCUMENT_LENGTH))));
-    entity3.getOccurences().add(
+    entity3.getOccurrences().add(
         new Occurrence(sentences.get(4), new Range(TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE2_START_OFFSET, DOCUMENT_LENGTH), TextPosition.fromGlobalOffset(
             ENTITY3_OCCURRENCE2_END_OFFSET, DOCUMENT_LENGTH))));

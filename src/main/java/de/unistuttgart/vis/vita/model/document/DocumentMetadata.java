@@ -22,7 +22,8 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String publisher;
 
-  // Prevent that Hibernate sets documentmetadata and the attributes to null, by not creating a column for this documentmetadata object
+  /* Prevent that Hibernate sets DocumentMetadata and the attributes to null, by not creating a
+  column for this DocumentMetadata object */
   @Formula("0")
   private int dummy;
   
@@ -110,7 +111,7 @@ public class DocumentMetadata {
   /**
    * Sets the year of publication.
    * 
-   * @param newPublishYear - the year when the document was published
+   * @param publishYear - the year when the document was published
    */
 
   public void setPublishYear(Integer publishYear) {

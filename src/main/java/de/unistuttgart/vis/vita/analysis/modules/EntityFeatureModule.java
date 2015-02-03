@@ -227,11 +227,11 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
   private void setEntityAttributes(Entity entity, BasicEntity basicEntity,
       EntityAttributes entityAttributes, EntityWordCloudResult wordClouds) {
     entity.setId(basicEntity.getEntityId());
-    entity.setFrequency(basicEntity.getOccurences().size());
+    entity.setFrequency(basicEntity.getOccurrences().size());
     entity.setDisplayName(basicEntity.getDisplayName());
     entity.getAttributes().addAll(basicEntity.getNameAttributes());
     entity.getAttributes().addAll(entityAttributes.getAttributesForEntity(basicEntity));
-    entity.getOccurrences().addAll(basicEntity.getOccurences());
+    entity.getOccurrences().addAll(basicEntity.getOccurrences());
     entity.setWordCloud(wordClouds.getWordCloudForEntity(basicEntity));
   }
 

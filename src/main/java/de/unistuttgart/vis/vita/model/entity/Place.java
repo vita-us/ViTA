@@ -9,7 +9,6 @@ import javax.persistence.DiscriminatorValue;
 @DiscriminatorValue(Place.DISCRIMINATOR_VALUE)
 public class Place extends Entity {
 
-  // constants
   public static final String DISCRIMINATOR_VALUE = "Place";
 
   @Override

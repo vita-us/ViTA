@@ -117,7 +117,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
     Set<BasicEntity> entityToRemove = new HashSet<>();
 
     for (BasicEntity entity : entities) {
-      if (entity.getOccurences().size() < MINIMUM_ENTITY_OCCURRENCES) {
+      if (entity.getOccurrences().size() < MINIMUM_ENTITY_OCCURRENCES) {
         entityToRemove.add(entity);
       }
     }
@@ -215,7 +215,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
     updateNameAttributes(entity, annotatedText, occurrence);
 
-    entity.getOccurences().add(occurrence);
+    entity.getOccurrences().add(occurrence);
   }
 
   /**

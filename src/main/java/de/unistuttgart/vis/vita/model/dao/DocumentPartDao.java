@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
@@ -19,35 +21,37 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
 @NamedQueries({
   @NamedQuery(name = "DocumentPart.findAllParts",
               query = "SELECT dp "
-                    + "FROM DocumentPart dp"),
+                      + "FROM DocumentPart dp"),
 
   @NamedQuery(name = "DocumentPart.findPartsInDocument",
               query = "SELECT dp "
-                    + "FROM DocumentPart dp, Document d "
-                    + "WHERE d.id = :documentId "
-                    + "AND dp MEMBER OF d.content.parts "
-                    + "ORDER BY dp.number"),
+                      + "FROM DocumentPart dp, Document d "
+                      + "WHERE d.id = :documentId "
+                      + "AND dp MEMBER OF d.content.parts "
+                      + "ORDER BY dp.number"),
 
   @NamedQuery(name = "DocumentPart.findPartById",
               query = "SELECT dp "
-                    + "FROM DocumentPart dp "
-                    + "WHERE dp.id = :partId"),
+                      + "FROM DocumentPart dp "
+                      + "WHERE dp.id = :partId"),
 
   @NamedQuery(name = "DocumentPart.findPartByTitle",
               query = "SELECT dp "
-                    + "FROM DocumentPart dp "
-                    + "WHERE dp.title = :partTitle"),
+                      + "FROM DocumentPart dp "
+                      + "WHERE dp.title = :partTitle"),
 
   @NamedQuery(name = "DocumentPart.getNumberOfPartsInDocument",
               query = "SELECT COUNT(dp) "
-                    + "FROM DocumentPart dp, Document d "
-                    + "WHERE d.id = :documentId "
-                    + "AND dp MEMBER OF d.content.parts "
-                    + "GROUP BY dp.number "
-                    + "ORDER BY dp.number")})
+                      + "FROM DocumentPart dp, Document d "
+                      + "WHERE d.id = :documentId "
+                      + "AND dp MEMBER OF d.content.parts "
+                      + "GROUP BY dp.number "
+                      + "ORDER BY dp.number")})
 public class DocumentPartDao extends JpaDao<DocumentPart, String> {
 
-  private static final String DOCUMENTPART_TITLE_PARAMETER = "partTitle";
+  private static final Logger LOGGER = Logger.getLogger(DocumentPartDao.class.getName());
+
+  private static final String DOCUMENT_PART_TITLE_PARAMETER = "partTitle";
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
 
   /**
@@ -82,7 +86,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     TypedQuery<DocumentPart> partQuery = em.createNamedQuery("DocumentPart.findPartByTitle",
                                                               DocumentPart.class);
     
-    partQuery.setParameter(DOCUMENTPART_TITLE_PARAMETER, partTitle);
+    partQuery.setParameter(DOCUMENT_PART_TITLE_PARAMETER, partTitle);
     
     return partQuery.getSingleResult();
   }
@@ -100,6 +104,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     try {
       number = ((Number) countQuery.getSingleResult()).intValue();
     } catch (NoResultException nre) {
+      LOGGER.log(Level.FINEST, "There are no parts in document with id " + docId + ".");
       number = 0;
     }
     return number;

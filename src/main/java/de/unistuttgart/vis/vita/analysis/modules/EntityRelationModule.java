@@ -130,7 +130,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
         new HashMap<Sentence, Set<BasicEntity>>();
 
     for (BasicEntity entity : basicEntities) {
-      for (Occurrence occurrence : entity.getOccurences()) {
+      for (Occurrence occurrence : entity.getOccurrences()) {
         Sentence currentSentence = occurrence.getSentence();
         if (!entitesInSentencesMap.containsKey(currentSentence)) {
           Set<BasicEntity> entities = new HashSet<>();

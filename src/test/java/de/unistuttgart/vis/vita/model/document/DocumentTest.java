@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- *
+ * Performs some tests on the model class Document.
  */
 public class DocumentTest {
 
@@ -87,4 +87,5 @@ public class DocumentTest {
   public void testGetChapterAtIllegalNegative() {
     document.getChapterAt(-1);
   }
+
 }

@@ -8,9 +8,8 @@ import javax.persistence.DiscriminatorValue;
 @javax.persistence.Entity
 @DiscriminatorValue(Person.DISCRIMINATOR_VALUE)
 public class Person extends Entity {
-  
-  // constants
-  public static final String DISCRIMINATOR_VALUE= "Person";
+
+  public static final String DISCRIMINATOR_VALUE = "Person";
 
   @Override
   public EntityType getType() {

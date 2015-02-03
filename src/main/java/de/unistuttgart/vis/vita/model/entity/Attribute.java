@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class Attribute extends AbstractEntityBase {
    * Creates a new attribute, setting all fields to default values.
    */
   public Attribute() {
-    occurrences = new ArrayList<Occurrence>();
+    occurrences = new ArrayList<>();
   }
 
   /**
@@ -114,9 +113,10 @@ public class Attribute extends AbstractEntityBase {
   }
 
   /**
-   * Merges the occurrences of all attributes with the same type and content
-   * @param attributes
-   * @return
+   * Merges the occurrences of all attributes with the same type and content.
+   *
+   * @param attributes - the Attributes to be merged
+   * @return set of different attributes with merged occurrences
    */
   public static Set<Attribute> merge(Iterable<Attribute> attributes) {
     Set<Attribute> result = new HashSet<>();
