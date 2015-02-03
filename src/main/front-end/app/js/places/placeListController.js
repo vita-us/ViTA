@@ -5,8 +5,8 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PlaceListCtrl',
-    ['$scope', 'Document', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass',
-      function($scope, Document, DocumentParts, Page, Place, Entity, $routeParams, CssClass) {
+    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass',
+      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -111,14 +111,8 @@
           }
         };
 
-        // Get document related details from the server
-        Document.get({
-          documentId: $routeParams.documentId
-        }, function(document) {
-          $scope.document = document;
-          Page.breadcrumbs = 'Characters';
-          Page.setUpForDocument(document);
-        });
+        Page.breadcrumbs = 'Characters';
+        Page.setUpForDocument($routeParams.documentId);
 
         // Get the parts of the currect document from the server
         DocumentParts.get({

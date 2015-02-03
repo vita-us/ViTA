@@ -36,7 +36,7 @@
       <div class="list-group scrollable-list-group">
         <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
           class="list-group-item" ng-class="{active: isSelected(person)}"
-          ng-href="#/documents/{{document.id}}/characters/{{person.id}}">
+          ng-href="#/documents/{{Page.documentId}}/characters/{{person.id}}">
           {{person.displayName}}
         </a>
       </div>

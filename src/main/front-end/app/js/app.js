@@ -56,20 +56,26 @@
     });
   }]);
 
-  app.factory('Page', ['DocumentViewSender', function(DocumentViewSender) {
+  app.factory('Page', ['Document', 'DocumentViewSender', function(Document, DocumentViewSender) {
             
     return {
-      setUpForDocument: function(document) {
+      setUpForDocument: function(newDocumentId) {
         var oldId = this.documentId;
-
-        // TODO Don't pass the id through the Page
-        this.documentId = document.id;
-        this.title = document.metadata.title;
         this.tab = 1;
         this.showMenu = true;
 
-        if (oldId !== document.id) {
-          DocumentViewSender.sendDocumentId(document.id);
+        if (oldId !== newDocumentId) {
+          var that = this;
+
+          this.documentId = newDocumentId;
+          Document.get({
+            documentId: newDocumentId
+          }, function(document) {
+            that.document = document;
+            that.title = document.metadata.title;
+          });
+
+          DocumentViewSender.sendDocumentId(newDocumentId);
         }
       },
       setUp: function(title, tab) {
