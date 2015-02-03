@@ -139,7 +139,7 @@ public class EntityRecognitionModuleRealTest {
 
     int documentLength = getDocumentLength();
     List<Range> occurrenceRanges = new ArrayList<Range>();
-    for (Occurrence occurrence : person.getOccurences()) {
+    for (Occurrence occurrence : person.getOccurrences()) {
       occurrenceRanges.add(occurrence.getRange());
     }
 
@@ -157,7 +157,7 @@ public class EntityRecognitionModuleRealTest {
 
     int documentLength = getDocumentLength();
     List<Range> occurrenceRanges = new ArrayList<Range>();
-    for (Occurrence occurrence : person.getOccurences()) {
+    for (Occurrence occurrence : person.getOccurrences()) {
       occurrenceRanges.add(occurrence.getRange());
     }
 

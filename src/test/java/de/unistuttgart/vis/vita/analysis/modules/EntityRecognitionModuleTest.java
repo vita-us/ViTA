@@ -12,12 +12,9 @@ import static org.mockito.Mockito.withSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.MatchesPattern;
-
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -40,7 +37,7 @@ import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
-import de.unistuttgart.vis.vita.model.entity.Entity;
+
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -201,7 +198,7 @@ public class EntityRecognitionModuleTest {
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
     BasicEntity person1 = getEntityByName("Alice");
     assertThat(person1, not(nullValue()));
-    assertThat(person1.getOccurences(), hasSize(2));
+    assertThat(person1.getOccurrences(), hasSize(2));
   }
 
   @Test

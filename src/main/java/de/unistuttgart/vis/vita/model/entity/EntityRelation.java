@@ -1,24 +1,20 @@
 package de.unistuttgart.vis.vita.model.entity;
 
-import org.hibernate.annotations.Target;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Index;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
  * Represents a Relation between two Entities.
- *
- * @param <Entity> - the type of the other entity
  */
-@Table(indexes = { @Index(columnList = "weight")})
+@Table(indexes = {
+    @Index(columnList = "weight")
+})
 @javax.persistence.Entity
 public class EntityRelation extends AbstractEntityBase {
 
-  // constants
   private static final int WEIGHT_MIN = 0;
   private static final int WEIGHT_MAX = 1;
 
@@ -34,10 +30,18 @@ public class EntityRelation extends AbstractEntityBase {
   @ManyToOne
   private Entity relatedEntity;
 
+  /**
+   * @return the entity which is the origin of this relation
+   */
   public Entity getOriginEntity() {
     return originEntity;
   }
 
+  /**
+   * Sets the entity which is the origin of this relation to the given one.
+   *
+   * @param originEntity - the new origin of this relation
+   */
   public void setOriginEntity(Entity originEntity) {
     this.originEntity = originEntity;
   }
@@ -134,7 +138,13 @@ public class EntityRelation extends AbstractEntityBase {
     return value / (end - start) / weightOverTime.length;
   }
 
+  /**
+   * Sets the weight of the relation over time to the given array.
+   *
+   * @param steps - the weights to be set
+   */
   public void setWeightOverTime(double[] steps) {
     this.weightOverTime = steps;
   }
+
 }

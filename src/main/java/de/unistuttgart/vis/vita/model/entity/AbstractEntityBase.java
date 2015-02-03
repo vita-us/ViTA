@@ -14,15 +14,26 @@ public abstract class AbstractEntityBase {
   @Id
   private String id;
 
+  /**
+   * Creates a new instance of AbstractEntityBase, generating a UUID.
+   */
   public AbstractEntityBase() {
     id = UUID.randomUUID().toString();
   }
 
+  /**
+   * @return the id of this entity
+   */
   @XmlElement
   public String getId() {
     return id;
   }
 
+  /**
+   * Sets the id of the entity to the given one.
+   *
+   * @param id - the new id for this entity
+   */
   public void setId(String id) {
     this.id = id;
   }
@@ -30,6 +41,8 @@ public abstract class AbstractEntityBase {
   /**
    * Indicates whether some object represents the same persistable object as this one. Two objects
    * are considered equal if their ids are the same.
+   *
+   * @param obj - the object to be tested equals
    */
   @Override
   public boolean equals(Object obj) {
@@ -55,6 +68,6 @@ public abstract class AbstractEntityBase {
   }
 
   @Override public String toString() {
-    return getClass().getName().toString() + "#" + id;
+    return getClass().getName() + "#" + id;
   }
 }

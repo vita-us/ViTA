@@ -67,7 +67,7 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public Entity() {
     attributes = new HashSet<>();
-    occurrences = new ArrayList<Occurrence>();  
+    occurrences = new ArrayList<>();
     entityRelations = new HashSet<>();
   }
 
@@ -169,10 +169,18 @@ public abstract class Entity extends AbstractEntityBase {
     return entityRelations;
   }
 
+  /**
+   * @return the entity specific word cloud
+   */
   public WordCloud getWordCloud() {
     return wordCloud;
   }
 
+  /**
+   * Sets the entity specific word cloud to the given one.
+   *
+   * @param wordCloud - the word cloud to be set
+   */
   public void setWordCloud(WordCloud wordCloud) {
     this.wordCloud = wordCloud;
   }
