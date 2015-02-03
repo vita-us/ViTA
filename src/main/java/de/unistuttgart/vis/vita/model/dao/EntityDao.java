@@ -12,6 +12,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a generic data access object for entities.
@@ -28,6 +30,8 @@ import java.util.List;
                         + "FROM Entity e "
                         + "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
+
+  private static final Logger LOGGER = Logger.getLogger(EntityDao.class.getName());
   
   private static final String ENTITIES_PARAMETER = "entities";
   
@@ -120,7 +124,7 @@ public class EntityDao extends JpaDao<Entity, String> {
       Entity entity = findById(entityId);
       remove(entity);
     } catch (NoResultException e) {
-      // nothing to do
+      LOGGER.log(Level.FINEST, "Tried to delete not existing entity with id " + entityId + ".");
     }
   }
 

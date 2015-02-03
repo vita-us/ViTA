@@ -1,6 +1,8 @@
 package de.unistuttgart.vis.vita.model.dao;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
@@ -46,6 +48,8 @@ import de.unistuttgart.vis.vita.model.document.DocumentPart;
                       + "GROUP BY dp.number "
                       + "ORDER BY dp.number")})
 public class DocumentPartDao extends JpaDao<DocumentPart, String> {
+
+  private static final Logger LOGGER = Logger.getLogger(DocumentPartDao.class.getName());
 
   private static final String DOCUMENT_PART_TITLE_PARAMETER = "partTitle";
   private static final String DOCUMENT_ID_PARAMETER = "documentId";
@@ -100,6 +104,7 @@ public class DocumentPartDao extends JpaDao<DocumentPart, String> {
     try {
       number = ((Number) countQuery.getSingleResult()).intValue();
     } catch (NoResultException nre) {
+      LOGGER.log(Level.FINEST, "There are no parts in document with id " + docId + ".");
       number = 0;
     }
     return number;
