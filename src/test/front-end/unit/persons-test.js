@@ -15,6 +15,7 @@ describe('PersonListCtrl', function() {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/doc13a/persons').respond(TestData.persons);
     $httpBackend.expectGET('webapi/documents/doc13a').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/doc13a/parts').respond(TestData.parts);
 
     $routeParams.documentId = 'doc13a';
 
