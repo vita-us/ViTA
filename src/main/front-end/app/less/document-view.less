@@ -1,4 +1,10 @@
-@bootstrap-screen-sm-min: 768px;
+/*
+ * Styles for the document view which always opens in a new window and therefore is not included in the
+ * global page layout
+ */
+
+@import '../bower_components/bootstrap/less/variables.less';
+
 @document-view-header-height: 65px;
 @document-view-footer-height: 50px;
 @document-view-footer-height-expanded: 95px;
@@ -6,7 +12,7 @@
 body#document-view {
   padding: @document-view-header-height 0 @document-view-footer-height-expanded 0;
 
-  @media (min-width: @bootstrap-screen-sm-min) {
+  @media (min-width: @screen-sm) {
     padding-bottom: @document-view-footer-height;
   }
 }
@@ -34,7 +40,7 @@ body#document-view {
   float: right;
   margin-top: 12px;
   
-  @media (min-width: @bootstrap-screen-sm-min) {
+  @media (min-width: @screen-sm) {
     display: none;
   }
 }
@@ -59,7 +65,7 @@ body#document-view {
       margin-left: 5px;
     }
     
-    @media (min-width: @bootstrap-screen-sm-min) {
+    @media (min-width: @screen-sm) {
       .query-input {
         width: 25%;
         max-width: none;  
@@ -71,7 +77,7 @@ body#document-view {
     display: inline-block;
   }
 
-  @media (min-width: @bootstrap-screen-sm-min) {
+  @media (min-width: @screen-sm) {
     height: @document-view-footer-height;
   }
 }
@@ -177,12 +183,12 @@ body#document-view {
     right: 0;
     padding-left: 10px;
 
-    @media (min-width: @bootstrap-screen-sm-min) {
+    @media (min-width: @screen-sm) {
       bottom: @document-view-footer-height;
     }
   }
 
-  @media (min-width: @bootstrap-screen-sm-min) {
+  @media (min-width: @screen-sm) {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;

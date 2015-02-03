@@ -109,6 +109,12 @@
         var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
         for (var i = 0; i < scenes.length; i++) {
           var scene = scenes[i];
+
+          // Skip scenes without chars
+          if (scene.chars.length <= 0) {
+            continue;
+          }
+
           var scene_characters = [];
           var scene_places = [];
           var duration = parseInt(scene.duration);
@@ -716,6 +722,8 @@
                   return d;
                 })
                 .on('dragstart', function() {
+                  // Prevent panning when dragging nodes
+                  d3.event.sourceEvent.stopPropagation();
                   // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
@@ -779,6 +787,7 @@
 
 
         function dragmove(scene) {
+          toolTip.hide();
           var old_y = scene.y;
 
           scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
