@@ -1,3 +1,9 @@
+/*
+ * Styles for the plotview
+ */
+
+@import "wordcloud-directive";
+
 #plotview-wrapper {
   border: 1px solid @border-color;
 
@@ -14,25 +20,34 @@
     fill-opacity: 0.6;
   }
 
-  .node text {
-    font-family: "Walter Turncoat", sans-serif;
-    font-size: 10px;
-    pointer-events: none;
-    text-shadow: 1px 1px #fff;
+  .node .label-group {
+    rect {
+      fill: white;
+    }
+
+    text {
+      dominant-baseline: central;
+      font-family: 'Walter Turncoat', sans-serif;
+      font-size: 10px;
+      pointer-events: none;
+      text-shadow: 1px 1px #fff;
+    }
   }
 
   .link {
     fill: none;
+    stroke-linecap: round;
+    stroke-opacity: 0.6;
   }
 
-  .link:hover {
+  .link.hovered {
     stroke-opacity: 1;
   }
 
-//  Unused in ViTA
+  //  Unused in ViTA
   .comic-title {
     cursor: pointer;
-    font-family: "Cutive Mono", sans-serif;
+    font-family: 'Cutive Mono', sans-serif;
     font-size: 18px;
     font-weight: normal;
     letter-spacing: -1px;
@@ -40,4 +55,12 @@
     pointer-events: all;
   }
 
+}
+
+.plot-view-tool-tip {
+  .wordcloud-tool-tip;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 }

@@ -13,11 +13,7 @@
         $scope.document = {};
         $scope.persons = [];
 
-        Person.get({
-          documentId: $routeParams.documentId
-        }, function(response) {
-          $scope.persons = response.persons;
-        });
+        loadPersons();
 
         Document.get({
           documentId: $routeParams.documentId
@@ -38,11 +34,22 @@
             documentId: $routeParams.documentId
           }, function(progress) {
             $scope.progress = progress;
+            if (progress.persons.isReady && !$scope.persons) {
+              loadPersons();
+            }
+          });
+        }
+
+        function loadPersons() {
+          Person.get({
+            documentId: $routeParams.documentId
+          }, function(response) {
+            $scope.persons = response.persons;
           });
         }
 
         $scope.prepareAttributeForView = function(attribute) {
-          return attribute != null ? attribute : '-';
+          return attribute ? attribute : '-';
         };
 
         $scope.$on('$destroy', function() {

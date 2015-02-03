@@ -26,7 +26,7 @@ import org.apache.lucene.search.ScoreDoc;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 
 /**
  * This class performs the searching for a word or phrase in a document
@@ -40,28 +40,28 @@ public class Searcher {
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
 
-  public List<TextSpan> searchString(String documentId, String searchString,
+  public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document, String searchString,
       List<Chapter> chapters, Model model) throws IOException, ParseException {
     if (chapters.isEmpty()) {
-      return new ArrayList<TextSpan>();
+      return new ArrayList<Range>();
     }
 
     // This empty set allows to search for stop words
     CharArraySet charArraySet = new CharArraySet(0, true);
     StandardAnalyzer analyzer = new StandardAnalyzer(charArraySet);
-    List<TextSpan> textSpans = new ArrayList<TextSpan>();
+    List<Range> ranges = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
-    IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(documentId);
+    IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(document.getId());
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
 
-    callCorrectTokenizers(searchString, chapters, textSpans, indexSearcher, hits);
+    callCorrectTokenizers(searchString, chapters, ranges, indexSearcher, hits, document.getMetrics().getCharacterCount());
     indexSearcher.getIndexReader().close();
 
-    Collections.sort(textSpans);
-    return textSpans;
+    Collections.sort(ranges);
+    return ranges;
   }
 
   /**
@@ -69,13 +69,13 @@ public class Searcher {
    *
    * @param searchString
    * @param chapters
-   * @param textSpans
+   * @param ranges
    * @param indexSearcher
    * @param hits
    * @throws IOException
    */
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
-      List<TextSpan> textSpans, IndexSearcher indexSearcher, ScoreDoc[] hits) throws IOException {
+      List<Range> ranges, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength) throws IOException {
     for (int i = 0; i < hits.length; i++) {
       
       String chapterText = indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue();
@@ -96,8 +96,9 @@ public class Searcher {
         continue;
       }
 
-      addTextSpansToList(tokenizer, searchString, words,
-          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), textSpans, chapterText);
+      // TODO: document Length übergeben.
+      addRangesToList(tokenizer, searchString, words,
+          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), ranges, chapterText,documentLength );
     }
   }
 
@@ -119,17 +120,18 @@ public class Searcher {
   }
 
   /**
-   * Produces the textspans and them to textSpans list
+   * Produces the Ranges and them to Ranges list
    * 
    * @param tokenizer
    * @param searchString
    * @param words
    * @param currentChapter
-   * @param textSpans
+   * @param ranges
+   * @param documentLength - the length of the whole document
    * @throws IOException
    */
-  private void addTextSpansToList(Tokenizer tokenizer, String searchString, String[] words,
-      Chapter currentChapter, List<TextSpan> textSpans, String chapterText) throws IOException {
+  private void addRangesToList(Tokenizer tokenizer, String searchString, String[] words,
+      Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength) throws IOException {
 
     // if it is a single word
     if (words != null && words.length == 1) {
@@ -143,8 +145,8 @@ public class Searcher {
           int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
           int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
 
-          textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
-              TextPosition.fromGlobalOffset(currentChapter, endOffset)));
+          ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+              TextPosition.fromGlobalOffset(endOffset, documentLength)));
         }
       }
       tokenizer.end();
@@ -173,8 +175,8 @@ public class Searcher {
           if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
             int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
-            textSpans.add(new TextSpan(TextPosition.fromGlobalOffset(currentChapter, startOffset),
-                TextPosition.fromGlobalOffset(currentChapter, endOffset)));
+            ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+                TextPosition.fromGlobalOffset(endOffset, documentLength)));
           }
         }
         tokens.clear();

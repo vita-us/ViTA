@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.services.occurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
@@ -12,14 +11,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.services.entity.EntityRelationsUtil;
-import de.unistuttgart.vis.vita.services.responses.occurrence.Occurrence;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 /**
-/**
- * Service providing a method to get the occurrences for relations in the current document via GET.
+ * /** Service providing a method to get the occurrences for relations in the current document via
+ * GET.
  */
 @ManagedBean
 public class RelationOccurrencesService extends OccurrencesService {
@@ -48,12 +47,13 @@ public class RelationOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
-                                            @QueryParam("entityIds") String eIds) {
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
+      @QueryParam("entityIds") String eIds) {
     // first check amount of steps
     if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
+      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"),
+          500);
     }
 
     // check range
@@ -68,7 +68,7 @@ public class RelationOccurrencesService extends OccurrencesService {
     try {
       startOffset = getStartOffset(rangeStart);
       endOffset = getEndOffset(rangeEnd);
-    } catch(IllegalRangeException ire) {
+    } catch (IllegalRangeException ire) {
       throw new WebApplicationException(ire);
     }
 
@@ -76,13 +76,11 @@ public class RelationOccurrencesService extends OccurrencesService {
 
     if (entityIds.size() == 1) {
       // If there is only one entityId, that can be better handled by the entity occurrence service
-      return entityOccurrenceService
-          .setDocumentId(documentId)
-          .setEntityId(entityIds.get(0))
+      return entityOccurrenceService.setDocumentId(documentId).setEntityId(entityIds.get(0))
           .getOccurrences(steps, rangeStart, rangeEnd);
     }
 
-    List<Occurrence> occs = null;
+    List<Range> occs = null;
     if (steps == 0) {
       occs = getExactEntityOccurrences(startOffset, endOffset);
     } else {
@@ -93,26 +91,15 @@ public class RelationOccurrencesService extends OccurrencesService {
     return new OccurrencesResponse(occs);
   }
 
-  private List<Occurrence> getExactEntityOccurrences(int startOffset, int endOffset) {
-    List<List<TextSpan>> spanLists = new ArrayList<>();
-    for (String entityId : entityIds) {
-      List<TextSpan> spans = textSpanDao.findTextSpansForEntity(entityId, startOffset, endOffset);
-      List<TextSpan> newSpans = new ArrayList<>();
-      for (TextSpan span : spans) {
-        newSpans.add(span.widen(HIGHLIGHT_LENGTH / 2));
-      }
-      spanLists.add(TextSpan.normalizeOverlaps(newSpans));
-    }
+  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+    List<Sentence> sentences = occurrenceDao.getSentencesForAllEntities(entityIds, startOffset, endOffset);
 
-    List<TextSpan> intersectSpans = TextSpan.intersect(spanLists);
-
-    // convert TextSpans into Occurrences and return them
-    return convertSpansToOccurrences(intersectSpans);
+    return mergeAdjacentSentences(sentences);
   }
 
   @Override
-  protected long getNumberOfSpansInStep(int stepStart, int stepEnd) {
-    return textSpanDao.getNumberOfTextSpansForEntities(entityIds, stepStart, stepEnd);
+  protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
+    return occurrenceDao.hasSentencesForAllEntities(entityIds, stepStart, stepEnd);
   }
 
 }

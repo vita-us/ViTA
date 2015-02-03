@@ -4,7 +4,7 @@
   </div>
   <div class="col-md-10">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-7">
         <dl ng-show="metadataLoaded()">
           <dt>Author:</dt>
           <dd>{{prepareAttributeForView(document.metadata.author)}}</dd>
@@ -16,8 +16,6 @@
         <div id="document-loading-spinner" ng-hide="metadataLoaded()">
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
-      </div>
-      <div class="col-md-6">
         <dl ng-show="metricsLoaded()">
           <dt>Number of chapters:</dt>
           <dd>{{prepareAttributeForView(document.metrics.chapterCount)}}</dd>
@@ -29,18 +27,15 @@
         <div id="document-loading-spinner" ng-hide="metricsLoaded()">
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
         <dl ng-show="charactersLoaded()">
           <dt>Main characters:</dt>
           <dd>
             <ul class="list-inline">
-              <li ng-repeat="person in persons | orderBy: 'rankingValue' | limitTo: 5"><a
+              <li ng-show="persons" ng-repeat="person in persons | orderBy: 'rankingValue' | limitTo: 5"><a
                 href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
                 class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
                   {{person.displayName}}</a></li>
+              <li ng-hide="persons">{{prepareAttributeForView(null)}}</li>
             </ul>
           </dd>
         </dl>
@@ -48,44 +43,37 @@
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
       </div>
-    </div>
-    <hr />
-    <div class="row overview-preview-images top-buffer">
-      <div class="col-md-4 col-xs-6">
-        <a ng-href="#/documents/{{document.id}}/characters" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.persons"
-          data-image="img/Vita-Characters.png" data-title="Characters"></span>
-        </a>
-      </div>
-      <div class="col-md-4 col-xs-6">
-        <a ng-href="#/documents/{{document.id}}/places" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.places"
-          data-image="img/Vita-Places.png" data-title="Places"></span>
-        </a>
-      </div>
-      <div class="col-md-4 col-xs-6">
-        <a ng-href="#/documents/{{document.id}}/fingerprint" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.fingerPrints"
-          data-image="img/Vita-Fingerprint.png" data-title="Fingerprint"></span>
-        </a>
-      </div>
-      <div class="col-md-4 col-xs-6">
-        <a ng-href="#/documents/{{document.id}}/graphnetwork" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.graphView"
-          data-image="img/Vita-GraphNetwork.png" data-title="Graph-Network"></span>
-        </a>
-      </div>
-      <div class="col-md-4 col-xs-6">
-        <a ng-href="#/documents/{{document.id}}/wordcloud" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.wordCloud"
-          data-image="img/Vita-WordCloud.png" data-title="Word Cloud"></span>
-        </a>
-      </div>
-      <div class="col-md-4 col-xs-6">
-        <a href="" ng-click="openDocumentView()" class="link-to-visualization"> <span
-          data-progress-status data-status="progress.text"
-          data-image="img/Vita-Document.png" data-title="Document"></span>
-        </a>
+      <div class="col-md-5">
+        <div class="row">
+            <a ng-href="#/documents/{{document.id}}/characters" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.persons"
+              data-image="img/Vita-Characters.png" data-title="Characters"></span>
+            </a>
+            
+            <a ng-href="#/documents/{{document.id}}/places" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.places"
+              data-image="img/Vita-Places.png" data-title="Places"></span>
+            </a>
+            
+            <a ng-href="#/documents/{{document.id}}/fingerprint" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.fingerPrints"
+              data-image="img/Vita-Fingerprint.png" data-title="Fingerprint"></span>
+            </a>
+            <a ng-href="#/documents/{{document.id}}/graphnetwork" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.graphView"
+              data-image="img/Vita-GraphNetwork.png" data-title="Graph-Network"></span>
+            </a>
+            
+            <a ng-href="#/documents/{{document.id}}/wordcloud" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.wordCloud"
+              data-image="img/Vita-WordCloud.png" data-title="Word Cloud"></span>
+            </a>
+            
+            <a href="" ng-click="openDocumentView()" class="link-to-visualization col-md-6 col-sm-6 col-xs-6"> <span
+              data-progress-status data-status="progress.text"
+              data-image="img/Vita-Document.png" data-title="Document"></span>
+            </a>
+        </div>
       </div>
     </div>
   </div>

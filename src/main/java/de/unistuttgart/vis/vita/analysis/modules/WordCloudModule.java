@@ -38,7 +38,7 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
 
     LuceneResult luceneResult = results.getResultFor(LuceneResult.class);
     boolean stopWordListEnabled =
-        results.getResultFor(AnalysisParameters.class).isStopWordListEnabled();
+        results.getResultFor(AnalysisParameters.class).getStopWordListEnabled();
     maxCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
 
     final WordCloud globalWordCloud;

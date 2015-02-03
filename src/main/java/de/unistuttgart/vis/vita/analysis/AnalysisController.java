@@ -7,12 +7,17 @@ import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Document;
 
+import java.nio.file.Path;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.nio.file.Path;
-import java.util.*;
 
 /**
  * Maintains a document queue and controls start and stop of their analysis
@@ -86,7 +91,8 @@ import java.util.*;
   /**
    * Starts the schedule of all modules registered in the registry. It calculates which modules can
    * be started first and which have to wait for other modules. This algorithm also checks how many
-   * cores the CPU has and optimize it for multi-threading.
+   * cores the CPU has and optimize it for multi-threading.<br>
+   *   CREATES A NEW DOCUMENT!!!
    *
    * @param filePath The path to the document.
    * @param fileName The original document name.
@@ -99,7 +105,8 @@ import java.util.*;
   /**
    * Starts the schedule of all modules registered in the registry. It calculates which modules can
    * be started first and which have to wait for other modules. This algorithm also checks how many
-   * cores the CPU has and optimize it for multi-threading.
+   * cores the CPU has and optimize it for multi-threading. <br>
+   *   CREATES A NEW DOCUMENT!!!
    *
    * @param filePath   The path to the document.
    * @param fileName   The original document name.
@@ -109,6 +116,16 @@ import java.util.*;
   public synchronized String scheduleDocumentAnalysis(Path filePath, String fileName,
       AnalysisParameters parameters) {
     Document document = createDocument(filePath, fileName, parameters);
+    scheduleDocumentAnalyisis(document);
+    return document.getId();
+  }
+
+  /**
+   * Reschedules new document with different parameters. All data of the document must already have been updated!
+   * @param document The document to be rescheduled.
+   * @return The document id.
+   */
+  public synchronized String reScheduleDocumentAnalysis(Document document) {
     scheduleDocumentAnalyisis(document);
     return document.getId();
   }
