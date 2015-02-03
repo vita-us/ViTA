@@ -33,7 +33,7 @@ public class EntityRankingModule extends Module<EntityRanking> {
   }
   
   /**
-   * Compares two entities according to their occurrance count, in descending order
+   * Compares two entities according to their occurrence count, in descending order.
    */
   private static class EntityComparator implements Comparator<BasicEntity> {
 

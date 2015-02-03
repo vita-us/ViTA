@@ -133,7 +133,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
    * @throws IOException - Thrown if this methods was unable to get the stop words.
    */
   private Set<String> prepareStopWordsSet(boolean stopWordListEnabled) throws IOException {
-    Set<String> stopWordList = new HashSet<String>();
+    Set<String> stopWordList;
     if (stopWordListEnabled) {
       stopWordList = StopWordList.getStopWords();
     } else {

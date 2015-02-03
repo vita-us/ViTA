@@ -205,9 +205,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
 
     if (entity == null) {
       entity = new BasicEntity();
-
       entity.setDisplayName(annotatedText);
-
       entity.setType(type);
 
       idMap.put(theAnnotation.getId(), entity);

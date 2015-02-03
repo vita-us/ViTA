@@ -75,6 +75,11 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
     }
   }
 
+  @Override
+  public void dependencyFailed(Class<?> resultClass) {
+    markFeaturesAsFailed();
+  }
+  
   /**
    * Does the actual work of storing the feature results in the document
    *
@@ -96,11 +101,6 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
     TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", documentId);
     return query.getSingleResult();
-  }
-
-  @Override
-  public void dependencyFailed(Class<?> resultClass) {
-    markFeaturesAsFailed();
   }
 
   private void markFeaturesAsFailed() {

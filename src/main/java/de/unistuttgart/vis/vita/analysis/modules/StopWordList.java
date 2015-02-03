@@ -10,8 +10,9 @@ public class StopWordList {
   private static Set<String> stopWords;
 
   public static Set<String> getStopWords() throws IOException {
-    if (stopWords != null)
+    if (stopWords != null){
       return stopWords;
+    }
 
     stopWords = new HashSet<>(
         IOUtils.readLines(StopWordList.class.getResourceAsStream("stopwords.txt")));

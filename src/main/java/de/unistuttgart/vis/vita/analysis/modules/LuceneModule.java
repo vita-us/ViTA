@@ -31,7 +31,7 @@ public class LuceneModule extends Module<LuceneResult> {
   private String documentId;
 
   /**
-   * Stores the chapters of DocumentParts from ImportResult in the lucene textRepository of model
+   * Stores the chapters of DocumentParts from ImportResult in the Lucene textRepository of model
    */
   @Override
   public LuceneResult execute(ModuleResultProvider result, ProgressListener progressListener)
@@ -51,9 +51,7 @@ public class LuceneModule extends Module<LuceneResult> {
 
       @Override
       public IndexReader getIndexReader() throws IOException {
- 
-        IndexReader reader = textRepository.getIndexSearcherForDocument(documentId).getIndexReader();
-        return reader;
+         return textRepository.getIndexSearcherForDocument(documentId).getIndexReader();
       }
     };
   }
