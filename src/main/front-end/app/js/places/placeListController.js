@@ -5,8 +5,8 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PlaceListCtrl',
-    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass',
-      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass) {
+    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass', '$location',
+      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass, $location) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -44,13 +44,13 @@
 
         // Load an Entity from the server and add it to the related entities if not already there
         var retrieveEntity = function(id) {
-          var entity = Entity.get({
+          Entity.get({
             documentId: $routeParams.documentId,
             entityId: id
           }, function(entity) {
             if ($scope.relatedEntities.indexOf(entity) == -1) {
               $scope.relatedEntities.push(entity);
-          }
+            }
           });
         };
 
@@ -86,8 +86,9 @@
 
           if (selectedPlace) {
             $scope.select(selectedPlace);
-          } else {
-            $scope.select(response.places[0]);
+          } else if (response.totalCount > 0) {
+            var firstPlace = response.places[0];
+            $location.path('documents/' + $routeParams.documentId + '/places/' + firstPlace.id);
           }
         });
 

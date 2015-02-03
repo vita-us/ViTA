@@ -5,8 +5,8 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PersonListCtrl',
-    ['$scope', 'DocumentParts', 'Page', 'Person', 'Entity', '$routeParams', 'CssClass',
-      function($scope, DocumentParts, Page, Person, Entity, $routeParams, CssClass) {
+    ['$scope', 'DocumentParts', 'Page', 'Person', 'Entity', '$routeParams', 'CssClass', '$location',
+      function($scope, DocumentParts, Page, Person, Entity, $routeParams, CssClass, $location) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -73,11 +73,13 @@
           documentId: $routeParams.documentId
         }, function(response) {
           $scope.persons = response.persons;
+
           var selectedPerson = getPersonById($routeParams.personId);
           if (selectedPerson) {
             $scope.select(selectedPerson);
-          } else {
-          $scope.select(response.persons[0]);
+          } else if (response.totalCount > 0) {
+            var firstPerson = response.persons[0];
+            $location.path('documents/' + $routeParams.documentId + '/characters/' + firstPerson.id);
           }
         });
 
