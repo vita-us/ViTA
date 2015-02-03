@@ -40,14 +40,14 @@
           }
         };
 
-        var retrieveEntity = function(id, index) {
-          var entity = Entity.get({
+        var retrieveEntity = function(id) {
+          Entity.get({
             documentId: $routeParams.documentId,
             entityId: id
           }, function(entity) {
             if ($scope.relatedEntities.indexOf(entity) == -1) {
               $scope.relatedEntities.push(entity);
-          }
+            }
           });
         };
 
