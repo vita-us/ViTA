@@ -293,13 +293,15 @@
           'displayName': 'Paris',
           'type': 'place',
           'rankingValue': 1,
-          'frequency': 400
+          'frequency': 400,
+          'attributes': []
         }, {
           'id': 'place6Hamburg',
           'displayName': 'Hamburg',
           'type': 'place',
           'rankingValue': 2,
-          'frequency': 20
+          'frequency': 20,
+          'attributes': []
         }]
       },
 

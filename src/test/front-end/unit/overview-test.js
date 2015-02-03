@@ -45,6 +45,9 @@ describe('OverviewCtrl', function() {
     $httpBackend.expectGET('webapi/documents/123/progress').respond({
       graphView: {
         isReady: true
+      },
+      persons: {
+        isReady: true
       }
     });
     // Simulate the expected time interval
