@@ -6,7 +6,7 @@
     <h1 class="text-center">
      <span ng-show="activeWordcloud == 'global'">Global</span>
      <span ng-show="wordcloudPerson">
-        <a href="#/documents/{{Page.documentId}}/characters/{{wordcloudPerson.id}}"
+        <a ng-href="#/documents/{{Page.documentId}}/characters/{{wordcloudPerson.id}}"
            class="listed-character {{CssClass.forRankingValue(wordcloudPerson.rankingValue)}}">
           {{wordcloudPerson.displayName}}</a>
      </span>
