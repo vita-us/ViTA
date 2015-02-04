@@ -23,29 +23,12 @@
   margin-top: 20px;
 }
 
-.filterable-list {
-  min-width: 250px;  
-  
-  .filter {
-    margin-bottom: 15px;
-    max-width: 250px;
-  }
-  
-  ul {
-    padding-left: 10px;
-    padding-right: 20px;
-    list-style-position: inside;
-    max-height: 250px;
-    overflow: auto;
-    
-    li {
-      margin-bottom: 5px;
-      
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
+/*
+ * Extends the bootstrap list-group by limiting the height
+ */
+.scrollable-list-group {
+    max-height: 412px;
+    overflow-y:auto;
 }
 
 /*
