@@ -11,7 +11,7 @@
         $scope.CssClass = CssClass;
 
         Page.breadcrumbs = 'Wordcloud';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         Person.get({
           documentId: $routeParams.documentId
@@ -42,5 +42,9 @@
             $scope.wordcloud = response.items;
           });
         }
+
+        $scope.loaded = function() {
+          return $scope.wordcloud !== undefined;
+        };
       }]);
 })(angular);

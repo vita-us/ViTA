@@ -24,9 +24,12 @@
         style="border: 0; color: #f6931f; font-weight: bold;">
     </p>
     <div id="slider-range"></div>
+      <div class="loading-spinner" ng-hide="loaded">
+        <span class="glyphicon glyphicon-refresh spin"></span>
+      </div>
     <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
       data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
-      data-height="graphHeight" data-width="graphWidth" id="graph-network-wrapper"></div>
+      data-height="graphHeight" data-width="graphWidth" data-loaded="loaded" id="graph-network-wrapper"></div>
   </div>
   <div class="col-md-2">
     <div class="row">
@@ -44,6 +47,9 @@
           {{person.displayName}}
           <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
         </a>
+      </div>
+      <div class="loading-spinner" ng-hide="persons.length">
+        <span class="glyphicon glyphicon-refresh spin"></span>
       </div>
     </div>
   </div>

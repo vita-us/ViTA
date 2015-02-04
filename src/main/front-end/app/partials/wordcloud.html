@@ -6,13 +6,16 @@
     <h1 class="text-center">
      <span ng-show="activeWordcloud == 'global'">Global</span>
      <span ng-show="wordcloudPerson">
-        <a href="#/documents/{{Page.documentId}}/characters/{{wordcloudPerson.id}}"
+        <a ng-href="#/documents/{{Page.documentId}}/characters/{{wordcloudPerson.id}}"
            class="listed-character {{CssClass.forRankingValue(wordcloudPerson.rankingValue)}}">
           {{wordcloudPerson.displayName}}</a>
      </span>
       Wordcloud
+      <div class="loading-spinner" ng-hide="loaded()">
+        <span class="glyphicon glyphicon-refresh spin"></span>
+      </div>
     </h1>
-    <div data-wordcloud class="wordcloud-container" data-items="wordcloud"></div>
+    <div data-wordcloud class="wordcloud-container" data-items="wordcloud" ng-show="loaded()"></div>
   </div>
   <div class="col-md-2">
     <input type="search" ng-model="search" placeholder="Search..." class="form-control"
@@ -26,6 +29,9 @@
         {{person.displayName}}
         <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
       </a>
+    </div>
+    <div class="loading-spinner" ng-hide="persons.length">
+      <span class="glyphicon glyphicon-refresh spin"></span>
     </div>
   </div>
 </div>

@@ -10,11 +10,12 @@
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
+        $scope.persons = [];
 
         loadPersons();
 
         Page.breadcrumbs = 'Overview';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         loadAnalysisProgress();
         // Load the analysis progress repeatedly
@@ -42,7 +43,7 @@
         }
 
         $scope.prepareAttributeForView = function(attribute) {
-          return attribute ? attribute : "-";
+          return attribute ? attribute : '-';
         };
 
         $scope.$on('$destroy', function() {
@@ -51,6 +52,17 @@
           }
         });
 
+        $scope.metadataLoaded = function() {
+          return Page.document && Page.document.metadata;
+        };
+
+        $scope.metricsLoaded = function() {
+          return Page.document && Page.document.metrics;
+        };
+
+        $scope.charactersLoaded = function() {
+          return $scope.persons.length != 0;
+        };
       }]);
 
 })(angular);

@@ -7,12 +7,14 @@
       'Person', 'CssClass', 'FingerprintSynchronizer',
       function($scope, $routeParams, DocumentParts, Page, Person, CssClass, FingerprintSynchronizer) {
 
+        $scope.loaded = false;
+
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
         $scope.FingerprintSynchronizer = FingerprintSynchronizer;
 
         Page.breadcrumbs = 'Graph-Network';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         Person.get({
           documentId: $routeParams.documentId

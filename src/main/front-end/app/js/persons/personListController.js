@@ -10,6 +10,8 @@
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
+        $scope.persons = [];
+
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
 
@@ -102,7 +104,7 @@
         };
 
         Page.breadcrumbs = 'Characters';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         DocumentParts.get({
           documentId: $routeParams.documentId

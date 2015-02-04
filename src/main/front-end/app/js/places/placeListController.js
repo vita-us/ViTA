@@ -10,8 +10,7 @@
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
-        // Provide the service for direct usage in the scope
-        $scope.CssClass = CssClass;
+        $scope.places = [];
 
         // Create an empty selected character
         $scope.selected = {};
@@ -113,7 +112,7 @@
         };
 
         Page.breadcrumbs = 'Characters';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         // Get the parts of the currect document from the server
         DocumentParts.get({
