@@ -19,7 +19,7 @@
         </div>
         <div class="row" ng-repeat="active in activeFingerprints">
           <h3 class="col-md-2">
-            <a href="#/documents/{{Page.documentId}}/characters/{{active.id}}"
+            <a ng-href="#/documents/{{Page.documentId}}/characters/{{active.id}}"
                class="listed-character {{CssClass.forRankingValue(active.rankingValue)}}">
               {{active.displayName}}</a>
           </h3>
