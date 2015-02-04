@@ -9,7 +9,9 @@ public class SoftInterruptedException extends RuntimeException {
    */
   private static final long serialVersionUID = 1338804617804505773L;
 
-  public SoftInterruptedException() {}
+  public SoftInterruptedException() {
+    super();
+  }
 
   public SoftInterruptedException(String message) {
     super(message);
