@@ -143,6 +143,7 @@ public class AnalysisExecutor {
     final Module<?> instance = moduleState.getInstance();
 
     LOGGER.info("Starting " + moduleState.getModuleClass());
+    moduleState.startTimer();
 
     Thread thread = new Thread(new Runnable() {
       @Override
@@ -177,8 +178,10 @@ public class AnalysisExecutor {
     if (status != AnalysisStatus.RUNNING) {
       return;
     }
+    moduleState.stopTimer();
 
-    LOGGER.info("Module " + moduleState.getModuleClass() + " finished");
+    LOGGER.info("Module " + moduleState.getModuleClass() + " finished after " +
+        moduleState.getDurationMillis() + " ms");
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);
