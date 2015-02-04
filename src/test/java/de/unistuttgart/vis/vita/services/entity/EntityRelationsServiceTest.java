@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,16 +285,25 @@ public class EntityRelationsServiceTest extends ServiceTest {
     assertEquals(ERROR_STATUS, response2.getStatus());
   }
 
+  @Test
+  public void testGetRelationsWithoutEntitiesParams() {
+    Response response1 = target(path).queryParam("rangeStart", TEST_RANGE_START)
+        .queryParam("rangeEnd", TEST_RANGE_END).queryParam("type", TEST_RELATION_TYPE).request()
+        .get();
+    assertEquals(ERROR_STATUS, response1.getStatus());
+  }
+
   /**
    * Check whether server response is 500 when requesting relations without any entities.
    */
   @Test
   public void testGetRelationsWithoutEntities() {
-    Response actualResponse =
+    RelationsResponse actualResponse =
         target(path).queryParam("rangeStart", TEST_RANGE_START)
             .queryParam("rangeEnd", TEST_RANGE_END).queryParam("entityIds", TEST_NO_ENTITY_IDS)
-            .queryParam("type", TEST_RELATION_TYPE).request().get();
-    assertEquals(ERROR_STATUS, actualResponse.getStatus());
+            .queryParam("type", TEST_RELATION_TYPE).request().get(RelationsResponse.class);
+    assertNotNull(actualResponse);
+    assertThat(actualResponse.getRelations(), is(empty()));
   }
 
   /**
