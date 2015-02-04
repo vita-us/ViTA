@@ -58,7 +58,7 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
   /**
    * Compares Attributes depending on their number of Occurrences, lower number is smaller.
    */
-  private class AttributeComparator implements Comparator<Attribute> {
+  private static class AttributeComparator implements Comparator<Attribute> {
     @Override
     public int compare(Attribute o1, Attribute o2) {
       return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : (o1.getOccurrences()
