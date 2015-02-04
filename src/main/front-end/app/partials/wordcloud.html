@@ -20,7 +20,7 @@
   <div class="col-md-2">
     <input type="search" ng-model="search" placeholder="Search..." class="form-control"
       style="margin-bottom: 5px">
-    <div class="list-group" id="list1">
+    <div class="list-group scrollable-list-group" id="list1">
       <a href="" class="list-group-item" ng-class="{'active': activeWordcloud == 'global'}"
         ng-click="loadGlobalWordcloud()">global</a>
       <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"

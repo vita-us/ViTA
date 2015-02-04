@@ -35,7 +35,7 @@
         <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect all</button>
         <input type="search" ng-model="search" placeholder="Search..." class="form-control"
           style="margin-top: 5px; margin-bottom: 5px;">
-        <div class="list-group" id="list1">
+        <div class="list-group scrollable-list-group" id="list1">
           <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
             class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
             ng-class="{active: activeFingerprints.indexOf(person) > -1}"
