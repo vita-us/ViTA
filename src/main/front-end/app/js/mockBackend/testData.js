@@ -293,13 +293,15 @@
           'displayName': 'Paris',
           'type': 'place',
           'rankingValue': 1,
-          'frequency': 400
+          'frequency': 400,
+          'entityRelations': []
         }, {
           'id': 'place6Hamburg',
           'displayName': 'Hamburg',
           'type': 'place',
           'rankingValue': 2,
-          'frequency': 20
+          'frequency': 20,
+          'entityRelations': []
         }]
       },
 
@@ -684,13 +686,15 @@
           'displayName': 'Hugo',
           'type': 'person',
           'rankingValue': 3,
-          'frequency': 301
+          'frequency': 301,
+          'entityRelations': []
         }, {
           'id': 'person10Bert',
           'displayName': 'Bert',
           'type': 'person',
           'rankingValue': 7,
-          'frequency': 153
+          'frequency': 153,
+          'entityRelations': []
         }]
       },
 

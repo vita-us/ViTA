@@ -4,24 +4,18 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the overview page
-  vitaControllers.controller('OverviewCtrl',
-    ['$scope', 'Document', 'Page', '$routeParams', 'AnalysisProgress', '$interval', 'Person', 'CssClass',
-      function($scope, Document, Page, $routeParams, AnalysisProgress, $interval, Person, CssClass) {
+  vitaControllers.controller('OverviewCtrl', ['$scope', 'Page', '$routeParams', 'AnalysisProgress',
+      '$interval', 'Person', 'CssClass',
+      function($scope, Page, $routeParams, AnalysisProgress, $interval, Person, CssClass) {
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
-        $scope.document = {};
         $scope.persons = [];
 
         loadPersons();
 
-        Document.get({
-          documentId: $routeParams.documentId
-        }, function(document) {
-          $scope.document = document;
-          Page.breadcrumbs = 'Overview';
-          Page.setUpForDocument(document);
-        });
+        Page.breadcrumbs = 'Overview';
+        Page.setUpForDocument($routeParams.documentId);
 
         loadAnalysisProgress();
         // Load the analysis progress repeatedly
@@ -59,11 +53,11 @@
         });
 
         $scope.metadataLoaded = function() {
-          return !($scope.document.metadata == null);
+          return Page.document && Page.document.metadata;
         };
 
         $scope.metricsLoaded = function() {
-          return !($scope.document.metrics == null);
+          return Page.document && Page.document.metrics;
         };
 
         $scope.charactersLoaded = function() {
