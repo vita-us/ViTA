@@ -25,7 +25,7 @@
         <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds"data-parts="parts"></div>
       </div>
       <div class="col-md-3 col-sm-5">
-        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter list-group-search-filter">
         <div class="list-group scrollable-list-group">
           <a ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' "
              class="list-group-item" ng-class="{active: isSelected(place)}"

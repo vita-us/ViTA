@@ -27,7 +27,7 @@
         <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds" data-parts="parts"></div>
       </div>
       <div class="col-md-3 col-sm-5">
-        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter list-group-search-filter">
         <div class="list-group scrollable-list-group">
           <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
              class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
