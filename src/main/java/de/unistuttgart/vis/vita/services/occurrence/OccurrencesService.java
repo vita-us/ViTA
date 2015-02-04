@@ -48,8 +48,9 @@ public abstract class OccurrencesService extends RangeService {
 
   /**
    * Converts the occurrences to ranges of their sentences, merging adjacent sentences
+   * 
    * @param occurrences the occurrences whose sentences are considered
-   * @return the range of the sentences
+   * @return the ranges of the sentences
    */
   protected List<Range> mergeAdjacentSentences(List<Sentence> sentences) {
     List<Range> newList = new ArrayList<>();
@@ -57,6 +58,7 @@ public abstract class OccurrencesService extends RangeService {
     Range currentRange = null;
     for (Sentence sentence : sentences) {
       if (currentRange != null && sentence.getIndex() == lastSentenceIndex + 1) {
+        // extend range
         currentRange = new Range(currentRange.getStart(), sentence.getRange().getEnd());
       } else {
         if (currentRange != null) {
@@ -67,6 +69,7 @@ public abstract class OccurrencesService extends RangeService {
       lastSentenceIndex = sentence.getIndex();
     }
     if (currentRange != null) {
+      // add last range
       newList.add(currentRange);
     }
     return newList;

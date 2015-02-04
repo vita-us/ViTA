@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 @ManagedBean
 public class SearchInDocumentService extends ExtendedOccurrencesService {
-  private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
+  private final static Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
   private List<Range> ranges;
 
@@ -41,7 +41,8 @@ public class SearchInDocumentService extends ExtendedOccurrencesService {
   private DocumentPartDao documentPartDao;
   private DocumentDao documentDao;
 
-  @Override public void postConstruct() {
+  @Override
+  public void postConstruct() {
     super.postConstruct();
     documentDao = getDaoFactory().getDocumentDao();
     documentPartDao = getDaoFactory().getDocumentPartDao();
@@ -61,21 +62,19 @@ public class SearchInDocumentService extends ExtendedOccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
-                                            @QueryParam("query") @DefaultValue("") String query) throws IOException {
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
+      @QueryParam("query") @DefaultValue("") String query) throws IOException {
     checkSteps(steps);
     checkRange(rangeStart, rangeEnd);
     int startOffset = checkStartOffset(rangeStart);
-    int endOffset = checkEndOffset(rangeEnd);    
+    int endOffset = checkEndOffset(rangeEnd);
 
-    if (!documentDao.isAnalysisFinished(documentId)) {
-
-      // check whether there are parts in the current Document
-      if (documentPartDao.getNumberOfParts(documentId) == 0) {
-        LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
-        throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
-      }
+    // check whether there are parts in the current Document
+    if (!documentDao.isAnalysisFinished(documentId)
+        && documentPartDao.getNumberOfParts(documentId) == 0) {
+      LOGGER.log(Level.INFO, "Cannot search in document while analysis is still running.");
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
     }
 
     Chapter startChapter = getSurroundingChapter(startOffset);
@@ -124,10 +123,12 @@ public class SearchInDocumentService extends ExtendedOccurrencesService {
   @Override
   protected boolean hasOccurrencesInStep(int stepStart, int stepEnd) {
     for (Range span : ranges) {
-      if (span.getEnd().getOffset() > stepEnd)
+      if (span.getEnd().getOffset() > stepEnd){
         break;
-      if (span.getStart().getOffset() >= stepStart)
+      }
+      if (span.getStart().getOffset() >= stepStart){
         return true;
+      }
     }
     return false;
   }

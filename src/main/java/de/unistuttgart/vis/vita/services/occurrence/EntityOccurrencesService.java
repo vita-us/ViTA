@@ -76,11 +76,8 @@ public class EntityOccurrencesService extends ExtendedOccurrencesService {
 
   private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-
     List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
                                                                       startOffset, endOffset);
-    
-    // convert Occurrences into Ranges and return them
     return convertOccurrencesToRanges(readOccurrences);
   }
 
