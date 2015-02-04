@@ -86,7 +86,7 @@ public class EntityRelationsService extends RangeService {
     }
     
     // check entityIds
-    if (eIds == null || "".equals(eIds)) {
+    if (eIds == null) {
       throw new BadRequestException("No entities specified!");
     } else {
       // convert entity id string
