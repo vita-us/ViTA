@@ -13,7 +13,7 @@
         $scope.FingerprintSynchronizer = FingerprintSynchronizer;
 
         Page.breadcrumbs = 'Fingerprint';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         $scope.activeFingerprints = [];
         $scope.activeFingerprintIds = [];

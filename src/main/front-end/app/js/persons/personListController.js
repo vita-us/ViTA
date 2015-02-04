@@ -104,7 +104,7 @@
         };
 
         Page.breadcrumbs = 'Characters';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         DocumentParts.get({
           documentId: $routeParams.documentId

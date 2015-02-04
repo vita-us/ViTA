@@ -11,7 +11,7 @@
         $scope.CssClass = CssClass;
 
         Page.breadcrumbs = 'Wordcloud';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         Person.get({
           documentId: $routeParams.documentId

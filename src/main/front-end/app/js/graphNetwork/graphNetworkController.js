@@ -14,7 +14,7 @@
         $scope.FingerprintSynchronizer = FingerprintSynchronizer;
 
         Page.breadcrumbs = 'Graph-Network';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         Person.get({
           documentId: $routeParams.documentId

@@ -112,7 +112,7 @@
         };
 
         Page.breadcrumbs = 'Characters';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         // Get the parts of the currect document from the server
         DocumentParts.get({

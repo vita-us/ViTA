@@ -15,7 +15,7 @@
         loadPersons();
 
         Page.breadcrumbs = 'Overview';
-        Page.setUpForDocument($routeParams.documentId);
+        Page.setUpForCurrentDocument();
 
         loadAnalysisProgress();
         // Load the analysis progress repeatedly

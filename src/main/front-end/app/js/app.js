@@ -56,11 +56,14 @@
     });
   }]);
 
-  app.factory('Page', ['Document', 'DocumentViewSender', function(Document, DocumentViewSender) {
+  app.factory('Page', ['Document', 'DocumentViewSender', '$routeParams',
+    function(Document, DocumentViewSender, $routeParams) {
             
     return {
-      setUpForDocument: function(newDocumentId) {
+      setUpForCurrentDocument: function() {
+        var newDocumentId = $routeParams.documentId;
         var oldId = this.documentId;
+
         this.tab = 1;
         this.showMenu = true;
 

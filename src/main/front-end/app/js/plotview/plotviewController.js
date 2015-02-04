@@ -3,11 +3,11 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('PlotviewCtrl', ['$scope', '$routeParams', 'DocumentParts', 'Page',
-    function($scope, $routeParams, DocumentParts, Page) {
+  vitaControllers.controller('PlotviewCtrl', ['$scope', 'DocumentParts', 'Page',
+    function($scope, DocumentParts, Page) {
 
       Page.breadcrumbs = 'Plotview';
-      Page.setUpForDocument($routeParams.documentId);
+      Page.setUpForCurrentDocument();
 
       $scope.loading = function() {
         return $('#plotview-wrapper').has('svg').length != 1;
