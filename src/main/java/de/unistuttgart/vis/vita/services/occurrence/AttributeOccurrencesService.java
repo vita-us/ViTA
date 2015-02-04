@@ -7,7 +7,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -18,7 +17,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Provides a method to GET the occurrences of the current attribute and entity.
  */
 @ManagedBean
-public class AttributeOccurrencesService extends OccurrencesService {
+public class AttributeOccurrencesService extends ExtendedOccurrencesService {
 
   private String attributeId;
 
@@ -81,26 +80,10 @@ public class AttributeOccurrencesService extends OccurrencesService {
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart, 
                                             @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
-    // check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException("Illegal amount of steps!");
-    }
-    
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-    
-    int startOffset;
-    int endOffset;
-    
-    // calculate offsets for the range
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch (IllegalRangeException e) {
-      throw new WebApplicationException(e);
-    }
+    checkSteps(steps);
+    checkRange(rangeStart, rangeEnd);
+    int startOffset = checkStartOffset(rangeStart);
+    int endOffset = checkEndOffset(rangeEnd);
     
     List<Range> occs = null;
     if (steps == 0) {

@@ -26,12 +26,11 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.search.Searcher;
-import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;
-import de.unistuttgart.vis.vita.services.occurrence.OccurrencesService;
+import de.unistuttgart.vis.vita.services.occurrence.ExtendedOccurrencesService;
 import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesResponse;
 
 @ManagedBean
-public class SearchInDocumentService extends OccurrencesService {
+public class SearchInDocumentService extends ExtendedOccurrencesService {
   private final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
   private List<Range> ranges;
@@ -65,28 +64,10 @@ public class SearchInDocumentService extends OccurrencesService {
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
                                             @QueryParam("query") @DefaultValue("") String query) throws IOException {
-    // first check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
-    }
-
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-
-    int startOffset;
-    int endOffset;
-
-    // calculate offsets
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch(IllegalRangeException ire) {
-      throw new WebApplicationException(ire);
-    }
-    
-    
+    checkSteps(steps);
+    checkRange(rangeStart, rangeEnd);
+    int startOffset = checkStartOffset(rangeStart);
+    int endOffset = checkEndOffset(rangeEnd);    
 
     if (!documentDao.isAnalysisFinished(documentId)) {
 

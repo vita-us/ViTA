@@ -7,7 +7,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -18,7 +17,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Provides a method to GET the occurrences of the current entity.
  */
 @ManagedBean
-public class EntityOccurrencesService extends OccurrencesService {
+public class EntityOccurrencesService extends ExtendedOccurrencesService {
   
   private String entityId;
 
@@ -59,26 +58,10 @@ public class EntityOccurrencesService extends OccurrencesService {
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
                                             @QueryParam("rangeStart") double rangeStart,
                                             @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
-    // first check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
-    }
-    
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-       
-    int startOffset;
-    int endOffset;
-    
-    // calculate offsets
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch(IllegalRangeException ire) {
-      throw new WebApplicationException(ire);
-    }
+    checkSteps(steps);
+    checkRange(rangeStart, rangeEnd);
+    int startOffset = checkStartOffset(rangeStart);
+    int endOffset = checkEndOffset(rangeEnd);
     
     List<Range> occs = null;
     if (steps == 0) {

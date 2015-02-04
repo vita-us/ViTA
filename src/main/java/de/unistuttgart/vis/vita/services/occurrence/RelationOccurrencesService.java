@@ -8,7 +8,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Range;
@@ -21,7 +20,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * GET.
  */
 @ManagedBean
-public class RelationOccurrencesService extends OccurrencesService {
+public class RelationOccurrencesService extends ExtendedOccurrencesService {
 
   private List<String> entityIds;
 
@@ -50,27 +49,10 @@ public class RelationOccurrencesService extends OccurrencesService {
       @QueryParam("rangeStart") double rangeStart,
       @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd,
       @QueryParam("entityIds") String eIds) {
-    // first check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"),
-          500);
-    }
-
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-
-    int startOffset;
-    int endOffset;
-
-    // calculate offsets
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch (IllegalRangeException ire) {
-      throw new WebApplicationException(ire);
-    }
+    checkSteps(steps);
+    checkRange(rangeStart, rangeEnd);
+    int startOffset = checkStartOffset(rangeStart);
+    int endOffset = checkEndOffset(rangeEnd);
 
     entityIds = EntityRelationsUtil.convertIdStringToList(eIds);
 
