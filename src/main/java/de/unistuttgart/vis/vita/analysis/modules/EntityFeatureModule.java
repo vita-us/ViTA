@@ -45,6 +45,10 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
     SentenceDetectionResult.class},
     weight = 100)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
+  private static final double FIRST_LOOP_DURATION_FRACTION = 0.3;
+  private static final double SECOND_LOOP_DURATION_FRACTION = 0.2;
+  // the rest is for committing the transaction
+
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
       EntityManager em, ProgressListener progressListener) throws Exception {
@@ -58,6 +62,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
 
     int currentPersonRanking = 1;
     int currentPlaceRanking = 1;
+    int currentIndex = 0;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -101,8 +106,12 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
       em.persist(entity);
       em.persist(entity.getWordCloud());
       realEntities.put(basicEntity, entity);
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION * currentIndex / basicEntities.size());
+      currentIndex++;
     }
 
+    currentIndex = 0;
     for (BasicEntity basicEntity : basicEntities) {
       Entity source = realEntities.get(basicEntity);
       Map<BasicEntity, Double> weights = relations.getRelatedEntities(basicEntity);
@@ -120,6 +129,9 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         relation.setWeightOverTime(relations.getWeightOverTime(basicEntity, entry.getKey()));
         em.persist(relation);
       }
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION +
+          SECOND_LOOP_DURATION_FRACTION * currentIndex / basicEntities.size());
     }
 
     return this;
