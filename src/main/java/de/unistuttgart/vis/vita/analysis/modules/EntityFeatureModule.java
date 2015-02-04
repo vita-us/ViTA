@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -42,11 +43,11 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
     BasicEntityCollection.class, DocumentPersistenceContext.class,
     Model.class, TextFeatureModule.class, EntityWordCloudResult.class,
     SentenceDetectionResult.class},
-    weight = 0.1)
+    weight = 100)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em) throws Exception {
+      EntityManager em, ProgressListener progressListener) throws Exception {
     List<BasicEntity> basicEntities =
         result.getResultFor(EntityRanking.class).getRankedEntities();
     EntityRelations relations = result.getResultFor(EntityRelations.class);

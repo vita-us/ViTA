@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import org.apache.lucene.search.IndexSearcher;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -31,7 +32,7 @@ public class GlobalWordCloudFeatureModule extends AbstractFeatureModule<GlobalWo
 
   @Override
   public GlobalWordCloudFeatureModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em)
+      EntityManager em, ProgressListener progressListener)
       throws Exception {
 
     WordCloud wordCloud = result.getResultFor(GlobalWordCloudResult.class).getGlobalWordCloud();
