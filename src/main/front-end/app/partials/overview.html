@@ -13,7 +13,7 @@
           <dt>Published:</dt>
           <dd>{{prepareAttributeForView(Page.document.metadata.publishYear)}}</dd>
         </dl>
-        <div id="document-loading-spinner" ng-hide="metadataLoaded()">
+        <div class="loading-spinner" ng-hide="metadataLoaded()">
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
         <dl ng-show="metricsLoaded()">
@@ -24,7 +24,7 @@
           <dt>Number of words:</dt>
           <dd>{{prepareAttributeForView(Page.document.metrics.wordCount)}}</dd>
         </dl>
-        <div id="document-loading-spinner" ng-hide="metricsLoaded()">
+        <div class="loading-spinner" ng-hide="metricsLoaded()">
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
         <dl ng-show="charactersLoaded()">
@@ -39,7 +39,7 @@
             </ul>
           </dd>
         </dl>
-        <div id="document-loading-spinner" ng-hide="charactersLoaded()">
+        <div class="loading-spinner" ng-hide="charactersLoaded()">
           <span class="glyphicon glyphicon-refresh spin"></span>
         </div>
       </div>

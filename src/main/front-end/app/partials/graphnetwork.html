@@ -24,7 +24,7 @@
         style="border: 0; color: #f6931f; font-weight: bold;">
     </p>
     <div id="slider-range"></div>
-      <div id="document-loading-spinner" ng-hide="loaded">
+      <div class="loading-spinner" ng-hide="loaded">
         <span class="glyphicon glyphicon-refresh spin"></span>
       </div>
     <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
@@ -48,7 +48,7 @@
           <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
         </a>
       </div>
-      <div id="document-loading-spinner" ng-hide="persons.length">
+      <div class="loading-spinner" ng-hide="persons.length">
         <span class="glyphicon glyphicon-refresh spin"></span>
       </div>
     </div>
