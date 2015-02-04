@@ -132,40 +132,16 @@ public class AnalysisExecutor {
       }
     }
   }
-
+  
   /**
    * Starts a thread executing the module
    *
    * @param moduleState the module to execute
    */
   private synchronized void startModuleExecution(final ModuleExecutionState moduleState) {
-    final ModuleResultProvider resultProvider = moduleState.getResultProvider();
-    final Module<?> instance = moduleState.getInstance();
-
     LOGGER.info("Starting " + moduleState.getModuleClass());
 
-    Thread thread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        Object result;
-        try {
-          result = instance.execute(resultProvider, new ProgressListener() {
-            @Override
-            public void observeProgress(double progress) {
-              onModuleProgress(moduleState, progress);
-            }
-          });
-          if (result == null) {
-            throw new ModuleExecutionException("The module " + moduleState.getModuleClass()
-                + " returned null");
-          }
-        } catch(Exception e) {
-          onModuleFailed(moduleState, e);
-          return;
-        }
-        onModuleFinished(moduleState, result);
-      }
-    });
+    Thread thread = new Thread(new ModuleRunner(moduleState));
     thread.setName("Analysis " + moduleState.getModuleClass());
     thread.start();
     moduleState.setThread(thread);
@@ -273,5 +249,46 @@ public class AnalysisExecutor {
    */
   public synchronized Map<ModuleClass, Exception> getFailedModules() {
     return Collections.unmodifiableMap(failedModules);
+  }
+  
+  /**
+   * Runs a module.
+   */
+  private class ModuleRunner implements Runnable{
+    final ModuleExecutionState moduleState;
+    final ModuleResultProvider resultProvider;
+    final Module<?> instance;
+
+    /**
+     * Runs a given module.
+     * 
+     * @param moduleState - The module to execute.
+     */
+    public ModuleRunner(ModuleExecutionState moduleState){
+      this.moduleState = moduleState;
+      this.resultProvider =  moduleState.getResultProvider();
+      this.instance  = moduleState.getInstance();
+    }
+    
+    @Override
+    public void run() {
+      Object result;
+      try {
+        result = instance.execute(resultProvider, new ProgressListener() {
+          @Override
+          public void observeProgress(double progress) {
+            onModuleProgress(moduleState, progress);
+          }
+        });
+        if (result == null) {
+          throw new ModuleExecutionException("The module " + moduleState.getModuleClass()
+              + " returned null");
+        }
+      } catch(Exception e) {
+        onModuleFailed(moduleState, e);
+        return;
+      }
+      onModuleFinished(moduleState, result);
+    }
   }
 }

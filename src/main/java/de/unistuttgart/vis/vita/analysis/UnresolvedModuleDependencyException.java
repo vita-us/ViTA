@@ -4,7 +4,7 @@ public class UnresolvedModuleDependencyException extends RuntimeException {
   private static final long serialVersionUID = -6693108655419686293L;
 
   public UnresolvedModuleDependencyException() {
-
+    super();
   }
 
   public UnresolvedModuleDependencyException(String message) {
