@@ -34,12 +34,12 @@ import gate.creole.ResourceInstantiationException;
 import gate.util.GateException;
 
 /**
- * Abstract module for nlp tools. Implements the most common needed methods for the analysis.
+ * Abstract module for NLP tools. Implements the most common needed methods for the analysis.
  * Can be overwritten if needed.
  */
 public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
-  private final String CORPUS_NAME = "ViTA Corpus";
+  private static final String CORPUS_NAME = "ViTA Corpus";
   protected ImportResult importResult;
   protected ProgressListener progressListener;
   protected AnalysisParameters parameters;
@@ -76,7 +76,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
 
     createResultMap();
 
-    progressListener.observeProgress(1);
+    this.progressListener.observeProgress(1);
     return buildResult();
   }
 
@@ -144,7 +144,9 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     } catch (SoftInterruptedException e) {
       controller.interrupt();
       InterruptedException ex = new InterruptedException(e.getMessage());
-      ex.addSuppressed(e); // no cause argument to InterruptedException's constructor
+      
+      // no cause argument to InterruptedException's constructor
+      ex.addSuppressed(e);
       throw ex;
     }
   }
