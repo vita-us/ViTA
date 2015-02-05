@@ -7,7 +7,7 @@
   vitaControllers.controller('TutorialCtrl', ['$scope', 'Page', '$location', '$anchorScroll',
     function($scope, Page, $location, $anchorScroll) {
 
-      Page.setUp('Tutorial', 3);
+      Page.setUp('Tutorial', 2);
 
       /**
        * Scrolls to ids with angular modules due to the hash parameter being used for routing.
