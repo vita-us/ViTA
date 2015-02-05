@@ -9,8 +9,8 @@
       Page.breadcrumbs = 'Plotview';
       Page.setUpForCurrentDocument();
 
-      $scope.loading = function() {
-        return $('#plotview-wrapper').has('svg').length != 1;
+      $scope.loaded = function() {
+        return $('#plotview-wrapper').has('svg').length > 0;
       };
 
       setPlotviewDimensions();

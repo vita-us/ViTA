@@ -17,7 +17,7 @@
 
         $scope.loadDocuments = function() {
           Document.get(function(response) {
-            $scope.documents = response.documents;
+            $scope.documents = response.documents || [];
 
             /*
              * Update the selected document because the stored object might
@@ -105,6 +105,10 @@
           });
           return areValid;
         }
+
+        $scope.documentsLoaded = function() {
+          return $scope.documents != undefined;
+        };
 
         $scope.$on('$destroy', function() {
           if (timerId) {
