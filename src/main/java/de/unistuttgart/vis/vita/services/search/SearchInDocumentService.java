@@ -31,7 +31,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
 
 @ManagedBean
 public class SearchInDocumentService extends ExtendedOccurrencesService {
-  private final static Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(SearchInDocumentService.class.getName());
 
   private List<Range> ranges;
 
@@ -131,6 +131,12 @@ public class SearchInDocumentService extends ExtendedOccurrencesService {
       }
     }
     return false;
+  }
+
+  @Override
+  protected List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+    // not needed because overrides getOccurrences
+    throw new UnsupportedOperationException("Method not implemented");
   }
 
 }

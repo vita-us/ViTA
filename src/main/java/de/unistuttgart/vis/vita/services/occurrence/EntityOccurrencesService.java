@@ -18,7 +18,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  */
 @ManagedBean
 public class EntityOccurrencesService extends ExtendedOccurrencesService {
-  
+
   private String entityId;
 
   /**
@@ -33,7 +33,7 @@ public class EntityOccurrencesService extends ExtendedOccurrencesService {
   }
 
   /**
-   * Sets the id of the entity which occurrences should be got and returns this 
+   * Sets the id of the entity which occurrences should be got and returns this
    * EntityOccurrencesService.
    * 
    * @param eId - the id of the entity which occurrences should be got
@@ -43,12 +43,11 @@ public class EntityOccurrencesService extends ExtendedOccurrencesService {
     this.entityId = eId;
     return this;
   }
-  
+
   /**
-   * Reads occurrences of the specific entity from database and returns them in JSON.
+   * Reads occurrences of the specific attribute and entity from database and returns them in JSON.
    * 
-   * @param steps - amount of steps the given range should be divided into (default value 0 means 
-   * exact)
+   * @param steps - amount of steps, the range should be divided into (default value 0 means exact)
    * @param rangeStart - start of range to be searched in
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
@@ -56,34 +55,23 @@ public class EntityOccurrencesService extends ExtendedOccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
-    checkSteps(steps);
-    checkRange(rangeStart, rangeEnd);
-    int startOffset = checkStartOffset(rangeStart);
-    int endOffset = checkEndOffset(rangeEnd);
-    
-    List<Range> occs = null;
-    if (steps == 0) {
-      occs = getExactEntityOccurrences(startOffset, endOffset);
-    } else {
-      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
-    }
-    
-    // put occurrences into a response and send it
-    return new OccurrencesResponse(occs);
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
+    return getOccurrencesImpl(steps, rangeStart, rangeEnd);
   }
-
-  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+  
+  @Override
+  protected List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-    List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
-                                                                      startOffset, endOffset);
+    List<Occurrence> readOccurrences =
+        occurrenceDao.findOccurrencesForEntity(entityId, startOffset, endOffset);
     return convertOccurrencesToRanges(readOccurrences);
   }
 
   @Override
   protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex) > 0;
+    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex,
+        lastSentenceIndex) > 0;
   }
 
 }
