@@ -5,8 +5,10 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PersonListCtrl',
-    ['$scope', 'DocumentParts', 'Page', 'Person', 'Entity', '$routeParams', 'CssClass', '$location',
-      function($scope, DocumentParts, Page, Person, Entity, $routeParams, CssClass, $location) {
+    ['$scope', 'DocumentParts', 'Page', 'Person', 'Entity', '$routeParams',
+      'CssClass', '$location', '$route', '$cacheFactory',
+      function($scope, DocumentParts, Page, Person, Entity, $routeParams,
+               CssClass, $location, $route, $cacheFactory) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -53,6 +55,22 @@
           });
         };
 
+        var loadPersons = function() {
+          Person.get({
+            documentId: $routeParams.documentId
+          }, function(response) {
+            $scope.persons = response.persons;
+
+            var selectedPerson = getPersonById($routeParams.personId);
+            if (selectedPerson) {
+              $scope.select(selectedPerson);
+            } else if (response.totalCount > 0) {
+              var firstPerson = response.persons[0];
+              $location.path('documents/' + $routeParams.documentId + '/characters/' + firstPerson.id);
+            }
+          });
+        }
+
         $scope.setFingerprint = function(id) {
           var position = $scope.fingerprintIds.indexOf(id);
           if (position > -1) {
@@ -70,20 +88,7 @@
           return ($scope.fingerprintIds.indexOf(id) > -1);
         };
 
-        // Get a list of characters from the server
-        Person.get({
-          documentId: $routeParams.documentId
-        }, function(response) {
-          $scope.persons = response.persons;
-
-          var selectedPerson = getPersonById($routeParams.personId);
-          if (selectedPerson) {
-            $scope.select(selectedPerson);
-          } else if (response.totalCount > 0) {
-            var firstPerson = response.persons[0];
-            $location.path('documents/' + $routeParams.documentId + '/characters/' + firstPerson.id);
-          }
-        });
+        loadPersons();
 
         var getPersonById = function(id) {
           for (var i = 0; i < $scope.persons.length; i++) {
@@ -101,6 +106,26 @@
           if (entity.type === 'place') {
             return 'places';
           }
+        };
+
+        $scope.deleteEntity = function() {
+          var confirmed = confirm('Delete ' + $scope.selected.displayName + '?');
+          if (!confirmed) {
+            return;
+          }
+          Entity.remove({
+            documentId: $routeParams.documentId,
+            entityId: $scope.selected.id
+          }, function() {
+            var caches = ['person', 'entity', 'plotview', 'wordcloud'];
+            caches.forEach(function(cacheId) {
+              var cache = $cacheFactory.get(cacheId);
+              if (cache) {
+                cache.removeAll();
+              }
+            });
+            loadPersons();
+          });
         };
 
         Page.breadcrumbs = 'Characters';
