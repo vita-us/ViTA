@@ -52,8 +52,8 @@
             var chapter = chapterMap[chapterId];
             var chapterOffset = chapter.range.start.offset;
             highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
-            if (i === 0) {
-              highlightSelectedOccurrence(0);
+            if (i === occurrences.length - 1) {
+              highlightSelectedOccurrence(scope.selectedOccurrenceIndex);
             }
           });
         }

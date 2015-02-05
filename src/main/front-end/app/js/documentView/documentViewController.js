@@ -19,8 +19,8 @@
         });
 
         DocumentViewReceiver.onOccurrences(function(messageData) {
-          $scope.occurrences = messageData.message;
-          $scope.selectedOccurrenceIndex = 0;
+          $scope.occurrences = messageData.message.occurrences;
+          $scope.selectedOccurrenceIndex = messageData.message.index;
           $scope.resultCount = $scope.occurrences.length;
           $scope.$digest();
         });
@@ -70,6 +70,9 @@
           $scope.selectedOccurrenceIndex -= 1;
           $scope.selectedOccurrenceIndex = $scope.selectedOccurrenceIndex < 0
                   ? $scope.occurrences.length - 1 : $scope.selectedOccurrenceIndex;
+        }
+        $scope.onOccurrenceClick = function (index) {
+          $scope.selectedOccurrenceIndex = index;
         }
       }]);
 
