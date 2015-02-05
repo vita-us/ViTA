@@ -17,11 +17,14 @@ import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.EnumParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.ParametersResponse;
+import de.unistuttgart.vis.vita.services.responses.parameters.StringParameter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.ManagedBean;
 import javax.validation.constraints.Max;
@@ -39,6 +42,8 @@ import javax.ws.rs.core.MediaType;
 public class ParametersService extends BaseService {
   private DocumentDao documentDao;
 
+  private static final Logger LOGGER = Logger.getLogger(ParametersService.class.getName());
+
   @Override public void postConstruct() {
     super.postConstruct();
     documentDao = getDaoFactory().getDocumentDao();
@@ -55,11 +60,16 @@ public class ParametersService extends BaseService {
     List<AbstractParameter> parameterList = new ArrayList<>();
     AbstractParameter parameter;
 
+    // used for default values
+    AnalysisParameters instance = new AnalysisParameters();
+
     for (Field field : params.getDeclaredFields()) {
       field.setAccessible(true);
 
       if (field.getType() == boolean.class) {
         parameter = new BooleanParameter(field.getName(), "boolean");
+      } else if (field.getType() == String.class) {
+        parameter = new StringParameter(field.getName());
       } else if (field.getType() == int.class || field.getType() == long.class) {
         long min = Integer.MIN_VALUE;
         long max = Integer.MAX_VALUE;
@@ -87,8 +97,10 @@ public class ParametersService extends BaseService {
         parameter.setLabel(field.getAnnotation(Label.class).value());
       }
 
-      if (field.getAnnotation(Default.class) != null) {
-        parameter.setDefaultValue(field.getAnnotation(Default.class).value());
+      try {
+        parameter.setDefaultValue(field.get(instance));
+      } catch (IllegalAccessException e) {
+        LOGGER.log(Level.WARNING, "Error getting default value of parameter "  + field.getName(), e);
       }
 
       parameterList.add(parameter);
