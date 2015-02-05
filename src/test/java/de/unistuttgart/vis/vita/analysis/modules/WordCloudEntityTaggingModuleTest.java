@@ -96,7 +96,7 @@ public class WordCloudEntityTaggingModuleTest {
   @Test
   public void testEntitiesIdsPersistence() throws Exception{
     
-    module.storeResults(resultProvider, document, em);
+    module.storeResults(resultProvider, document, em, mock(ProgressListener.class));
     List<WordCloudItem> items = new ArrayList<WordCloudItem>(getPersistedWordCloud().getItems());
     assertThat(items.get(0).getEntityId(), not(isEmptyString()));
     assertThat(items.get(1).getEntityId(), nullValue());

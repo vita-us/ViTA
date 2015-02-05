@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -32,7 +33,7 @@ public class WordCloudEntityTaggingModule extends AbstractFeatureModule<WordClou
 
   @Override
   protected WordCloudEntityTaggingModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em) throws Exception {
+      EntityManager em, ProgressListener progressListener) throws Exception {
 
     WordCloud wordCloud = result.getResultFor(GlobalWordCloudResult.class).getGlobalWordCloud();
     Collection<BasicEntity> basicEntitiyCollection =

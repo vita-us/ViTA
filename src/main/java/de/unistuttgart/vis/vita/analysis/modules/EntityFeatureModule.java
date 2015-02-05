@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -42,11 +43,15 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
     BasicEntityCollection.class, DocumentPersistenceContext.class,
     Model.class, TextFeatureModule.class, EntityWordCloudResult.class,
     SentenceDetectionResult.class},
-    weight = 0.1)
+    weight = 100)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
+  private static final double FIRST_LOOP_DURATION_FRACTION = 0.3;
+  private static final double SECOND_LOOP_DURATION_FRACTION = 0.2;
+  // the rest is for committing the transaction
+
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em) throws Exception {
+      EntityManager em, ProgressListener progressListener) throws Exception {
     List<BasicEntity> basicEntities =
         result.getResultFor(EntityRanking.class).getRankedEntities();
     EntityRelations relations = result.getResultFor(EntityRelations.class);
@@ -57,6 +62,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
 
     int currentPersonRanking = 1;
     int currentPlaceRanking = 1;
+    int currentIndex = 0;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -100,8 +106,12 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
       em.persist(entity);
       em.persist(entity.getWordCloud());
       realEntities.put(basicEntity, entity);
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION * currentIndex / basicEntities.size());
+      currentIndex++;
     }
 
+    currentIndex = 0;
     for (BasicEntity basicEntity : basicEntities) {
       Entity source = realEntities.get(basicEntity);
       Map<BasicEntity, Double> weights = relations.getRelatedEntities(basicEntity);
@@ -119,6 +129,9 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
         relation.setWeightOverTime(relations.getWeightOverTime(basicEntity, entry.getKey()));
         em.persist(relation);
       }
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION +
+          SECOND_LOOP_DURATION_FRACTION * currentIndex / basicEntities.size());
     }
 
     return this;
