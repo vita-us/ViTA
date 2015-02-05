@@ -5,7 +5,7 @@
 
   // Controller responsible for the about page
   vitaControllers.controller('AboutCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.setUp('About ViTA', 4);
+    Page.setUp('About ViTA', 3);
   }]);
 
 })(angular);
