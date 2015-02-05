@@ -566,7 +566,7 @@
           s.width = 5;
           s.height = LINK_WIDTH;
           s.name = chars[i].name;
-          s.id = scenes.length;
+          s.id = -scenes.length;
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
             var l = new Link(s, chars[i].first_scene, chars[i].group_id, chars[i].id);
