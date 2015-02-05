@@ -35,6 +35,7 @@
              class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
              ng-class="{active: isSelected(person)}" ng-href="#/documents/{{Page.documentId}}/characters/{{person.id}}">
             {{person.displayName}}
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
           </a>
         </div>
         <div data-loading-spinner ng-hide="persons.length"></div>
