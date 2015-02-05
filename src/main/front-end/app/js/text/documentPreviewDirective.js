@@ -6,6 +6,7 @@
   vitaDirectives.directive('documentPreview', ['DocumentParts', 'ChapterText',
       function(DocumentParts, ChapterText) {
 
+        var NO_TEXT_AVAILABLE = 'Currently no text available';
         var lastPreviewedDocumentId;
 
         function link(scope) {
@@ -26,15 +27,18 @@
               documentId: documentId
             }, function(structure) {
               previewFirstChapter(scope, structure.parts);
-              lastPreviewedDocumentId = documentId;
+            }, function() {
+              scope.previewText = NO_TEXT_AVAILABLE;
             });
+
+            lastPreviewedDocumentId = documentId;
           });
         }
 
         function previewFirstChapter(scope, parts) {
           scope.previewText = undefined;
           if (parts.length === 0 || parts[0].chapters.length === 0) {
-            scope.previewText = 'Currently no text available';
+            scope.previewText = NO_TEXT_AVAILABLE;
             return;
           }
 

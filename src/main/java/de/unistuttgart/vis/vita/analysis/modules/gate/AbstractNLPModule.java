@@ -12,6 +12,7 @@ import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.NLPResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
 
@@ -41,6 +42,7 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
   private final String CORPUS_NAME = "ViTA Corpus";
   protected ImportResult importResult;
   protected ProgressListener progressListener;
+  protected AnalysisParameters parameters;
   protected ConditionalSerialAnalyserController controller;
   protected Map<Document, Chapter> docToChapter = new HashMap<>();
   protected Map<Chapter, Document> chapterToDoc = new HashMap<>();
@@ -55,8 +57,10 @@ public abstract class AbstractNLPModule<T extends NLPResult> extends Module<T> {
     importResult = results.getResultFor(ImportResult.class);
     documentIdModule = results.getResultFor(DocumentPersistenceContext.class);
     storeModule = results.getResultFor(AnnieDatastore.class);
+    parameters = results.getResultFor(AnalysisParameters.class);
     this.progressListener = progressListener;
-    String persistID = documentIdModule.getDocumentContentId();
+    String persistID = documentIdModule.getDocumentContentId() + "-"
+                       + parameters.getNlpTool().getName();
 
     corpus = storeModule.getStoredAnalysis(persistID);
 

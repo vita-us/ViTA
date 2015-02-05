@@ -33,6 +33,7 @@ import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -114,6 +115,10 @@ public class EntityRecognitionModuleTest {
     AnnieDatastore datastore = mock(AnnieDatastore.class);
     when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+
+    AnalysisParameters parameters = mock(AnalysisParameters.class);
+    when(parameters.getNlpTool()).thenReturn(EnumNLP.ANNIE);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);

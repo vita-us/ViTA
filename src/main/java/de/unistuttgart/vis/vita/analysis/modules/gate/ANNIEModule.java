@@ -5,11 +5,7 @@
 
 package de.unistuttgart.vis.vita.analysis.modules.gate;
 
-import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
-import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
-import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
-import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 
 import java.io.File;
@@ -31,8 +27,6 @@ import gate.util.persistence.PersistenceManager;
 /**
  * Gate ANNIE module which searches for persons and locations.
  */
-@AnalysisModule(dependencies = {GateInitializeModule.class, AnnieDatastore.class,
-                                DocumentPersistenceContext.class, ImportResult.class}, weight = 500)
 public class ANNIEModule extends AbstractNLPModule<AnnieNLPResult> {
 
   /**

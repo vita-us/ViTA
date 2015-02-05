@@ -3,16 +3,38 @@
     <div ng-include="'partials/menu.html'"></div>
   </div>
   <div class="col-md-10">
-    <div class="row filterable-list">
-      <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
-      <ul>
-        <li ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' ">
-          <a href="#/documents/{{Page.documentId}}/places/{{place.id}}">
+    <div class="row">
+      <div class="col-md-9">
+        <h1><small><span class="glyphicon glyphicon-map-marker"></span></small> {{selected.displayName}}</h1>
+        <dl class="dl-horizontal" ng-repeat="attribute in selected.attributes">
+          <dt>{{attribute.attributetype}}</dt>
+          <dd>{{attribute.content}}</dd>
+        </dl>
+        <div data-loading-spinner ng-hide="selected.attributes.length"></div>
+        <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
+          <dt>co-occurences</dt>
+          <dd ng-repeat="entity in relatedEntities | limitTo: 5">
+            <a ng-href="#/documents/{{Page.documentId}}/{{getEntityType(entity)}}/{{entity.id}}">
+              {{entity.displayName}}
+            </a>
+            <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
+              ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
+              title="Add this entity to the fingerprint"></span>
+          </dd>
+        </dl>
+        <div data-fingerprint-top-row></div>
+        <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds"data-parts="parts"></div>
+      </div>
+      <div class="col-md-3 col-sm-5">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter list-group-search-filter">
+        <div class="list-group scrollable-list-group">
+          <a ng-repeat="place in places | entityNameFilter:search | orderBy: 'rankingValue' "
+             class="list-group-item" ng-class="{active: isSelected(place)}"
+             ng-href="#/documents/{{Page.documentId}}/places/{{place.id}}">
             {{place.displayName}}
-            <span ng-show="place.alternativeName">({{place.alternativeName}})</span>
           </a>
-        </li>
-      </ul>
-    </div>
+        </div>
+        <div data-loading-spinner ng-hide="places.length"></div>
+      </div>
   </div>
 </div>
