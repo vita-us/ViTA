@@ -13,7 +13,7 @@
           </div>
         </dl>
         <div data-loading-spinner ng-hide="selected.attributes.length"></div>
-        <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
+	<dl class="dl-horizontal" ng-show="relatedEntitiesLoaded && relatedEntities.length > 0">
           <dt>co-occurences</dt>
           <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
             <a ng-href="#/documents/{{Page.documentId}}/{{getEntityType(entity)}}/{{entity.id}}">
@@ -24,7 +24,7 @@
                 title="Add this entity to the fingerprint"></span>
           </div></dd>
         </dl>
-        <div data-loading-spinner ng-hide="relatedEntities.length"></div>
+        <div data-loading-spinner ng-hide="relatedEntitiesLoaded"></div>
         <div data-fingerprint-top-row></div>
         <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds" data-parts="parts"></div>
       </div>
