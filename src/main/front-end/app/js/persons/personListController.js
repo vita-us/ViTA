@@ -121,7 +121,7 @@
             documentId: $routeParams.documentId,
             entityId: $scope.selected.id
           }, function() {
-            var caches = ['person', 'entity', 'plotview', 'wordcloud'];
+            var caches = ['person', 'place', 'entity', 'plotview', 'wordcloud'];
             caches.forEach(function(cacheId) {
               var cache = $cacheFactory.get(cacheId);
               if (cache) {
