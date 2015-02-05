@@ -10,9 +10,7 @@
           <dt>{{attribute.attributetype}}</dt>
           <dd>{{attribute.content}}</dd>
         </dl>
-        <div class="loading-spinner" ng-hide="selected.attributes.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="selected.attributes.length"></div>
         <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
           <dt>co-occurences</dt>
           <dd ng-repeat="entity in relatedEntities | limitTo: 5">
@@ -36,9 +34,7 @@
             {{place.displayName}}
           </a>
         </div>
-        <div class="loading-spinner" ng-hide="places.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="places.length"></div>
       </div>
   </div>
 </div>

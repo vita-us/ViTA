@@ -12,9 +12,7 @@
             <dd>{{attribute.content}}</dd>
           </div>
         </dl>
-        <div class="loading-spinner" ng-hide="selected.attributes.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="selected.attributes.length"></div>
         <dl class="dl-horizontal" ng-hide="relatedEntities.length == 0">
           <dt>co-occurences</dt>
           <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
@@ -26,9 +24,7 @@
                 title="Add this entity to the fingerprint"></span>
           </div></dd>
         </dl>
-        <div class="loading-spinner" ng-hide="relatedEntities.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="relatedEntities.length"></div>
         <div data-fingerprint-top-row></div>
         <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds" data-parts="parts"></div>
       </div>
@@ -41,9 +37,7 @@
             {{person.displayName}}
           </a>
         </div>
-        <div class="loading-spinner" ng-hide="persons.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="persons.length"></div>
       </div>
     </div>
   </div>

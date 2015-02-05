@@ -14,9 +14,7 @@
          </span>
           Wordcloud
         </h1>
-        <div class="loading-spinner" ng-hide="loaded()">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="loaded()"></div>
         <div data-wordcloud class="wordcloud-container" data-items="wordcloud" ng-show="loaded()"></div>
       </div>
       <div class="col-md-3 col-sm-5">
@@ -31,9 +29,7 @@
             <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
           </a>
         </div>
-        <div class="loading-spinner" ng-hide="persons.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+        <div data-loading-spinner ng-hide="persons.length"></div>
       </div>
     </div>
   </div>
