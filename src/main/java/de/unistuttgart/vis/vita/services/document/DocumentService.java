@@ -178,7 +178,7 @@ public class DocumentService extends BaseService {
       documentDao.remove(byId);
       List<Document> sameTitle = documentDao.findDocumentsByFilename(byId.getFileName());
 
-      if (sameTitle.size() == 0 && byId.getFilePath() != null) {
+      if (sameTitle.isEmpty() && byId.getFilePath() != null) {
         // Can remove the file from HDD.
         File file = new File(byId.getFilePath().toUri());
         boolean delete = file.delete();
@@ -391,9 +391,9 @@ public class DocumentService extends BaseService {
     getEntityManager().getTransaction().begin();
 
     // schedule analysis
-    String id = analysisController.reScheduleDocumentAnalysis(derived);
+    String rescheduledId = analysisController.reScheduleDocumentAnalysis(derived);
 
     // set up Response
-    return new DocumentIdResponse(id);
+    return new DocumentIdResponse(rescheduledId);
   }
 }
