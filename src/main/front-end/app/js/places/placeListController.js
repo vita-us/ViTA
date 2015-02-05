@@ -21,6 +21,9 @@
         // Ids of the selected entities for the corresponding fingerprint
         $scope.fingerprintIds = [];
 
+        // True if all related entities were loaded from the server
+        $scope.relatedEntitiesLoaded = false;
+
         // Used to select a place from the list
         $scope.select = function(place) {
           $scope.selected = place;
@@ -39,6 +42,8 @@
           for (var i = 0; i < displayedOccurrenceCount; i++) {
             retrieveEntity(relations[i].relatedEntity);
           }
+
+          $scope.relatedEntitiesLoaded = true;
         };
 
         // Load an Entity from the server and add it to the related entities if not already there

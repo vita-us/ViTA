@@ -31,11 +31,11 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 col-sm-5">
         <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect all</button>
-        <input type="search" ng-model="search" placeholder="Search..." class="form-control"
-          style="margin-top: 5px; margin-bottom: 5px;">
-        <div class="list-group" id="list1">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control list-group-search-filter"
+          style="margin-top: 5px;">
+        <div class="list-group scrollable-list-group" id="list1">
           <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
             class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
             ng-class="{active: activeFingerprints.indexOf(person) > -1}"
@@ -44,9 +44,8 @@
             <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
           </a>
         </div>
-        <div class="loading-spinner" ng-hide="persons.length">
-          <span class="glyphicon glyphicon-refresh spin"></span>
-        </div>
+
+        <div data-loading-spinner ng-hide="persons.length"></div>
       </div>
     </div>
   </div>

@@ -22,6 +22,8 @@ public class ModuleExecutionState {
   private Set<ModuleClass> directAndIndirectDependencies;
   private double currentProgress;
   private long lastProgressReport;
+  private long startTimeMillis;
+  private long endTimeMillis;
 
   /**
    * Constructs a new execution state from a module class and its dependencies
@@ -240,6 +242,18 @@ public class ModuleExecutionState {
       return "executable";
     }
     return "waiting for " + StringUtils.join(remainingDependencies, ", ");
+  }
+
+  public void startTimer() {
+    startTimeMillis = System.currentTimeMillis();
+  }
+
+  public void stopTimer() {
+    endTimeMillis = System.currentTimeMillis();
+  }
+
+  public long getDurationMillis() {
+    return endTimeMillis - startTimeMillis;
   }
 
   private static class ModuleResultProviderImpl implements ModuleResultProvider {

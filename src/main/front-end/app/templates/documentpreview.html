@@ -1,5 +1,3 @@
 <h2>Preview - {{ documentTitle }}</h2>
-<div class="loading-spinner" ng-hide="previewText">
-  <span class="glyphicon glyphicon-refresh spin"></span>
-</div>
+<div data-loading-spinner ng-hide="previewText"></div>
 <p class="document-preview-text document-text">{{previewText}}</p>

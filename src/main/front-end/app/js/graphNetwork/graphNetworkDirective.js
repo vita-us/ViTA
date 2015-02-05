@@ -18,7 +18,7 @@
         entities: '=',
         width: '=',
         height: '=',
-        rangeBegin: '=',
+        rangeStart: '=rangeBegin',
         rangeEnd: '=',
         showFingerprint: '&',
         isReady: '=loaded'
@@ -26,7 +26,7 @@
       link: function(scope, element) {
         buildGraph(element, scope.width, scope.height);
 
-        scope.$watch('[entities,rangeBegin,rangeEnd,isReady]', function() {
+        scope.$watch('[entities,rangeStart,rangeEnd,isReady]', function() {
           fetchRelationsAndDrawElements(scope);
         }, true);
 

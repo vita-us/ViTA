@@ -26,6 +26,9 @@
         // Ids of the selected entities for the corresponding fingerprint
         $scope.fingerprintIds = [];
 
+        // True if the related entities where downloaded from the server
+        $scope.relatedEntitiesLoaded = false;
+
         // Used to select a person from the list
         $scope.select = function(person) {
           $scope.selected = person;
@@ -42,6 +45,7 @@
           for (var i = 0; i < displayedOccurrenceCount; i++) {
             retrieveEntity(relations[i].relatedEntity, i);
           }
+          $scope.relatedEntitiesLoaded = true;
         };
 
         var retrieveEntity = function(id) {

@@ -13,9 +13,6 @@
     $routeProvider.when('/documents', {
       templateUrl: 'partials/documents.html',
       controller: 'DocumentsCtrl'
-    }).when('/settings', {
-      templateUrl: 'partials/settings.html',
-      controller: 'SettingsCtrl'
     }).when('/tutorial', {
       templateUrl: 'partials/tutorial.html',
       controller: 'TutorialCtrl'

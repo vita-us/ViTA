@@ -3,9 +3,11 @@ package de.unistuttgart.vis.vita.model.document;
 import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
+import de.unistuttgart.vis.vita.analysis.modules.StopWordList;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlElement;
@@ -17,7 +19,6 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The granularity of the time slider in the graph network")
   @Label("Temporal granularity in graph network")
-  @Default("20")
   @Min(1)
   @Max(1000)
   private int relationTimeStepCount = 20;
@@ -25,7 +26,6 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The number of items visualized in the word cloud.")
   @Label("Word Cloud items")
-  @Default("100")
   @Min(10)
   @Max(100)
   private int wordCloudItemsCount = 100;
@@ -33,14 +33,18 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("Check to hide the most common words in the word cloud to focus on more special words")
   @Label("Enable stop word list")
-  @Default("true")
   private boolean stopWordListEnabled = true;
   
   @XmlElement
   @Description("Check to remove person and place names that start with a lowercase letter")
   @Label("Remove unlikely person and place names")
   private boolean stopEntityFilter = true;
-  
+
+  @XmlElement
+  @Description("List the words that should not be shown in the word cloud; one word per line")
+  @Label("Stop words")
+  @Lob
+  private String stopWords = StopWordList.getLineSeparatedStopWords();
 
   public boolean getStopEntityFilter() {
     return stopEntityFilter;
@@ -86,5 +90,13 @@ public class AnalysisParameters extends AbstractEntityBase {
 
   public void setStopWordListEnabled(boolean stopWordListEnabled) {
     this.stopWordListEnabled = stopWordListEnabled;
+  }
+
+  public String getStopWords() {
+    return stopWords;
+  }
+
+  public void setStopWords(String stopWords) {
+    this.stopWords = stopWords;
   }
 }

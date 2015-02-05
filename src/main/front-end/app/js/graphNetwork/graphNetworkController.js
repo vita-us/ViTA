@@ -48,19 +48,11 @@
           change: function(event, ui) {
             var start = ui.values[0], end = ui.values[1];
 
-            setSliderLabel(start, end);
-
             $scope.rangeStart = start / 100;
             $scope.rangeEnd = end / 100;
             $scope.$apply();
           }
         });
-
-        setSliderLabel(sliderMin, sliderMax);
-
-        function setSliderLabel(start, end) {
-          $('#amount').val(start + ' - ' + end);
-        }
 
         $scope.loadGraphNetwork = function(person) {
           var position = $scope.entities.indexOf(person);

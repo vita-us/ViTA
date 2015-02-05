@@ -201,10 +201,18 @@
             RelationOccurrences.get({
               documentId: $routeParams.documentId,
               entityIds: scope.entityIds.join(','),
-              rangeStart: clickedOccurrence.start.progress,
-              rangeEnd: clickedOccurrence.end.progress
+              rangeStart: 0,
+              rangeEnd: 1
             }, function(response) {
-              DocumentViewSender.sendOccurrences(response.occurrences);
+              var index = 0;
+              var found = false;
+              response.occurrences.forEach(function (occurrence, i) {
+                if (occurrence.start.progress >= clickedOccurrence.start.progress && !found) {
+                  index = i;
+                  found = true;
+                }
+              });
+              DocumentViewSender.sendOccurrences({occurrences: response.occurrences, index: index});
             });
             var entitiesToSend = [];
             scope.entityIds.forEach(function(entityId) {

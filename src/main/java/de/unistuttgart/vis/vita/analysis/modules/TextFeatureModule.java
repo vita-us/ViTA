@@ -1,6 +1,7 @@
 package de.unistuttgart.vis.vita.analysis.modules;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
@@ -33,7 +34,7 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
 
   @Override
   public TextFeatureModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em)
+      EntityManager em, ProgressListener progressListener)
       throws Exception {
 
     ImportResult importResult = result.getResultFor(ImportResult.class);
