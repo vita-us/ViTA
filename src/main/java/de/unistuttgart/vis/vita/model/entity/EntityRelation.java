@@ -144,7 +144,7 @@ public class EntityRelation extends AbstractEntityBase {
    * @param steps - the weights to be set
    */
   public void setWeightOverTime(double[] steps) {
-    this.weightOverTime = steps;
+    this.weightOverTime = steps.clone();
   }
 
 }

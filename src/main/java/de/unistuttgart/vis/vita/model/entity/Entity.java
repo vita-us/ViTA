@@ -42,7 +42,6 @@ public abstract class Entity extends AbstractEntityBase {
 
   @Column(length = 1000)
   private String displayName;
-  private boolean[] fingerprint;
   private int rankingValue;
   private int frequency;
 
@@ -140,26 +139,6 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public List<Occurrence> getOccurrences() {
     return occurrences;
-  }
-
-  /**
-   * Gets a bit vector that divides the whole document in spans of equal lengths and determines
-   * whether this entity occurs in a given span (true) or not (false).
-   *
-   * @return the fingerprint vector
-   */
-  public boolean[] getFingerprint() {
-    return fingerprint;
-  }
-
-  /**
-   * Sets a bit vector that divides the whole document in spans of equal lengths and determines
-   * whether this entity occurs in a given span (true) or not (false).
-   *
-   * @param newFingerprint - the new fingerprint vector for this entity
-   */
-  public void setFingerprint(boolean[] newFingerprint) {
-    this.fingerprint = newFingerprint;
   }
 
   /**
