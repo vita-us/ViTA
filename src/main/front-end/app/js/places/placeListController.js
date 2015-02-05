@@ -5,8 +5,8 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PlaceListCtrl',
-    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass', '$location',
-      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass, $location) {
+    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass', '$location', '$cacheFactory',
+      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass, $location, $cacheFactory) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
