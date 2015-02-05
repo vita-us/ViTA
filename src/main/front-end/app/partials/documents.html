@@ -10,7 +10,10 @@
           data-document="document" ng-class="{active: isDocumentSelected(document)}"
           data-reload-documents="loadDocuments()" ng-click="setSelectedDocument(document)"></a>
       </div>
-      <div data-loading-spinner ng-hide="documents"></div>
+      <div ng-show="documentsLoaded() && documents.length < 1" class="help-text">
+        No documents imported.
+      </div>
+      <div data-loading-spinner ng-hide="documentsLoaded()"></div>
     </div>
   </div>
 
