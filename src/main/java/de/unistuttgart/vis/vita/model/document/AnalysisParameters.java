@@ -33,14 +33,18 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("Check to hide the most common words in the word cloud to focus on more special words")
   @Label("Enable stop word list")
-  @Default("true")
   private boolean stopWordListEnabled = true;
   
   @XmlElement
   @Description("Check to remove person and place names that start with a lowercase letter")
   @Label("Remove unlikely person and place names")
   private boolean stopEntityFilter = true;
-  
+
+  @XmlElement
+  @Description("List the words that should not be shown in the word cloud; one word per line")
+  @Label("Stop words")
+  @Lob
+  private String stopWords = StopWordList.getLineSeparatedStopWords();
 
   public boolean getStopEntityFilter() {
     return stopEntityFilter;
@@ -86,5 +90,13 @@ public class AnalysisParameters extends AbstractEntityBase {
 
   public void setStopWordListEnabled(boolean stopWordListEnabled) {
     this.stopWordListEnabled = stopWordListEnabled;
+  }
+
+  public String getStopWords() {
+    return stopWords;
+  }
+
+  public void setStopWords(String stopWords) {
+    this.stopWords = stopWords;
   }
 }
