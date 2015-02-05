@@ -37,7 +37,7 @@ body#document-view {
 #chapters-toggle-button {
   float: right;
   margin-top: 12px;
-  
+
   @media (min-width: @bootstrap-screen-sm-min) {
     display: none;
   }
@@ -47,30 +47,30 @@ body#document-view {
   height: @document-view-footer-height-expanded;
   bottom: 0;
   border-top: 1px solid @border-color;
-  
+
   form {
     margin-top: 8px;
-    
+
     .query-input {
       margin-bottom: 10px;
       display: inline-block;
       width: 100%;
       vertical-align: top;
     }
-    
+
     .result-count {
       display: inline-block;
       margin-left: 5px;
     }
-    
+
     @media (min-width: @bootstrap-screen-sm-min) {
       .query-input {
         width: 25%;
-        max-width: none;  
+        max-width: none;
       }
     }
   }
-  
+
   .up-down-navigation {
     display: inline-block;
   }
@@ -83,27 +83,27 @@ body#document-view {
 #document-view-main {
   overflow: auto;
   height: 100%;
-  
+
   .document-view-menu {
     z-index: 100;
-    
+
     .chapter {
       padding-left: 3px;
       margin-bottom: 5px;
-      
+
       .chapter-number {
         color: grey;
         display: inline-block;
         margin-right: 5px;
       }
     }
-    
+
     .chapter.active-menu {
       background-color: @light-grey-background-color;
       font-weight: bold;
       padding: 1px 6px;
     }
-    
+
     .part.active-menu {
       font-weight: bold;
     }
@@ -116,11 +116,11 @@ body#document-view {
   .document-view-text {
     background-color: @light-grey-background-color;
     overflow: hidden;
-  
+
     .chapter-headline, .part-headline {
       font-weight: bold;
     }
-    
+
     .chapter-headline {
       padding: 5px;
       border-bottom: 1px solid @border-color;
@@ -129,7 +129,7 @@ body#document-view {
       margin-top: 30px;
       margin-bottom: 15px;
     }
-    
+
     span {
       background: @default-character-ranking-color;
       color: white;
@@ -141,7 +141,6 @@ body#document-view {
 
     span.selected {
       font-weight: bold;
-      background: black;
     }
 
     span.ranking-1 {
@@ -195,7 +194,7 @@ body#document-view {
     .document-view-menu {
       margin-bottom: 0;
       height: 100%;
-      
+
       .dv-menu-fixed-wrap {
         display: block !important;
         width: inherit;
@@ -207,7 +206,7 @@ body#document-view {
         padding-left: 0;
       }
     }
-    
+
     .document-view-text {
       border-left: 1px dashed @border-color;
       min-height: 100%;
