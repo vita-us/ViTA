@@ -4,8 +4,20 @@
   var vitaControllers = angular.module('vitaControllers');
 
   // Controller responsible for the tutorial page
-  vitaControllers.controller('TutorialCtrl', ['$scope', 'Page', function($scope, Page) {
-    Page.setUp('Tutorial', 3);
-  }]);
+  vitaControllers.controller('TutorialCtrl', ['$scope', 'Page', '$location', '$anchorScroll',
+    function($scope, Page, $location, $anchorScroll) {
+
+      Page.setUp('Tutorial', 3);
+
+      /**
+       * Scrolls to ids with angular modules due to the hash parameter being used for routing.
+       * @param id the id of the dom element
+       */
+      $scope.scrollTo = function(id) {
+        $location.hash(id);
+        $anchorScroll();
+      }
+
+    }]);
 
 })(angular);
