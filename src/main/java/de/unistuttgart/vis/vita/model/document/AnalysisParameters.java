@@ -3,9 +3,11 @@ package de.unistuttgart.vis.vita.model.document;
 import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
+import de.unistuttgart.vis.vita.analysis.modules.StopWordList;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlElement;
@@ -17,7 +19,6 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The granularity of the time slider in the graph network")
   @Label("Temporal granularity in graph network")
-  @Default("20")
   @Min(1)
   @Max(1000)
   private int relationTimeStepCount = 20;
@@ -25,7 +26,6 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The number of items visualized in the word cloud.")
   @Label("Word Cloud items")
-  @Default("100")
   @Min(10)
   @Max(100)
   private int wordCloudItemsCount = 100;
