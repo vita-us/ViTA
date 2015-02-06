@@ -46,15 +46,15 @@ public class SearcherTest {
   @Before
   public void setUp() throws IOException, ParseException {
 
-    for(int i = 0; i < 5; i++){
-      documentLength+= CHAPTERS_TEXTS[i].length();
+    for (int i = 0; i < 5; i++) {
+      documentLength += CHAPTERS_TEXTS[i].length();
     }
-  
+
     model = new UnitTestModel();
     UnitTestModel.startNewSession();
     storeChapterTexts();
     fillAllChaptersString();
-    
+
 
   }
 
@@ -97,182 +97,182 @@ public class SearcherTest {
     }
   }
 
-  /**
+   /**
    * Tests the case-insensitivity of the word
    *
    * @throws IOException
    * @throws ParseException
    */
-  @Test
-  public void testCaseInsensitivityWord() throws IOException, ParseException {
-    List<Range> rangesSmallCases = searcher.searchString(document, "virginia", chapters, model);
-
-    assertEquals(1, rangesSmallCases.size());
-    assertEquals(69, rangesSmallCases.get(0).getStart().getOffset());
-    assertEquals(77, rangesSmallCases.get(0).getEnd().getOffset());
-
-
-    List<Range> rangesMixedCases = searcher.searchString(document, "ViRgIniA", chapters, model);
-    assertEquals(1, rangesMixedCases.size());
-    assertEquals(69, rangesMixedCases.get(0).getStart().getOffset());
-    assertEquals(77, rangesMixedCases.get(0).getEnd().getOffset());
-
-    String virginia = "";
-    for (int i = 69; i < 78; i++) {
-      virginia += (CHAPTERS_TEXTS[0].charAt(i));
-    }
-    assertEquals("Virginia ", virginia);
-  }
-
-  /**
+   @Test
+   public void testCaseInsensitivityWord() throws IOException, ParseException {
+   List<Range> rangesSmallCases = searcher.searchString(document, "virginia", chapters, model);
+  
+   assertEquals(1, rangesSmallCases.size());
+   assertEquals(69, rangesSmallCases.get(0).getStart().getOffset());
+   assertEquals(77, rangesSmallCases.get(0).getEnd().getOffset());
+  
+  
+   List<Range> rangesMixedCases = searcher.searchString(document, "ViRgIniA", chapters, model);
+   assertEquals(1, rangesMixedCases.size());
+   assertEquals(69, rangesMixedCases.get(0).getStart().getOffset());
+   assertEquals(77, rangesMixedCases.get(0).getEnd().getOffset());
+  
+   String virginia = "";
+   for (int i = 69; i < 78; i++) {
+   virginia += (CHAPTERS_TEXTS[0].charAt(i));
+   }
+   assertEquals("Virginia ", virginia);
+   }
+  
+   /**
    * Tests the results regarding the searching for a phrase
    *
    * @throws IOException
    * @throws ParseException
    */
-  @Test
-  public void testPhrase1() throws IOException, ParseException {
-    List<Range> rangesSmallCases =
-        searcher.searchString(document, "at that time", chapters, model);
-    assertEquals(5, rangesSmallCases.size());
-
-    assertEquals(chapters.get(0).getRange().getStart().getOffset() + 132, rangesSmallCases.get(0)
-        .getStart().getOffset());
-    assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, rangesSmallCases.get(0)
-        .getEnd().getOffset());
-
-    String atThatTime1 = "";
-    for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
-        .getRange().getStart().getOffset() + 145; i++) {
-      atThatTime1 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime1);
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, rangesSmallCases.get(1)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 16, rangesSmallCases.get(1)
-        .getEnd().getOffset());
-
-    String atThatTime2 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 4; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 17; i++) {
-      atThatTime2 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime2);
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 41, rangesSmallCases.get(2)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 53, rangesSmallCases.get(2)
-        .getEnd().getOffset());
-
-    String atThatTime3 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 41; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 54; i++) {
-      atThatTime3 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime3);
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 111, rangesSmallCases.get(3)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 123, rangesSmallCases.get(3)
-        .getEnd().getOffset());
-
-    String atThatTime4 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 111; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 124; i++) {
-      atThatTime4 += allChapters.charAt(i);
-    }
-
-    assertEquals("at that time ", atThatTime4);
-
-    assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, rangesSmallCases.get(4)
-        .getStart().getOffset());
-    assertEquals(chapters.get(3).getRange().getStart().getOffset() + 52, rangesSmallCases.get(4)
-        .getEnd().getOffset());
-
-    String atThatTime5 = "";
-    for (int i = chapters.get(3).getRange().getStart().getOffset() + 40; i < chapters.get(3)
-        .getRange().getStart().getOffset() + 53; i++) {
-      atThatTime5 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime5);
-
-  }
-
-  /**
+   @Test
+   public void testPhrase1() throws IOException, ParseException {
+   List<Range> rangesSmallCases =
+   searcher.searchString(document, "at that time", chapters, model);
+   assertEquals(5, rangesSmallCases.size());
+  
+   assertEquals(chapters.get(0).getRange().getStart().getOffset() + 132, rangesSmallCases.get(0)
+   .getStart().getOffset());
+   assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, rangesSmallCases.get(0)
+   .getEnd().getOffset());
+  
+   String atThatTime1 = "";
+   for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
+   .getRange().getStart().getOffset() + 145; i++) {
+   atThatTime1 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime1);
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, rangesSmallCases.get(1)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 16, rangesSmallCases.get(1)
+   .getEnd().getOffset());
+  
+   String atThatTime2 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 4; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 17; i++) {
+   atThatTime2 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime2);
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 41, rangesSmallCases.get(2)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 53, rangesSmallCases.get(2)
+   .getEnd().getOffset());
+  
+   String atThatTime3 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 41; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 54; i++) {
+   atThatTime3 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime3);
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 111, rangesSmallCases.get(3)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 123, rangesSmallCases.get(3)
+   .getEnd().getOffset());
+  
+   String atThatTime4 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 111; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 124; i++) {
+   atThatTime4 += allChapters.charAt(i);
+   }
+  
+   assertEquals("at that time ", atThatTime4);
+  
+   assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, rangesSmallCases.get(4)
+   .getStart().getOffset());
+   assertEquals(chapters.get(3).getRange().getStart().getOffset() + 52, rangesSmallCases.get(4)
+   .getEnd().getOffset());
+  
+   String atThatTime5 = "";
+   for (int i = chapters.get(3).getRange().getStart().getOffset() + 40; i < chapters.get(3)
+   .getRange().getStart().getOffset() + 53; i++) {
+   atThatTime5 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime5);
+  
+   }
+  
+   /**
    * Tests the results and case-insensitivity regarding the same phrase in "testPhrase1"
    *
    * @throws IOException
    * @throws ParseException
    */
-  @Test
-  public void testPhrase2() throws IOException, ParseException {
-    List<Range> rangesSmallCases =
-        searcher.searchString(document, "At ThAt TiMe", chapters, model);
-    assertEquals(5, rangesSmallCases.size());
-
-    assertEquals(chapters.get(0).getRange().getStart().getOffset() + 132, rangesSmallCases.get(0)
-        .getStart().getOffset());
-    assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, rangesSmallCases.get(0)
-        .getEnd().getOffset());
-
-    String atThatTime1 = "";
-    for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
-        .getRange().getStart().getOffset() + 145; i++) {
-      atThatTime1 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime1);
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, rangesSmallCases.get(1)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 16, rangesSmallCases.get(1)
-        .getEnd().getOffset());
-
-    String atThatTime2 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 4; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 17; i++) {
-      atThatTime2 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime2);
-
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 41, rangesSmallCases.get(2)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 53, rangesSmallCases.get(2)
-        .getEnd().getOffset());
-
-    String atThatTime3 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 41; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 54; i++) {
-      atThatTime3 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime3);
-
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 111, rangesSmallCases.get(3)
-        .getStart().getOffset());
-    assertEquals(chapters.get(1).getRange().getStart().getOffset() + 123, rangesSmallCases.get(3)
-        .getEnd().getOffset());
-
-    String atThatTime4 = "";
-    for (int i = chapters.get(1).getRange().getStart().getOffset() + 111; i < chapters.get(1)
-        .getRange().getStart().getOffset() + 124; i++) {
-      atThatTime4 += allChapters.charAt(i);
-    }
-
-    assertEquals("at that time ", atThatTime4);
-
-    assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, rangesSmallCases.get(4)
-        .getStart().getOffset());
-    assertEquals(chapters.get(3).getRange().getStart().getOffset() + 52, rangesSmallCases.get(4)
-        .getEnd().getOffset());
-
-    String atThatTime5 = "";
-    for (int i = chapters.get(3).getRange().getStart().getOffset() + 40; i < chapters.get(3)
-        .getRange().getStart().getOffset() + 53; i++) {
-      atThatTime5 += allChapters.charAt(i);
-    }
-    assertEquals("at that time ", atThatTime5);
-  }
+   @Test
+   public void testPhrase2() throws IOException, ParseException {
+   List<Range> rangesSmallCases =
+   searcher.searchString(document, "At ThAt TiMe", chapters, model);
+   assertEquals(5, rangesSmallCases.size());
+  
+   assertEquals(chapters.get(0).getRange().getStart().getOffset() + 132, rangesSmallCases.get(0)
+   .getStart().getOffset());
+   assertEquals(chapters.get(0).getRange().getStart().getOffset() + 144, rangesSmallCases.get(0)
+   .getEnd().getOffset());
+  
+   String atThatTime1 = "";
+   for (int i = chapters.get(0).getRange().getStart().getOffset() + 132; i < chapters.get(0)
+   .getRange().getStart().getOffset() + 145; i++) {
+   atThatTime1 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime1);
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 4, rangesSmallCases.get(1)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 16, rangesSmallCases.get(1)
+   .getEnd().getOffset());
+  
+   String atThatTime2 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 4; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 17; i++) {
+   atThatTime2 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime2);
+  
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 41, rangesSmallCases.get(2)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 53, rangesSmallCases.get(2)
+   .getEnd().getOffset());
+  
+   String atThatTime3 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 41; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 54; i++) {
+   atThatTime3 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime3);
+  
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 111, rangesSmallCases.get(3)
+   .getStart().getOffset());
+   assertEquals(chapters.get(1).getRange().getStart().getOffset() + 123, rangesSmallCases.get(3)
+   .getEnd().getOffset());
+  
+   String atThatTime4 = "";
+   for (int i = chapters.get(1).getRange().getStart().getOffset() + 111; i < chapters.get(1)
+   .getRange().getStart().getOffset() + 124; i++) {
+   atThatTime4 += allChapters.charAt(i);
+   }
+  
+   assertEquals("at that time ", atThatTime4);
+  
+   assertEquals(chapters.get(3).getRange().getStart().getOffset() + 40, rangesSmallCases.get(4)
+   .getStart().getOffset());
+   assertEquals(chapters.get(3).getRange().getStart().getOffset() + 52, rangesSmallCases.get(4)
+   .getEnd().getOffset());
+  
+   String atThatTime5 = "";
+   for (int i = chapters.get(3).getRange().getStart().getOffset() + 40; i < chapters.get(3)
+   .getRange().getStart().getOffset() + 53; i++) {
+   atThatTime5 += allChapters.charAt(i);
+   }
+   assertEquals("at that time ", atThatTime5);
+   }
 
   /**
    * Tests the results regarding the searching for a phrase
@@ -285,8 +285,8 @@ public class SearcherTest {
     List<Range> ranges = searcher.searchString(document, "he turned on his", chapters, model);
 
     assertEquals(1, ranges.size());
-    assertEquals(chapters.get(4).getRange().getStart().getOffset() + 32, ranges.get(0)
-        .getStart().getOffset());
+    assertEquals(chapters.get(4).getRange().getStart().getOffset() + 32, ranges.get(0).getStart()
+        .getOffset());
     assertEquals(chapters.get(4).getRange().getStart().getOffset() + 48, ranges.get(0).getEnd()
         .getOffset());
   }

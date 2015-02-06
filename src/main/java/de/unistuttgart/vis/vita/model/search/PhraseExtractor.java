@@ -24,30 +24,22 @@ public class PhraseExtractor {
    * @return
    * @throws IOException
    */
-  public Phrase extractPhrase(String[] words, List<String> tokens, int position,
-      String chapterText, String tokenizerClass) throws IOException {
-    
-    StringReader reader = new StringReader(chapterText);
+  public Phrase extractPhrase(String[] words, List<String> tokens, String chapterText,
+      String tokenizerClass, int startOffset) throws IOException {
+
+    // edit the chapter text till to the beginning index of the second token in the phrase
+    StringReader reader = new StringReader(chapterText.substring(startOffset));
     Tokenizer tokenizer;
     if (tokenizerClass.contains("StandardTokenizer")) {
       tokenizer = new StandardTokenizer(reader);
     } else {
       tokenizer = new WhitespaceTokenizer(reader);
     }
-    
+
     CharTermAttribute charTermAttri = tokenizer.getAttribute(CharTermAttribute.class);
     OffsetAttribute offsetAttr = tokenizer.getAttribute(OffsetAttribute.class);
-    int count = -1;
 
-    // TODO: PERFORMACE - Going through the chapter again makes the search slow
-    
     tokenizer.reset();
-    while (tokenizer.incrementToken()) {
-      count++;
-      if (count == position) {
-        break;
-      }
-    }
 
     int i = 0;
 
@@ -55,12 +47,12 @@ public class PhraseExtractor {
       tokens.add(charTermAttri.toString());
       i++;
     }
+    tokenizer.end();
+    tokenizer.close();
 
     Joiner joiner = Joiner.on(" ");
     Phrase phrase = new Phrase(offsetAttr.endOffset(), joiner.join(tokens));
-    tokenizer.end();
-    tokenizer.close();
-    
+
     return phrase;
   }
 }
