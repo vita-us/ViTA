@@ -5,8 +5,8 @@
 
   // Controller responsible for the persons page
   vitaControllers.controller('PlaceListCtrl',
-    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass', '$location',
-      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass, $location) {
+    ['$scope', 'DocumentParts', 'Page', 'Place', 'Entity', '$routeParams', 'CssClass', '$location', '$cacheFactory',
+      function($scope, DocumentParts, Page, Place, Entity, $routeParams, CssClass, $location, $cacheFactory) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -58,6 +58,25 @@
           });
         };
 
+        var loadPlaces = function() {
+          Place.get({
+            documentId: $routeParams.documentId
+          }, function(response) {
+            $scope.places = response.places;
+
+            // select the place specified in the id
+            // if not specified use the place with the highest ranking value
+            var selectedPlace = getPlaceById($routeParams.placeId);
+
+            if (selectedPlace) {
+              $scope.select(selectedPlace);
+            } else if (response.totalCount > 0) {
+              var firstPlace = response.places[0];
+              $location.path('documents/' + $routeParams.documentId + '/places/' + firstPlace.id);
+            }
+          });
+        }
+
         // Adds the entity to the fingerprint
         $scope.setFingerprint = function(id) {
           var position = $scope.fingerprintIds.indexOf(id);
@@ -78,23 +97,7 @@
           return ($scope.fingerprintIds.indexOf(id) > -1);
         };
 
-        // Get a list of characters from the server
-        Place.get({
-          documentId: $routeParams.documentId
-        }, function(response) {
-          $scope.places = response.places;
-
-          // select the place specified in the id
-          // if not specified use the place with the highest ranking value
-          var selectedPlace = getPlaceById($routeParams.placeId);
-
-          if (selectedPlace) {
-            $scope.select(selectedPlace);
-          } else if (response.totalCount > 0) {
-            var firstPlace = response.places[0];
-            $location.path('documents/' + $routeParams.documentId + '/places/' + firstPlace.id);
-          }
-        });
+        loadPlaces();
 
         // Retrieve a place from all places by the given id
         var getPlaceById = function(id) {
@@ -114,6 +117,26 @@
           if (entity.type === 'place') {
             return 'places';
           }
+        };
+
+        $scope.deleteEntity = function() {
+          var confirmed = confirm('Delete ' + $scope.selected.displayName + '?');
+          if (!confirmed) {
+            return;
+          }
+          Entity.remove({
+            documentId: $routeParams.documentId,
+            entityId: $scope.selected.id
+          }, function() {
+            var caches = ['person', 'place', 'entity', 'plotview', 'wordcloud'];
+            caches.forEach(function(cacheId) {
+              var cache = $cacheFactory.get(cacheId);
+              if (cache) {
+                cache.removeAll();
+              }
+            });
+            loadPlaces();
+          });
         };
 
         Page.breadcrumbs = 'Characters';
