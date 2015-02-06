@@ -107,10 +107,11 @@ public class WordCloudItem extends AbstractEntityBase implements Comparable<Word
   public int compareTo(WordCloudItem o) {
     // compareTo must not return zero if the items are not identical, so set up some artificial
     // ordering in that case
-    if (frequency == o.frequency)
+    if (frequency == o.frequency) {
       return word.compareTo(o.word);
-
-    return Integer.compare(frequency, o.frequency);
+    } else {
+      return Integer.compare(frequency, o.frequency);
+    }
   }
 
   /**

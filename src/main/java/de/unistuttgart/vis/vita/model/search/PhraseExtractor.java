@@ -39,6 +39,8 @@ public class PhraseExtractor {
     OffsetAttribute offsetAttr = tokenizer.getAttribute(OffsetAttribute.class);
     int count = -1;
 
+    // TODO: PERFORMACE - Going through the chapter again makes the search slow
+    
     tokenizer.reset();
     while (tokenizer.incrementToken()) {
       count++;
