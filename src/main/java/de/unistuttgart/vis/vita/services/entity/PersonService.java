@@ -1,7 +1,6 @@
 package de.unistuttgart.vis.vita.services.entity;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -9,7 +8,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import de.unistuttgart.vis.vita.model.dao.DaoFactory;
 import de.unistuttgart.vis.vita.model.dao.PersonDao;
 import de.unistuttgart.vis.vita.model.entity.Person;
 import de.unistuttgart.vis.vita.services.BaseService;

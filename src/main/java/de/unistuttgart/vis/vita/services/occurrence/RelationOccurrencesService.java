@@ -72,8 +72,9 @@ public class RelationOccurrencesService extends ExtendedOccurrencesService {
     // create response and return it
     return new OccurrencesResponse(occs);
   }
-
-  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+  
+  @Override
+  protected List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     List<Sentence> sentences = occurrenceDao.getSentencesForAllEntities(entityIds, startOffset, endOffset);
 
     return mergeAdjacentSentences(sentences);

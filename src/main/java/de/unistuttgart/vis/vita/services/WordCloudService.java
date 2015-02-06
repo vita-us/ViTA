@@ -25,7 +25,7 @@ public class WordCloudService extends BaseService {
   private DocumentDao documentDao;
   private WordCloudDao wordCloudDao;
 
-  private final static Logger LOGGER = Logger.getLogger(WordCloudService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(WordCloudService.class.getName());
 
   @Override
   public void postConstruct() {

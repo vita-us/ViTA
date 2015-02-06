@@ -22,7 +22,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 
-
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
@@ -33,15 +32,14 @@ import de.unistuttgart.vis.vita.model.document.Range;
  * 
  *
  */
-
 public class Searcher {
 
   private static final String NO_SPECIAL_CHARACTERS = "[\\d\\s\\p{Alpha}]+";
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
 
-  public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document, String searchString,
-      List<Chapter> chapters, Model model) throws IOException, ParseException {
+  public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document,
+      String searchString, List<Chapter> chapters, Model model) throws IOException, ParseException {
     if (chapters.isEmpty()) {
       return new ArrayList<Range>();
     }
@@ -52,12 +50,14 @@ public class Searcher {
     List<Range> ranges = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
     Query query = queryParser.parse(searchString);
-    IndexSearcher indexSearcher = model.getTextRepository().getIndexSearcherForDocument(document.getId());
+    IndexSearcher indexSearcher =
+        model.getTextRepository().getIndexSearcherForDocument(document.getId());
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
 
-    callCorrectTokenizers(searchString, chapters, ranges, indexSearcher, hits, document.getMetrics().getCharacterCount());
+    callCorrectTokenizers(searchString, chapters, ranges, indexSearcher, hits, document
+        .getMetrics().getCharacterCount());
     indexSearcher.getIndexReader().close();
 
     Collections.sort(ranges);
@@ -75,12 +75,12 @@ public class Searcher {
    * @throws IOException
    */
   private void callCorrectTokenizers(String searchString, List<Chapter> chapters,
-      List<Range> ranges, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength) throws IOException {
+      List<Range> ranges, IndexSearcher indexSearcher, ScoreDoc[] hits, int documentLength)
+      throws IOException {
     for (int i = 0; i < hits.length; i++) {
-      
+
       String chapterText = indexSearcher.doc(hits[i].doc).getField(CHAPTER_TEXT).stringValue();
-      StringReader reader = 
-          new StringReader(chapterText);
+      StringReader reader = new StringReader(chapterText);
       String[] words = searchString.split(" ");
       Tokenizer tokenizer;
 
@@ -96,9 +96,7 @@ public class Searcher {
         continue;
       }
 
-      // TODO: document Length übergeben.
-      addRangesToList(tokenizer, searchString, words,
-          getCorrectChapter(indexSearcher.doc(hits[i].doc), chapters), ranges, chapterText,documentLength );
+      addRangesToList(tokenizer, searchString, words, chapter, ranges, chapterText, documentLength);
     }
   }
 
@@ -120,70 +118,129 @@ public class Searcher {
   }
 
   /**
-   * Produces the Ranges and them to Ranges list
+   * Produces the Ranges and adds them to Ranges list
    * 
-   * @param tokenizer
-   * @param searchString
-   * @param words
+   * @param tokenizer - The Lucene Tokenizer with the complete text of chapter.
+   * @param searchString - The complete input to search for.
+   * @param words - The words in the searchString.
    * @param currentChapter
    * @param ranges
    * @param documentLength - the length of the whole document
    * @throws IOException
    */
   private void addRangesToList(Tokenizer tokenizer, String searchString, String[] words,
-      Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength) throws IOException {
+      Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength)
+      throws IOException {
 
-    // if it is a single word
-    if (words != null && words.length == 1) {
+    if (isSingleWord(words)) {
+      searchSingleWord(tokenizer, searchString, currentChapter, ranges, documentLength);
+      tokenizer.end();
+      tokenizer.close();
+    } else if (isPhrase(words)) {
+      searchPhrase(tokenizer, searchString, words, currentChapter, ranges, chapterText,
+          documentLength);
+      tokenizer.end();
+      tokenizer.close();
+    }
+  }
 
-      CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
-      OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
+  /**
+   * Searches for a single word and updates the ranges.
+   * 
+   * @param tokenizer - The Lucene Tokenizer with the complete text of chapter.
+   * @param searchString - The word to search for.
+   * @param currentChapter - The chapter to search in.
+   * @param ranges - The ranges of the found words will be added here.
+   * @param documentLength - The length of the whole document.
+   * @throws IOException
+   */
+  private void searchSingleWord(Tokenizer tokenizer, String searchString, Chapter currentChapter,
+      List<Range> ranges, int documentLength) throws IOException {
+    // will be incremented
+    CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
+    OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
 
-      tokenizer.reset();
-      while (tokenizer.incrementToken()) {
-        if (charTermAttrib.toString().toLowerCase().matches(searchString.toLowerCase())) {
-          int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
-          int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+    tokenizer.reset();
+    while (tokenizer.incrementToken()) {
+      if (charTermAttrib.toString().toLowerCase().matches(searchString.toLowerCase())) {
+        int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
+        int endOffset = offset.endOffset() + currentChapter.getRange().getStart().getOffset();
+
+        ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+            TextPosition.fromGlobalOffset(endOffset, documentLength)));
+      }
+    }
+  }
+
+  
+  /**
+   * Searches for a phrase and updates the ranges.
+   * 
+   * @param tokenizer - The Lucene Tokenizer with the complete text of chapter.
+   * @param searchString - The complete input to search for.
+   * @param words - The words in the searchString.
+   * @param currentChapter - The chapter to search in.
+   * @param ranges - The ranges of the found words will be added here.
+   * @param chapterText - The text of the chapter.
+   * @param documentLength - The length of the whole document.
+   * @throws IOException
+   */
+  private void searchPhrase(Tokenizer tokenizer, String searchString, String[] words,
+      Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength)
+      throws IOException {
+    // will be incremented
+    CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
+    OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
+
+    List<String> tokens = new ArrayList<String>();
+    tokenizer.reset();
+    int position = -1;
+    while (tokenizer.incrementToken()) {
+      position++;
+
+      // search for first word of the phrase
+      if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
+        int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
+        tokens.add(charTermAttrib.toString());
+        
+        // get the found phrase
+        PhraseExtractor phraseExtracter = new PhraseExtractor();
+        Phrase tokenInfo =
+            phraseExtracter.extractPhrase(words, tokens, position, chapterText, tokenizer
+                .getClass().toString());
+        String phrase = tokenInfo.getPhrase();
+
+        // found phrase is same as searched phrase
+        if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
+          int endOffset =
+              tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
 
           ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
               TextPosition.fromGlobalOffset(endOffset, documentLength)));
         }
       }
-      tokenizer.end();
-      tokenizer.close();
+      tokens.clear();
     }
-    // if it is a phrase
-    else if (words != null && words.length > 1) {
-
-      CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
-      OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
-
-      List<String> tokens = new ArrayList<String>();
-      tokenizer.reset();
-      int position = -1;
-      while (tokenizer.incrementToken()) {
-        position++;
-
-        if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
-          int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
-          tokens.add(charTermAttrib.toString());
-
-          PhraseExtractor phraseExtracter = new PhraseExtractor();
-          Phrase tokenInfo = phraseExtracter.extractPhrase(words, tokens,position,chapterText,tokenizer.getClass().toString());
-          String phrase = tokenInfo.getPhrase();
-
-          if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
-            int endOffset = tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
-
-            ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
-                TextPosition.fromGlobalOffset(endOffset, documentLength)));
-          }
-        }
-        tokens.clear();
-      }
-      tokenizer.end();
-      tokenizer.close();
-    }
-
   }
+
+  /**
+   * Checks if an array of words is a phrase (more than one word).
+   * 
+   * @param words - The words to search for.
+   * @return true: words is a phrase. false: words is not a phrase.
+   */
+  private boolean isPhrase(String[] words) {
+    return words != null && words.length > 1;
+  }
+
+  /**
+   * Checks if an array of words is a single word.
+   * 
+   * @param words - The words to search for.
+   * @return true: words is a single word. false: words is not a single word.
+   */
+  private boolean isSingleWord(String[] words) {
+    return words != null && words.length == 1;
+  }
+
 }

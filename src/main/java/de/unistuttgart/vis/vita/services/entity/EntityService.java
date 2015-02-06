@@ -138,6 +138,8 @@ public class EntityService extends BaseService {
       case PLACE:
         doc.getContent().getPlaces().remove(entity);
         break;
+      default:
+        throw new IllegalArgumentException("The type of the entity does is unknown");
     }
     getEntityManager().merge(doc);
 
