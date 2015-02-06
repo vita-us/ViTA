@@ -5,12 +5,13 @@
   <div class="col-md-10">
     <div class="row">
       <div class="col-md-9">
-        <h1><small><span class="glyphicon glyphicon-map-marker"></span></small> {{selected.displayName}}</h1>
-        <button class="btn btn-default" title="Delete this place if you think it was incorrectly recognized"
-                ng-click="deleteEntity()">
-          Delete
-          <span class="glyphicon glyphicon-trash"></span>
-        </button>
+        <h1>
+          <small><span class="glyphicon glyphicon-map-marker"></span></small> {{selected.displayName}}
+          <button class="btn btn-link pull-right" title="Delete this place if you think it was incorrectly recognized"
+                  ng-click="deleteEntity()">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </h1>
         <dl class="dl-horizontal" ng-repeat="attribute in selected.attributes">
           <dt>{{attribute.attributetype}}</dt>
           <dd>{{attribute.content}}</dd>
