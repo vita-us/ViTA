@@ -48,7 +48,7 @@ public class PlotViewService extends BaseService {
 
   private EntityDao entityDao;
 
-  private final Logger LOGGER = Logger.getLogger(PlotViewService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PlotViewService.class.getName());
 
   @Override public void postConstruct() {
     super.postConstruct();
