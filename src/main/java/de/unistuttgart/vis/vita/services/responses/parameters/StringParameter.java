@@ -11,15 +11,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Parameter which has no additional parameters because the value can only be true or false.
  */
 @XmlRootElement
-public class BooleanParameter extends AbstractParameter {
+public class StringParameter extends AbstractParameter {
 
-  protected boolean defaultValue;
+  protected String defaultValue;
 
-  public BooleanParameter() {
+  public StringParameter() {
   }
 
-  public BooleanParameter(String name, String type) {
-    super(name, type);
+  public StringParameter(String name) {
+    super(name, "string");
   }
 
   @Override
@@ -29,6 +29,6 @@ public class BooleanParameter extends AbstractParameter {
 
   @Override
   public void setDefaultValue(Object defaultValue) {
-    this.defaultValue = (boolean)defaultValue;
+    this.defaultValue = defaultValue.toString();
   }
 }

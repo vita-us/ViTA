@@ -53,6 +53,7 @@ public class Searcher {
     Query query = queryParser.parse(QueryParser.escape(searchString));
     IndexSearcher indexSearcher =
         model.getTextRepository().getIndexSearcherForDocument(document.getId());
+
     // That are documents in an index, which contains the searchString
     ScoreDoc[] hits =
         indexSearcher.search(query, indexSearcher.getIndexReader().numDocs()).scoreDocs;
@@ -189,7 +190,7 @@ public class Searcher {
   private void searchPhrase(Tokenizer tokenizer, String searchString, String[] words,
       Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength)
       throws IOException {
-    
+
     // will be incremented
     CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
     OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
@@ -203,35 +204,34 @@ public class Searcher {
       if (charTermAttrib.toString().toLowerCase()
           .matches(SPECIAL_CHARACTES + words[0].toLowerCase() + SPECIAL_CHARACTES)) {
 
-        // global start offset of the first token
-        int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
-
-        tokens.add(charTermAttrib.toString());
-
-        // local start offset of the second token of the phrase
-        int beginIndexOfSubstring = offset.startOffset() + words[0].length() + 1;
-
-        // get the found phrase
-        PhraseExtractor phraseExtracter = new PhraseExtractor();
-        Phrase tokenInfo =
-            phraseExtracter.extractPhrase(words, tokens, chapterText, tokenizer.getClass()
-                .toString(), beginIndexOfSubstring);
-        String phrase = tokenInfo.getPhrase();
-
-        // found phrase is same as searched phrase
-        // check with special character at the front and back, because lucene gives the complete
-        // tokens with special characters
-        if (phrase.toLowerCase().matches(
-            SPECIAL_CHARACTES + searchString.toLowerCase() + SPECIAL_CHARACTES)) {
-          int endOffset =
-              tokenInfo.getEndOffset() + beginIndexOfSubstring
-                  + currentChapter.getRange().getStart().getOffset();
-
-          ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
-              TextPosition.fromGlobalOffset(endOffset, documentLength)));
-        }
-        tokens.clear();
       }
+      // global start offset of the first token
+      int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
+      tokens.add(charTermAttrib.toString());
+
+      // local start offset of the second token of the phrase
+      int beginIndexOfSubstring = offset.startOffset() + words[0].length() + 1;
+
+      // get the found phrase
+      PhraseExtractor phraseExtracter = new PhraseExtractor();
+      Phrase tokenInfo =
+          phraseExtracter.extractPhrase(words, tokens, chapterText,
+              tokenizer.getClass().toString(), beginIndexOfSubstring);
+      String phrase = tokenInfo.getPhrase();
+
+      // found phrase is same as searched phrase
+      // check with special character at the front and back, because lucene gives the complete
+      // tokens with special characters
+      if (phrase.toLowerCase().matches(
+          SPECIAL_CHARACTES + searchString.toLowerCase() + SPECIAL_CHARACTES)) {
+        int endOffset =
+            tokenInfo.getEndOffset() + beginIndexOfSubstring
+                + currentChapter.getRange().getStart().getOffset();
+
+        ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
+            TextPosition.fromGlobalOffset(endOffset, documentLength)));
+      }
+      tokens.clear();
     }
   }
 

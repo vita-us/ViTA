@@ -5,7 +5,6 @@
 
 package de.unistuttgart.vis.vita.services.analysis;
 
-import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
@@ -16,11 +15,14 @@ import de.unistuttgart.vis.vita.services.responses.parameters.BooleanParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.EnumParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.MinMaxParameter;
 import de.unistuttgart.vis.vita.services.responses.parameters.ParametersResponse;
+import de.unistuttgart.vis.vita.services.responses.parameters.StringParameter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.ManagedBean;
 import javax.validation.constraints.Max;
@@ -37,7 +39,13 @@ import javax.ws.rs.core.MediaType;
 @ManagedBean
 public class ParametersService extends BaseService {
 
-   /**
+  private static final Logger LOGGER = Logger.getLogger(ParametersService.class.getName());
+
+  @Override public void postConstruct() {
+    super.postConstruct();
+  }
+
+  /**
    * Method for retrieving all available parameters as JSON response.
    * @return The parameters in JSON.
    */
@@ -53,6 +61,8 @@ public class ParametersService extends BaseService {
 
       if (field.getType() == boolean.class) {
         parameter = createBooleanParameter(field);
+      } else if (field.getType() == String.class) {
+        parameter = new StringParameter(field.getName());
       } else if (field.getType() == int.class || field.getType() == long.class) {
         parameter = createIntParameter(field);
       } else if (field.getType() == EnumNLP.class) {
@@ -117,6 +127,7 @@ public class ParametersService extends BaseService {
    * @return The parameter with added values
    */
   private AbstractParameter setGeneralParameterValues(Field field, AbstractParameter parameter){
+    
     if (field.getAnnotation(Description.class) != null) {
       parameter.setDescription(field.getAnnotation(Description.class).value());
     }
@@ -125,8 +136,12 @@ public class ParametersService extends BaseService {
       parameter.setLabel(field.getAnnotation(Label.class).value());
     }
 
-    if (field.getAnnotation(Default.class) != null) {
-      parameter.setDefaultValue(field.getAnnotation(Default.class).value());
+    try {
+      // used for default values
+      AnalysisParameters instance = new AnalysisParameters();
+      parameter.setDefaultValue(field.get(instance));
+    } catch (IllegalAccessException e) {
+      LOGGER.log(Level.WARNING, "Error getting default value of parameter "  + field.getName(), e);
     }
     
     return parameter;

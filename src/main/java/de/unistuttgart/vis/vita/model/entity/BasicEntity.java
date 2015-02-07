@@ -122,12 +122,9 @@ public class BasicEntity {
 
   @Override
   public String toString() {
-    return "BasicEntity{" +
-           "type=" + type +
-           ", displayName='" + displayName + '\'' +
-           ", occurrences=" + StringUtils.join(occurrences, ", ") +
-           ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
-           '}';
+    return "BasicEntity{" + "type=" + type + ", displayName='" + displayName + '\''
+        + ", occurrences=" + StringUtils.join(occurrences, ", ") + ", namedAttributes="
+        + StringUtils.join(nameAttributes, ", ") + '}';
   }
 
   /**
@@ -136,21 +133,26 @@ public class BasicEntity {
    * @param other - the other entity, whose names and occurrences should be merged into this one
    */
   public void merge(BasicEntity other) {
-    setNameAttributes(Attribute.merge(
-         Iterables.concat(getNameAttributes(), other.getNameAttributes())));
+    setNameAttributes(Attribute.merge(Iterables.concat(getNameAttributes(),
+        other.getNameAttributes())));
     occurrences.addAll(other.getOccurrences());
   }
 
-}
 
-/**
- * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
- */
-class AttributeComparator implements Comparator<Attribute>, Serializable {
+  /**
+   * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
+   */
+  class AttributeComparator implements Comparator<Attribute>, Serializable {
 
-  @Override
-  public int compare(Attribute o1, Attribute o2) {
-    return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
+    /**
+   * 
+   */
+    private static final long serialVersionUID = 6466984535912132864L;
+
+    @Override
+    public int compare(Attribute o1, Attribute o2) {
+      return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
+    }
   }
 
 }

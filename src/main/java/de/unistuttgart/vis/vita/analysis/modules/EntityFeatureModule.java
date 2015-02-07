@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
+import de.unistuttgart.vis.vita.analysis.ProgressListener;
 import de.unistuttgart.vis.vita.analysis.annotations.AnalysisModule;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
@@ -41,15 +42,21 @@ import de.unistuttgart.vis.vita.model.progress.FeatureProgress;
 @AnalysisModule(dependencies = {EntityAttributes.class, EntityRanking.class, EntityRelations.class,
     BasicEntityCollection.class, DocumentPersistenceContext.class, Model.class,
     TextFeatureModule.class, EntityWordCloudResult.class, SentenceDetectionResult.class},
-    weight = 0.1)
+    weight = 100)
 public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModule> {
+  private static final double FIRST_LOOP_DURATION_FRACTION = 0.3;
+  private static final double SECOND_LOOP_DURATION_FRACTION = 0.2;
+
+  // the rest is for committing the transaction
+
   @Override
   public EntityFeatureModule storeResults(ModuleResultProvider result, Document document,
-      EntityManager em) throws Exception {
+      EntityManager em, ProgressListener progressListener) throws Exception {
     List<BasicEntity> basicEntities = result.getResultFor(EntityRanking.class).getRankedEntities();
 
-    Map<BasicEntity, Entity> realEntities = storeEntities(document, basicEntities, result, em);
-    storeRelations(realEntities, basicEntities, result, em);
+    Map<BasicEntity, Entity> realEntities =
+        storeEntities(document, basicEntities, result, em, progressListener);
+    storeRelations(realEntities, basicEntities, result, em, progressListener);
 
     return this;
   }
@@ -67,10 +74,12 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
    * @param basicEntities - The found BasicEntities in the document.
    * @param result - The result of the other analysis.
    * @param em - The EntityManager.
+   * @param progressListener - The Progress Listener of this module.
    * @return a map with the old Basic Entities as key and the stored real Entities as values.
    */
   private Map<BasicEntity, Entity> storeEntities(Document document,
-      List<BasicEntity> basicEntities, ModuleResultProvider result, EntityManager em) {
+      List<BasicEntity> basicEntities, ModuleResultProvider result, EntityManager em,
+      ProgressListener progressListener) {
     Map<BasicEntity, Entity> realEntities = new HashMap<>();
     EntityAttributes entityAttributes = result.getResultFor(EntityAttributes.class);
     EntityWordCloudResult wordClouds = result.getResultFor(EntityWordCloudResult.class);
@@ -79,6 +88,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     // create Entity
     int currentPersonRanking = 1;
     int currentPlaceRanking = 1;
+    int currentIndex = 0;
     for (BasicEntity basicEntity : basicEntities) {
       Entity entity;
       switch (basicEntity.getType()) {
@@ -100,6 +110,10 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
 
       persistEntity(entity, em);
       realEntities.put(basicEntity, entity);
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION * currentIndex
+          / basicEntities.size());
+      currentIndex++;
     }
     return realEntities;
   }
@@ -107,15 +121,18 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
   /**
    * Persists the found Relations.
    * 
-   * @param realEntities - The new created and stored Entities, and the BasicEntites they are created from.
+   * @param realEntities - The new created and stored Entities, and the BasicEntites they are
+   *        created from.
    * @param basicEntities - The found BasicEntities in the document.
    * @param result - The result of the other analysis.
    * @param em - The EntityManager.
+   * @param progressListener - The Progress Listener of this module.
    */
   private void storeRelations(Map<BasicEntity, Entity> realEntities,
-      List<BasicEntity> basicEntities, ModuleResultProvider result, EntityManager em) {
+      List<BasicEntity> basicEntities, ModuleResultProvider result, EntityManager em,
+      ProgressListener progressListener) {
     EntityRelations relations = result.getResultFor(EntityRelations.class);
-
+    int currentIndex = 0;
     for (BasicEntity basicSourceEntity : basicEntities) {
       Entity source = realEntities.get(basicSourceEntity);
       Map<BasicEntity, Double> relationWeights = relations.getRelatedEntities(basicSourceEntity);
@@ -126,11 +143,15 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
 
       for (Map.Entry<BasicEntity, Double> targetEntry : relationWeights.entrySet()) {
         Entity target = realEntities.get(targetEntry.getKey());
-        EntityRelation relation = createRelation(source, target, targetEntry.getValue(), relations.getWeightOverTime(basicSourceEntity,
-            targetEntry.getKey()));
-        
+        EntityRelation relation =
+            createRelation(source, target, targetEntry.getValue(),
+                relations.getWeightOverTime(basicSourceEntity, targetEntry.getKey()));
+
         persistRelation(relation, em);
       }
+
+      progressListener.observeProgress(FIRST_LOOP_DURATION_FRACTION + SECOND_LOOP_DURATION_FRACTION
+          * currentIndex / basicEntities.size());
     }
   }
 
@@ -143,7 +164,8 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
    * @param weightOverTime The weight over time of the Relation.
    * @return The Relation.
    */
-  private EntityRelation createRelation(Entity source, Entity target, double weight, double[] weightOverTime){
+  private EntityRelation createRelation(Entity source, Entity target, double weight,
+      double[] weightOverTime) {
     EntityRelation relation = new EntityRelation();
     relation.setOriginEntity(source);
     relation.setRelatedEntity(target);
@@ -151,7 +173,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     relation.setWeightOverTime(weightOverTime);
     return relation;
   }
-  
+
   /**
    * Create a new Place which is an Entity.
    * 
@@ -179,7 +201,7 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
     person.setRankingValue(currentPersonRanking);
     return person;
   }
-  
+
   /**
    * Persists the given Entity.
    * 
@@ -197,10 +219,10 @@ public class EntityFeatureModule extends AbstractFeatureModule<EntityFeatureModu
    * @param relation - The Relation to persist.
    * @param em - The Entity Manager.
    */
-  private void persistRelation(EntityRelation relation, EntityManager em){
+  private void persistRelation(EntityRelation relation, EntityManager em) {
     em.persist(relation);
   }
-  
+
   /**
    * Saves the Sentences in the Chapters of the Document.
    * 

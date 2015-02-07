@@ -18,7 +18,7 @@ import gate.Gate;
 /**
  * Initializes Gate.
  */
-@AnalysisModule
+@AnalysisModule(weight = 20)
 public class GateInitializeModule extends Module<GateInitializeModule> {
   
   @Override

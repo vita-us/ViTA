@@ -36,6 +36,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 @AnalysisModule(dependencies = {BasicEntityCollection.class, AnalysisParameters.class})
 public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   private int maxWordCloudItemsCount;
+  private Set<String> stopWords;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
@@ -44,14 +45,17 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
     // get parameters
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
-    boolean stopWordListEnabled =
-        results.getResultFor(AnalysisParameters.class).getStopWordListEnabled();
+    AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
+    
+    boolean stopWordListEnabled = parameters.getStopWordListEnabled();
+    stopWords = prepareStopWordsSet(stopWordListEnabled, parameters);
+    
     maxWordCloudItemsCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
 
     // create word clouds for entities
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity, entities, stopWordListEnabled));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
     }
 
     // return word clouds
@@ -70,22 +74,19 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
    * @param entity - The Entity the Word Cloud belongs to.
    * @param entities - All Entities found in the document. Needed to connect found words and
    *        entities.
-   * @param stopWordListEnabled - true: defined stop words should be used to filter the Word Cloud.
-   *        false: only basic filtering.
    * @return The Word Cloud for the given Entity.
    * @throws IOException - Thrown if this methods was unable to get the stop words.
    */
-  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities,
-      boolean stopWordListEnabled) throws IOException {
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
+      throws IOException {
     // prepare data
     Map<String, Integer> frequencies = new HashMap<>();
     List<Sentence> sentences = new ArrayList<Sentence>(getSentencesOfEntityOccurrences(entity));
-    Set<String> stopWordList = prepareStopWordsSet(stopWordListEnabled);
     Set<String> entityNameTokens = prepareNameTokensOfEntitySet(entity);
 
     // fill frequencies
     for (Sentence sentence : sentences) {
-      getFrequenciesForOneSentence(sentence, frequencies, entityNameTokens, stopWordList);
+      getFrequenciesForOneSentence(sentence, frequencies, entityNameTokens);
     }
 
     // build and return word cloud
@@ -102,10 +103,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
    * @param sentence - the sentence to analyze.
    * @param frequencies - the counters for each word.
    * @param entityNameTokens - the names of the entity itself.
-   * @param stopWordList - words on this list will be ignored.
    */
   private void getFrequenciesForOneSentence(Sentence sentence, Map<String, Integer> frequencies,
-      Set<String> entityNameTokens, Set<String> stopWordList) {
+      Set<String> entityNameTokens) {
     String sentenceText = getSentenceText(sentence);
     String[] tokens = tokenize(sentenceText);
 
@@ -114,7 +114,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       boolean additionalStopWords = !StringUtils.isEmpty(token) && token.length() > 1;
 
       // count this token?
-      if (additionalStopWords && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
+      if (additionalStopWords && !entityNameTokens.contains(token) && !stopWords.contains(token)) {
         if (frequencies.containsKey(token)) {
           frequencies.put(token, frequencies.get(token) + 1);
         } else {
@@ -125,17 +125,21 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   }
   
   /**
-   * Get the stop words if enabled, otherwise an empty set.
+   * Gets the stop words.
    * 
    * @param stopWordListEnabled - true: defined stop words should be used to filter the Word Cloud.
    *        false: only basic filtering, no stop words.
-   * @return all stop words
+   * @param parameters - The parameters defined by the user.
+   * @return The stop words, can be empty if no stop words should be used.
    * @throws IOException - Thrown if this methods was unable to get the stop words.
    */
-  private Set<String> prepareStopWordsSet(boolean stopWordListEnabled) throws IOException {
+  private Set<String> prepareStopWordsSet(boolean stopWordListEnabled, AnalysisParameters parameters)
+      throws IOException {
     Set<String> stopWordList;
     if (stopWordListEnabled) {
-      stopWordList = StopWordList.getStopWords();
+      stopWordList =
+          new HashSet<>(Arrays.asList(StringUtils.split(parameters.getStopWords().toLowerCase(),
+              '\n')));
     } else {
       stopWordList = new HashSet<String>();
     }

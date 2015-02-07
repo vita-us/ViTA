@@ -140,6 +140,7 @@ public class AnalysisExecutor {
    */
   private synchronized void startModuleExecution(final ModuleExecutionState moduleState) {
     LOGGER.info("Starting " + moduleState.getModuleClass());
+    moduleState.startTimer();
 
     Thread thread = new Thread(new ModuleRunner(moduleState));
     thread.setName("Analysis " + moduleState.getModuleClass());
@@ -153,8 +154,10 @@ public class AnalysisExecutor {
     if (status != AnalysisStatus.RUNNING) {
       return;
     }
+    moduleState.stopTimer();
 
-    LOGGER.info("Module " + moduleState.getModuleClass() + " finished");
+    LOGGER.info("Module " + moduleState.getModuleClass() + " finished after " +
+        moduleState.getDurationMillis() + " ms");
 
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);

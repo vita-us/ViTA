@@ -18,6 +18,7 @@
 
     function link(scope) {
       var document = scope.document;
+      scope.uploadDate = new Date(document.uploadDate);
 
       scope.deleteDocument = function() {
         var confirmed = confirm('Delete document "' + document.metadata.title + '" ?');

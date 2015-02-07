@@ -60,8 +60,8 @@ public class EnumParameter extends AbstractParameter {
   }
 
   @Override
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = defaultValue;
+  public void setDefaultValue(Object defaultValue) {
+    this.defaultValue = ((EnumNLP)defaultValue).getName();
   }
 }
 
