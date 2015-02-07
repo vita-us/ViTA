@@ -51,8 +51,7 @@ public class PhraseExtractor {
     tokenizer.close();
 
     Joiner joiner = Joiner.on(" ");
-    Phrase phrase = new Phrase(offsetAttr.endOffset(), joiner.join(tokens));
-
-    return phrase;
+    
+    return new Phrase(offsetAttr.endOffset(), joiner.join(tokens));
   }
 }

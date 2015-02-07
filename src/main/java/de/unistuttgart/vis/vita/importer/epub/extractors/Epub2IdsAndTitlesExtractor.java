@@ -221,8 +221,7 @@ public class Epub2IdsAndTitlesExtractor {
       return false;
     } else {
       String id = extractId(element.attr(Constants.SOURCE));
-      boolean ncxIdIsUnknown = !tocIds.contains(id);
-      return ncxIdIsUnknown;
+      return !tocIds.contains(id);
     }
   }
 

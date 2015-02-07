@@ -41,10 +41,6 @@ public class ParametersService extends BaseService {
 
   private static final Logger LOGGER = Logger.getLogger(ParametersService.class.getName());
 
-  @Override public void postConstruct() {
-    super.postConstruct();
-  }
-
   /**
    * Method for retrieving all available parameters as JSON response.
    * @return The parameters in JSON.

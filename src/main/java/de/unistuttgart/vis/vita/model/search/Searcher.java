@@ -204,7 +204,6 @@ public class Searcher {
       if (charTermAttrib.toString().toLowerCase()
           .matches(SPECIAL_CHARACTES + words[0].toLowerCase() + SPECIAL_CHARACTES)) {
 
-      }
       // global start offset of the first token
       int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
       tokens.add(charTermAttrib.toString());
@@ -232,6 +231,7 @@ public class Searcher {
             TextPosition.fromGlobalOffset(endOffset, documentLength)));
       }
       tokens.clear();
+      }
     }
   }
 

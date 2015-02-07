@@ -137,22 +137,21 @@ public class BasicEntity {
         other.getNameAttributes())));
     occurrences.addAll(other.getOccurrences());
   }
+}
 
+
+/**
+ * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
+ */
+class AttributeComparator implements Comparator<Attribute>, Serializable {
 
   /**
-   * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
+   * auto generated
    */
-  class AttributeComparator implements Comparator<Attribute>, Serializable {
+  private static final long serialVersionUID = -3862453893785126236L;
 
-    /**
-   * 
-   */
-    private static final long serialVersionUID = 6466984535912132864L;
-
-    @Override
-    public int compare(Attribute o1, Attribute o2) {
-      return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
-    }
+  @Override
+  public int compare(Attribute o1, Attribute o2) {
+    return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
   }
-
 }
