@@ -288,8 +288,6 @@ public class EntityRecognitionModule extends Module<BasicEntityCollection> {
       }
     }
 
-    // TODO relations, ...
-
     return null;
   }
 

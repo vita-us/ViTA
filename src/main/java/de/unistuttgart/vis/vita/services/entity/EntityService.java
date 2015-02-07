@@ -20,7 +20,6 @@ import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.services.BaseService;
 import de.unistuttgart.vis.vita.services.occurrence.EntityOccurrencesService;
-import de.unistuttgart.vis.vita.services.search.SearchEntityService;
 
 /**
  * Redirects attribute requests for the current entity to the right AttributeService.
@@ -41,9 +40,6 @@ public class EntityService extends BaseService {
 
   @Inject
   private EntityOccurrencesService entityOccurrencesService;
-
-  @Inject
-  SearchEntityService searchEntityService;
 
   @Override
   public void postConstruct() {
@@ -115,10 +111,6 @@ public class EntityService extends BaseService {
   @Path("/occurrences")
   public EntityOccurrencesService getOccurrences() {
     return entityOccurrencesService.setEntityId(entityId).setDocumentId(documentId);
-  }
-
-  public SearchEntityService getSearch() {
-    return searchEntityService.setDocumentId(documentId).setEntityId(entityId);
   }
 
   /**
