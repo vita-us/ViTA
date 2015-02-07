@@ -102,52 +102,43 @@ public class AutomatedChapterDetection {
    * analyzer.
    */
   private ChapterPosition chooseChapterPositions() {
-    ChapterPosition analyzerResultToCheck = null;
+    ChapterPosition analyzerResult = null;
     try {
-
       // check results of the analyzers and take first which fulfills conditions
-      analyzerResultToCheck = markedHeadingChapters.get();
-      if (fulfillsMarkedHeadingConditions(analyzerResultToCheck)) {
+      // first check results for detections with user annotations
+      if (fulfillsMarkedHeadingConditions(markedHeadingChapters.get())) {
+        analyzerResult = markedHeadingChapters.get();
         stopChapterDetection();
       } else {
 
+        // results for detections with heuristic
         AdvancedBigHeadingChapterAnalyzer advancedBigHeadingChapterPositions =
             new AdvancedBigHeadingChapterAnalyzer(lines, bigHeadingChapters.get(),
                                                   this.bigHeadingAnalysisStart);
         advancedBigHeadingChapters = executor.submit(advancedBigHeadingChapterPositions);
         activeChapterAnalyzers.add(advancedBigHeadingChapters);
-        analyzerResultToCheck = advancedBigHeadingChapters.get();
+        // get result before get percentage!!!
+        ChapterPosition advancedBigHeadingResult= advancedBigHeadingChapters.get();
         smallHeadingsPercentage = advancedBigHeadingChapterPositions.getSmallHeadingsPercentage();
 
-        if (fulfillsAdvancedBigHeadingConditions(analyzerResultToCheck)) {
-          stopChapterDetection();
+        if (fulfillsAdvancedBigHeadingConditions(advancedBigHeadingResult)) {
+          analyzerResult = advancedBigHeadingChapters.get();
+        } else if(fulfillsBigHeadingConditions(bigHeadingChapters.get())){
+          analyzerResult = bigHeadingChapters.get();
+        } else if(fulfillsSmallHeadingConditions(smallHeadingChapters.get())){
+          analyzerResult = smallHeadingChapters.get();
+        } else if(fulfillsSimpleWhitelinesConditions(simpleWhitelinesChapters.get())){      
+          analyzerResult = simpleWhitelinesChapters.get();
         } else {
-
-          analyzerResultToCheck = bigHeadingChapters.get();
-          if (fulfillsBigHeadingConditions(analyzerResultToCheck)) {
-            stopChapterDetection();
-          } else {
-
-            analyzerResultToCheck = smallHeadingChapters.get();
-            if (fulfillsSmallHeadingConditions(analyzerResultToCheck)) {
-              stopChapterDetection();
-            } else {
-
-              analyzerResultToCheck = simpleWhitelinesChapters.get();
-              if (fulfillsSimpleWhitelinesConditions(analyzerResultToCheck)) {
-                stopChapterDetection();
-              } else {
-                analyzerResultToCheck = noChapters.get();
-              }
-            }
-          }
+          analyzerResult = noChapters.get();
         }
+        stopChapterDetection();
       }
     } catch (InterruptedException | ExecutionException e) {
       // TODO propagate InterruptedException to allow for manual termination, and
       // do not suppress ExecutionExceptions
     }
-    return analyzerResultToCheck;
+    return analyzerResult;
   }
 
   /**
