@@ -116,7 +116,7 @@ public abstract class OccurrencesService extends RangeService {
     boolean includesLastStep = false;
     for (int step = 0; step < steps; step++) {
       int stepStart = startOffset + (stepSize * step);
-      int stepEnd = startOffset + (stepSize * (step + 1));
+      int stepEnd = step == steps - 1 ? endOffset : startOffset + (stepSize * (step + 1));
 
       if (hasOccurrencesInStep(stepStart, stepEnd)) {
         if (!includesLastStep) {
