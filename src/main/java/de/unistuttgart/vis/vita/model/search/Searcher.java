@@ -24,8 +24,8 @@ import org.apache.lucene.search.ScoreDoc;
 
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Chapter;
-import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
+import de.unistuttgart.vis.vita.model.document.TextPosition;
 
 /**
  * This class performs the searching for a word or phrase in a document
@@ -37,6 +37,7 @@ public class Searcher {
   private static final String NO_SPECIAL_CHARACTERS = "[\\d\\s\\p{Alpha}]+";
   private static final String CHAPTER_ID = "chapterId";
   private static final String CHAPTER_TEXT = "chapterText";
+  private static final String SPECIAL_CHARACTES = "\\p{Punct}*";
 
   public List<Range> searchString(de.unistuttgart.vis.vita.model.document.Document document,
       String searchString, List<Chapter> chapters, Model model) throws IOException, ParseException {
@@ -49,7 +50,7 @@ public class Searcher {
     StandardAnalyzer analyzer = new StandardAnalyzer(charArraySet);
     List<Range> ranges = new ArrayList<Range>();
     QueryParser queryParser = new QueryParser(CHAPTER_TEXT, analyzer);
-    Query query = queryParser.parse(searchString);
+    Query query = queryParser.parse(QueryParser.escape(searchString));
     IndexSearcher indexSearcher =
         model.getTextRepository().getIndexSearcherForDocument(document.getId());
     // That are documents in an index, which contains the searchString
@@ -172,7 +173,7 @@ public class Searcher {
     }
   }
 
-  
+
   /**
    * Searches for a phrase and updates the ranges.
    * 
@@ -188,38 +189,49 @@ public class Searcher {
   private void searchPhrase(Tokenizer tokenizer, String searchString, String[] words,
       Chapter currentChapter, List<Range> ranges, String chapterText, int documentLength)
       throws IOException {
+    
     // will be incremented
     CharTermAttribute charTermAttrib = tokenizer.getAttribute(CharTermAttribute.class);
     OffsetAttribute offset = tokenizer.getAttribute(OffsetAttribute.class);
 
+
     List<String> tokens = new ArrayList<String>();
     tokenizer.reset();
-    int position = -1;
     while (tokenizer.incrementToken()) {
-      position++;
 
       // search for first word of the phrase
-      if (charTermAttrib.toString().toLowerCase().matches(words[0].toLowerCase())) {
+      if (charTermAttrib.toString().toLowerCase()
+          .matches(SPECIAL_CHARACTES + words[0].toLowerCase() + SPECIAL_CHARACTES)) {
+
+        // global start offset of the first token
         int startOffset = offset.startOffset() + currentChapter.getRange().getStart().getOffset();
+
         tokens.add(charTermAttrib.toString());
-        
+
+        // local start offset of the second token of the phrase
+        int beginIndexOfSubstring = offset.startOffset() + words[0].length() + 1;
+
         // get the found phrase
         PhraseExtractor phraseExtracter = new PhraseExtractor();
         Phrase tokenInfo =
-            phraseExtracter.extractPhrase(words, tokens, position, chapterText, tokenizer
-                .getClass().toString());
+            phraseExtracter.extractPhrase(words, tokens, chapterText, tokenizer.getClass()
+                .toString(), beginIndexOfSubstring);
         String phrase = tokenInfo.getPhrase();
 
         // found phrase is same as searched phrase
-        if (phrase.toLowerCase().equals(searchString.toLowerCase())) {
+        // check with special character at the front and back, because lucene gives the complete
+        // tokens with special characters
+        if (phrase.toLowerCase().matches(
+            SPECIAL_CHARACTES + searchString.toLowerCase() + SPECIAL_CHARACTES)) {
           int endOffset =
-              tokenInfo.getEndOffset() + currentChapter.getRange().getStart().getOffset();
+              tokenInfo.getEndOffset() + beginIndexOfSubstring
+                  + currentChapter.getRange().getStart().getOffset();
 
           ranges.add(new Range(TextPosition.fromGlobalOffset(startOffset, documentLength),
               TextPosition.fromGlobalOffset(endOffset, documentLength)));
         }
+        tokens.clear();
       }
-      tokens.clear();
     }
   }
 
