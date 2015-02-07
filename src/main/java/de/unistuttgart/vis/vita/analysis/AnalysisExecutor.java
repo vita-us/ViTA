@@ -36,6 +36,8 @@ public class AnalysisExecutor {
 
   private List<AnalysisObserver> observers = new ArrayList<>();
 
+  private List<Object> resultsSoFar = new ArrayList<>();
+
   private static final Logger LOGGER = Logger.getLogger(AnalysisExecutor.class.getName());
 
   private static final long MIN_MILLISECONDS_BETWEEN_PROGRESS_REPORTS = 1000;
@@ -156,6 +158,8 @@ public class AnalysisExecutor {
 
     LOGGER.info("Module " + moduleState.getModuleClass() + " finished");
 
+    resultsSoFar.add(result);
+
     for (ModuleExecutionState module : getActiveModules()) {
       module.notifyModuleFinished(moduleState.getModuleClass(), result);
     }
@@ -205,6 +209,7 @@ public class AnalysisExecutor {
   private synchronized void checkFinished() {
     if (scheduledModules.isEmpty() && runningModules.isEmpty()) {
       setStatus(failedModules.isEmpty() ? AnalysisStatus.FINISHED : AnalysisStatus.FAILED);
+      cleanUp();
     }
   }
 
@@ -240,6 +245,7 @@ public class AnalysisExecutor {
       state.getThread().interrupt();
     }
     scheduledModules.clear();
+    cleanUp();
   }
 
   /**
@@ -289,6 +295,18 @@ public class AnalysisExecutor {
         return;
       }
       onModuleFinished(moduleState, result);
+    }
+  }
+
+  private void cleanUp() {
+    for (Object result : resultsSoFar) {
+      if (result instanceof AutoCloseable) {
+        try {
+          ((AutoCloseable)result).close();
+        } catch (Exception e) {
+          LOGGER.log(Level.WARNING, "Error cleaning up result " + result, e);
+        }
+      }
     }
   }
 }
