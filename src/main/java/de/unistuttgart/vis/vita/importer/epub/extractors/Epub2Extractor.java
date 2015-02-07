@@ -201,9 +201,7 @@ public class Epub2Extractor extends AbstractEpubExtractor {
       return chapterPositionsParts;
 
     } else {
-      List<ChapterPosition> chapterPositionsPart = getPartChapterPositionList();
-
-      return chapterPositionsPart;
+      return getPartChapterPositionList();
     }
   }
 

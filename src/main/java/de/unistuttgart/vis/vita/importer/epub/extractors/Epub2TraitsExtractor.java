@@ -179,18 +179,29 @@ public class Epub2TraitsExtractor {
     List<List<List<Epubline>>> parts = new ArrayList<List<List<Epubline>>>();
 
     for (List<String> part : partsWithChaptersIds) {
-      List<List<Epubline>> partChapters = new ArrayList<List<Epubline>>();
-      for (int i = 0; i < part.size(); i++) {
-        for (List<Epubline> chapter : chapters) {
-          if (part.get(i).matches(chapter.get(0).getId())) {
-            partChapters.add(chapter);
-          }
-
-        }
-      }
+      List<List<Epubline>> partChapters = getChaptersEpublines(part, chapters);
       parts.add(partChapters);
     }
     return parts;
   }
-
+  
+  /**
+   * Returns a List<List<Epubline>> which contains all chapters of one part.
+   * 
+   * @param part
+   * @param chapters
+   * @return
+   */
+  private List<List<Epubline>> getChaptersEpublines(List<String> part, List<List<Epubline>> chapters){
+    List<List<Epubline>> partChapters = new ArrayList<List<Epubline>>();
+    for (int i = 0; i < part.size(); i++) {
+      for (List<Epubline> chapter : chapters) {
+        if (part.get(i).matches(chapter.get(0).getId())) {
+          partChapters.add(chapter);
+        }
+      }
+    }
+    return partChapters;
+  }
+  
 }

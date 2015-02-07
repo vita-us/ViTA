@@ -32,21 +32,34 @@ public class Epub3TraitsExtractor {
   public boolean existsPartInEpub3(List<Resource> resources) throws IOException {
     if (!(resources == null) && !resources.isEmpty()) {
       for (Resource resourceItem : resources) {
-        if (resourceItem != null) {
-          Document document =
-              Jsoup.parse(contentBuilder.getStringFromInputStream(resourceItem.getInputStream()));
-          Elements sections = document.select(Constants.SECTION);
-          for (Element sectionItem : sections) {
-            if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
-              return true;
-            }
-          }
+        if (resourceItem != null && existsPartInEpub3Sections(resourceItem)) {
+          return true;
         }
       }
     }
     return false;
   }
-  
+
+
+  /**
+   * Goes through Resource and searches a section/element with a range.
+   * 
+   * @param resource - A resource from the book.
+   * @return true: at least one part was found. false: no part was found.
+   * @throws IOException thrown if was not able to get the data from the resource.
+   */
+  private boolean existsPartInEpub3Sections(Resource resource) throws IOException {
+    Document document =
+        Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
+    Elements sections = document.select(Constants.SECTION);
+    for (Element sectionItem : sections) {
+      if (sectionItem.attr(Constants.EPUB_TYPE).toLowerCase().contains(Constants.EPUB3_PART)) {
+        return true;
+      }
+    }
+   return false;    
+  }
+
   /**
    * Extracts chapters of the book
    * 
@@ -70,6 +83,7 @@ public class Epub3TraitsExtractor {
 
   /**
    * Adds chapters to chapter list
+   * 
    * @param chapters
    * @param document
    * @throws IOException
@@ -98,7 +112,8 @@ public class Epub3TraitsExtractor {
     List<Element> editedElements = new ArrayList<Element>();
     for (Element chapterElement : chapterElements) {
       if (!reviser.elementEdited(editedElements, chapterElement)) {
-        if (!chapterElement.tagName().matches(Constants.SPAN) && !chapterElement.tagName().matches(Constants.DIV)) {
+        if (!chapterElement.tagName().matches(Constants.SPAN)
+            && !chapterElement.tagName().matches(Constants.DIV)) {
           boolean existsSpan = reviser.existsSpan(chapterElement);
           reviser.addText(chapter, chapterElement, existsSpan, "");
         } else if (chapterElement.tagName().matches(Constants.DIV)) {
@@ -132,6 +147,7 @@ public class Epub3TraitsExtractor {
 
   /**
    * Adds parts to the parts List
+   * 
    * @param resources
    * @param parts
    * @param resourceItem

@@ -129,49 +129,100 @@ public class Epub2IdsAndTitlesExtractor {
 
   private void extractTocIds() throws IOException {
     if (notEveryElementHasId()) {
-
       for (Resource resource : resources) {
-        document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
-        if (!document.getAllElements().isEmpty()) {
-          Elements allElements = document.getAllElements();
-          for (Element currentElement : allElements) {
-            if (!currentElement.attr(Constants.ID).isEmpty()
-                && !currentElement.text().matches(Constants.PART)
-                && !currentElement.tagName().matches(Constants.DIV)
-                && !currentElement.hasAttr("href") && !currentElement.text().isEmpty()) {
-              String id = currentElement.attr(Constants.ID);
-              if (!tocIds.contains(id)) {
-                tocIds.add(id);
-              }
-            }
-          }
-        }
+        extractTocIdsFromResource(resource);
       }
     } else {
       addNcxIdsToList();
     }
   }
 
+  /**
+   * Goes through all Elements of the Resource and searches for new toc ids.
+   * 
+   * @param resource - The resource.
+   * @throws IOException - thrown if can not read from the resource.
+   */
+  private void extractTocIdsFromResource(Resource resource) throws IOException {
+    document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
+    if (!document.getAllElements().isEmpty()) {
+      Elements allElements = document.getAllElements();
+      for (Element currentElement : allElements) {
+        if (shouldAddTocId(currentElement)) {
+          String id = currentElement.attr(Constants.ID);
+          tocIds.add(id);
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks the type of the element, if there is a id and whether this id already was found or not.
+   * 
+   * @param element - The Element from the file.
+   * @return true: you should add the id to the list; false: this id should not be added.
+   */
+  private boolean shouldAddTocId(Element element) {
+    boolean typeIsOkay =
+        !element.text().matches(Constants.PART) && !element.tagName().matches(Constants.DIV)
+            && !element.hasAttr("href") && !element.text().isEmpty();
+    boolean tocIdIsEmpty = !element.attr(Constants.ID).isEmpty();
+    boolean tocIdIsUnknown = !tocIds.contains(element.attr(Constants.ID));
+    return typeIsOkay && tocIdIsEmpty && tocIdIsUnknown;
+  }
+
+  /**
+   * Goes through all Elements of the NCX-File and searches for new ids.
+   * 
+   * @throws IOException
+   */
   private void addNcxIdsToList() throws IOException {
+    Elements elements = getElementsFromNcxResource();
+    if (elements != null && !elements.isEmpty()) {
+      for (Element element : elements) {
+        if (shouldAddNcxId(element)) {
+          String id = extractId(element.attr(Constants.SOURCE));
+          tocIds.add(id);
+        }
+      }
+    }
+  }
+
+  /**
+   * Gets the Elements from the ncx file, if they exist!
+   * 
+   * @return The Elements or null, if they do not exist!
+   * @throws IOException thrown if can not read from tocResource.
+   */
+  private Elements getElementsFromNcxResource() throws IOException {
+    Elements contents = null;
     if (tocResource != null) {
       document = Jsoup.parse(contentBuilder.getStringFromInputStream(tocResource.getInputStream()));
       Elements navMaps = document.select(Constants.NAVMAP);
       if (!navMaps.isEmpty()) {
-        Elements contents = navMaps.get(0).select(Constants.CONTENT);
-        if (!contents.isEmpty()) {
-          for (Element content : contents) {
-
-            if (content.hasAttr(Constants.SOURCE)
-                && (content.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || content.attr(
-                    Constants.SOURCE).contains(Constants.ID))) {
-              String id = extractId(content.attr(Constants.SOURCE));
-              if (!tocIds.contains(id)) {
-                tocIds.add(id);
-              }
-            }
-          }
-        }
+        contents = navMaps.get(0).select(Constants.CONTENT);
       }
+    }
+    return contents;
+  }
+
+  /**
+   * Check if an ncx id can be found and whether this id already was found or not.
+   * 
+   * @param element - The Element from the file.
+   * @return true: you should add the id to the list; false: this id should not be added.
+   */
+  private boolean shouldAddNcxId(Element element) {
+    boolean thereIsNcxId =
+        element.hasAttr(Constants.SOURCE)
+            && (element.attr(Constants.SOURCE).contains(Constants.PGEPUBID) || element.attr(
+                Constants.SOURCE).contains(Constants.ID));
+    if (!thereIsNcxId) {
+      return false;
+    } else {
+      String id = extractId(element.attr(Constants.SOURCE));
+      boolean ncxIdIsUnknown = !tocIds.contains(id);
+      return ncxIdIsUnknown;
     }
   }
 
