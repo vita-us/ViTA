@@ -38,6 +38,7 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   int documentLength;
   private static final int RADIUS = 100;
   private int count;
+  private Set<String> stopWords;
 
   @Override
   public EntityWordCloudResult execute(ModuleResultProvider results,
@@ -45,14 +46,20 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
 
     Collection<BasicEntity> entities =
         results.getResultFor(BasicEntityCollection.class).getEntities();
-    boolean stopWordListEnabled =
-        results.getResultFor(AnalysisParameters.class).getStopWordListEnabled();
+    AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
+    boolean stopWordListEnabled = parameters.getStopWordListEnabled();
+    if (stopWordListEnabled) {
+      stopWords = new HashSet<>(Arrays.asList(
+          StringUtils.split(parameters.getStopWords().toLowerCase(), '\n')));
+    } else {
+      stopWords = new HashSet<String>();
+    }
     count = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
 
     final Map<BasicEntity, WordCloud> wordClouds = new HashMap<>();
 
     for (BasicEntity entity : entities) {
-      wordClouds.put(entity, getWordCloudForEntity(entity, entities, stopWordListEnabled));
+      wordClouds.put(entity, getWordCloudForEntity(entity, entities));
     }
 
     return new EntityWordCloudResult() {
@@ -64,18 +71,11 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
   }
 
 
-  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities,
-      boolean stopWordListEnabled) throws IOException {
+  private WordCloud getWordCloudForEntity(BasicEntity entity, Collection<BasicEntity> entities)
+      throws IOException {
 
     List<Sentence> sentences = new ArrayList<Sentence>(getSentencesOfEntityOccurrences(entity));
     Map<String, Integer> frequencies = new HashMap<>();
-
-    Set<String> stopWordList;
-    if (stopWordListEnabled) {
-      stopWordList = StopWordList.getStopWords();
-    } else {
-      stopWordList = new HashSet<String>();
-    }
 
     // The entity name itself should not be included in the word cloud
     Set<String> entityNameTokens = new HashSet<>();
@@ -96,9 +96,9 @@ public class EntityWordCloudModule extends Module<EntityWordCloudResult> {
       for (int i = 0; i < tokens.length; i++) {
         String token = tokens[i].trim();
         if (!StringUtils.isEmpty(token) && token.length() > 1 // additional "stop words"
-            && !entityNameTokens.contains(token) && !stopWordList.contains(token)) {
+            && !entityNameTokens.contains(token) && !stopWords.contains(token)) {
           if (frequencies.containsKey(token)) {
-            frequencies.put(token, frequencies.get(token) + 1);
+            frequencies.put(token, frequencies. get(token) + 1);
           } else {
             frequencies.put(token, 1);
           }

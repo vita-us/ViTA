@@ -120,10 +120,8 @@ module.exports = function(grunt) {
           src: ['d3.layout.cloud.js'],
           dest: '<%= javascriptPath %>'
         }, {
-          expand: true,
-          cwd: '<%= bowerrc.directory %>/d3-tip/',
-          src: ['index.js'],
-          dest: '<%= javascriptPath %>'
+          src: '<%= bowerrc.directory %>/d3-tip/index.js',
+          dest: '<%= javascriptPath %>/d3.tooltip.js'
         }]
       },
       statics: {

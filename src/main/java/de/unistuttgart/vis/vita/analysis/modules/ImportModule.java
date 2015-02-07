@@ -19,7 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * Module to provide the correct importing method either for plain text files or for epub files.
  */
-@AnalysisModule(weight = 0.1)
+@AnalysisModule(weight = 5)
 public class ImportModule extends Module<ImportResult> {
 
   private Path filePath;

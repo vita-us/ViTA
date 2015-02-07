@@ -18,16 +18,16 @@
         entities: '=',
         width: '=',
         height: '=',
-        rangeBegin: '=',
+        rangeStart: '=rangeBegin',
         rangeEnd: '=',
-        showFingerprint: '&'
+        showFingerprint: '&',
+        isReady: '=loaded'
       },
       link: function(scope, element) {
         buildGraph(element, scope.width, scope.height);
 
-        scope.$watch('[entities,rangeBegin,rangeEnd]', function() {
-          fetchRelationsAndDrawElements(scope.entities, scope.rangeBegin, scope.rangeEnd,
-                  scope.showFingerprint);
+        scope.$watch('[entities,rangeStart,rangeEnd,isReady]', function() {
+          fetchRelationsAndDrawElements(scope);
         }, true);
 
         scope.$watch('[width,height]', function(newValues, oldValues) {
@@ -114,32 +114,36 @@
       graph.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
     }
 
-    function fetchRelationsAndDrawElements(entities, rangeStart, rangeEnd, showFingerprint) {
+    function fetchRelationsAndDrawElements(scope) {
       // Handle undefined data as empty dataset
-      entities = entities || [];
+      scope.entities = scope.entities || [];
 
-      var entityIds = entities.map(function(entity) {
+      var entityIds = scope.entities.map(function(entity) {
         return entity.id;
       });
+
+      scope.isReady = false;
 
       EntityRelation.get({
         documentId: $routeParams.documentId,
         entityIds: entityIds.join(','),
-        rangeStart: rangeStart,
-        rangeEnd: rangeEnd,
+        rangeStart: scope.rangeStart,
+        rangeEnd: scope.rangeEnd,
         type: 'person'
       }, function(relationData) {
-        if (!isEntityRelationResponseValid(entities, relationData)) {
+        if (!isEntityRelationResponseValid(scope.entities, relationData)) {
           return;
         }
 
-        var graphData = parseEntitiesToGraphData(entities, relationData);
+        var graphData = parseEntitiesToGraphData(scope.entities, relationData);
 
-        redrawElements(graphData, showFingerprint);
+        redrawElements(graphData, scope.showFingerprint);
 
         force.nodes(graphData.nodes)
             .links(graphData.links)
             .start();
+
+        scope.isReady = true;
       });
     }
 

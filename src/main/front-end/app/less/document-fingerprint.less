@@ -1,0 +1,90 @@
+.document-fingerprint {
+
+  width: 20px;
+  position: fixed;
+
+  rect.background {
+    fill: white;
+  }
+  rect.occurrence-rect {
+    fill: #565353;
+  }
+  rect.occurrence-rect:hover {
+    fill: #FFD27F;
+  }
+  rect.highlighted {
+    fill: orange;
+  }
+  rect.scroll-rect {
+    fill: lightgray;
+    opacity: 0.4;
+  }
+}
+
+.document-fingerprint-tool-tip {
+  span.occurrence {
+    background: @document-view-occurrence-color;
+  }
+
+  span {
+    background: @default-character-ranking-color;
+  }
+
+  span.ranking-1 {
+    background: @character-ranking-color-1;
+  }
+
+  span.ranking-2 {
+    background: @character-ranking-color-2;
+  }
+
+  span.ranking-3 {
+    background: @character-ranking-color-3;
+  }
+
+  span.ranking-4 {
+    background: @character-ranking-color-4;
+  }
+
+  span.ranking-5 {
+    background: @character-ranking-color-5;
+  }
+
+  span.ranking-6 {
+    background: @character-ranking-color-6;
+  }
+
+  span.ranking-7 {
+    background: @character-ranking-color-7;
+  }
+}
+
+.document-fingerprint-tool-tip {
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  pointer-events: none;
+  max-width: 500px;
+  left: 0px;
+}
+
+.document-fingerprint-tool-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Westward tooltips */
+.document-fingerprint-tool-tip.w:after {
+  content: "\25B6";
+  margin: -4px 0 0 -1px;
+  top: 50%;
+  left: 100%;
+}

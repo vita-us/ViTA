@@ -2,11 +2,13 @@ package de.unistuttgart.vis.vita.analysis.modules;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Term;
@@ -31,6 +33,7 @@ import de.unistuttgart.vis.vita.model.wordcloud.WordCloudItem;
 @AnalysisModule(dependencies = {LuceneResult.class, AnalysisParameters.class})
 public class WordCloudModule extends Module<GlobalWordCloudResult> {
   private int maxCount;
+  private Set<String> stopWords;
 
   @Override
   public GlobalWordCloudResult execute(ModuleResultProvider results,
@@ -39,7 +42,14 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
     LuceneResult luceneResult = results.getResultFor(LuceneResult.class);
     boolean stopWordListEnabled =
         results.getResultFor(AnalysisParameters.class).getStopWordListEnabled();
-    maxCount = results.getResultFor(AnalysisParameters.class).getWordCloudItemsCount();
+    AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
+    maxCount = parameters.getWordCloudItemsCount();
+    if (stopWordListEnabled) {
+      stopWords = new HashSet<>(
+          Arrays.asList(StringUtils.split(parameters.getStopWords().toLowerCase(), '\n')));
+    } else {
+      stopWords = new HashSet<String>();
+    }
 
     final WordCloud globalWordCloud;
     IndexReader reader = luceneResult.getIndexReader();
@@ -66,20 +76,13 @@ public class WordCloudModule extends Module<GlobalWordCloudResult> {
       return new WordCloud();
     }
 
-    Set<String> stopWordList;
-    if (stopWordListEnabled) {
-      stopWordList = StopWordList.getStopWords();
-    } else {
-      stopWordList = new HashSet<String>();
-    }
-
     TermsEnum enumerator = terms.iterator(null);
     BytesRef term = enumerator.next();
     List<WordCloudItem> items = new ArrayList<WordCloudItem>();
     while (term != null) {
       String termText = term.utf8ToString();
 
-      if (!stopWordList.contains(termText)) {
+      if (!stopWords.contains(termText)) {
         long frequency = reader.totalTermFreq(new Term(TextRepository.CHAPTER_TEXT_FIELD, term));
         items.add(new WordCloudItem(termText, (int) frequency));
       }

@@ -33,8 +33,8 @@ public class MinMaxParameter extends AbstractParameter {
   }
 
   @Override
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = Long.parseLong(defaultValue);
+  public void setDefaultValue(Object defaultValue) {
+    this.defaultValue = ((Number)defaultValue).longValue();
   }
 
   public long getMin() {
