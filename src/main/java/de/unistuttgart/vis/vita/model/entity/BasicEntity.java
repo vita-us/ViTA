@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -139,16 +140,17 @@ public class BasicEntity {
          Iterables.concat(getNameAttributes(), other.getNameAttributes())));
     occurrences.addAll(other.getOccurrences());
   }
+
 }
 
 /**
  * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
  */
-class AttributeComparator implements Comparator<Attribute> {
+class AttributeComparator implements Comparator<Attribute>, Serializable {
 
   @Override
   public int compare(Attribute o1, Attribute o2) {
-    return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1);
-
+    return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
   }
+
 }
