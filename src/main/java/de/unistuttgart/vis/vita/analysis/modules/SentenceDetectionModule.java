@@ -124,7 +124,7 @@ public class SentenceDetectionModule extends Module<SentenceDetectionResult> {
      *         of the Chapter.
      */
     private boolean isOffsetOutsideOfChapter(int offset, Chapter chapter) {
-      return offset >= chapter.getLength() || offset < 0;
+      return offset > chapter.getLength() || offset < 0;
     }
   }
 
