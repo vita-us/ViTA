@@ -15,10 +15,11 @@ import de.unistuttgart.vis.vita.model.document.Chapter;
 /**
  * Implements a NLP Result for {@link AbstractNLPModule}. Can be used for Annie NLP, Stanford NLP and Open NLP.
  */
-public abstract class AbstractNLPResult implements NLPResult {
+public abstract class AbstractNLPResult implements NLPResult, AutoCloseable {
 
   protected Map<Chapter, Set<Annotation>> chapterToAnnotation;
   protected Map<Chapter, Document> chapterToDoc;
+  private boolean isCleanedUp;
 
   /**
    * Builds a new NLP Result.
@@ -34,6 +35,9 @@ public abstract class AbstractNLPResult implements NLPResult {
 
   @Override
   public Set<Annotation> getAnnotationsForChapter(Chapter chapter) {
+    if (isCleanedUp) {
+      throw new IllegalStateException("This result is already cleaned up");
+    }
     if (!chapterToAnnotation.containsKey(chapter)) {
       throw new IllegalArgumentException("This chapter has not been analyzed");
     }
@@ -43,6 +47,9 @@ public abstract class AbstractNLPResult implements NLPResult {
 
   @Override
   public Set<Annotation> getAnnotationsForChapter(Chapter chapter, Collection<String> type) {
+    if (isCleanedUp) {
+      throw new IllegalStateException("This result is already cleaned up");
+    }
     if (!chapterToAnnotation.containsKey(chapter)) {
       throw new IllegalArgumentException("This chapter has not been analyzed");
     }
@@ -57,5 +64,18 @@ public abstract class AbstractNLPResult implements NLPResult {
     }
 
     return new HashSet<>(defaultAnnotSet.get(annotTypesRequired));
+  }
+
+  @Override
+  public void close() throws Exception {
+    if (isCleanedUp) {
+      return;
+    }
+
+    for (Document document : chapterToDoc.values()) {
+      document.cleanup();
+    }
+
+    isCleanedUp = true;
   }
 }
