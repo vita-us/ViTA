@@ -46,6 +46,7 @@
             retrieveEntity(relations[i].relatedEntity, i);
           }
           $scope.relatedEntitiesLoaded = true;
+          $scope.selected.compactAttributes = getCompactAttributes(person);
         };
 
         var retrieveEntity = function(id) {
@@ -73,7 +74,25 @@
               $location.path('documents/' + $routeParams.documentId + '/characters/' + firstPerson.id);
             }
           });
-        }
+        };
+
+        var getCompactAttributes = function(person) {
+          var compactAttributes = [];
+          var names = [];
+          person.attributes.forEach(function(attribute) {
+            if (attribute.attributetype === 'name') {
+              if (attribute.content !== person.displayName) {
+                names.push(attribute.content);
+              }
+            } else {
+              compactAttributes.push(attribute);
+            }
+          });
+          if (names.length > 0) {
+            compactAttributes.push({attributetype: 'name', content: names.join(', ')});
+          };
+          return compactAttributes;
+        };
 
         $scope.setFingerprint = function(id) {
           var position = $scope.fingerprintIds.indexOf(id);

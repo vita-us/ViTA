@@ -44,6 +44,7 @@
           }
 
           $scope.relatedEntitiesLoaded = true;
+          $scope.selected.compactAttributes = getCompactAttributes(place);
         };
 
         // Load an Entity from the server and add it to the related entities if not already there
@@ -75,7 +76,25 @@
               $location.path('documents/' + $routeParams.documentId + '/places/' + firstPlace.id);
             }
           });
-        }
+        };
+
+        var getCompactAttributes = function(place) {
+          var compactAttributes = [];
+          var names = [];
+          place.attributes.forEach(function(attribute) {
+            if (attribute.attributetype === 'name') {
+              if (attribute.content !== place.displayName) {
+                names.push(attribute.content);
+              }
+            } else {
+              compactAttributes.push(attribute);
+            }
+          });
+          if (names.length > 0) {
+            compactAttributes.push({attributetype: 'name', content: names.join(', ')});
+          };
+          return compactAttributes;
+        };
 
         // Adds the entity to the fingerprint
         $scope.setFingerprint = function(id) {
