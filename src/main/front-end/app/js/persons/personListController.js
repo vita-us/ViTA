@@ -6,9 +6,9 @@
   // Controller responsible for the persons page
   vitaControllers.controller('PersonListCtrl',
     ['$scope', 'DocumentParts', 'Page', 'Person', 'Entity', '$routeParams',
-      'CssClass', '$location', '$route', '$cacheFactory',
+      'CssClass', '$location', '$cacheFactory',
       function($scope, DocumentParts, Page, Person, Entity, $routeParams,
-               CssClass, $location, $route, $cacheFactory) {
+               CssClass, $location, $cacheFactory) {
 
         var MAX_DISPLAYED_COOCCURRENCES = 5;
 
@@ -90,7 +90,7 @@
           });
           if (names.length > 0) {
             compactAttributes.push({attributetype: 'name', content: names.join(', ')});
-          };
+          }
           return compactAttributes;
         };
 
