@@ -3,16 +3,15 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('PlotviewCtrl', ['$scope', '$routeParams', 'DocumentParts',
-    'Document', 'Page',
-    function($scope, $routeParams, DocumentParts, Document, Page) {
+  vitaControllers.controller('PlotviewCtrl', ['$scope', 'DocumentParts', 'Page',
+    function($scope, DocumentParts, Page) {
 
-      Document.get({
-        documentId: $routeParams.documentId
-      }, function(document) {
-        Page.breadcrumbs = 'Plotview';
-        Page.setUpForDocument(document);
-      });
+      Page.breadcrumbs = 'Plotview';
+      Page.setUpForCurrentDocument();
+
+      $scope.loaded = function() {
+        return $('#plotview-wrapper').has('svg').length > 0;
+      };
 
       setPlotviewDimensions();
       $(window).resize(function() {

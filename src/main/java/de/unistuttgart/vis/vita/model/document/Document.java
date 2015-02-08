@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
 import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
@@ -22,12 +23,16 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Document extends AbstractEntityBase {
+
   @Embedded
   private DocumentMetadata metadata;
+
   @Embedded
   private DocumentMetrics metrics;
+
   @Embedded
   private DocumentContent content;
+
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
@@ -40,7 +45,6 @@ public class Document extends AbstractEntityBase {
   private Date uploadDate;
 
   private String fileName;
-
   private UUID contentID;
 
   /**
@@ -53,6 +57,26 @@ public class Document extends AbstractEntityBase {
     this.progress = new AnalysisProgress();
     this.parameters = new AnalysisParameters();
     contentID = UUID.randomUUID();
+  }
+
+  /**
+   * Copy the corresponding objects of the document into the new one.
+   * The content id stays also the same which allows faster nlp analysis because of caching.
+   * This is <b>NOT</b> a deep copy of the document. Content, Metadata and Metrics are missing!
+   * @param document The document to take the data from.
+   * @return New Document object which can be modified for derive analysis.
+   */
+  public static Document copy(Document document) {
+    Document newDoc = new Document();
+    newDoc.setFileName(document.getFileName());
+    newDoc.setFilePath(document.getFilePath());
+    newDoc.setUploadDate(new Date());
+    newDoc.getProgress().setStatus(AnalysisStatus.READY);
+    newDoc.getMetadata().setTitle(document.getMetadata().getTitle());
+    // This is important step to allow use of caching.
+    newDoc.setContentID(document.getContentID());
+
+    return newDoc;
   }
 
   /**
@@ -143,41 +167,68 @@ public class Document extends AbstractEntityBase {
    * @return the upload date to the uploaded file
    */
   public Date getUploadDate() {
-    return uploadDate;
+    Date dateToReturn = null;
+    if (uploadDate != null) {
+      dateToReturn  = new Date(uploadDate.getTime());
+    }
+    return dateToReturn;
   }
   
   /**
    * Sets the upload date of the uploaded file
    * 
-   * @param uploadDate
+   * @param uploadDate - the date when the document was uploaded
    */
   public void setUploadDate(Date uploadDate) {
-    this.uploadDate = uploadDate;
+    // deep copy to avoid unintentionally changes from outside
+    this.uploadDate = new Date(uploadDate.getTime());
   }
 
+  /**
+   * @return the name of the file this Document refers to
+   */
   public String getFileName() {
     return fileName;
   }
 
+  /**
+   * Sets the name of the file this Document refers to.
+   *
+   * @param fileName - the name of the file this Document refers to
+   */
   public void setFileName(String fileName) {
     this.fileName = fileName;
   }
 
+  /**
+   * @return the UUID of the content of this Document
+   */
   public UUID getContentID() {
     return contentID;
   }
 
   /**
+   * Sets the UUID of the content of this Document.
+   *
+   * @param contentID - the UUID of the content of this Document
+   */
+  public void setContentID(UUID contentID) {
+    this.contentID = contentID;
+  }
+
+  /**
    * Gets the parameters that should be used in the analysis of this document
-   * @return
+   *
+   * @return the AnalysisParameters to be used to analyse this Document
    */
   public AnalysisParameters getParameters() {
     return parameters;
   }
 
   /**
-   * Sets the parameters that should be used in the analysis of this document
-   * @param parameters
+   * Sets the parameters that should be used in the analysis of this document.
+   *
+   * @param parameters - the parameters to be used for the analysis
    */
   public void setParameters(AnalysisParameters parameters) {
     this.parameters = parameters;
@@ -185,8 +236,9 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Find the chapter for a given global offset.
-   * @param globalOffset The offset to search the chapter.
-   * @return
+   *
+   * @param globalOffset - the offset to search the chapter.
+   * @return the Chapter which surrounds the given offset
    */
   public Chapter getChapterAt(int globalOffset) {
     List<Chapter> allChapters = new ArrayList<>();
@@ -222,4 +274,5 @@ public class Document extends AbstractEntityBase {
 
     throw new IllegalStateException("Not found the correct chapter");
   }
+
 }

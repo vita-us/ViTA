@@ -2,48 +2,46 @@
   <div class="col-md-2">
     <div ng-include="'partials/menu.html'"></div>
   </div>
-  <div class="col-md-8" id="graph-network-page">
-    <div data-fingerprint-top-row></div>
-    <div class="text-center">
-      <span ng-show="!fingerprintEntityIds" class="help-text">
-        Click on a link in the graph to see the fingerprint of the relation</span>
-      <span ng-show="fingerprintEntityIds">
-        <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityA.id}}"
-           class="listed-character {{CssClass.forRankingValue(fingerprintEntityA.rankingValue)}}">
-          {{fingerprintEntityA.displayName}}</a>
-        <span>-</span>
-        <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityB.id}}"
-           class="listed-character {{CssClass.forRankingValue(fingerprintEntityB.rankingValue)}}">
-          {{fingerprintEntityB.displayName}}</a>
-      </span>
-    </div>
-    <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
-      data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
-    <p>
-      <label for="amount">Percentage:</label> <input type="text" id="amount" readonly
-        style="border: 0; color: #f6931f; font-weight: bold;">
-    </p>
-    <div id="slider-range"></div>
-    <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
-      data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
-      data-height="graphHeight" data-width="graphWidth" id="graph-network-wrapper"></div>
-  </div>
-  <div class="col-md-2">
+  <div class="col-md-10">
     <div class="row">
-      <button type="button" class="btn btn-default btn-block" ng-click="reset(persons)">Reset</button>
-      <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect
-        all</button>
-    </div>
-    <div class="row">
-      <input type="search" ng-model="search" placeholder="Search..." class="form-control"
-        style="margin-top: 5px; margin-bottom: 5px;">
-      <div class="list-group" id="list1">
-        <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
-          ng-click="loadGraphNetwork(person)" ng-class="{'active': isActive(person)}"
-          class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
-          {{person.displayName}}
-          <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
-        </a>
+      <div class="col-md-9" id="graph-network-page">
+        <div data-fingerprint-top-row></div>
+        <div class="text-center">
+          <span ng-show="!fingerprintEntityIds" class="help-text">
+            Click on a link in the graph to see the fingerprint of the relation</span>
+          <span ng-show="fingerprintEntityIds">
+            <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityA.id}}"
+               class="listed-character {{CssClass.forRankingValue(fingerprintEntityA.rankingValue)}}">
+              {{fingerprintEntityA.displayName}}</a>
+            <span>-</span>
+            <a href="#/documents/{{Page.documentId}}/characters/{{fingerprintEntityB.id}}"
+               class="listed-character {{CssClass.forRankingValue(fingerprintEntityB.rankingValue)}}">
+              {{fingerprintEntityB.displayName}}</a>
+          </span>
+        </div>
+        <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintEntityIds"
+          data-parts="parts" data-range-begin="rangeStart" data-range-end="rangeEnd"></div>
+        <div id="slider-range"></div>
+        <div data-loading-spinner ng-hide="loaded"></div>
+        <div data-graph-network data-entities="entities" data-range-begin="rangeStart"
+          data-range-end="rangeEnd" data-show-fingerprint="showFingerprint(ids)"
+          data-height="graphHeight" data-width="graphWidth" data-loaded="loaded" id="graph-network-wrapper"></div>
+      </div>
+      <div class="col-md-3 col-sm-5">
+        <button type="button" class="btn btn-default btn-block" ng-click="reset(persons)">Reset</button>
+        <button type="button" class="btn btn-default btn-block" ng-click="deselectAll()">Deselect
+          all</button>
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control list-group-search-filter"
+          style="margin-top: 5px;">
+        <div class="list-group scrollable-list-group" id="list1">
+          <a href="" ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue'"
+            ng-click="loadGraphNetwork(person)" ng-class="{'active': isActive(person)}"
+            class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
+            {{person.displayName}}
+            <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
+          </a>
+        </div>
+        <div data-loading-spinner ng-hide="persons.length"></div>
       </div>
     </div>
   </div>

@@ -1,8 +1,6 @@
 package de.unistuttgart.vis.vita.services;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -24,14 +22,10 @@ import java.util.logging.Logger;
 public class WordCloudService extends BaseService {
 
   private String documentId;
-
-  @Inject
-  private EntityManager em;
-
   private DocumentDao documentDao;
   private WordCloudDao wordCloudDao;
 
-  private final Logger LOGGER = Logger.getLogger(WordCloudService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(WordCloudService.class.getName());
 
   @Override
   public void postConstruct() {
@@ -58,7 +52,7 @@ public class WordCloudService extends BaseService {
         wordCloud = wordCloudDao.findByEntity(entityId);
       }
     } catch (NoResultException nre) {
-      LOGGER.log(Level.FINEST, "No word cloud found!");
+      LOGGER.log(Level.FINEST, "No word cloud found!", nre);
     }
 
     if (!documentDao.isAnalysisFinished(documentId) && wordCloud == null) {

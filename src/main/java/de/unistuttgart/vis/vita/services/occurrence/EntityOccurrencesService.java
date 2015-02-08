@@ -7,7 +7,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -18,8 +17,8 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Provides a method to GET the occurrences of the current entity.
  */
 @ManagedBean
-public class EntityOccurrencesService extends OccurrencesService {
-  
+public class EntityOccurrencesService extends ExtendedOccurrencesService {
+
   private String entityId;
 
   /**
@@ -34,7 +33,7 @@ public class EntityOccurrencesService extends OccurrencesService {
   }
 
   /**
-   * Sets the id of the entity which occurrences should be got and returns this 
+   * Sets the id of the entity which occurrences should be got and returns this
    * EntityOccurrencesService.
    * 
    * @param eId - the id of the entity which occurrences should be got
@@ -44,12 +43,11 @@ public class EntityOccurrencesService extends OccurrencesService {
     this.entityId = eId;
     return this;
   }
-  
+
   /**
-   * Reads occurrences of the specific entity from database and returns them in JSON.
+   * Reads occurrences of the specific attribute and entity from database and returns them in JSON.
    * 
-   * @param steps - amount of steps the given range should be divided into (default value 0 means 
-   * exact)
+   * @param steps - amount of steps, the range should be divided into (default value 0 means exact)
    * @param rangeStart - start of range to be searched in
    * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
@@ -57,53 +55,23 @@ public class EntityOccurrencesService extends OccurrencesService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart,
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
-    // first check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException(new IllegalArgumentException("Illegal amount of steps!"), 500);
-    }
-    
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-       
-    int startOffset;
-    int endOffset;
-    
-    // calculate offsets
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch(IllegalRangeException ire) {
-      throw new WebApplicationException(ire);
-    }
-    
-    List<Range> occs = null;
-    if (steps == 0) {
-      occs = getExactEntityOccurrences(startOffset, endOffset);
-    } else {
-      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
-    }
-    
-    // put occurrences into a response and send it
-    return new OccurrencesResponse(occs);
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
+    return getOccurrencesImpl(steps, rangeStart, rangeEnd);
   }
-
-  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+  
+  @Override
+  protected List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     // fetch the data
-
-    List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForEntity(entityId, 
-                                                                      startOffset, endOffset);
-    
-    // convert Occurrences into Ranges and return them
-    return convertOccurrencesToRanges(readOccurrences);
+    List<Occurrence> readOccurrences =
+        occurrenceDao.findOccurrencesForEntity(entityId, startOffset, endOffset);
+    return Range.mergeOverlappingRanges(convertOccurrencesToRanges(readOccurrences));
   }
 
   @Override
   protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex, lastSentenceIndex) > 0;
+    return occurrenceDao.getNumberOfOccurrencesForEntity(entityId, firstSentenceIndex,
+        lastSentenceIndex) > 0;
   }
 
 }

@@ -48,7 +48,7 @@ public class PlotViewService extends BaseService {
 
   private EntityDao entityDao;
 
-  private final Logger LOGGER = Logger.getLogger(PlotViewService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PlotViewService.class.getName());
 
   @Override public void postConstruct() {
     super.postConstruct();
@@ -121,20 +121,13 @@ public class PlotViewService extends BaseService {
         
         // get all special places occurring in the current chapter
         List<Entity> occurringPlaces = entityDao.getOccurringEntities(start, end, places, EntityType.PLACE);
-        
-        String placeNames = "";
-        boolean first = true;
+
         for (Entity place : occurringPlaces) {
           currentScene.getPlaces().add(place.getId());
-          
-          // save names for scene title
-          String currentName = place.getDisplayName();
-          placeNames = first ? " @ " + currentName : placeNames + ", " + currentName; 
-          first = false;
         }
         
         // create and set title of the scene
-        String currentTitle = chapter.getNumber() + " - " + chapter.getTitle() + placeNames;
+        String currentTitle = chapter.getNumber() + " - " + chapter.getTitle();
         currentScene.setTitle(currentTitle);
         
         response.getScenes().add(currentScene);

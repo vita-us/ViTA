@@ -7,7 +7,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import de.unistuttgart.vis.vita.model.document.Occurrence;
@@ -18,7 +17,7 @@ import de.unistuttgart.vis.vita.services.responses.occurrence.OccurrencesRespons
  * Provides a method to GET the occurrences of the current attribute and entity.
  */
 @ManagedBean
-public class AttributeOccurrencesService extends OccurrencesService {
+public class AttributeOccurrencesService extends ExtendedOccurrencesService {
 
   private String attributeId;
 
@@ -28,9 +27,8 @@ public class AttributeOccurrencesService extends OccurrencesService {
    * Sets the id of the document this service refers to and returns this
    * AttributeOccurrencesService.
    * 
-   * @param docId
-   *          - the id of the document in which this service should find
-   *          occurrences of attributes
+   * @param docId - the id of the document in which this service should find occurrences of
+   *        attributes
    * @return this AttributeOccurrencesService
    */
   public AttributeOccurrencesService setDocumentId(String docId) {
@@ -42,8 +40,7 @@ public class AttributeOccurrencesService extends OccurrencesService {
    * Sets the id of the entity which occurrences should be got and returns this
    * AttributeOccurrencesService.
    * 
-   * @param eId
-   *          - the id of the entity which occurrences should be got
+   * @param eId - the id of the entity which occurrences should be got
    * @return this AttributeOccurrencesService
    */
   public AttributeOccurrencesService setEntityId(String eId) {
@@ -52,11 +49,10 @@ public class AttributeOccurrencesService extends OccurrencesService {
   }
 
   /**
-   * Sets the id of the attribute which occurrences should be got and returns
-   * this AttributeOccurrencesService.
+   * Sets the id of the attribute which occurrences should be got and returns this
+   * AttributeOccurrencesService.
    * 
-   * @param attrId
-   *          - the id of the attribute which occurrences should be got
+   * @param attrId - the id of the attribute which occurrences should be got
    * @return this AttributeOccurrencesService
    */
   public AttributeOccurrencesService setAttributeId(String attrId) {
@@ -65,66 +61,35 @@ public class AttributeOccurrencesService extends OccurrencesService {
   }
 
   /**
-   * Reads occurrences of the specific attribute and entity from database and
-   * returns them in JSON.
+   * Reads occurrences of the specific attribute and entity from database and returns them in JSON.
    * 
-   * @param steps
-   *          - amount of steps, the range should be divided into (default value 0 means exact)
-   * @param rangeStart
-   *          - start of range to be searched in
-   * @param rangeEnd
-   *          - end of range to be searched in
+   * @param steps - amount of steps, the range should be divided into (default value 0 means exact)
+   * @param rangeStart - start of range to be searched in
+   * @param rangeEnd - end of range to be searched in
    * @return an OccurenceResponse holding all found Occurrences
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OccurrencesResponse getOccurrences(@DefaultValue("0") @QueryParam("steps") int steps,
-                                            @QueryParam("rangeStart") double rangeStart, 
-                                            @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
-    // check amount of steps
-    if (steps < 0 || steps > 1000) {
-      throw new WebApplicationException("Illegal amount of steps!");
-    }
-    
-    // check range
-    if (rangeEnd < rangeStart) {
-      throw new WebApplicationException("Illegal range!");
-    }
-    
-    int startOffset;
-    int endOffset;
-    
-    // calculate offsets for the range
-    try {
-      startOffset = getStartOffset(rangeStart);
-      endOffset = getEndOffset(rangeEnd);
-    } catch (IllegalRangeException e) {
-      throw new WebApplicationException(e);
-    }
-    
-    List<Range> occs = null;
-    if (steps == 0) {
-      occs = getExactEntityOccurrences(startOffset, endOffset);
-    } else {
-      occs = getGranularEntityOccurrences(steps, startOffset, endOffset);
-    }
-
-    return new OccurrencesResponse(occs);
+      @QueryParam("rangeStart") double rangeStart,
+      @QueryParam("rangeEnd") @DefaultValue("1") double rangeEnd) {
+    return getOccurrencesImpl(steps, rangeStart, rangeEnd);
   }
-
-  private List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
+  
+  @Override
+  protected List<Range> getExactEntityOccurrences(int startOffset, int endOffset) {
     // get the Occurrences
-    List<Occurrence> readOccurrences = occurrenceDao.findOccurrencesForAttribute(entityId, attributeId, 
-                                                                          startOffset, endOffset);
-    
+    List<Occurrence> readOccurrences =
+        occurrenceDao.findOccurrencesForAttribute(entityId, attributeId, startOffset, endOffset);
+
     // convert Occurrences into Ranges and return them
-    return convertOccurrencesToRanges(readOccurrences);
+    return Range.mergeOverlappingRanges(convertOccurrencesToRanges(readOccurrences));
   }
 
   @Override
   protected boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex) {
-    return occurrenceDao.getNumberOfOccurrencesForAttribute(
-        entityId, attributeId, firstSentenceIndex, lastSentenceIndex) > 0;
+    return occurrenceDao.getNumberOfOccurrencesForAttribute(entityId, attributeId,
+        firstSentenceIndex, lastSentenceIndex) > 0;
   }
 
 }

@@ -33,7 +33,7 @@ public class EntityRankingModule extends Module<EntityRanking> {
   }
   
   /**
-   * Compares two entities according to their occurrance count, in descending order
+   * Compares two entities according to their occurrence count, in descending order.
    */
   private static class EntityComparator implements Comparator<BasicEntity> {
 
@@ -51,7 +51,7 @@ public class EntityRankingModule extends Module<EntityRanking> {
         return -1;
       }
 
-      return Integer.compare(o2.getOccurences().size(), o1.getOccurences().size());
+      return Integer.compare(o2.getOccurrences().size(), o1.getOccurrences().size());
     }
     
   }

@@ -3,17 +3,51 @@
     <div ng-include="'partials/menu.html'"></div>
   </div>
   <div class="col-md-10">
-    <div class="row filterable-list">
-      <input type="search" ng-model="search" placeholder="Search..." class="form-control filter">
-      <ul>
-        <li ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' ">
-          <a href="#/documents/{{Page.documentId}}/characters/{{person.id}}"
-            class="listed-character {{CssClass.forRankingValue(person.rankingValue)}}">
-            {{person.displayName}} 
+    <div class="row">
+      <div class="col-md-9">
+        <h1>
+          <small><span class="glyphicon glyphicon-user"></span></small> {{selected.displayName}}
+          <button class="btn btn-link pull-right" title="Delete this character if you think it was incorrectly recognized"
+                  ng-click="deleteEntity()">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </h1>
+        <dl class="dl-horizontal">
+          <dt>occurrences</dt>
+          <dd>{{selected.frequency}}</dd>
+          <div ng-repeat="attribute in selected.compactAttributes">
+            <dt>{{attribute.attributetype}}</dt>
+            <dd>{{attribute.content}}</dd>
+          </div>
+        </dl>
+        <div data-loading-spinner ng-hide="!angular.isUndefined(selected.compactAttributes)"></div>
+	<dl class="dl-horizontal" ng-show="relatedEntitiesLoaded && relatedEntities.length > 0">
+          <dt>co-occurrences</dt>
+          <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
+            <a ng-href="#/documents/{{Page.documentId}}/{{getEntityType(entity)}}/{{entity.id}}">
+              {{entity.displayName}}
+            </a>
+          <span ng-click="setFingerprint(entity.id)" class="glyphicon glyphicon-plus"
+                ng-class="{'marked': isMarked(entity.id)}" aria-hidden="true"
+                title="Add this entity to the fingerprint"></span>
+          </div></dd>
+        </dl>
+        <div data-loading-spinner ng-hide="relatedEntitiesLoaded"></div>
+        <div data-fingerprint-top-row></div>
+        <div data-fingerprint class="fingerprint-container" data-entity-ids="fingerprintIds" data-parts="parts"></div>
+      </div>
+      <div class="col-md-3 col-sm-5">
+        <input type="search" ng-model="search" placeholder="Search..." class="form-control filter list-group-search-filter">
+        <div class="list-group scrollable-list-group">
+          <a ng-repeat="person in persons | entityNameFilter:search | orderBy: 'rankingValue' "
+             class="list-group-item listed-character {{CssClass.forRankingValue(person.rankingValue)}}"
+             ng-class="{active: isSelected(person)}" ng-href="#/documents/{{Page.documentId}}/characters/{{person.id}}">
+            {{person.displayName}}
             <span ng-show="person.alternativeName">({{person.alternativeName}})</span>
-        </a>
-        </li>
-      </ul>
+          </a>
+        </div>
+        <div data-loading-spinner ng-hide="persons.length"></div>
+      </div>
     </div>
   </div>
 </div>

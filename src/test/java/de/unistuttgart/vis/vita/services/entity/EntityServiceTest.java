@@ -79,7 +79,7 @@ public class EntityServiceTest extends AbstractEntityServiceTest {
 
   private void createEntityWordCloud() {
     entityWordCloud = new WordCloud();
-    Set<WordCloudItem> items = new HashSet<WordCloudItem>();
+    Set<WordCloudItem> items = new HashSet<>();
     items.add(new WordCloudItem("brave", 2));
     items.add(new WordCloudItem("beutlin", 1));
     entityWordCloud.getItems().addAll(items);
@@ -87,7 +87,7 @@ public class EntityServiceTest extends AbstractEntityServiceTest {
 
   private void createGlobalWordCloud() {
     globalWordCloud = new WordCloud();
-    Set<WordCloudItem> items = new HashSet<WordCloudItem>();
+    Set<WordCloudItem> items = new HashSet<>();
     items.add(new WordCloudItem("Frodo Baggins", 1));
     items.add(new WordCloudItem("beutlin", 1));
     items.add(new WordCloudItem("Gandalf", 1));
@@ -118,7 +118,7 @@ public class EntityServiceTest extends AbstractEntityServiceTest {
 
     assertThat(wordCloudDao.findAll().size(), is(1));
 
-    for (WordCloudItem item : wordCloudDao.getGlobalWordCloud(docId).getItems()) {
+    for (WordCloudItem item : wordCloudDao.findByDocument(docId).getItems()) {
       assertThat(item.getEntityId(), nullValue());
     }
     em.close();

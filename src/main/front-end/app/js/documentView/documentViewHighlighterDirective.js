@@ -17,7 +17,8 @@
           scope.$watch('[occurrences, entities]', function(newValues, oldValues) {
             if (!angular.equals(newValues, oldValues)) {
               clearChapters();
-              highlight(scope.occurrences, scope.documentId, scope.entities, scope.parts);
+              highlight(scope.occurrences, scope.documentId, scope.entities,
+                  scope.parts, scope.selectedOccurrenceIndex);
             }
           }, true);
 
@@ -34,7 +35,7 @@
           }, true);
         }
 
-        function highlight(occurrences, documentId, entities, parts) {
+        function highlight(occurrences, documentId, entities, parts, selectedOccurrenceIndex) {
           occurrences = angular.isUndefined(occurrences) ? [] : occurrences;
 
           occurrences = occurrences.sort(function(a, b) {
@@ -52,10 +53,8 @@
             var chapter = chapterMap[chapterId];
             var chapterOffset = chapter.range.start.offset;
             highlightChapter(chapterOccurrences[chapterId], chapterOffset, chapterId, entities);
-            if (i === 0) {
-              highlightSelectedOccurrence(0);
-            }
           });
+          highlightSelectedOccurrence(selectedOccurrenceIndex);
         }
 
         function highlightChapter(chapterOccurrences, chapterOffset, chapterId, entities) {

@@ -50,10 +50,9 @@ public class Chapter extends AbstractEntityBase {
    * Creates a new Chapter, setting all fields to default values.
    */
   public Chapter() {
-    range =
-        new Range(TextPosition.fromGlobalOffset(0, 1), TextPosition.fromGlobalOffset(0,
-            1));
-    sentences = new ArrayList<Sentence>();
+    range = new Range(TextPosition.fromGlobalOffset(0, 1),
+                      TextPosition.fromGlobalOffset(0, 1));
+    sentences = new ArrayList<>();
   }
 
   /**
@@ -166,4 +165,5 @@ public class Chapter extends AbstractEntityBase {
   public void setRange(Range range) {
     this.range = range;
   }
+
 }

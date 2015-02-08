@@ -49,7 +49,7 @@ public class EnumParameter extends AbstractParameter {
         values.add(new MetaEnumParameter(name, label));
       } catch (NoSuchFieldException e) {
         throw new IllegalStateException(
-            "Could not find necessary annotations for the enum parameters.");
+            "Could not find necessary annotations for the enum parameters.", e);
       }
     }
   }
@@ -60,8 +60,8 @@ public class EnumParameter extends AbstractParameter {
   }
 
   @Override
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = defaultValue;
+  public void setDefaultValue(Object defaultValue) {
+    this.defaultValue = ((EnumNLP)defaultValue).getName();
   }
 }
 

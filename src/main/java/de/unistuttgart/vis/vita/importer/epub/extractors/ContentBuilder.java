@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +14,8 @@ import java.util.logging.Logger;
  *
  */
 public class ContentBuilder {
+  
+  private static final Logger LOGGER = Logger.getLogger(ContentBuilder.class.toString());
 
   public String getStringFromInputStream(InputStream is) {
     BufferedReader bufferedReader = null;
@@ -20,22 +23,19 @@ public class ContentBuilder {
 
     String line;
     try {
-
-      bufferedReader = new BufferedReader(new InputStreamReader(is));
+      bufferedReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
       while ((line = bufferedReader.readLine()) != null) {
         stringBuilder.append(line);
       }
     } catch (IOException e) {
-      Logger logger = Logger.getLogger(ContentBuilder.class.getName());
-      logger.log(Level.SEVERE, "an exception was thrown");
-      
+      LOGGER.log(Level.SEVERE, "an exception was thrown. Is Encoding of epub UTF-8?", e);
+
     } finally {
       if (bufferedReader != null) {
         try {
           bufferedReader.close();
         } catch (IOException e) {
-          Logger logger = Logger.getLogger(ContentBuilder.class.getName());
-          logger.log(Level.SEVERE, "an exception was thrown");
+          LOGGER.log(Level.SEVERE, "an exception was thrown", e);
         }
       }
     }

@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -12,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
-import org.junit.BeforeClass;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
@@ -25,14 +27,17 @@ import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
 import de.unistuttgart.vis.vita.analysis.results.NLPResult;
+import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.EnumNLP;
 import de.unistuttgart.vis.vita.model.document.Occurrence;
 import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
+
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -41,7 +46,9 @@ import static org.mockito.Matchers.anyString;
 public class EntityRecognitionModuleTest {
 
   // Short story: The Cunning Fox and the Clever Stork
-  private final static String[] CHAPTERS = {"Alice went to the party.", "Alice met Bob."};
+  private final static String[] CHAPTERS = {
+      "Alice went to the party.",
+      "Alice met Bob. Frodo is rain. rain is Frodo."};
 
   // Position of the Person/Place Names (relative)
   private final static int[][] RELATIVE_ENTITY_OFFSETS = {
@@ -68,15 +75,17 @@ public class EntityRecognitionModuleTest {
       // Sentence 1
       {0, 13}};
 
-  private static List<Sentence> sentences = new ArrayList<>();
-  private static List<DocumentPart> parts = new ArrayList<>();
-  private static ModuleResultProvider resultProvider;
-  private static ProgressListener progressListener;
-  private static List<Chapter> chapterObjects;
-  private static BasicEntityCollection collection;
+  private List<Sentence> sentences = new ArrayList<>();
+  private List<DocumentPart> parts = new ArrayList<>();
+  private ModuleResultProvider resultProvider;
+  private ProgressListener progressListener;
+  private List<Chapter> chapterObjects;
+  private BasicEntityCollection collection;
+  private AnalysisParameters analysisParameters;
+  private EntityRecognitionModule entityRecognitionModule;
 
-  @BeforeClass
-  public static void setUp() throws Exception {
+  @Before
+  public void setUp() throws Exception {
     resultProvider = mock(ModuleResultProvider.class);
 
     // mock import result
@@ -93,7 +102,6 @@ public class EntityRecognitionModuleTest {
     mockOccurrenceResults(sentenceResult, chapters);
     when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
 
-
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
 
@@ -105,13 +113,20 @@ public class EntityRecognitionModuleTest {
     when(datastore.getStoredAnalysis(anyString())).thenReturn(null);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
+    AnalysisParameters parameters = mock(AnalysisParameters.class);
+    when(parameters.getNlpTool()).thenReturn(EnumNLP.ANNIE);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(parameters);
+
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
     when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
+    
+    analysisParameters = mock(AnalysisParameters.class);
+    when(resultProvider.getResultFor(AnalysisParameters.class)).thenReturn(analysisParameters);
+    
+    entityRecognitionModule = new EntityRecognitionModule();
 
-    EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
-    collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
 
   /**
@@ -120,7 +135,7 @@ public class EntityRecognitionModuleTest {
    * @param sentenceResult - the mocked result of the sentence detection.
    * @param chapters - the mocked chapters.
    */
-  private static void mockOccurrenceResults(SentenceDetectionResult sentenceResult,
+  private void mockOccurrenceResults(SentenceDetectionResult sentenceResult,
       List<Chapter> chapters) {
     if (!(chapters.size() == RELATIVE_ENTITY_OFFSETS.length)) {
       throw new IllegalArgumentException("chapters size does not fit to relative entity offsets");
@@ -154,7 +169,7 @@ public class EntityRecognitionModuleTest {
     }
   }
 
-  private static List<Chapter> fillText() {
+  private List<Chapter> fillText() {
     List<Chapter> chapters = new ArrayList<Chapter>();
 
     DocumentPart part = new DocumentPart();
@@ -180,13 +195,15 @@ public class EntityRecognitionModuleTest {
 
   @Test
   public void checkEntitiesAreDetectedAcrossChapters() throws Exception {
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
     BasicEntity person1 = getEntityByName("Alice");
     assertThat(person1, not(nullValue()));
-    assertThat(person1.getOccurences(), hasSize(2));
+    assertThat(person1.getOccurrences(), hasSize(2));
   }
 
   @Test
   public void checkEntitiesWithOneOccurrenceAreRemoved() throws Exception {
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
     BasicEntity person2 = getEntityByName("Bob");
     assertThat(person2, nullValue());
   }
@@ -201,6 +218,27 @@ public class EntityRecognitionModuleTest {
     }
     return null;
   }
+  
+  @Test
+  public void testWithStopEntityFilter() throws Exception {
+    when(analysisParameters.getStopEntityFilter()).thenReturn(true);
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
+
+    BasicEntity person1 = getEntityByName("rain");
+    assertThat(person1, nullValue());
+    
+  }
+  
+  @Test
+  public void testWithoutStopEntityFilter() throws Exception {
+    System.out.println(analysisParameters);
+    when(analysisParameters.getStopEntityFilter()).thenReturn(false);
+    collection = entityRecognitionModule.execute(resultProvider, progressListener);
+
+    BasicEntity person1 = getEntityByName("rain");
+    assertThat(person1, not(nullValue()));
+  }
+  
 
   private static int getDocumentLength() {
     int documentLength = 0;

@@ -6,7 +6,6 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 import de.unistuttgart.vis.vita.services.BaseService;
 
 import javax.annotation.ManagedBean;
-import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;

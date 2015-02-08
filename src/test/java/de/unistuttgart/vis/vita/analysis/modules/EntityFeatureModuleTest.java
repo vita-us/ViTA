@@ -224,8 +224,8 @@ public class EntityFeatureModuleTest {
     Range entity3Range = new Range(chapter, OCCURANCE3_START, OCCURANCE3_END, documentLength);
     Occurrence occurrence3 = new Occurrence(sentence1, entity3Range);
 
-    entity1.getOccurences().add(occurrence1);
-    entity1.getOccurences().add(occurrence2);
+    entity1.getOccurrences().add(occurrence1);
+    entity1.getOccurrences().add(occurrence2);
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_1));
     entity1.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME1_2));
     list.add(entity1);
@@ -233,7 +233,7 @@ public class EntityFeatureModuleTest {
     entity2 = new BasicEntity();
     entity2.setType(EntityType.PLACE);
     entity2.setDisplayName(NAME2);
-    entity2.getOccurences().add(occurrence3);
+    entity2.getOccurrences().add(occurrence3);
     entity2.getNameAttributes().add(new Attribute(AttributeType.NAME, NAME2));
     list.add(entity2);
 

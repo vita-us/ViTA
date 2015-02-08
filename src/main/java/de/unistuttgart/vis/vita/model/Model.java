@@ -1,9 +1,5 @@
 package de.unistuttgart.vis.vita.model;
 
-import de.unistuttgart.vis.vita.analysis.AnalysisResetter;
-import de.unistuttgart.vis.vita.analysis.AnalysisStatus;
-import de.unistuttgart.vis.vita.model.dao.DocumentDao;
-import de.unistuttgart.vis.vita.model.document.Document;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.jersey.server.CloseableService;
 
@@ -11,8 +7,6 @@ import de.unistuttgart.vis.vita.model.dao.DaoFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +21,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 /**
- * Represents the Model of the application.
+ * Represents the Model of the application, implementing a factory for EntityManagers.
  */
 @ManagedBean
 @ApplicationScoped
@@ -37,7 +31,7 @@ public class Model implements Factory<EntityManager> {
 
   static {
     /*
-     * Glassfish does not use the driver provided in the war if not explicitly loaded:
+     * GlassFish does not use the driver provided in the war if not explicitly loaded:
      * https://java.net/jira/browse/GLASSFISH-19451
      */
     loadDriver();
@@ -55,12 +49,21 @@ public class Model implements Factory<EntityManager> {
     this(Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME), new TextRepository());
   }
 
+  /**
+   * Creates a new Model using a given EntityManagerFactory and TextRepository.
+   *
+   * @param emf - the EntityManagerFactory to be used in this Model
+   * @param textRepository - the TextRepository to be used for the texts in this Model
+   */
   protected Model(EntityManagerFactory emf, TextRepository textRepository) {
     this.entityManagerFactory = emf;
     this.textRepository = textRepository;
     this.gateDatastoreLocation = new GateDatastoreLocation();
   }
 
+  /**
+   * Loads the database drivers.
+   */
   private static void loadDriver() {
     try {
       Class.forName("org.h2.Driver");
@@ -75,16 +78,24 @@ public class Model implements Factory<EntityManager> {
     }
   }
 
+  /**
+   * @return the location where GATE stores the information for this Model
+   */
   public GateDatastoreLocation getGateDatastoreLocation() {
     return gateDatastoreLocation;
   }
 
+  /**
+   * Sets the location where GATE should store its data for this Model to the given one.
+   *
+   * @param gateDatastoreLocation - the data store location for GATE
+   */
   protected void setGateDatastoreLocation(GateDatastoreLocation gateDatastoreLocation) {
     this.gateDatastoreLocation = gateDatastoreLocation;
   }
 
   /**
-   * @return The entity manager.
+   * @return a new EntityManager from the factory
    */
   public EntityManager getEntityManager() {
     return entityManagerFactory.createEntityManager();
@@ -97,6 +108,11 @@ public class Model implements Factory<EntityManager> {
     return textRepository;
   }
 
+  /**
+   * Provides an EntityManager for this Model.
+   *
+   * @return new EntityManager
+   */
   @Override
   @RequestScoped
   public EntityManager provide() {
@@ -114,6 +130,11 @@ public class Model implements Factory<EntityManager> {
     return instance;
   }
 
+  /**
+   * Produces a new EntityManager.
+   *
+   * @return new EntityManager
+   */
   @RequestScoped
   @Produces
   public EntityManager produce() {
@@ -121,6 +142,11 @@ public class Model implements Factory<EntityManager> {
     return getEntityManager();
   }
 
+  /**
+   * Closes the given EntityManager when it is disposed.
+   *
+   * @param instance - the instance of EntityManager to be disposed
+   */
   @Override
   public void dispose(@Disposes EntityManager instance) {
     if (!instance.isOpen()) {
@@ -130,10 +156,19 @@ public class Model implements Factory<EntityManager> {
     instance.close();
   }
 
+  /**
+   * Closes the EntityManagerFactory and all instances it holds.
+   */
   public void closeAllEntityManagers() {
     entityManagerFactory.close();
   }
 
+  /**
+   * Runs the given action in a new transaction.
+   *
+   * @param callback - the TransactionalAction including the run() method to be performed in a
+   *                 sTransaction
+   */
   public void runInTransaction(TransactionalAction callback) {
     EntityManager em = getEntityManager();
     try {

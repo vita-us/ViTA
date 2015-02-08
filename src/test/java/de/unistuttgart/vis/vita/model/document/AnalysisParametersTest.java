@@ -149,14 +149,14 @@ public class AnalysisParametersTest {
   @Test
   public void testStopWordListEnabledTrue() {
     parameters.setStopWordListEnabled(true);
-    assertEquals(parameters.isStopWordListEnabled(), true);
+    assertEquals(parameters.getStopWordListEnabled(), true);
     executeFinish();
   }
 
   @Test
   public void testStopWordListEnabledFalse() {
     parameters.setStopWordListEnabled(false);
-    assertEquals(parameters.isStopWordListEnabled(), false);
+    assertEquals(parameters.getStopWordListEnabled(), false);
     executeFinish();
   }
 

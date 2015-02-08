@@ -22,15 +22,16 @@ import java.util.logging.Logger;
  */
 @ManagedBean
 public class DocumentPartsService extends BaseService {
-  
+
   private String documentId;
 
   private DocumentDao documentDao;
   private DocumentPartDao documentPartDao;
 
-  private final Logger LOGGER = Logger.getLogger(DocumentPartsService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(DocumentPartsService.class.getName());
 
-  @Override public void postConstruct() {
+  @Override
+  public void postConstruct() {
     super.postConstruct();
     documentDao = getDaoFactory().getDocumentDao();
     documentPartDao = getDaoFactory().getDocumentPartDao();
@@ -46,7 +47,7 @@ public class DocumentPartsService extends BaseService {
     this.documentId = docId;
     return this;
   }
-  
+
   /**
    * Returns a PartsResponse including a list of DocumentParts in current document.
    * 
@@ -57,14 +58,10 @@ public class DocumentPartsService extends BaseService {
   public DocumentPartsResponse getParts() {
     List<DocumentPart> parts = documentPartDao.findPartsInDocument(documentId);
 
-    // check whether analysis is still running
-    if (!documentDao.isAnalysisFinished(documentId)) {
-
+    if (!documentDao.isAnalysisFinished(documentId) && parts.isEmpty()) {
       // parts and chapters are not detected yet
-      if (parts.isEmpty()) {
-        LOGGER.log(Level.FINEST, "List of document parts requested, but not detected yet.");
-        throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
-      }
+      LOGGER.log(Level.FINEST, "List of document parts requested, but not detected yet.");
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
     }
 
     return new DocumentPartsResponse(parts);

@@ -30,6 +30,7 @@
         draw_chart(container, 'plotview', plotviewData, true, false, false);
       }
 
+      var MARGIN = {top: 20, right: 25, bottom: 20, left: 1};
       var LINK_WIDTH = 1.8;
       var LINK_GAP = 2;
 
@@ -67,6 +68,10 @@
         return names.join(', ');
       }
 
+      var zoom = d3.behavior.zoom()
+          .scaleExtent([1, 3])
+          .on('zoom', zoomed);
+
 
       function create_link_path(link) {
         var x0 = link.x0,
@@ -84,9 +89,8 @@
 
 
       function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
-        var margin = {top: 20, right: 25, bottom: 20, left: 1};
-        var height = RAW_CHART_HEIGHT - margin.top - margin.bottom;
-        var width = RAW_CHART_WIDTH - margin.left - margin.right;
+        var height = RAW_CHART_HEIGHT - MARGIN.top - MARGIN.bottom;
+        var width = RAW_CHART_WIDTH - MARGIN.left - MARGIN.right;
 
         var scenes = data.scenes;
 
@@ -105,6 +109,12 @@
         var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
         for (var i = 0; i < scenes.length; i++) {
           var scene = scenes[i];
+
+          // Skip scenes without chars
+          if (scene.chars.length <= 0) {
+            continue;
+          }
+
           var scene_characters = [];
           var scene_places = [];
           var duration = parseInt(scene.duration);
@@ -143,13 +153,14 @@
         });
 
         var svg = container.append('svg')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.top + margin.bottom)
+            .attr('width', width + MARGIN.left + MARGIN.right)
+            .attr('height', height + MARGIN.top + MARGIN.bottom)
             .attr('class', 'chart')
             .attr('id', safe_name)
             .call(toolTip)
+            .call(zoom)
             .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            .attr('transform', 'translate(' + MARGIN.left + ',' + MARGIN.top + ')');
 
         var groups = define_groups(characters);
         find_median_groups(groups, scene_nodes, tie_breaker);
@@ -226,6 +237,15 @@
           place_map.set(place.id, new Place(place.id, place.name));
         }
         return place_map;
+      }
+
+      function zoomed() {
+        var container = d3.select(this).select('g');
+
+        var translateX = d3.event.translate[0] + MARGIN.left;
+        var translateY = d3.event.translate[1] + MARGIN.right;
+
+        container.attr('transform', 'translate(' + translateX + ',' + translateY + ')scale(' + d3.event.scale + ')');
       }
 
 
@@ -546,7 +566,7 @@
           s.width = 5;
           s.height = LINK_WIDTH;
           s.name = chars[i].name;
-          s.id = scenes.length;
+          s.id = -scenes.length;
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
             var l = new Link(s, chars[i].first_scene, chars[i].group_id, chars[i].id);
@@ -694,6 +714,11 @@
             .data(scenes)
             .enter().append('g')
             .attr('class', 'node')
+            .attr('charid', function(d) {
+              if (d.char_node) {
+                return d.comic_name + '_' + d.chars[0].id;
+              }
+            })
             .attr('transform', function(d) {
               return 'translate(' + d.x + ',' + d.y + ')';
             })
@@ -702,6 +727,8 @@
                   return d;
                 })
                 .on('dragstart', function() {
+                  // Prevent panning when dragging nodes
+                  d3.event.sourceEvent.stopPropagation();
                   // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
@@ -709,9 +736,16 @@
             .on('mouseover', function(d) {
               if (!d.char_node) {
                 toolTip.show(d);
+              } else {
+                mouseover(d.comic_name, d.chars[0].id);
               }
             })
-            .on('mouseout', toolTip.hide);
+            .on('mouseout', function(d) {
+              toolTip.hide();
+              if (d.char_node) {
+                mouseout(d.comic_name, d.chars[0].id);
+              }
+            });
 
         nodes.append('rect')
             .attr('y', -additional_height / 2)
@@ -765,9 +799,9 @@
 
 
         function dragmove(scene) {
+          toolTip.hide();
           var old_y = scene.y;
 
-          scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
           scene.y = Math.max(0, Math.min(chart_height - scene.height, d3.event.y));
           d3.select(this).attr('transform', 'translate(' + scene.x + ',' + scene.y + ')');
 
@@ -797,18 +831,24 @@
               return d3.rgb(COLOR_SCALE(d.group_id)).darker(0.5).toString();
             })
             .style('stroke-width', LINK_WIDTH)
-            .on('mouseover', mouseover_of_link)
-            .on('mouseout', mouseout_of_link);
+            .on('mouseover', function(d) {
+              mouseover(d.from.comic_name, d.char_id);
+            })
+            .on('mouseout', function(d) {
+              mouseout(d.from.comic_name, d.char_id);
+            });
+      }
 
-        function mouseover_of_link(d) {
-          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', true);
-        }
+      function mouseover(comic_name, char_id) {
+        d3.selectAll('[charid="' + comic_name + '_' + char_id + '"]')
+            .classed('hovered', true)
+            .style('stroke-width', LINK_WIDTH + 1);
+      }
 
-        function mouseout_of_link(d) {
-          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', false);
-        }
+      function mouseout(comic_name, char_id) {
+        d3.selectAll('[charid="' + comic_name + '_' + char_id + '"]')
+            .classed('hovered', false)
+            .style('stroke-width', LINK_WIDTH);
       }
 
 

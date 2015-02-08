@@ -15,6 +15,7 @@ describe('PersonListCtrl', function() {
     $httpBackend = _$httpBackend_;
     $httpBackend.expectGET('webapi/documents/doc13a/persons').respond(TestData.persons);
     $httpBackend.expectGET('webapi/documents/doc13a').respond(TestData.singleDocument);
+    $httpBackend.expectGET('webapi/documents/doc13a/parts').respond(TestData.parts);
 
     $routeParams.documentId = 'doc13a';
 
@@ -25,7 +26,7 @@ describe('PersonListCtrl', function() {
   }));
 
   it('should get all profiles from REST by using the Person service', inject(function(TestData) {
-    expect(scope.persons).not.toBeDefined();
+    expect(scope.persons).toEqualData([]);
     $httpBackend.flush();
     expect(scope.persons).toEqualData(TestData.persons.persons);
   }));

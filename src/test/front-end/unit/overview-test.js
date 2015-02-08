@@ -24,10 +24,10 @@ describe('OverviewCtrl', function() {
     });
   }));
 
-  it('should create "document" model', inject(function($controller, TestData) {
-    expect(scope.document).not.toBeDefined();
+  it('should create "document" model', inject(function($controller, TestData, Page) {
+    expect(Page.document).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.document).toEqualData(TestData.singleDocument);
+    expect(Page.document).toEqualData(TestData.singleDocument);
   }));
 
   it('should retrieve the analysis status', inject(function(TestData) {
@@ -36,17 +36,15 @@ describe('OverviewCtrl', function() {
     expect(scope.progress).toEqualData(TestData.analysisProgress);
   }));
 
-  it('should load the status repeatedly', inject(function($interval) {
+  it('should load the status repeatedly', inject(function($interval, TestData) {
     // Ensure the current data are different from the changed data
     $httpBackend.flush();
     expect(scope.progress.graphView.isReady).toBe(false);
 
     // Respond with the changed data
-    $httpBackend.expectGET('webapi/documents/123/progress').respond({
-      graphView: {
-        isReady: true
-      }
-    });
+    var changedProgress = angular.copy(TestData.analysisProgress);
+    changedProgress.graphView.isReady = true;
+    $httpBackend.expectGET('webapi/documents/123/progress').respond(changedProgress);
     // Simulate the expected time interval
     $interval.flush(1000);
     $httpBackend.flush();

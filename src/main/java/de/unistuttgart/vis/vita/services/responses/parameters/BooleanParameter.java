@@ -28,7 +28,7 @@ public class BooleanParameter extends AbstractParameter {
   }
 
   @Override
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = Boolean.parseBoolean(defaultValue);
+  public void setDefaultValue(Object defaultValue) {
+    this.defaultValue = (boolean)defaultValue;
   }
 }

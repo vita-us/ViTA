@@ -133,11 +133,10 @@ public class MetadataAnalyzerEpub {
     if (!ebook.getMetadata().getDates().isEmpty()) {
 
       for (Date dateItem : ebook.getMetadata().getDates()) {
-        if (dateItem.getEvent() != null) {
-          if (dateItem.getEvent().toString().toLowerCase().matches(PUBLICATION)) {
-            publishYearList.add(new EpubModuleLine(dateItem.getValue(), false));
-            break;
-          }
+        if (dateItem.getEvent() != null
+            && dateItem.getEvent().toString().toLowerCase().matches(PUBLICATION)) {
+          publishYearList.add(new EpubModuleLine(dateItem.getValue(), false));
+          break;
         }
       }
     }

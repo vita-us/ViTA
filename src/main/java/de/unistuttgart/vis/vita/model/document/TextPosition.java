@@ -33,13 +33,13 @@ public class TextPosition implements Comparable<TextPosition> {
    * @param documentLength - the length of the whole document
    */
   private TextPosition(int pOffset, int documentLength) {
-    // This constructor is private to prevent confusion about global/local offsets
-    // The factory methods should be used instead.
+    /* This constructor is private to prevent confusion about global/local offsets
+    The factory methods should be used instead. */
     if (pOffset < 0) {
       throw new IllegalArgumentException("offset must not be negative!");
     }
     if (documentLength < 0) {
-      throw new IllegalArgumentException("documentLength must not be negativ");
+      throw new IllegalArgumentException("documentLength must not be negative");
     }
 
     this.offset = pOffset;
@@ -84,8 +84,13 @@ public class TextPosition implements Comparable<TextPosition> {
     return offset;
   }
 
-  public void setOffset(int offset) {
-    this.offset = offset;
+  /**
+   * Sets the offset of this TextPosition to the given value.
+   *
+   * @param newOffset - the new character offset of this TextPosition
+   */
+  public void setOffset(int newOffset) {
+    this.offset = newOffset;
   }
 
   /**
@@ -111,6 +116,11 @@ public class TextPosition implements Comparable<TextPosition> {
     return progress;
   }
 
+  /**
+   * Sets the progress for this TextPosition.
+   *
+   * @param progress - the relative position within the document as a number between 0.0 and 1.0
+   */
   public void setProgress(double progress) {
     this.progress = progress;
   }
@@ -135,15 +145,15 @@ public class TextPosition implements Comparable<TextPosition> {
     }
 
     TextPosition other = (TextPosition) obj;
-    // do not compare chapters, because the position between to chapters may be attributed to two
-    // different chapters, and they are still the same TextPosition
+    /* do not compare chapters, because the position between to chapters may be attributed to two
+    different chapters, and they are still the same TextPosition */
     return other.offset == this.offset;
   }
 
   @Override
   public int hashCode() {
-    // do not compare chapters, because the position between to chapters may be attributed to two
-    // different chapters, and they are still the same TextPosition
+    /* do not compare chapters, because the position between to chapters may be attributed to two
+    different chapters, and they are still the same TextPosition */
     return new HashCodeBuilder().append(offset).hashCode();
   }
 
@@ -155,26 +165,29 @@ public class TextPosition implements Comparable<TextPosition> {
   /**
    * Returns the text position further to the end of the document
    * 
-   * @param a
-   * @param b
+   * @param a - first TextPosition to compare
+   * @param b - second TextPosition to compare
    * @return either a or b
    */
   public static TextPosition max(TextPosition a, TextPosition b) {
-    if (a.compareTo(b) > 0)
+    if (a.compareTo(b) > 0) {
       return a;
+    }
     return b;
   }
 
   /**
    * Returns the text position further at the beginning of the document
    * 
-   * @param a
-   * @param b
+   * @param a - the first TextPosition to compare
+   * @param b - the second TextPosition to compare
    * @return either a or b
    */
   public static TextPosition min(TextPosition a, TextPosition b) {
-    if (a.compareTo(b) < 0)
+    if (a.compareTo(b) < 0) {
       return a;
+    }
     return b;
   }
+
 }

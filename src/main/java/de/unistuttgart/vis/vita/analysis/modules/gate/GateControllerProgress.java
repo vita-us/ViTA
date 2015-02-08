@@ -1,6 +1,5 @@
 /*
  * GateControllerProgress.java
- *
  */
 
 package de.unistuttgart.vis.vita.analysis.modules.gate;
@@ -22,26 +21,27 @@ public class GateControllerProgress implements ProgressListener {
 
   /**
    * Create new progress listener.
-   * @param progressListener The module progress listener which should be update if the analysis makes progress.
+   * 
+   * @param progressListener The module progress listener which should be update if the analysis
+   *        makes progress.
    * @param maxDocuments The maximum amount of documents the controller corpus has.
    */
-  public GateControllerProgress(de.unistuttgart.vis.vita.analysis.ProgressListener progressListener,
-                                int maxDocuments) {
+  public GateControllerProgress(
+      de.unistuttgart.vis.vita.analysis.ProgressListener progressListener, int maxDocuments) {
     this.progressListener = progressListener;
     this.maxDocuments = maxDocuments;
 
     if (maxDocuments > 0) {
-      progressSteps = 1 / maxDocuments;
+      progressSteps = 1.0 / maxDocuments;
     } else {
-      progressSteps = 0;
+      progressSteps = 0.0;
     }
   }
 
   @Override
   public void progressChanged(int i) {
     if (Thread.currentThread().isInterrupted()) {
-      throw new IllegalStateException(
-          new InterruptedException("Thread was interrupted. Interrupt controller!"));
+      throw new SoftInterruptedException("Thread was interrupted. Interrupt controller!");
     }
 
     calcProgress(i);
@@ -49,17 +49,25 @@ public class GateControllerProgress implements ProgressListener {
 
   @Override
   public void processFinished() {
-
+    // when the process is completely finished, someone outside will know (because the method
+    // terminated) and set the progress to 1 when he is finished too.
   }
 
-  private void calcProgress(int i) {
-    if (oldProgress - PROGRESS_RESET_SPAN > i) {
+  /**
+   * Calculates the progress for all documents (a number between 0 and 1) from the gate progress and
+   * calls the {@link de.unistuttgart.vis.vita.analysis.ProgressListener}.
+   * 
+   * @param gateProgress - The process of gate. A number between 0 and 100. Each document will start
+   *        from 0 and end at 100.
+   */
+  private void calcProgress(int gateProgress) {
+    if (oldProgress - PROGRESS_RESET_SPAN > gateProgress) {
       documentsFinished++;
     }
 
     double finishFactor = (double) documentsFinished / (double) maxDocuments;
-    double progChapt = progressSteps * ((double) i / 100);
-    oldProgress = i;
+    double progChapt = progressSteps * ((double) gateProgress / 100);
+    oldProgress = gateProgress;
     double currentProgress = finishFactor + progChapt;
 
     progressListener.observeProgress(currentProgress);

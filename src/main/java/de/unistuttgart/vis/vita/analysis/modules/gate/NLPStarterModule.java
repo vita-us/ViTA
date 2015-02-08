@@ -28,6 +28,7 @@ public class NLPStarterModule extends Module<NLPResult> {
   public NLPResult execute(ModuleResultProvider results, ProgressListener progressListener)
       throws Exception {
     AnalysisParameters parameters = results.getResultFor(AnalysisParameters.class);
+    @SuppressWarnings("rawtypes")
     AbstractNLPModule module;
     EnumNLP nlpTool = parameters.getNlpTool();
 

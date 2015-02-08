@@ -16,13 +16,17 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String title;
 
+  @Column(nullable = true)
+  private Boolean isUserDefinedTitle;
+
   @Column(length = 1000)
   private String author;
 
   @Column(length = 1000)
   private String publisher;
 
-  // Prevent that Hibernate sets documentmetadata and the attributes to null, by not creating a column for this documentmetadata object
+  /* Prevent that Hibernate sets DocumentMetadata and the attributes to null, by not creating a
+  column for this DocumentMetadata object */
   @Formula("0")
   private int dummy;
   
@@ -110,7 +114,7 @@ public class DocumentMetadata {
   /**
    * Sets the year of publication.
    * 
-   * @param newPublishYear - the year when the document was published
+   * @param publishYear - the year when the document was published
    */
 
   public void setPublishYear(Integer publishYear) {
@@ -147,6 +151,22 @@ public class DocumentMetadata {
    */
   public void setEdition(String edition) {
     this.edition = edition;
+  }
+
+  /**
+   * Indicates whether the title attribute is user-defined
+   * @return true, if the user has set the title
+   */
+  public boolean isUserDefinedTitle() {
+    return isUserDefinedTitle != null && isUserDefinedTitle;
+  }
+
+  /**
+   * Sets the flag whether the title attribute is user-defined
+   * @param isUserDefinedTitle true, if the user has set the title
+   */
+  public void setIsUserDefinedTitle(boolean isUserDefinedTitle) {
+    this.isUserDefinedTitle = isUserDefinedTitle;
   }
 
 }

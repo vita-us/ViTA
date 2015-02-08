@@ -2,12 +2,14 @@ package de.unistuttgart.vis.vita.model.document;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
@@ -69,6 +71,33 @@ public class Range implements Comparable<Range> {
   }
 
   /**
+   * Merges ranges in a list so that there are no more overlaps
+   * @param ranges a list of ranges
+   * @return list of sorted, non-overlapping ranges
+   */
+  public static List<Range> mergeOverlappingRanges(List<Range> ranges) {
+    Collections.sort(ranges);
+    TextPosition lastEnd = null;
+    TextPosition lastStart = null;
+    List<Range> result = new ArrayList<>();
+    for (Range range : ranges) {
+      if (lastEnd != null && range.getStart().compareTo(lastEnd) <= 0) {
+        lastEnd = TextPosition.max(lastEnd, range.getEnd());
+      } else {
+        if (lastEnd != null) {
+          result.add(new Range(lastStart, lastEnd));
+        }
+        lastStart = range.getStart();
+        lastEnd = range.getEnd();
+      }
+    }
+    if (lastEnd != null) {
+      result.add(new Range(lastStart, lastEnd));
+    }
+    return result;
+  }
+
+  /**
    * @return the start of the Range
    */
   public TextPosition getStart() {
@@ -100,21 +129,26 @@ public class Range implements Comparable<Range> {
     return getStart().compareTo(other.getEnd()) <= 0 && getEnd().compareTo(other.getStart()) >= 0;
   }
 
-  public Range getOverlappingRange(Range other) {
+  /**
+   * Returns the intersection of this Range and a given one.
+   *
+   * @param otherRange - the other Range with which the intersection should be computed
+   */
+  public Range getOverlappingRange(Range otherRange) {
     Range result = null;
 
-    if (overlapsWith(other)) {
+    if (overlapsWith(otherRange)) {
       TextPosition latestStart, earliestEnd;
-      if (start.compareTo(other.getStart()) > 0) {
+      if (start.compareTo(otherRange.getStart()) > 0) {
         latestStart = this.getStart();
       } else {
-        latestStart = other.getStart();
+        latestStart = otherRange.getStart();
       }
 
-      if (getEnd().compareTo(other.getEnd()) < 0) {
+      if (getEnd().compareTo(otherRange.getEnd()) < 0) {
         earliestEnd = this.getEnd();
       } else {
-        earliestEnd = other.getEnd();
+        earliestEnd = otherRange.getEnd();
       }
 
       result = new Range(latestStart, earliestEnd);
@@ -164,4 +198,5 @@ public class Range implements Comparable<Range> {
   public String toString() {
     return String.format("Range %s ... %s", start, end);
   }
+
 }

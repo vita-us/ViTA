@@ -57,7 +57,7 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
       documentId = results.getResultFor(DocumentPersistenceContext.class).getDocumentId();
       Document document = getDocument(em);
 
-      T result = storeResults(results, document, em);
+      T result = storeResults(results, document, em, progressListener);
 
       em.merge(document);
 
@@ -75,16 +75,22 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
     }
   }
 
+  @Override
+  public void dependencyFailed(Class<?> resultClass) {
+    markFeaturesAsFailed();
+  }
+  
   /**
    * Does the actual work of storing the feature results in the document
    *
    * @param results the results of the dependencies
    * @param document will be merged automatically afterwards
    * @param em the entity manager, in case other entities need to be persisted
+   * @param progressListener
    * @return the desired result for this module
    */
   protected abstract T storeResults(ModuleResultProvider results, Document document,
-      EntityManager em) throws Exception;
+      EntityManager em, ProgressListener progressListener) throws Exception;
 
   /**
    * Returns the {@link FeatureProgress} objects of the given {@link AnalysisProgress} that should
@@ -96,11 +102,6 @@ public abstract class AbstractFeatureModule<T> extends Module<T> {
     TypedQuery<Document> query = em.createNamedQuery("Document.findDocumentById", Document.class);
     query.setParameter("documentId", documentId);
     return query.getSingleResult();
-  }
-
-  @Override
-  public void dependencyFailed(Class<?> resultClass) {
-    markFeaturesAsFailed();
   }
 
   private void markFeaturesAsFailed() {

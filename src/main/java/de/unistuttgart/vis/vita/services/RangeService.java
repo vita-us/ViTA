@@ -1,6 +1,5 @@
 package de.unistuttgart.vis.vita.services;
 
-import javax.inject.Inject;
 import de.unistuttgart.vis.vita.model.dao.DocumentDao;
 import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.occurrence.IllegalRangeException;

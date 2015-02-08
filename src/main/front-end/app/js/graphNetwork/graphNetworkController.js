@@ -3,20 +3,18 @@
 
   var vitaControllers = angular.module('vitaControllers');
 
-  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts',
-      'Document', 'Page', 'Person', 'CssClass', 'FingerprintSynchronizer',
-      function($scope, $routeParams, DocumentParts, Document, Page, Person, CssClass, FingerprintSynchronizer) {
+  vitaControllers.controller('GraphNetworkCtrl', ['$scope', '$routeParams', 'DocumentParts', 'Page',
+      'Person', 'CssClass', 'FingerprintSynchronizer',
+      function($scope, $routeParams, DocumentParts, Page, Person, CssClass, FingerprintSynchronizer) {
+
+        $scope.loaded = false;
 
         // Provide the service for direct usage in the scope
         $scope.CssClass = CssClass;
         $scope.FingerprintSynchronizer = FingerprintSynchronizer;
 
-        Document.get({
-          documentId: $routeParams.documentId
-        }, function(document) {
-          Page.breadcrumbs = 'Graph-Network';
-          Page.setUpForDocument(document);
-        });
+        Page.breadcrumbs = 'Graph-Network';
+        Page.setUpForCurrentDocument();
 
         Person.get({
           documentId: $routeParams.documentId
@@ -50,19 +48,11 @@
           change: function(event, ui) {
             var start = ui.values[0], end = ui.values[1];
 
-            setSliderLabel(start, end);
-
             $scope.rangeStart = start / 100;
             $scope.rangeEnd = end / 100;
             $scope.$apply();
           }
         });
-
-        setSliderLabel(sliderMin, sliderMax);
-
-        function setSliderLabel(start, end) {
-          $('#amount').val(start + ' - ' + end);
-        }
 
         $scope.loadGraphNetwork = function(person) {
           var position = $scope.entities.indexOf(person);

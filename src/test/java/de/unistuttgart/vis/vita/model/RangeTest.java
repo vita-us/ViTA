@@ -12,6 +12,9 @@ import de.unistuttgart.vis.vita.model.document.DocumentMetrics;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
 import de.unistuttgart.vis.vita.model.document.Range;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Tests the creation of Range and the computation of its lengths.
  */
@@ -164,5 +167,45 @@ public class RangeTest {
     assertEquals(range1.hashCode(), range1Duplicate.hashCode());
     assertNotEquals(range1.hashCode(), pos2.hashCode());
     assertNotEquals(range2.hashCode(), range3.hashCode());
+  }
+
+  @Test
+  public void testMergeOverlappingRanges() {
+    Range single = makeRange(20, 100);
+    Range overlapBegin = makeRange(200, 250);
+    Range overlapEnd = makeRange(230, 280);
+    List<Range> result = Range.mergeOverlappingRanges(Arrays.asList(single, overlapBegin, overlapEnd));
+    assertThat(result, contains(single, makeRange(200, 280)));
+  }
+
+  @Test
+  public void testMergeOverlappingRangesSwallowing() {
+    Range overlapSwallower = makeRange(200, 280);
+    Range overlapSwallowed = makeRange(230, 250);
+    Range single = makeRange(1020, 1100);
+    List<Range> result = Range.mergeOverlappingRanges(Arrays.asList(
+        single, overlapSwallower, overlapSwallowed));
+    assertThat(result, contains(makeRange(200, 280), single));
+  }
+
+  @Test
+  public void testMergeOverlappingRangesEdgeCase1() {
+    Range first = makeRange(200, 300);
+    Range second = makeRange(301, 400);
+    List<Range> result = Range.mergeOverlappingRanges(Arrays.asList(first, second));
+    assertThat(result, contains(first, second));
+  }
+
+  @Test
+  public void testMergeOverlappingRangesEdgeCase2() {
+    Range first = makeRange(200, 300);
+    Range second = makeRange(300, 400);
+    List<Range> result = Range.mergeOverlappingRanges(Arrays.asList(first, second));
+    assertThat(result, contains(makeRange(200, 400)));
+  }
+
+  private Range makeRange(int start, int end) {
+    return new Range(TextPosition.fromGlobalOffset(start, DOCUMENT_LENGTH),
+        TextPosition.fromGlobalOffset(end, DOCUMENT_LENGTH));
   }
 }

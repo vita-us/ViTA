@@ -97,7 +97,7 @@
             documentId: $routeParams.documentId,
             query: word.text
           }, function(response) {
-            DocumentViewSender.sendOccurrences(response.occurrences);
+            DocumentViewSender.sendOccurrences({occurrences: response.occurrences, index: 0});
           });
         });
       }
