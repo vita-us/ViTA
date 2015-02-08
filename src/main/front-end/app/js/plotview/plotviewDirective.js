@@ -790,7 +790,6 @@
           toolTip.hide();
           var old_y = scene.y;
 
-          scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
           scene.y = Math.max(0, Math.min(chart_height - scene.height, d3.event.y));
           d3.select(this).attr('transform', 'translate(' + scene.x + ',' + scene.y + ')');
 
