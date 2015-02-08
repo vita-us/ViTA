@@ -631,18 +631,6 @@
         }, {
           'start': {
             'chapter': '1-3',
-            'offset': 3359,
-            'progress': 0.3
-          },
-          'end': {
-            'chapter': '1-3',
-            'offset': 3377,
-            'progress': 0.35
-          },
-          'length': 20
-        }, {
-          'start': {
-            'chapter': '1-3',
             'offset': 3100,
             'progress': 0.3
           },
@@ -652,6 +640,18 @@
             'progress': 0.35
           },
           'length': 50
+        }, {
+          'start': {
+            'chapter': '1-3',
+            'offset': 4359,
+            'progress': 0.3
+          },
+          'end': {
+            'chapter': '1-3',
+            'offset': 4377,
+            'progress': 0.35
+          },
+          'length': 20
         }]
       },
 
