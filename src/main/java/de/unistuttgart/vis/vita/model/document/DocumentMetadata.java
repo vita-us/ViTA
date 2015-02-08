@@ -158,7 +158,7 @@ public class DocumentMetadata {
    * @return true, if the user has set the title
    */
   public boolean isUserDefinedTitle() {
-    return isUserDefinedTitle == true;
+    return isUserDefinedTitle != null && isUserDefinedTitle;
   }
 
   /**
