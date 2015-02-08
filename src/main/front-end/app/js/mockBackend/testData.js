@@ -294,14 +294,24 @@
           'type': 'place',
           'rankingValue': 1,
           'frequency': 400,
-          'entityRelations': []
+          'entityRelations': [],
+          'attributes': []
         }, {
           'id': 'place6Hamburg',
           'displayName': 'Hamburg',
           'type': 'place',
           'rankingValue': 2,
           'frequency': 20,
-          'entityRelations': []
+          'entityRelations': [],
+          'attributes': [{
+            'id': 'attr12697',
+            'content': '1700km2',
+            'type': 'area'
+          }, {
+            'id': 'at65157',
+            'content': 'Hamburg',
+            'type': 'state'
+          }]
         }]
       },
 
@@ -687,14 +697,28 @@
           'type': 'person',
           'rankingValue': 3,
           'frequency': 301,
-          'entityRelations': []
+          'entityRelations': [],
+          'attributes': [{
+            'id': 'attr12397',
+            'content': '15',
+            'type': 'age'
+          }, {
+            'id': 'at65657',
+            'content': 'Mr. Baggins',
+            'attributetype': 'name'
+          }, {
+            'id': 'at65657',
+            'content': 'Bilbo',
+            'attributetype': 'name'
+          }]
         }, {
           'id': 'person10Bert',
           'displayName': 'Bert',
           'type': 'person',
           'rankingValue': 7,
           'frequency': 153,
-          'entityRelations': []
+          'entityRelations': [],
+          'attributes': []
         }]
       },
 
