@@ -33,7 +33,7 @@ describe('documentHighlighter', function() {
   }));
 
   it('should highlight correct number of entities', inject(function(TestData) {
-    expect(element.find('span[class^="ranking"]').length).toBe(9);
+    expect(element.find('span[class^="ranking"]').length).toBe(8);
   }));
 
   it('should highlight the correct text', inject(function(TestData) {
