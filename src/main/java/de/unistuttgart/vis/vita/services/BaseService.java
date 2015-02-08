@@ -53,4 +53,8 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
   @Override public void close() throws IOException {
     preDestroy();
   }
+
+  protected EntityManager getEntityManager() {
+    return em;
+  }
 }

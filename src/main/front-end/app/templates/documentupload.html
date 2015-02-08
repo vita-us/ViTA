@@ -1,9 +1,18 @@
-<form role="form" class="text-upload-form">
+<form role="form" class="text-upload-form form-horizontal">
   <div class="form-group">
-    <label for="document-input">Import a new document</label> <input type="file"
-      id="document-input" accept="{{allowedExtensionsString}}" data-file-model="file">
+    <div class="col-sm-12">
+      <label for="document-input">Import a new document</label> <input type="file"
+        id="document-input" accept="{{allowedExtensionsString}}" data-file-model="file">
+    </div>
   </div>
-  <button ng-class="{active: uploading}" class="btn btn-default" ng-click="uploadSelectedFile()">
-    <span ng-show="uploading" class="glyphicon glyphicon-refresh spin"></span> Import
+  <div>
+    <button class="btn btn-default btn-info" type="button" ng-click="isOpen = !isOpen" id="show-analysis-parameters">
+      <span class="">Analysis Parameters</span>
+      <span class="caret"></span>
+    </button>
+    <div ng-show="isOpen" data-analysis-parameter data-analysis-parameters="analysisParameters"></div>
+  </div>
+  <button ng-class="{active: uploading, disabled: !file}" class="btn btn-lg btn-success" ng-click="uploadSelectedFile()">
+    <span ng-show="uploading" class="glyphicon glyphicon-refresh spin"></span> Import & Analyse
   </button>
 </form>

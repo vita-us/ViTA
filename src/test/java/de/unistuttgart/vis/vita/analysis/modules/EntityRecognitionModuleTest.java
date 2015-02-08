@@ -11,35 +11,29 @@ import static org.mockito.Mockito.withSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unistuttgart.vis.vita.analysis.results.SentenceDetectionResult;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.unistuttgart.vis.vita.analysis.ModuleResultProvider;
 import de.unistuttgart.vis.vita.analysis.ProgressListener;
+import de.unistuttgart.vis.vita.analysis.modules.gate.ANNIEModule;
+import de.unistuttgart.vis.vita.analysis.modules.gate.GateInitializeModule;
 import de.unistuttgart.vis.vita.analysis.results.AnnieDatastore;
 import de.unistuttgart.vis.vita.analysis.results.AnnieNLPResult;
 import de.unistuttgart.vis.vita.analysis.results.BasicEntityCollection;
 import de.unistuttgart.vis.vita.analysis.results.DocumentPersistenceContext;
 import de.unistuttgart.vis.vita.analysis.results.ImportResult;
+import de.unistuttgart.vis.vita.analysis.results.NLPResult;
 import de.unistuttgart.vis.vita.model.document.Chapter;
 import de.unistuttgart.vis.vita.model.document.DocumentPart;
+import de.unistuttgart.vis.vita.model.document.Occurrence;
+import de.unistuttgart.vis.vita.model.document.Sentence;
 import de.unistuttgart.vis.vita.model.document.TextPosition;
-import de.unistuttgart.vis.vita.model.document.TextSpan;
+import de.unistuttgart.vis.vita.model.document.Range;
 import de.unistuttgart.vis.vita.model.entity.Attribute;
 import de.unistuttgart.vis.vita.model.entity.BasicEntity;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 /**
  * Unit tests for analysis modules
@@ -47,9 +41,34 @@ import static org.mockito.Mockito.withSettings;
 public class EntityRecognitionModuleTest {
 
   // Short story: The Cunning Fox and the Clever Stork
-  private final static String[]
-      CHAPTERS = {"Alice went to the party.", "Alice met Bob" };
+  private final static String[] CHAPTERS = {"Alice went to the party.", "Alice met Bob."};
 
+  // Position of the Person/Place Names (relative)
+  private final static int[][] RELATIVE_ENTITY_OFFSETS = {
+      // Chapter 1: "Alice"
+      {0, 4},
+      // Chapter 2: "Alice"
+      {0, 4,
+          // Chapter 2: "Bob"
+          10, 12}};
+
+  // Number of the Sentences to each Person/Place. Should be ordered and ascending: 0,1,2,...
+  private final static int[][] ENTITY_SENTENCE_INDEX = {
+      // Chapter 1: "Alice" -> Sentence 0
+      {0},
+      // Chapter 2: "Alice" -> Sentence 1
+      {1,
+          // Chapter 2: "Bob" -> Sentence 1
+          1}};
+
+  // The (relative) start and end position of sentences in chapters
+  private final static int[][] SENTENCE_OFFSETS = {
+      // Sentence 0
+      {0, 22},
+      // Sentence 1
+      {0, 13}};
+
+  private static List<Sentence> sentences = new ArrayList<>();
   private static List<DocumentPart> parts = new ArrayList<>();
   private static ModuleResultProvider resultProvider;
   private static ProgressListener progressListener;
@@ -59,12 +78,21 @@ public class EntityRecognitionModuleTest {
   @BeforeClass
   public static void setUp() throws Exception {
     resultProvider = mock(ModuleResultProvider.class);
+
+    // mock import result
     ImportResult importResult = mock(ImportResult.class);
     when(importResult.getParts()).thenReturn(parts);
+    when(importResult.getTotalLength()).thenReturn(CHAPTERS[0].length() + CHAPTERS[1].length());
     when(resultProvider.getResultFor(ImportResult.class)).thenReturn(importResult);
+
     progressListener = mock(ProgressListener.class, withSettings());
 
-    fillText();
+    // create chapters and occurrences -> mock Sentence Detection
+    List<Chapter> chapters = fillText();
+    SentenceDetectionResult sentenceResult = mock(SentenceDetectionResult.class);
+    mockOccurrenceResults(sentenceResult, chapters);
+    when(resultProvider.getResultFor(SentenceDetectionResult.class)).thenReturn(sentenceResult);
+
 
     GateInitializeModule initializeModule = new GateInitializeModule();
     initializeModule.execute(resultProvider, progressListener);
@@ -79,16 +107,60 @@ public class EntityRecognitionModuleTest {
 
     ANNIEModule annieModule = new ANNIEModule();
     AnnieNLPResult annieNLPResult = annieModule.execute(resultProvider, progressListener);
-    when(resultProvider.getResultFor(AnnieNLPResult.class)).thenReturn(annieNLPResult);
+    when(resultProvider.getResultFor(NLPResult.class)).thenReturn(annieNLPResult);
     when(resultProvider.getResultFor(AnnieDatastore.class)).thenReturn(datastore);
 
     EntityRecognitionModule entityRecognitionModule = new EntityRecognitionModule();
     collection = entityRecognitionModule.execute(resultProvider, progressListener);
   }
 
-  private static void fillText() {
+  /**
+   * Mock the results of the SentenceDetection to return occurrences.
+   * 
+   * @param sentenceResult - the mocked result of the sentence detection.
+   * @param chapters - the mocked chapters.
+   */
+  private static void mockOccurrenceResults(SentenceDetectionResult sentenceResult,
+      List<Chapter> chapters) {
+    if (!(chapters.size() == RELATIVE_ENTITY_OFFSETS.length)) {
+      throw new IllegalArgumentException("chapters size does not fit to relative entity offsets");
+    }
+    for (int chapterIndex = 0; chapterIndex < chapters.size(); chapterIndex++) {
+      for (int entityIndex = 0; entityIndex < RELATIVE_ENTITY_OFFSETS[chapterIndex].length / 2; entityIndex++) {
+        int sentenceIndex = ENTITY_SENTENCE_INDEX[chapterIndex][entityIndex];
+        int documentLength = getDocumentLength();
+
+        // create sentence if there are not enough
+        if (sentenceIndex <= sentences.size()) {
+          Range sentenceRange =
+              new Range(TextPosition.fromGlobalOffset(SENTENCE_OFFSETS[chapterIndex][0],
+                  documentLength), TextPosition.fromGlobalOffset(SENTENCE_OFFSETS[chapterIndex][1],
+                  documentLength));
+          sentences.add(new Sentence(sentenceRange, chapters.get(chapterIndex), sentenceIndex));
+        }
+
+        // create mock occurrences for input
+        Range occurrenceRange =
+            new Range(TextPosition.fromLocalOffset(chapters.get(chapterIndex),
+                RELATIVE_ENTITY_OFFSETS[chapterIndex][2 * entityIndex], documentLength),
+                TextPosition.fromLocalOffset(chapters.get(chapterIndex),
+                    RELATIVE_ENTITY_OFFSETS[chapterIndex][2 * entityIndex + 1], documentLength));
+        when(
+            sentenceResult.createOccurrence(chapters.get(chapterIndex),
+                RELATIVE_ENTITY_OFFSETS[chapterIndex][2 * entityIndex],
+                RELATIVE_ENTITY_OFFSETS[chapterIndex][2 * entityIndex + 1])).thenReturn(
+            new Occurrence(sentences.get(sentenceIndex), occurrenceRange));
+      }
+    }
+  }
+
+  private static List<Chapter> fillText() {
+    List<Chapter> chapters = new ArrayList<Chapter>();
+
     DocumentPart part = new DocumentPart();
     parts.add(part);
+
+    int documentLength = getDocumentLength();
 
     chapterObjects = new ArrayList<>();
     int pos = 0;
@@ -96,30 +168,45 @@ public class EntityRecognitionModuleTest {
       Chapter chapter = new Chapter();
       chapter.setText(chapterText);
       chapter.setLength(chapterText.length());
-      chapter.setRange(new TextSpan(TextPosition.fromGlobalOffset(chapter, pos),
-          TextPosition.fromGlobalOffset(chapter, pos + chapterText.length())));
+      chapter.setRange(new Range(TextPosition.fromGlobalOffset(pos, documentLength), TextPosition
+          .fromGlobalOffset(pos + chapterText.length(), documentLength)));
       pos += chapterText.length();
       part.getChapters().add(chapter);
       chapterObjects.add(chapter);
+      chapters.add(chapter);
     }
+    return chapters;
   }
 
   @Test
   public void checkEntitiesAreDetectedAcrossChapters() throws Exception {
-    BasicEntity person = getEntityByName("Alice");
-    assertThat(person, not(nullValue()));
-    assertThat(person.getOccurences(), hasSize(2));
+    BasicEntity person1 = getEntityByName("Alice");
+    assertThat(person1, not(nullValue()));
+    assertThat(person1.getOccurences(), hasSize(2));
+  }
+
+  @Test
+  public void checkEntitiesWithOneOccurrenceAreRemoved() throws Exception {
+    BasicEntity person2 = getEntityByName("Bob");
+    assertThat(person2, nullValue());
   }
 
   private BasicEntity getEntityByName(String name) {
-    for(BasicEntity entity : collection.getEntities()) {
-      for(Attribute attribute : entity.getNameAttributes()) {
-          if(attribute.getContent().equals(name)) {
-            return entity;
-          }
+    for (BasicEntity entity : collection.getEntities()) {
+      for (Attribute attribute : entity.getNameAttributes()) {
+        if (attribute.getContent().equals(name)) {
+          return entity;
+        }
       }
     }
-
     return null;
+  }
+
+  private static int getDocumentLength() {
+    int documentLength = 0;
+    for (String chapter : CHAPTERS) {
+      documentLength += chapter.length();
+    }
+    return documentLength;
   }
 }

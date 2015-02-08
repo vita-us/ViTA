@@ -1,14 +1,10 @@
 package de.unistuttgart.vis.vita.services.analysis;
 
-import de.unistuttgart.vis.vita.data.DocumentTestData;
-import de.unistuttgart.vis.vita.model.document.Document;
 import de.unistuttgart.vis.vita.services.ServiceTest;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 

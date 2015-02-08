@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.document;
 
+import de.unistuttgart.vis.vita.analysis.annotations.Default;
 import de.unistuttgart.vis.vita.analysis.annotations.Description;
 import de.unistuttgart.vis.vita.analysis.annotations.Label;
 import de.unistuttgart.vis.vita.model.entity.AbstractEntityBase;
@@ -16,6 +17,7 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The granularity of the time slider in the graph network")
   @Label("Temporal granularity in graph network")
+  @Default("20")
   @Min(1)
   @Max(1000)
   private int relationTimeStepCount = 20;
@@ -23,6 +25,7 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("The number of items visualized in the word cloud.")
   @Label("Word Cloud items")
+  @Default("100")
   @Min(10)
   @Max(100)
   private int wordCloudItemsCount = 100;
@@ -30,7 +33,22 @@ public class AnalysisParameters extends AbstractEntityBase {
   @XmlElement
   @Description("Check to hide the most common words in the word cloud to focus on more special words")
   @Label("Enable stop word list")
+  @Default("true")
   private boolean stopWordListEnabled = true;
+
+  @XmlElement
+  @Description("Decide which NLP tool should be used for named entity recognition.")
+  @Label("Choose NLP tool")
+  @Default("annie")
+  private EnumNLP nlpTool = EnumNLP.ANNIE;
+
+  public EnumNLP getNlpTool() {
+    return nlpTool;
+  }
+
+  public void setNlpTool(EnumNLP nlpTool) {
+    this.nlpTool = nlpTool;
+  }
 
   public int getRelationTimeStepCount() {
     return relationTimeStepCount;

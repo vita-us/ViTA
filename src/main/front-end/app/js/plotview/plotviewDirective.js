@@ -27,7 +27,7 @@
           return;
         }
         container.selectAll('*').remove();
-        draw_chart(container, "plotview", plotviewData, true, false, false);
+        draw_chart(container, 'plotview', plotviewData, true, false, false);
       }
 
       var LINK_WIDTH = 1.8;
@@ -44,6 +44,44 @@
       var USE_EQUAL_SCENE_WIDTHS = false;
       var CHARACTER_LABEL_LEFT_SHIFT = 10;
 
+      var toolTip = d3.tip()
+          .attr('class', 'plot-view-tool-tip')
+          .offset([-10, 0]) // [y,x]
+          .html(function(d) {
+            var character_string = create_entity_tooltip_string(d.chars);
+            var place_string = create_entity_tooltip_string(d.places);
+
+            var content = '<p>Title: ' + d.title + '</p>';
+            content += '<p>Characters: ' + character_string + ' </p>';
+            if (d.places.length) {
+              content += '<p>Places: ' + place_string + ' </p>';
+            }
+            return content;
+          });
+
+      function create_entity_tooltip_string(entities) {
+        var names = entities.map(function(e) {
+          return e.name;
+        });
+        names.sort();
+        return names.join(', ');
+      }
+
+
+      function create_link_path(link) {
+        var x0 = link.x0,
+            y0 = link.y0,
+            x1 = link.x1,
+            y1 = link.y1,
+            x_center = (x0 + x1) / 2;
+
+        // Creates a cubic bezier curve
+        return 'M' + x0 + ',' + y0
+            + 'C' + x_center + ',' + y0
+            + ' ' + x_center + ',' + y1
+            + ' ' + x1 + ',' + y1;
+      }
+
 
       function draw_chart(container, safe_name, data, tie_breaker, center_sort) {
         var margin = {top: 20, right: 25, bottom: 20, left: 1};
@@ -51,8 +89,6 @@
         var width = RAW_CHART_WIDTH - margin.left - margin.right;
 
         var scenes = data.scenes;
-        var scene_nodes = [];
-        var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
 
         var last_scene = scenes[scenes.length - 1];
         var total_duration = last_scene.start + last_scene.duration; // TODO replace with data.panels
@@ -61,8 +97,16 @@
             .domain([0, last_scene.start]) // exclude the content of the last scene
             .range([RESERVED_NAME_WIDTH, width]);
 
+        var character_map = create_character_map(data.characters);
+        var characters = character_map.values();
+        var place_map = create_place_map(data.places || []); // Only used in ViTA
+
+        var scene_nodes = [];
+        var average_scene_width = (width - RESERVED_NAME_WIDTH) / (scenes.length);
         for (var i = 0; i < scenes.length; i++) {
           var scene = scenes[i];
+          var scene_characters = [];
+          var scene_places = [];
           var duration = parseInt(scene.duration);
           var start_x;
           if (USE_EQUAL_SCENE_WIDTHS) {
@@ -76,7 +120,20 @@
             duration = 0
           }
 
-          var sceneNode = new SceneNode(scene.chars, start_x, duration, parseInt(scene.id), scene.title);
+          for (var j = 0; j < scene.chars.length; j++) {
+            var char_id = scene.chars[j];
+            scene_characters[j] = character_map.get(char_id);
+          }
+
+          // Only used in ViTA
+          if (scene.places) {
+            for (j = 0; j < scene.places.length; j++) {
+              var place_id = scene.places[j];
+              scene_places[j] = place_map.get(place_id);
+            }
+          }
+
+          var sceneNode = new SceneNode(scene_characters, start_x, duration, parseInt(scene.id), scene.title, scene_places);
           sceneNode.comic_name = safe_name;
           scene_nodes.push(sceneNode);
         }
@@ -85,25 +142,17 @@
           return a.start - b.start;
         });
 
-        var svg = container.append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("class", "chart")
-            .attr("id", safe_name)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var character_data = data.characters;
-        var characters = [];
-        var character_map = []; // maps id to pointer
-        for (var i = 0; i < character_data.length; i++) {
-          var character = new Character(character_data[i].name, character_data[i].id, character_data[i].group);
-          characters.push(character);
-          character_map[character_data[i].id] = character;
-        }
+        var svg = container.append('svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .attr('class', 'chart')
+            .attr('id', safe_name)
+            .call(toolTip)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         var groups = define_groups(characters);
-        find_median_groups(groups, scene_nodes, characters, character_map, tie_breaker);
+        find_median_groups(groups, scene_nodes, tie_breaker);
         groups = sort_groups_main(groups, center_sort);
 
         var links = generate_links(characters, scene_nodes);
@@ -113,7 +162,7 @@
         // Determine the position of each character in each group
         groups.forEach(function(group) {
           group.all_chars.sort(function(a, b) {
-            return a.group_ptr.order - b.group_ptr.order;
+            return a.group.order - b.group.order;
           });
           var y = group.min;
           for (var i = 0; i < group.all_chars.length; i++) {
@@ -122,8 +171,7 @@
         });
 
 
-        calculate_node_positions(characters, scene_nodes, total_duration,
-            width, height, char_scenes, groups, character_map);
+        calculate_node_positions(characters, scene_nodes, total_duration, char_scenes, groups);
 
 
         scene_nodes.forEach(function(s) {
@@ -145,7 +193,7 @@
         // if the appear at the beginning of the chart
         char_scenes.forEach(function(cs) {
 
-          var character = character_map[cs.chars[0]];
+          var character = cs.chars[0];
           if (character.first_scene.x < per_width * width) {
             // The median group of the first scene in which the character appears
             // We want the character's name to appear in that group
@@ -154,12 +202,30 @@
           }
         });
 
-        calculate_link_positions(scene_nodes, characters, groups, character_map);
+        calculate_link_positions(scene_nodes, characters, groups);
 
-        d3.select('svg#' + safe_name).style("height", RAW_CHART_HEIGHT);
+        d3.select('svg#' + safe_name).style('height', RAW_CHART_HEIGHT);
 
         draw_links(links, svg);
-        draw_nodes(scene_nodes, svg, width, height, RAW_CHART_HEIGHT, safe_name);
+        draw_nodes(scene_nodes, svg, width, height);
+      }
+
+      function create_character_map(character_data) {
+        var character_map = d3.map();
+        for (var i = 0; i < character_data.length; i++) {
+          var character = character_data[i];
+          character_map.set(character.id, new Character(character.id, character.name, character.group));
+        }
+        return character_map;
+      }
+
+      function create_place_map(place_data) {
+        var place_map = d3.map();
+        for (var i = 0, l = place_data.length; i < l; i++) {
+          var place = place_data[i];
+          place_map.set(place.id, new Place(place.id, place.name));
+        }
+        return place_map;
       }
 
 
@@ -169,7 +235,7 @@
       var group_gap = 0;
 
       // This is used for more than just text height.
-      var text_height = 8;
+      var text_height = 12;
 
       // If a name's x is smaller than this value * chart width,
       // the name appears at the start of the chart, as
@@ -177,34 +243,25 @@
       // (the name doesn't make any sense).
       var per_width = 0.3;
 
-      function create_link_path(link) {
-        var x0 = link.x0,
-            y0 = link.y0,
-            x1 = link.x1,
-            y1 = link.y1,
-            x_center = (x0 + x1) / 2;
-
-        // Creates a cubic bezier curve
-        return "M" + x0 + "," + y0
-            + "C" + x_center + "," + y0
-            + " " + x_center + "," + y1
-            + " " + x1 + "," + y1;
-      }
-
-      function Character(name, id, group) {
-        this.name = name;
+      function Character(id, name, group_id) {
         this.id = id;
-        this.group = group;
+        this.name = name;
+        this.group_id = group_id;
         this.first_scene = null;
         this.group_positions = {};
       }
 
-      function Link(from, to, group, char_id) {
+      function Place(id, name) {
+        this.id = id;
+        this.name = name;
+      }
+
+      function Link(from, to, group_id, char_id) {
         // to and from are ids of scenes
         this.from = from;
         this.to = to;
         this.char_id = char_id;
-        this.group = group;
+        this.group_id = group_id;
         this.x0 = 0;
         this.y0 = -1;
         this.x1 = 0;
@@ -212,8 +269,9 @@
         this.character = null;
       }
 
-      function SceneNode(chars, start, duration, id, title) {
-        this.chars = chars; // List of characters in the Scene (ids)
+      function SceneNode(chars, start, duration, id, title, places) {
+        this.chars = chars;
+        this.places = places;
         this.start = start; // Scene starts after this many panels
         this.duration = duration; // Scene lasts for this many panels
         this.id = id;
@@ -227,13 +285,13 @@
         this.in_links = [];
         this.out_links = [];
 
-        this.name = "";
+        this.name = '';
 
         this.title = title;
 
-        this.has_char = function(id) {
+        this.has_char = function(char) {
           for (var i = 0; i < this.chars.length; i++) {
-            if (id == this.chars[i])
+            if (char.id === this.chars[i].id)
               return true;
           }
           return false;
@@ -244,26 +302,22 @@
         this.median_group = null;
       }
 
-      function reposition_node_links(scene_id, x, y, width, height, svg, ydisp, comic_name) {
-        var counter = 0;
-        d3.selectAll("[to=\"" + comic_name + "_" + scene_id + "\"]")
+      function reposition_node_links(scene, y_difference) {
+        d3.selectAll('[to="' + scene.comic_name + '_' + scene.id + '"]')
             .each(function(d) {
-              d.x1 = x + width / 2;
-              d.y1 -= ydisp;
-              counter += 1;
+              d.x1 = scene.x + scene.width / 2;
+              d.y1 -= y_difference;
             })
-            .attr("d", function(d) {
+            .attr('d', function(d) {
               return create_link_path(d);
             });
 
-        counter = 0;
-        d3.selectAll("[from=\"" + comic_name + "_" + scene_id + "\"]")
+        d3.selectAll('[from="' + scene.comic_name + '_' + scene.id + '"]')
             .each(function(d) {
-              d.x0 = x + width / 2;
-              d.y0 -= ydisp;
-              counter += 1;
+              d.x0 = scene.x + scene.width / 2;
+              d.y0 -= y_difference;
             })
-            .attr("d", function(d) {
+            .attr('d', function(d) {
               return create_link_path(d);
             });
       }
@@ -274,7 +328,7 @@
           // The scenes in which the character appears
           var char_scenes = [];
           for (var j = 0; j < scenes.length; j++) {
-            if (scenes[j].has_char(chars[i].id)) {
+            if (scenes[j].has_char(chars[i])) {
               char_scenes.push(scenes[j]);
             }
           }
@@ -286,7 +340,7 @@
           chars[i].first_scene = char_scenes[0];
           for (var j = 1; j < char_scenes.length; j++) {
             var link = new Link(char_scenes[j - 1], char_scenes[j],
-                chars[i].group, chars[i].id);
+                chars[i].group_id, chars[i].id);
             link.character = chars[i];
 
             links.push(link);
@@ -304,7 +358,8 @@
         this.id = -1;
         this.chars = [];
         this.median_count = 0;
-        this.all_chars = {};
+        this.all_chars_mapped = d3.map();
+        this.all_chars = [];
         this.order = -1;
       }
 
@@ -349,84 +404,81 @@
         characters.forEach(function(char) {
           var found_group = false;
           groups.forEach(function(group) {
-            if (group.id === char.group) {
+            if (group.id === char.group_id) {
               found_group = true;
               group.chars.push(char);
-              char.group_ptr = group;
+              char.group = group;
             }
           });
 
           if (!found_group) {
             var group = new Group();
-            group.id = char.group;
+            group.id = char.group_id;
             group.chars.push(char);
-            char.group_ptr = group;
+            char.group = group;
             groups.push(group);
           }
         });
         return groups;
       }
 
-      function find_median_groups(groups, scenes, chars, char_map, tie_breaker) {
+      function find_median_groups(groups, scenes, tie_breaker) {
         scenes.forEach(function(scene) {
-          if (!scene.char_node) {
-            var group_count = [];
-            for (var i = 0; i < groups.length; i++) {
-              group_count[i] = 0;
-            }
-            var max_index = 0;
+          if (scene.char_node) {
+            return;
+          }
 
-            scene.chars.forEach(function(c) {
-              // TODO: Can just search group.chars
-              var group_index = find_group(chars, groups, c);
-              group_count[group_index] += 1;
-              if ((!tie_breaker && group_count[group_index] >= group_count[max_index]) ||
-                  (group_count[group_index] > group_count[max_index])) {
-                max_index = group_index;
-              } else if (group_count[group_index] == group_count[max_index]) {
-                // Tie-breaking
-                var score1 = 0;
-                var score2 = 0;
-                for (var i = 0; i < scene.in_links.length; i++) {
-                  if (scene.in_links[i].from.median_group != null) {
-                    if (scene.in_links[i].from.median_group.id == groups[group_index].id) {
-                      score1 += 1;
-                    } else if (scene.in_links[i].from.median_group.id == groups[max_index].id) {
-                      score2 += 1;
-                    }
+          var group_count = [];
+          for (var i = 0; i < groups.length; i++) {
+            group_count[i] = 0;
+          }
+          var max_index = 0;
+
+          scene.chars.forEach(function(char) {
+            // TODO: Can just search group.chars
+            var group_index = find_group(char, groups);
+            group_count[group_index] += 1;
+            if ((!tie_breaker && group_count[group_index] >= group_count[max_index]) ||
+                (group_count[group_index] > group_count[max_index])) {
+              max_index = group_index;
+            } else if (group_count[group_index] == group_count[max_index]) {
+              // Tie-breaking
+              var score1 = 0;
+              var score2 = 0;
+              for (var i = 0; i < scene.in_links.length; i++) {
+                if (scene.in_links[i].from.median_group != null) {
+                  if (scene.in_links[i].from.median_group.id == groups[group_index].id) {
+                    score1 += 1;
+                  } else if (scene.in_links[i].from.median_group.id == groups[max_index].id) {
+                    score2 += 1;
                   }
-                }
-                for (var i = 0; i < scene.out_links.length; i++) {
-                  if (scene.out_links[i].to.median_group != null) {
-                    if (scene.out_links[i].to.median_group.id == groups[group_index].id) {
-                      score1 += 1;
-                    } else if (scene.out_links[i].to.median_group.id == groups[max_index].id) {
-                      score2 += 1;
-                    }
-                  }
-                }
-                if (score1 > score2) {
-                  max_index = group_index;
                 }
               }
-            });
-            scene.median_group = groups[max_index];
-            groups[max_index].median_count += 1;
-            scene.chars.forEach(function(c) {
-              // This just puts this character in the set
-              // using sets to avoid duplicating characters
-              groups[max_index].all_chars[c] = true;
-            });
-          }
+              for (var i = 0; i < scene.out_links.length; i++) {
+                if (scene.out_links[i].to.median_group != null) {
+                  if (scene.out_links[i].to.median_group.id == groups[group_index].id) {
+                    score1 += 1;
+                  } else if (scene.out_links[i].to.median_group.id == groups[max_index].id) {
+                    score2 += 1;
+                  }
+                }
+              }
+              if (score1 > score2) {
+                max_index = group_index;
+              }
+            }
+          });
+          scene.median_group = groups[max_index];
+          groups[max_index].median_count += 1;
+          scene.chars.forEach(function(c) {
+            // This just puts this character in the set
+            // using sets to avoid duplicating characters
+            groups[max_index].all_chars_mapped.set(c.id, c);
+          });
         });
 
-        // Convert all the group char sets to regular arrays
         groups.forEach(function(g) {
-          var chars_list = [];
-          for (var c in g.all_chars) {
-            chars_list.push(char_map[c]);
-          }
-          g.all_chars = chars_list;
+          g.all_chars = g.all_chars_mapped.values();
         });
       }
 
@@ -487,18 +539,17 @@
         });
 
         for (var i = 0; i < chars.length; i++) {
-          var s = new SceneNode([chars[i].id], [0], [1]);
+          var s = new SceneNode([chars[i]], [0], [1]);
           s.char_node = true;
           s.y = i * text_height;
           s.x = 0;
           s.width = 5;
           s.height = LINK_WIDTH;
           s.name = chars[i].name;
-          s.chars[s.chars.length] = chars[i].id;
           s.id = scenes.length;
           s.comic_name = comic_name;
           if (chars[i].first_scene != null) {
-            var l = new Link(s, chars[i].first_scene, chars[i].group, chars[i].id);
+            var l = new Link(s, chars[i].first_scene, chars[i].group_id, chars[i].id);
             l.character = chars[i];
 
             s.out_links[s.out_links.length] = l;
@@ -515,32 +566,22 @@
       }
 
 
-      // TODO: Use the char_map to eliminate this
-      function find_group(chars, groups, char_id) {
-        // Find the char's group id
-        var i;
-        for (i = 0; i < chars.length; i++) {
-          if (chars[i].id == char_id) break;
-
-        }
-        if (i == chars.length) {
-          console.log("ERROR: char not found, id = " + char_id);
-        }
-
+      function find_group(char, groups) {
         // Find the corresponding group
         var j;
         for (j = 0; j < groups.length; j++) {
-          if (chars[i].group == groups[j].id) break;
+          if (char.group_id === groups[j].id) {
+            break;
+          }
         }
         if (j == groups.length) {
-          console.log("ERROR: groups not found.");
+          console.log('ERROR: groups not found.');
         }
         return j;
       }
 
 
-      function calculate_node_positions(chars, scenes, total_panels, chart_width,
-                                        chart_height, char_scenes, groups, char_map) {
+      function calculate_node_positions(chars, scenes, total_panels, char_scenes, groups) {
         scenes.forEach(function(scene) {
           if (!scene.char_node) {
             scene.height = Math.max(0, scene.chars.length * LINK_WIDTH + (scene.chars.length - 1) * LINK_GAP);
@@ -551,10 +592,10 @@
             var den1 = 0;
             var den2 = 0;
             for (var i = 0; i < scene.chars.length; i++) {
-              var c = char_map[scene.chars[i]];
+              var c = scene.chars[i];
               var y = c.group_positions[scene.median_group.id];
               if (!y) continue;
-              if (c.group.id == scene.median_group.id) {
+              if (c.group_id == scene.median_group.id) {
                 sum1 += y;
                 den1 += 1;
               } else {
@@ -571,7 +612,7 @@
             } else if (den1 != 0) {
               avg = sum1 / den1;
             } else {
-              console.log("ERROR: den1 and den2 are 0. Scene doesn't have characters?");
+              console.log('ERROR: den1 and den2 are 0. Scene doesn\'t have characters?');
               avg = scene.median_group.min;
             }
             scene.y = avg - scene.height / 2.0;
@@ -595,7 +636,7 @@
       // The positions of the nodes have to be set before this is called
       // (The positions of the links are determined according to the positions
       // of the nodes they link.)
-      function calculate_link_positions(scenes, chars, groups, char_map) {
+      function calculate_link_positions(scenes, chars, groups) {
         // Sort by x
         // Because the sorting of the in_links will depend on where the link
         // is coming from, so that needs to be calculated first
@@ -610,10 +651,10 @@
           // TODO: Sort the in_links here
           // Use sort by group for now
           scene.in_links.sort(function(a, b) {
-            return a.character.group_ptr.order - b.character.group_ptr.order;
+            return a.character.group.order - b.character.group.order;
           });
           scene.out_links.sort(function(a, b) {
-            return a.character.group_ptr.order - b.character.group_ptr.order;
+            return a.character.group.order - b.character.group.order;
           });
 
           // We can't calculate the y positions of the in links in the same
@@ -646,141 +687,127 @@
         });
       }
 
-      function draw_nodes(scenes, svg, chart_width, chart_height, safe_name) {
-        var node = svg.append("g").selectAll(".node")
+      function draw_nodes(scenes, svg, chart_width, chart_height) {
+        var additional_height = 8;
+
+        var nodes = svg.append('g').selectAll('.node')
             .data(scenes)
-            .enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) {
-              return "translate(" + d.x + "," + d.y + ")";
-            })
-            .attr("scene_id", function(d) {
-              return d.id;
+            .enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', function(d) {
+              return 'translate(' + d.x + ',' + d.y + ')';
             })
             .call(d3.behavior.drag()
                 .origin(function(d) {
                   return d;
                 })
-                .on("dragstart", function() {
+                .on('dragstart', function() {
+                  // foreground dragged nodes
                   this.parentNode.appendChild(this);
                 })
-                .on("drag", dragmove));
+                .on('drag', dragmove))
+            .on('mouseover', function(d) {
+              if (!d.char_node) {
+                toolTip.show(d);
+              }
+            })
+            .on('mouseout', toolTip.hide);
 
-        node.append("rect")
-            .attr("width", function(d) {
+        nodes.append('rect')
+            .attr('y', -additional_height / 2)
+            .attr('width', function(d) {
               return d.width;
             })
-            .attr("height", function(d) {
-              return d.height;
+            .attr('height', function(d) {
+              return d.height + additional_height;
             })
-            .attr("class", "scene")
-            .attr("title", function(d) {
-              return d.title;
-            })
-            .attr("rx", 20)
-            .attr("ry", 10)
-            .append("title")
-            .text(function(d) {
-              return d.name;
-            });
+            .attr('class', 'scene')
+            .attr('rx', 20)
+            .attr('ry', 10);
 
-        // White background for the names
-        if (WHITE_BACKGROUND_FOR_NAMES) {
-          node.append("rect")
+
+        // Iterate over all nodes separately to be able to add a custom sized background for each node
+        nodes.each(function(d) {
+          // Check if this node will have its character name displayed
+          if (!d.char_node) {
+            return;
+          }
+
+          var label_group = d3.select(this).append('g')
+              .classed('label-group', true)
+              .attr('transform', 'translate(-3,0)'); // Move the complete label a bit to the left
+
+          var character_label = label_group.append('text')
+              .attr('text-anchor', 'end')
               .filter(function(d) {
                 return d.char_node;
               })
-              .attr("x", function(d) {
-                return -((d.name.length + 2) * 5);
-              })
-              .attr("y", function() {
-                return -3;
-              })
-              .attr("width", function(d) {
-                return (d.name.length + 1) * 5;
-              })
-              .attr("height", 7.5)
-              .attr("transform", null)
-              .attr("fill", "#fff")
-              .style("opacity", 1);
-        }
+              .text(function(d) {
+                return d.name;
+              });
 
-        node.append("text")
-            .filter(function(d) {
-              return d.char_node;
-            })
-            .attr("x", -6)
-            .attr("y", function() {
-              return 0;
-            })
-            .attr("dy", ".35em")
-            .attr("text-anchor", "end")
-            .attr("transform", null)
-            .text(function(d) {
-              return d.name;
-            })
-            .filter(function() {
-              return false;
-            })
-            .attr("x", function(d) {
-              return 6 + d.width;
-            })
-            .attr("text-anchor", "start");
+          // Create the background after the text to get the size of the text
+          if (WHITE_BACKGROUND_FOR_NAMES) {
+            var label_bbox = character_label.node().getBBox();
 
-        function dragmove(d) {
-          var newy = Math.max(0, Math.min(chart_height - d.height, d3.event.y));
-          var ydisp = d.y - newy;
-          d3.select(this).attr("transform", "translate("
-          + (d.x = Math.max(0, Math.min(chart_width - d.width, d3.event.x))) + ","
-          + (d.y = Math.max(0, Math.min(chart_height - d.height, d3.event.y))) + ")");
-          reposition_node_links(d.id, d.x, d.y, d.width, d.height, svg, ydisp, d.comic_name);
-        }
-      }
+            label_group.append('rect')
+                .classed('background', true)
+                .attr('x', -label_bbox.width)
+                .attr('y', -label_bbox.height / 2)
+                .attr('width', label_bbox.width)
+                .attr('height', label_bbox.height)
+                .attr('fill', '#fff');
 
-      function find_link(links, char_id) {
-        for (var i = 0; i < links.length; i++) {
-          if (links[i].char_id == char_id) {
-            return links[i];
+            // Foreground the character label which is currently behind the background rectangle
+            character_label.node().parentNode.appendChild(character_label.node());
           }
-        }
-        return 0;
-      }
+        });
 
+
+        function dragmove(scene) {
+          var old_y = scene.y;
+
+          scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
+          scene.y = Math.max(0, Math.min(chart_height - scene.height, d3.event.y));
+          d3.select(this).attr('transform', 'translate(' + scene.x + ',' + scene.y + ')');
+
+          var y_difference = old_y - scene.y;
+          reposition_node_links(scene, y_difference);
+        }
+      }
 
       function draw_links(links, svg) {
-        var link = svg.append("g").selectAll(".link")
+        var link = svg.append('g').selectAll('.link')
             .data(links)
-            .enter().append("path")
-            .attr("class", "link")
-            .attr("d", function(d) {
+            .enter().append('path')
+            .classed('link', true)
+            .attr('d', function(d) {
               return create_link_path(d);
             })
-            .attr("from", function(d) {
-              return d.from.comic_name + "_" + d.from.id;
+            .attr('from', function(d) {
+              return d.from.comic_name + '_' + d.from.id;
             })
-            .attr("to", function(d) {
-              return d.to.comic_name + "_" + d.to.id;
+            .attr('to', function(d) {
+              return d.to.comic_name + '_' + d.to.id;
             })
-            .attr("charid", function(d) {
-              return d.from.comic_name + "_" + d.char_id;
+            .attr('charid', function(d) {
+              return d.from.comic_name + '_' + d.char_id;
             })
-            .style("stroke", function(d) {
-              return d3.rgb(COLOR_SCALE(d.group)).darker(0.5).toString();
+            .style('stroke', function(d) {
+              return d3.rgb(COLOR_SCALE(d.group_id)).darker(0.5).toString();
             })
-            .style("stroke-width", LINK_WIDTH)
-            .style("stroke-opacity", "0.6")
-            .style("stroke-linecap", "round")
-            .on("mouseover", mouseover_cb)
-            .on("mouseout", mouseout_cb);
+            .style('stroke-width', LINK_WIDTH)
+            .on('mouseover', mouseover_of_link)
+            .on('mouseout', mouseout_of_link);
 
-        function mouseover_cb(d) {
-          d3.selectAll("[charid=\"" + d.from.comic_name + "_" + d.char_id + "\"]")
-              .style("stroke-opacity", "1");
+        function mouseover_of_link(d) {
+          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
+              .classed('hovered', true);
         }
 
-        function mouseout_cb(d) {
-          d3.selectAll("[charid=\"" + d.from.comic_name + "_" + d.char_id + "\"]")
-              .style("stroke-opacity", "0.6");
+        function mouseout_of_link(d) {
+          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
+              .classed('hovered', false);
         }
       }
 

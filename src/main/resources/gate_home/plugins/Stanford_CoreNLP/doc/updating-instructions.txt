@@ -1,0 +1,12 @@
+How to release upgrade with new Stanford CoreNLP version:
+- download and unpack new: Tagger, NER, Parser
+- update Stanford_CoreNLP jars with new names
+- update Stanford_CoreNLP creole paths
+- update Stanford_CoreNLP parser, ner, pos tagger model files
+- maybe update Stanford_CoreNLP PRs with new model file names
+- rebuilt Stanford_CoreNLP jar
+- put new jar in twitter postraining dir
+- rebuild twitter models 
+- copy twitter models into gate-code
+- copy twitter models into standalone
+- rebuild twitie_tag

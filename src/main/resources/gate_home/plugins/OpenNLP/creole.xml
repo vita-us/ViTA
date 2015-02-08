@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- $Id: creole.xml 16261 2012-11-13 13:37:58Z adamfunk $ -->
+<!-- creole.xml directory file for OpenNLP tools -->
+<CREOLE-DIRECTORY>
+  <CREOLE>
+    <JAR SCAN="true">gate-opennlp.jar</JAR>
+    <JAR>lib/opennlp-tools-1.5.2-incubating.jar</JAR>
+    <JAR>lib/opennlp-maxent-3.0.2-incubating.jar</JAR>
+  </CREOLE>
+</CREOLE-DIRECTORY>

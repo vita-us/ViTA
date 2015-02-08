@@ -9,7 +9,10 @@
       'Document',
       'Page',
       '$interval',
-      function($scope, Document, Page, $interval) {
+      'AnalysisParameter',
+      'DocumentParameter',
+      'DocumentDerive',
+      function($scope, Document, Page, $interval, AnalysisParameter, DocumentParameter, DocumentDerive) {
         Page.setUp('Documents', 1);
 
         $scope.loadDocuments = function() {
@@ -61,6 +64,47 @@
             alert('The document name must not be empty!');
           }
         };
+
+        $scope.deriveDocument = function(document) {
+          if(!areParametersValid()) {
+            alert('Please correctly input all parameters.');
+            return;
+          }
+          DocumentDerive.post({documentId: document.id}, getParameterToValueMap());
+        };
+
+        AnalysisParameter.get({}, function(response) {
+          $scope.analysisParameters = response.parameters;
+        });
+
+        $scope.$watch('selectedDocument', function(newSelectedDocument) {
+          if(!angular.isUndefined(newSelectedDocument)) {
+            DocumentParameter.get({documentId: newSelectedDocument.id}, function (parameterValues) {
+                  $scope.analysisParameters.forEach(function (parameter) {
+                    parameter.value = parameterValues[parameter.name];
+                  });
+                }
+            );
+          }
+        }, true);
+
+        function getParameterToValueMap() {
+          var parameterToValue = {};
+          $scope.analysisParameters.forEach(function(parameter) {
+            parameterToValue[parameter.name] = parameter.value;
+          });
+          return parameterToValue;
+        }
+
+        function areParametersValid() {
+          var areValid = true;
+          $scope.analysisParameters.forEach(function(parameter) {
+            if (angular.isUndefined(parameter.value)) {
+              areValid = false;
+            }
+          });
+          return areValid;
+        }
 
         $scope.$on('$destroy', function() {
           if (timerId) {
