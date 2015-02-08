@@ -13,14 +13,16 @@
           </button>
         </h1>
         <dl class="dl-horizontal">
-          <div ng-repeat="attribute in selected.attributes" ng-show="!$first">
+          <dt>occurrences</dt>
+          <dd>{{selected.frequency}}</dd>
+          <div ng-repeat="attribute in selected.compactAttributes">
             <dt>{{attribute.attributetype}}</dt>
             <dd>{{attribute.content}}</dd>
           </div>
         </dl>
-        <div data-loading-spinner ng-hide="selected.attributes.length"></div>
+        <div data-loading-spinner ng-hide="!angular.isUndefined(selected.compactAttributes)"></div>
 	<dl class="dl-horizontal" ng-show="relatedEntitiesLoaded && relatedEntities.length > 0">
-          <dt>co-occurences</dt>
+          <dt>co-occurrences</dt>
           <dd><div ng-repeat="entity in relatedEntities | limitTo: 5">
             <a ng-href="#/documents/{{Page.documentId}}/{{getEntityType(entity)}}/{{entity.id}}">
               {{entity.displayName}}
