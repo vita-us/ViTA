@@ -28,9 +28,10 @@ describe('Graph-Network Directive', function() {
     scope.entities = TestData.graphNetworkEntities;
     scope.rangeStart = 0.0;
     scope.rangeEnd = 1.0;
+    scope.loaded = false;
 
-    element = '<div data-graph-network entities="entities" ' +
-        'data-range-begin="rangeStart" data-range-end="rangeEnd"></div>';
+    element = '<div data-graph-network data-entities="entities" ' +
+        'data-range-begin="rangeStart" data-range-end="rangeEnd" data-loaded="isReady"></div>';
 
     element = $compile(element)(scope);
     $httpBackend.flush();

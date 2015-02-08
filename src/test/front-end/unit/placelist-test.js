@@ -25,7 +25,7 @@ describe('PlaceListCtrl', function() {
 
   it('should create "place" model with 2 places', inject(function($controller, TestData) {
 
-    expect(scope.places).not.toBeDefined();
+    expect(scope.places).toEqualData([]);
     $httpBackend.flush();
     expect(scope.places).toEqualData(TestData.places.places);
 

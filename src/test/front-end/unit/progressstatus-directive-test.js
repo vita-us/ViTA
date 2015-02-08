@@ -19,7 +19,7 @@ describe('Progress Status Directive', function() {
   }));
 
   it('should show the progress until its ready', inject(function() {
-    expect(element.find('.status').hasClass('ng-hide')).toBe(false);
+    expect(element.find('.status-wrap').hasClass('ng-hide')).toBe(false);
 
     scope.progress = {
       isReady: true,
@@ -27,12 +27,12 @@ describe('Progress Status Directive', function() {
     };
     element.scope().$apply();
 
-    expect(element.find('.status').hasClass('ng-hide')).toBe(true);
+    expect(element.find('.status-wrap').hasClass('ng-hide')).toBe(true);
   }));
 
   it('should show the percentage', inject(function($filter) {
     var elementAsHtml = element.html();
-    var percentage = $filter('number')(scope.progress.progress * 100, 2);
+    var percentage = $filter('number')(scope.progress.progress * 100);
     var percentageString = percentage + '%';
 
     expect(elementAsHtml).toContain(percentageString);
@@ -42,16 +42,16 @@ describe('Progress Status Directive', function() {
     scope.progress = undefined;
     element.scope().$apply();
 
-    expect(element.find('.status').hasClass('ng-hide')).toBe(true);
+    expect(element.find('.status-wrap').hasClass('ng-hide')).toBe(true);
   });
 
   it('should update if the status changes', function() {
-    expect(element.find('.status').hasClass('ng-hide')).toBe(false);
+    expect(element.find('.status-wrap').hasClass('ng-hide')).toBe(false);
 
     scope.progress = undefined;
     element.scope().$apply();
 
-    expect(element.find('.status').hasClass('ng-hide')).toBe(true);
+    expect(element.find('.status-wrap').hasClass('ng-hide')).toBe(true);
   });
 
   it('should shouldnt display the percentage if it failed', function() {

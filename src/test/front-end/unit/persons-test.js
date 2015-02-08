@@ -26,7 +26,7 @@ describe('PersonListCtrl', function() {
   }));
 
   it('should get all profiles from REST by using the Person service', inject(function(TestData) {
-    expect(scope.persons).not.toBeDefined();
+    expect(scope.persons).toEqualData([]);
     $httpBackend.flush();
     expect(scope.persons).toEqualData(TestData.persons.persons);
   }));

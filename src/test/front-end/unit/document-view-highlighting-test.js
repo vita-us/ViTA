@@ -23,6 +23,7 @@ describe('documentHighlighter', function() {
     scope.$digest();
 
     scope.occurrences = TestData.relationOccurrences.occurrences;
+    scope.selectedOccurrenceIndex = 0;
     scope.entities = TestData.entities;
     scope.$digest();
   }));
@@ -32,7 +33,7 @@ describe('documentHighlighter', function() {
   }));
 
   it('should highlight correct number of entities', inject(function(TestData) {
-    expect(element.find('span[class^="ranking"]').length).toBe(9);
+    expect(element.find('span[class^="ranking"]').length).toBe(8);
   }));
 
   it('should highlight the correct text', inject(function(TestData) {
@@ -42,6 +43,7 @@ describe('documentHighlighter', function() {
 
   it('should highlight nothing if data is undefined', function() {
     scope.occurrences = undefined;
+    scope.selectedOccurrenceIndex = undefined;
     scope.$digest();
     expect(element.find('span.occurrence').length).toBe(0);
   });
