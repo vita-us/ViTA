@@ -65,7 +65,7 @@ public class EntityOccurrencesService extends ExtendedOccurrencesService {
     // fetch the data
     List<Occurrence> readOccurrences =
         occurrenceDao.findOccurrencesForEntity(entityId, startOffset, endOffset);
-    return convertOccurrencesToRanges(readOccurrences);
+    return Range.mergeOverlappingRanges(convertOccurrencesToRanges(readOccurrences));
   }
 
   @Override
