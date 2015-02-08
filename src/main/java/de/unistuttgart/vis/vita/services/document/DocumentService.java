@@ -148,6 +148,7 @@ public class DocumentService extends BaseService {
     try {
       Document affectedDocument = documentDao.findById(id);
       affectedDocument.getMetadata().setTitle(renameRequest.getName());
+      affectedDocument.getMetadata().setIsUserDefinedTitle(true);
       documentDao.update(affectedDocument);
 
       response = Response.noContent().build();

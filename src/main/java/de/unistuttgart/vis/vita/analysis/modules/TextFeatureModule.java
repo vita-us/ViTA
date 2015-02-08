@@ -107,10 +107,11 @@ public class TextFeatureModule extends AbstractFeatureModule<TextFeatureModule> 
    */
   private void updateDocumentMetadata(Document document, ImportResult importResult){
     String oldTitle = document.getMetadata().getTitle();
+    boolean wasUserDefined = document.getMetadata().isUserDefinedTitle();
     document.setMetadata(importResult.getMetadata());
 
     // Restore the old title which is the file name if no title has been found
-    if (StringUtils.isEmpty(document.getMetadata().getTitle())) {
+    if (wasUserDefined || StringUtils.isEmpty(document.getMetadata().getTitle())) {
       document.getMetadata().setTitle(oldTitle);
     }
   }
