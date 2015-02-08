@@ -714,6 +714,11 @@
             .data(scenes)
             .enter().append('g')
             .attr('class', 'node')
+            .attr('charid', function(d) {
+              if (d.char_node) {
+                return d.comic_name + '_' + d.chars[0].id;
+              }
+            })
             .attr('transform', function(d) {
               return 'translate(' + d.x + ',' + d.y + ')';
             })
@@ -731,9 +736,16 @@
             .on('mouseover', function(d) {
               if (!d.char_node) {
                 toolTip.show(d);
+              } else {
+                mouseover(d.comic_name, d.chars[0].id);
               }
             })
-            .on('mouseout', toolTip.hide);
+            .on('mouseout', function(d) {
+              toolTip.hide();
+              if (d.char_node) {
+                mouseout(d.comic_name, d.chars[0].id);
+              }
+            });
 
         nodes.append('rect')
             .attr('y', -additional_height / 2)
@@ -790,7 +802,6 @@
           toolTip.hide();
           var old_y = scene.y;
 
-          scene.x = Math.max(0, Math.min(chart_width - scene.width, d3.event.x));
           scene.y = Math.max(0, Math.min(chart_height - scene.height, d3.event.y));
           d3.select(this).attr('transform', 'translate(' + scene.x + ',' + scene.y + ')');
 
@@ -820,18 +831,24 @@
               return d3.rgb(COLOR_SCALE(d.group_id)).darker(0.5).toString();
             })
             .style('stroke-width', LINK_WIDTH)
-            .on('mouseover', mouseover_of_link)
-            .on('mouseout', mouseout_of_link);
+            .on('mouseover', function(d) {
+              mouseover(d.from.comic_name, d.char_id);
+            })
+            .on('mouseout', function(d) {
+              mouseout(d.from.comic_name, d.char_id);
+            });
+      }
 
-        function mouseover_of_link(d) {
-          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', true);
-        }
+      function mouseover(comic_name, char_id) {
+        d3.selectAll('[charid="' + comic_name + '_' + char_id + '"]')
+            .classed('hovered', true)
+            .style('stroke-width', LINK_WIDTH + 1);
+      }
 
-        function mouseout_of_link(d) {
-          d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', false);
-        }
+      function mouseout(comic_name, char_id) {
+        d3.selectAll('[charid="' + comic_name + '_' + char_id + '"]')
+            .classed('hovered', false)
+            .style('stroke-width', LINK_WIDTH);
       }
 
 

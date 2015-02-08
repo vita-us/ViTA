@@ -20,17 +20,23 @@
     fill-opacity: 0.6;
   }
 
-  .node .label-group {
-    rect {
-      fill: white;
+  .node {
+    &.hovered .label-group .background {
+      fill: #ccc;
     }
 
-    text {
-      dominant-baseline: central;
-      font-family: 'Walter Turncoat', sans-serif;
-      font-size: 10px;
-      pointer-events: none;
-      text-shadow: 1px 1px #fff;
+    .label-group {
+      .background {
+        fill: white;
+      }
+
+      text {
+        dominant-baseline: central;
+        font-family: 'Walter Turncoat', sans-serif;
+        font-size: 10px;
+        pointer-events: none;
+        text-shadow: 1px 1px #fff;
+      }
     }
   }
 
