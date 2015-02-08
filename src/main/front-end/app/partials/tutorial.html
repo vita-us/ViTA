@@ -5,6 +5,7 @@
 <div id="tutorial-navigation">
   <h3>Contents</h3>
   <ul>
+   	<li><a ng-href="#/tutorial#import">The Import</a></li>
   	<li><a ng-href="#/tutorial#preview">The Preview</a></li>
     <li><a ng-href="#/tutorial#overview">The Overview</a></li>
     <li><a ng-href="#/tutorial#characters">The Characters</a></li>
@@ -69,7 +70,6 @@
   <div class="section-image">
     <img src="/img/tutorial/tutorial--overview2.png" alt="Image for the fingerprint visualization">
   </div>
-
   <p class="section-paragraph">
     <span class="number">1</span>
     <span class="text">
@@ -120,7 +120,7 @@
 <div class="tutorial-section">
   <h2 id="graphnetwork" class="section-headline">The Graph Network</h2>
   <div class="section-image">
-    <img src="/img/tutorial/tutorial--graphnetwork.png" alt="Image for the graphnetwork visualization">
+    <img src="/img/tutorial/tutorial--graphnetwork2.png" alt="Image for the graphnetwork visualization">
   </div>
 
   <p class="section-paragraph">
@@ -150,7 +150,7 @@
     </span>
     <br/>
     <br/>
-    <span class="number">4</span>
+    <span class="number">5</span>
     <span class="text">
 	  The user can set the range to get the <strong>Graph Network</strong> for a certain interval
     </span>
@@ -161,7 +161,7 @@
       Right at the start, the most important characters (with the maintained color) are already selected and shown in the visualization. 
       The most common characters with the assigned color are shown in the <strong>Graph Network</strong> with the same color.
  	  The user can add more characters to his selection or deselect characters by clicking on the desired name in the list on the right. With the selection, the border of the name is getting fat.
- 	  If the user clicks on an edge between two nodes, the Fingerprint between the two characters will be displayed above the <strong>Graph Network</strong>. 
+ 	  If the user crosses an edge between two nodes with the mouse, the edge will be highlighted. If he clicks on it, the Fingerprint between the two characters will be displayed above the <strong>Graph Network</strong>. 
  	  With a click on the citation in the Fingerprint, the user is forwarded to the Document.
  	  The <strong>Graph Network</strong> includes an important feature. The user has the ability to set the range for the <strong>Graph Network</strong>, for example he just wants to get the <strong>Graph Network</strong> of the interval between chapter 3 and chapter 6.
   </p>
@@ -249,17 +249,32 @@
 <div class="tutorial-section">
   <h2 id="document" class="section-headline">The Document</h2>
   <div class="section-image">
-    <img src="/img/tutorial/tutorial--plotview.png" alt="Image for the plotview visualization">
+    <img src="/img/tutorial/tutorial--document2.png" alt="Image for the document visualization">
   </div>
   <p class="section-paragraph">
-     The <strong>Plot View</strong> is a specific visualization. The 10 most significant characters are illustrated as lines. 
-     Each character line has an own color.  
-     This color has no colligation to the color which is assigned to the character in the other visualizations. 
-     The lines represents the history of the document. 
-     If a characters name is occurred afterwards in the <strong>Plot View</strong>, the character appears later in the history of the document. 
-     Each node represents a chapter of the document, except the first nodes next to the names. 
-     The first nodes only illustrates the start of the occurrence of the characters. 
-     The Tooltip over every node displays the title of the chapter and lists the occurred characters. 
+  <span class="number">1</span>
+    <span class="text">
+	  The list of chapters the document is divided in
+    </span>
+    <br/>
+    <br/>
+    <span class="number">2</span>
+    <span class="text">
+	  The <a ng-href="#/tutorial#fingerprint">Fingerprint</a> – if the user crosses a small mark of the <a ng-href="#/tutorial#fingerprint">Fingerprint</a> with the mouse, the analogue text passage will be displayed
+    </span>
+    <br/>
+    <br/>
+     The <strong>Document</strong> is a representation of the text in the document. 
+     ViTA can recognize the included chapters of the document. 
+     The chapters are shown in the list on the left. The text is displayed on the right. 
+     <br/>
+     If the user is forwarded by the <a ng-href="#/tutorial#fingerprint">Fingerprint</a>, the <a ng-href="#/tutorial#graphnetwork">Graph Network</a>, the <a ng-href="#/tutorial#wordcloud">Word Cloud</a> or else by a keyword to the Document, the keyword from the other views now is being highlighted in the <strong>Document</strong>.
+	 The <strong>Document</strong> also includes an important feature. 
+	 On the right in vertical position there is a <a ng-href="#/tutorial#fingerprint">Fingerprint</a> of the using keyword. 
+	 If the user crosses the <a ng-href="#/tutorial#fingerprint">Fingerprint</a> with the mouse, the analogue text passage will be displayed by a tooltip.
+	 <br/>
+ 	The User can get the next/last occurrence by clicking on the button with the arrow up/down. He also has the ability to reset the highlighting. Another feature is to search a word or a text passage with the input field on the left in the bottom.
+     
   </p>
 </div>
 
