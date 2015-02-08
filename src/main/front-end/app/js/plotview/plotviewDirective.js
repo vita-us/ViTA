@@ -824,12 +824,14 @@
 
         function mouseover_of_link(d) {
           d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', true);
+              .classed('hovered', true)
+              .style('stroke-width', LINK_WIDTH + 1);
         }
 
         function mouseout_of_link(d) {
           d3.selectAll('[charid="' + d.from.comic_name + '_' + d.char_id + '"]')
-              .classed('hovered', false);
+              .classed('hovered', false)
+              .style('stroke-width', LINK_WIDTH);
         }
       }
 
