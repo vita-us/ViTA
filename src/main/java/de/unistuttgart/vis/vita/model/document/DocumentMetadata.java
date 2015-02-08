@@ -16,6 +16,9 @@ public class DocumentMetadata {
   @Column(length = 1000)
   private String title;
 
+  @Column(nullable = true)
+  private Boolean isUserDefinedTitle;
+
   @Column(length = 1000)
   private String author;
 
@@ -148,6 +151,22 @@ public class DocumentMetadata {
    */
   public void setEdition(String edition) {
     this.edition = edition;
+  }
+
+  /**
+   * Indicates whether the title attribute is user-defined
+   * @return true, if the user has set the title
+   */
+  public boolean isUserDefinedTitle() {
+    return isUserDefinedTitle != null && isUserDefinedTitle;
+  }
+
+  /**
+   * Sets the flag whether the title attribute is user-defined
+   * @param isUserDefinedTitle true, if the user has set the title
+   */
+  public void setIsUserDefinedTitle(boolean isUserDefinedTitle) {
+    this.isUserDefinedTitle = isUserDefinedTitle;
   }
 
 }
