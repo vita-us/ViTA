@@ -1,6 +1,5 @@
 /*
  * AnnieStoreModule.java
- *
  */
 
 package de.unistuttgart.vis.vita.analysis.modules.gate;
@@ -46,70 +45,73 @@ public class GateStoreModule extends Module<AnnieDatastore> {
     if (!datastoreDIR.exists()) {
       // This is necessary because Gate assumes the parent directory already exists
       datastoreDIR.getParentFile().mkdir();
-      serialDataStore = (SerialDataStore) Factory.createDataStore("gate.persist.SerialDataStore",
-                                                                  location.toString());
+
+      serialDataStore =
+          (SerialDataStore) Factory.createDataStore("gate.persist.SerialDataStore",
+              location.toString());
     } else {
       serialDataStore = new SerialDataStore(location.toString());
     }
 
-    return buildResult();
+    return new AnnieDatastoreImpl();
   }
 
-  private AnnieDatastore buildResult() {
-    return new AnnieDatastore() {
-      @Override
-      public Corpus getStoredAnalysis(String persistId) throws PersistenceException {
-        serialDataStore.open();
-        FeatureMap corpFeatures = Factory.newFeatureMap();
-        corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, persistId);
-        corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, serialDataStore);
+  /**
+   * An implementation of {@link AnnieDatastore}, which can be returned as result for this module.
+   */
+  private class AnnieDatastoreImpl implements AnnieDatastore {
+    @Override
+    public Corpus getStoredAnalysis(String persistId) throws PersistenceException {
+      serialDataStore.open();
+      FeatureMap corpFeatures = Factory.newFeatureMap();
+      corpFeatures.put(DataStore.LR_ID_FEATURE_NAME, persistId);
+      corpFeatures.put(DataStore.DATASTORE_FEATURE_NAME, serialDataStore);
 
-        try {
-          Corpus resource =
-              (Corpus) Factory.createResource("gate.corpora.SerialCorpusImpl", corpFeatures);
-          LOGGER.info("Corpus loaded from datastore!");
-          serialDataStore.close();
-          return resource;
-        } catch (ResourceInstantiationException e) {
-          // Resource could not be created so it possibly doesn't exists.
-        } finally {
-          serialDataStore.close();
-        }
-
-        return null;
+      try {
+        Corpus resource =
+            (Corpus) Factory.createResource("gate.corpora.SerialCorpusImpl", corpFeatures);
+        LOGGER.info("Corpus loaded from datastore!");
+        serialDataStore.close();
+        return resource;
+      } catch (ResourceInstantiationException e) {
+        // Resource could not be created so it possibly doesn't exists.
+      } finally {
+        serialDataStore.close();
       }
 
-      @Override
-      public DataStore getDatastore() {
-        return serialDataStore;
+      return null;
+    }
+
+    @Override
+    public DataStore getDatastore() {
+      return serialDataStore;
+    }
+
+    @Override
+    public void storeResult(LanguageResource resource, String persistID)
+        throws PersistenceException {
+      serialDataStore.open();
+
+      try {
+        LanguageResource adopt = serialDataStore.adopt(resource);
+        adopt.setLRPersistenceId(persistID);
+        serialDataStore.sync(adopt);
+        LOGGER.info("Corpus saved in datastore!");
+      } finally {
+        serialDataStore.close();
       }
+    }
 
-      @Override
-      public void storeResult(LanguageResource resource, String persistID)
-          throws PersistenceException {
-        serialDataStore.open();
+    @Override
+    public void removeResult(String persistsID) throws PersistenceException {
+      serialDataStore.open();
 
-        try {
-          LanguageResource adopt = serialDataStore.adopt(resource);
-          adopt.setLRPersistenceId(persistID);
-          serialDataStore.sync(adopt);
-          LOGGER.info("Corpus saved in datastore!");
-        } finally {
-          serialDataStore.close();
-        }
+      try {
+        serialDataStore.delete(LR_TYPE_CORP, persistsID);
+        LOGGER.info("Corpus with ID: " + persistsID + " removed!");
+      } finally {
+        serialDataStore.close();
       }
-
-      @Override
-      public void removeResult(String persistsID) throws PersistenceException {
-        serialDataStore.open();
-
-        try {
-          serialDataStore.delete(LR_TYPE_CORP, persistsID);
-          LOGGER.info("Corpus with ID: " + persistsID + " removed!");
-        } finally {
-          serialDataStore.close();
-        }
-      }
-    };
+    }
   }
 }

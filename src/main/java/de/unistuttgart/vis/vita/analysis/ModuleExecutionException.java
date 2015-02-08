@@ -7,6 +7,7 @@ public class ModuleExecutionException extends RuntimeException {
   private static final long serialVersionUID = 7707117006756195804L;
 
   public ModuleExecutionException() {
+    super();
   }
 
   public ModuleExecutionException(String message) {

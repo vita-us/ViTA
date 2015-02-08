@@ -6,7 +6,6 @@ import de.unistuttgart.vis.vita.analysis.modules.MainAnalysisModule;
 import de.unistuttgart.vis.vita.analysis.modules.ModelProviderModule;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.document.Document;
-import de.unistuttgart.vis.vita.model.document.AnalysisParameters;
 
 /**
  * Default implementation of {@link AnalysisExecutorFactory}, using a {@link AnalysisScheduler}

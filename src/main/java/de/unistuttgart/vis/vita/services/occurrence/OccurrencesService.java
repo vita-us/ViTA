@@ -13,9 +13,8 @@ import de.unistuttgart.vis.vita.services.RangeService;
 
 
 /**
- * Abstract base class of every service dealing with Occurrences. Offers methods
- * to convert Lists of Occurrences into Lists of Ranges and get the Document
- * length.
+ * Abstract base class of every service dealing with Occurrences. Offers methods to convert Lists of
+ * Occurrences into Lists of Ranges and get the Document length.
  */
 @ManagedBean
 public abstract class OccurrencesService extends RangeService {
@@ -23,7 +22,8 @@ public abstract class OccurrencesService extends RangeService {
   private ChapterDao chapterDao;
   protected OccurrenceDao occurrenceDao;
 
-  @Override public void postConstruct() {
+  @Override
+  public void postConstruct() {
     super.postConstruct();
     chapterDao = getDaoFactory().getChapterDao();
     occurrenceDao = getDaoFactory().getOccurrenceDao();
@@ -32,8 +32,7 @@ public abstract class OccurrencesService extends RangeService {
   /**
    * Converts a given List of Occurrences into Ranges.
    *
-   * @param occurrences
-   *          - the Occurrences to be converted
+   * @param occurrences - the Occurrences to be converted
    * @return list of Occurrences
    */
   public List<Range> convertOccurrencesToRanges(List<Occurrence> occurrences) {
@@ -48,8 +47,9 @@ public abstract class OccurrencesService extends RangeService {
 
   /**
    * Converts the occurrences to ranges of their sentences, merging adjacent sentences
+   * 
    * @param occurrences the occurrences whose sentences are considered
-   * @return the range of the sentences
+   * @return the ranges of the sentences
    */
   protected List<Range> mergeAdjacentSentences(List<Sentence> sentences) {
     List<Range> newList = new ArrayList<>();
@@ -57,6 +57,7 @@ public abstract class OccurrencesService extends RangeService {
     Range currentRange = null;
     for (Sentence sentence : sentences) {
       if (currentRange != null && sentence.getIndex() == lastSentenceIndex + 1) {
+        // extend range
         currentRange = new Range(currentRange.getStart(), sentence.getRange().getEnd());
       } else {
         if (currentRange != null) {
@@ -67,6 +68,7 @@ public abstract class OccurrencesService extends RangeService {
       lastSentenceIndex = sentence.getIndex();
     }
     if (currentRange != null) {
+      // add last range
       newList.add(currentRange);
     }
     return newList;
@@ -75,9 +77,8 @@ public abstract class OccurrencesService extends RangeService {
   /**
    * Returns the chapter which surrounds the position with the given offset.
    *
-   * @param offset
-   *          - the global character offset of the position for which the
-   *          surrounding chapter should be found
+   * @param offset - the global character offset of the position for which the surrounding chapter
+   *        should be found
    * @return the surrounding chapter
    */
   protected Chapter getSurroundingChapter(int offset) {
@@ -93,8 +94,17 @@ public abstract class OccurrencesService extends RangeService {
     return chapters.get(0);
   }
 
-  protected List<Range> getGranularEntityOccurrences(int steps, int startOffset,
-      int endOffset) {
+  /**
+   * For a given range and a number of equal sized parts of this range, returns all parts of the
+   * range which contain at least one Occurrence (defined by
+   * {@link OccurrencesService#hasOccurrencesInStep(int, int)}). Will concatenate neighbored ranges.
+   * 
+   * @param steps - The number of parts. Must be bigger than 0.
+   * @param startOffset - The global start offset of the range.
+   * @param endOffset - The global end offset of the range.
+   * @return All concatenated parts of the range which contain Occurrences.
+   */
+  protected List<Range> getGranularEntityOccurrences(int steps, int startOffset, int endOffset) {
     // compute sizes of range and steps
     int rangeSize = endOffset - startOffset;
     int stepSize = rangeSize / steps;
@@ -106,17 +116,15 @@ public abstract class OccurrencesService extends RangeService {
     boolean includesLastStep = false;
     for (int step = 0; step < steps; step++) {
       int stepStart = startOffset + (stepSize * step);
-      int stepEnd = startOffset + (stepSize * (step + 1));
+      int stepEnd = step == steps - 1 ? endOffset : startOffset + (stepSize * (step + 1));
 
       if (hasOccurrencesInStep(stepStart, stepEnd)) {
         if (!includesLastStep) {
           // Start a new step
           includesLastStep = true;
-          currentSpanStart = TextPosition.fromGlobalOffset(
-              stepStart, getDocumentLength());
+          currentSpanStart = TextPosition.fromGlobalOffset(stepStart, getDocumentLength());
         }
-        currentSpanEnd = TextPosition.fromGlobalOffset(stepEnd,
-            getDocumentLength());
+        currentSpanEnd = TextPosition.fromGlobalOffset(stepEnd, getDocumentLength());
 
       } else if (includesLastStep) {
         // The step is over, add it to the list
@@ -133,5 +141,14 @@ public abstract class OccurrencesService extends RangeService {
     return stepSpans;
   }
 
-  protected abstract boolean hasOccurrencesInStep(int firstSentenceIndex, int lastSentenceIndex);
+  /**
+   * Defines whether there is an Occurrence in a given Range or not. This defines the behavior of
+   * {@link OccurrencesService#getGranularEntityOccurrences(int, int, int)}.
+   * 
+   * @param startOffset - The global start offset of the range.
+   * @param endOffset - The global end offset of the range.
+   * @return true: there is at least one Occurrence in the Range. false: there is no Occurrence in
+   *         the Range.
+   */
+  protected abstract boolean hasOccurrencesInStep(int startOffset, int endOffset);
 }

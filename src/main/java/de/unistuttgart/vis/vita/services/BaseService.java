@@ -11,11 +11,13 @@ import javax.persistence.EntityManager;
 import java.io.Closeable;
 import java.io.IOException;
 
-public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDestroy,
-    Closeable {
-  @Inject private Model model;
-  @Inject private CloseableService closeableService;
-  @Inject private EntityManager em;
+public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDestroy, Closeable {
+  @Inject
+  private Model model;
+  @Inject
+  private CloseableService closeableService;
+  @Inject
+  private EntityManager em;
 
   private DaoFactory daoFactory;
 
@@ -25,7 +27,7 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
   }
 
   @Override
-   public void postConstruct() {
+  public void postConstruct() {
     if (!em.getTransaction().isActive()) {
       em.getTransaction().begin();
     }
@@ -34,11 +36,10 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
   }
 
   @Override
-  @PreDestroy public void preDestroy() {
-    if (em != null) {
-      if (em.getTransaction().isActive()) {
-        em.getTransaction().commit();
-      }
+  @PreDestroy
+  public void preDestroy() {
+    if (em != null && em.getTransaction().isActive()) {
+      em.getTransaction().commit();
     }
   }
 
@@ -50,7 +51,8 @@ public class BaseService implements PostConstruct, org.glassfish.hk2.api.PreDest
     return daoFactory;
   }
 
-  @Override public void close() throws IOException {
+  @Override
+  public void close() throws IOException {
     preDestroy();
   }
 

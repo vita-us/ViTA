@@ -23,12 +23,16 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Document extends AbstractEntityBase {
+
   @Embedded
   private DocumentMetadata metadata;
+
   @Embedded
   private DocumentMetrics metrics;
+
   @Embedded
   private DocumentContent content;
+
   @OneToOne(cascade = CascadeType.ALL)
   private AnalysisProgress progress;
 
@@ -163,45 +167,68 @@ public class Document extends AbstractEntityBase {
    * @return the upload date to the uploaded file
    */
   public Date getUploadDate() {
-    return uploadDate;
+    Date dateToReturn = null;
+    if (uploadDate != null) {
+      dateToReturn  = new Date(uploadDate.getTime());
+    }
+    return dateToReturn;
   }
   
   /**
    * Sets the upload date of the uploaded file
    * 
-   * @param uploadDate
+   * @param uploadDate - the date when the document was uploaded
    */
   public void setUploadDate(Date uploadDate) {
-    this.uploadDate = uploadDate;
+    // deep copy to avoid unintentionally changes from outside
+    this.uploadDate = new Date(uploadDate.getTime());
   }
 
+  /**
+   * @return the name of the file this Document refers to
+   */
   public String getFileName() {
     return fileName;
   }
 
+  /**
+   * Sets the name of the file this Document refers to.
+   *
+   * @param fileName - the name of the file this Document refers to
+   */
   public void setFileName(String fileName) {
     this.fileName = fileName;
   }
 
+  /**
+   * @return the UUID of the content of this Document
+   */
   public UUID getContentID() {
     return contentID;
   }
 
+  /**
+   * Sets the UUID of the content of this Document.
+   *
+   * @param contentID - the UUID of the content of this Document
+   */
   public void setContentID(UUID contentID) {
     this.contentID = contentID;
   }
 
   /**
    * Gets the parameters that should be used in the analysis of this document
-   * @return
+   *
+   * @return the AnalysisParameters to be used to analyse this Document
    */
   public AnalysisParameters getParameters() {
     return parameters;
   }
 
   /**
-   * Sets the parameters that should be used in the analysis of this document
-   * @param parameters
+   * Sets the parameters that should be used in the analysis of this document.
+   *
+   * @param parameters - the parameters to be used for the analysis
    */
   public void setParameters(AnalysisParameters parameters) {
     this.parameters = parameters;
@@ -209,8 +236,9 @@ public class Document extends AbstractEntityBase {
 
   /**
    * Find the chapter for a given global offset.
-   * @param globalOffset The offset to search the chapter.
-   * @return
+   *
+   * @param globalOffset - the offset to search the chapter.
+   * @return the Chapter which surrounds the given offset
    */
   public Chapter getChapterAt(int globalOffset) {
     List<Chapter> allChapters = new ArrayList<>();
@@ -246,4 +274,5 @@ public class Document extends AbstractEntityBase {
 
     throw new IllegalStateException("Not found the correct chapter");
   }
+
 }

@@ -99,8 +99,7 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
   private void applyGender(String entityName, Annotation annieAnnotation) {
     BasicEntity theEntity = getEntityForName(entityName);
 
-    if (theEntity != null) {
-      if (!containedTypes.get(theEntity).contains(AttributeType.GENDER)) {
+    if (theEntity != null && !containedTypes.get(theEntity).contains(AttributeType.GENDER)) {
         Object gender = annieAnnotation.getFeatures().get(NLPConstants.FEATURE_GENDER);
 
         if (gender != null) {
@@ -108,7 +107,6 @@ public class EntityAttributeModule extends Module<EntityAttributes> {
           containedTypes.get(theEntity).add(AttributeType.GENDER);
         }
       }
-    }
   }
 
   /**

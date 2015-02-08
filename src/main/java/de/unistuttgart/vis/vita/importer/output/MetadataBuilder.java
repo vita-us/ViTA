@@ -157,6 +157,7 @@ public class MetadataBuilder extends AbstractBuilder {
     List<SimpleDateFormat> dateFormats = new ArrayList<>();
     dateFormats.add(new SimpleDateFormat("yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH));
+    dateFormats.add(new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("MMMM, yyyy", Locale.ENGLISH));
     dateFormats.add(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH));
 

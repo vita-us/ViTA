@@ -15,8 +15,9 @@ public class StopWordList {
   private static final Logger LOGGER = Logger.getLogger(StopWordList.class.getName());
 
   public static Set<String> getStopWords() throws IOException {
-    if (stopWords != null)
+    if (stopWords != null){
       return stopWords;
+    }
 
     stopWords = new HashSet<>(
         IOUtils.readLines(StopWordList.class.getResourceAsStream("stopwords.txt")));

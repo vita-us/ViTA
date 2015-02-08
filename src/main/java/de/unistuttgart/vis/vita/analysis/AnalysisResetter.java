@@ -7,6 +7,9 @@ import de.unistuttgart.vis.vita.model.progress.AnalysisProgress;
 
 import javax.persistence.EntityManager;
 
+/**
+ * Is able to reset the analysis, which means delete all the results.
+ */
 public class AnalysisResetter {
   DocumentDao documentDao;
   EntityDao entityDao;
@@ -70,7 +73,7 @@ public class AnalysisResetter {
   /**
    * Resets the document and sets the status of the document to failed.
    *
-   * @param document The document to be resetted.
+   * @param document The document to be reseted.
    */
   public void resetAndFail(Document document) {
     resetDocument(document);
@@ -88,6 +91,10 @@ public class AnalysisResetter {
 
     for (EntityRelation rel : entity.getEntityRelations()) {
       entityRelationDao.remove(rel);
+    }
+    
+    for (Occurrence occurrence : entity.getOccurrences()){
+      occurrenceDao.remove(occurrence);
     }
   }
 }

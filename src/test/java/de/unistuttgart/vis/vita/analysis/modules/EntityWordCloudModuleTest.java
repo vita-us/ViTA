@@ -83,7 +83,7 @@ public class EntityWordCloudModuleTest {
     } else {
       createOccurrencesForEntityTwo(occurrences);
     }
-    entity.setOccurences(occurrences);
+    entity.setOccurrences(occurrences);
     basicEntities.add(entity);
   }
 

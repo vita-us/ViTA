@@ -25,8 +25,9 @@ public class FlatEntityRelation {
    * Creates a new FlatEntityRelation holding the id of the related entity and the weight of the 
    * relation.
    * 
-   * @param relEntityId
-   * @param relWeight
+   * @param relEntityId - the id of the related entity
+   * @param relWeight - the weight of the relation
+   * @param relEntityType - the type of the related entity
    */
   public FlatEntityRelation(String relEntityId, double relWeight, EntityType relEntityType) {
     relatedEntityId = relEntityId;

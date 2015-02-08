@@ -2,7 +2,6 @@ package de.unistuttgart.vis.vita.model.dao;
 
 import de.unistuttgart.vis.vita.model.entity.Entity;
 import de.unistuttgart.vis.vita.model.entity.EntityType;
-import de.unistuttgart.vis.vita.model.entity.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
@@ -13,6 +12,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a generic data access object for entities.
@@ -21,14 +22,16 @@ import java.util.List;
 @NamedQueries({
     @NamedQuery(name = "Entity.findEntityById",
             query = "SELECT e "
-                  + "FROM Entity e "
-                  + "WHERE e.id = :entityId"),
+                    + "FROM Entity e "
+                    + "WHERE e.id = :entityId"),
                   
     @NamedQuery(name = "Entity.deleteEntityById",
                 query = "DELETE "
-                    + "FROM Entity e "
-                    + "WHERE e.id = :entityId")})
+                        + "FROM Entity e "
+                        + "WHERE e.id = :entityId")})
 public class EntityDao extends JpaDao<Entity, String> {
+
+  private static final Logger LOGGER = Logger.getLogger(EntityDao.class.getName());
   
   private static final String ENTITIES_PARAMETER = "entities";
   
@@ -51,20 +54,6 @@ public class EntityDao extends JpaDao<Entity, String> {
     String className = getPersistentClassName();
     return className + "." + "find" + className + "InDocument";
   }
-
-  /**
-   * Finds all Entities which occur in the document with the given id.
-   * 
-   * @param docId - the id of the document to search in
-   * @param offset - the first place to be returned
-   * @param count - the maximum of places to be returned
-   * @return list of all Entities occurring in the given document
-   */
-  public List<Entity> findInDocument(String docId, int offset, int count) {
-    TypedQuery<Entity> docQuery = em.createNamedQuery(getInDocumentQueryName(), Entity.class);
-    docQuery.setParameter(0, docId);
-    return docQuery.getResultList();
-  }
   
   /**
    * @return the name of the {@link NamedQuery} for searching a specific name
@@ -85,24 +74,15 @@ public class EntityDao extends JpaDao<Entity, String> {
     nameQuery.setParameter(0, name);
     return nameQuery.getSingleResult();
   }
-  
-  @SuppressWarnings("unchecked")
-  public List<Entity> findOccurringPersons(int startOffset, int endOffset, List<Person> entities) {
-    Query query = em.createNamedQuery("Occurence.getOccurringEntities");
-    query.setParameter(ENTITIES_PARAMETER, entities);
-    query.setParameter(RANGE_START_PARAMETER, startOffset);
-    query.setParameter(RANGE_END_PARAMETER, endOffset);
-    return (List<Entity>) query.getResultList();
-  }
 
   /**
-   * Returns a the sublist of given entities occurring in a given range.
+   * Returns a the sub list of given entities occurring in a given range.
    *
    * @param startOffset - the start offset of the range
    * @param endOffset - the end offset of the range
    * @param entities - the list of entities to search for
    * @param type - the type of entities to be returned
-   * @return sublist of occurring entities
+   * @return sub list of occurring entities
    */
   @SuppressWarnings("unchecked")
   public List<Entity> getOccurringEntities(int startOffset,
@@ -127,19 +107,25 @@ public class EntityDao extends JpaDao<Entity, String> {
         throw new IllegalArgumentException("Unknown type of entity");
     }
 
-    query.setParameter("entities", entities);
-    query.setParameter("rangeStart", startOffset);
-    query.setParameter("rangeEnd", endOffset);
+    query.setParameter(ENTITIES_PARAMETER, entities);
+    query.setParameter(RANGE_START_PARAMETER, startOffset);
+    query.setParameter(RANGE_END_PARAMETER, endOffset);
 
     return (List<Entity>) query.getResultList();
   }
-  
+
+  /**
+   * Deletes an Entity with the given id from the database.
+   *
+   * @param entityId - the id of the entity to be deleted
+   */
   public void deleteEntityById(String entityId){
     try {
       Entity entity = findById(entityId);
       remove(entity);
     } catch (NoResultException e) {
-      // nothing to do
+      LOGGER.log(Level.FINEST, "Tried to delete not existing entity with id " + entityId + ".");
     }
   }
+
 }

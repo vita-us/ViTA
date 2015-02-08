@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import java.util.List;
 
 /**
  * Represents a data access object for accessing documents.
@@ -17,9 +16,9 @@ import java.util.List;
 @MappedSuperclass
 @NamedQueries({
     @NamedQuery(name = "Document.findAllDocuments",
-                query = "SELECT d "
-                        + "FROM Document d "
-                        + "ORDER BY d.uploadDate DESC"),
+        query = "SELECT d "
+                + "FROM Document d "
+                + "ORDER BY d.uploadDate DESC"),
 
     @NamedQuery(name = "Document.findDocumentById",
         query = "SELECT d "
@@ -32,7 +31,8 @@ import java.util.List;
                 + "WHERE d.metadata.title = :documentTitle"),
 
     @NamedQuery(name = "Document.findDocumentsByFilename",
-        query = "SELECT d " + "FROM Document d " + "WHERE d.fileName = :fileName"),
+        query = "SELECT d " + "FROM Document d "
+                + "WHERE d.fileName = :fileName"),
 
     @NamedQuery(name = "Document.findDocumentByStatus",
         query = "SELECT d "
@@ -43,7 +43,11 @@ public class DocumentDao extends JpaDao<Document, String> {
 
   private static final String DOCUMENT_TITLE_PARAMETER = "title";
 
-
+  /**
+   * Creates a new data access object to access Documents.
+   *
+   * @param em - the EntityManager to be used
+   */
   public DocumentDao(EntityManager em) {
     super(Document.class, em);
   }
@@ -69,8 +73,7 @@ public class DocumentDao extends JpaDao<Document, String> {
    * @return the documents with the given status
    */
   public List<Document> findDocumentsByStatus(AnalysisStatus status) {
-    return queryAll("Document.findDocumentByStatus",
-        "status", status);
+    return queryAll("Document.findDocumentByStatus", "status", status);
   }
 
   /**
@@ -90,8 +93,7 @@ public class DocumentDao extends JpaDao<Document, String> {
    * @return the documents with the given filename.
    */
   public List<Document> findDocumentsByFilename(String fileName) {
-    return queryAll("Document.findDocumentsByFilename",
-                    "fileName", fileName);
+    return queryAll("Document.findDocumentsByFilename", "fileName", fileName);
   }
 
 }

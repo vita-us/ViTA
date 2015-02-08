@@ -147,8 +147,11 @@ import javax.persistence.EntityManager;
   private synchronized void startAnalysis(final Document document) {
     setStatus(document.getId(), AnalysisStatus.RUNNING);
     Path path = document.getFilePath();
-    if (path == null)
+    
+    if (path == null){
       throw new UnsupportedOperationException("There is no file associated with the document");
+    }
+    
     currentExecuter = executorFactory.createExecutor(document);
     currentExecuter.start();
     currentDocument = document;

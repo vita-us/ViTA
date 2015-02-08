@@ -30,7 +30,7 @@ public class PlacesService extends BaseService {
   private PlaceDao placeDao;
   private DocumentDao documentDao;
 
-  private final Logger LOGGER = Logger.getLogger(PlacesService.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PlacesService.class.getName());
   
   @Inject
   private PlaceService placeService;

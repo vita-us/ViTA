@@ -16,11 +16,11 @@ import java.net.URL;
 import gate.Gate;
 
 /**
- *
+ * Initializes Gate.
  */
 @AnalysisModule(weight = 20)
 public class GateInitializeModule extends Module<GateInitializeModule> {
-
+  
   @Override
   public GateInitializeModule execute(ModuleResultProvider results,
                                       ProgressListener progressListener) throws Exception {
@@ -29,7 +29,7 @@ public class GateInitializeModule extends Module<GateInitializeModule> {
     }
 
     // Path to the gate_home resource
-    URL pathToHome = this.getClass().getResource("/gate_home");
+    URL pathToHome = this.getClass().getResource(NLPConstants.GATE_HOME_DIR);
     File fileToHome = new File("");
 
     if (pathToHome != null) {

@@ -14,7 +14,7 @@ import de.unistuttgart.vis.vita.importer.util.LineType;
  */
 public class Filter {
 
-  //Default comments and to remove comments
+  // Default comments and to remove comments
   private static final String DEFAULT_BEGIN_BRACKET = "(\\[)";
   private static final String DEFAULT_END_BRACKET = "(\\])";
   private static final String DEFAULT_COMMENT = "(?s).*\\[.*\\].*";
@@ -33,20 +33,22 @@ public class Filter {
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + ")+";
-  
-  //All characters and it must have "]" character
+
+  // All characters and it must have "]" character
   private static final String DEFAULT_CHARACTERS_WITH_END_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + ")+";
-  
-  // All characters with "[" and "]" characters, but it must not start with "]" character, this character
-  // must not appear after "[" and "]" characters 
+
+  // All characters with "[" and "]" characters, but it must not start with "]" character, this
+  // character
+  // must not appear after "[" and "]" characters
   private static final String DEFAULT_CHARACTERS_WITH_BEGIN_EX_END_END_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_BEGIN_BRACKET
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
       + ")+";
 
-  // All characters with "]" and "[" character, but it must not start with "]" character and this character
+  // All characters with "]" and "[" character, but it must not start with "]" character and this
+  // character
   // must not appear after "]" and "[" characters
   private static final String DEFAULT_CHARACTERS_WITH_END_BEGIN_BRACKET = "("
       + DEFAULT_CHARACTERS_EX_END_BRACKET + DEFAULT_END_BRACKET + DEFAULT_CHARACTERS_EX_END_BRACKET
@@ -122,12 +124,10 @@ public class Filter {
     String editedLine;
 
     for (Line line : entireEbookList) {
-      if (line.getText().matches(DEFAULT_BEGIN_COMMENT)) {
-        if (existsEndBracket(line)) {
-          addLinesToRemove(removeLines, line, editedLinesMap);
-          editedLine = replaceMultipleWhitespaces(line, REMOVE_BEGIN_COMMENT);
-          editedLinesMap.put(entireEbookList.indexOf(line), new TxtModuleLine(editedLine));
-        }
+      if (line.getText().matches(DEFAULT_BEGIN_COMMENT) && existsEndBracket(line)) {
+        addLinesToRemove(removeLines, line, editedLinesMap);
+        editedLine = replaceMultipleWhitespaces(line, REMOVE_BEGIN_COMMENT);
+        editedLinesMap.put(entireEbookList.indexOf(line), new TxtModuleLine(editedLine));
       }
     }
     setEditedLines(editedLinesMap);

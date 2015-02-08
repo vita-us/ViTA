@@ -3,7 +3,6 @@ package de.unistuttgart.vis.vita.services;
 import de.unistuttgart.vis.vita.model.Model;
 import de.unistuttgart.vis.vita.model.StandaloneEntityManagerFactory;
 import de.unistuttgart.vis.vita.model.StandaloneModel;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.inject.Singleton;

@@ -42,7 +42,6 @@ public abstract class Entity extends AbstractEntityBase {
 
   @Column(length = 1000)
   private String displayName;
-  private boolean[] fingerprint;
   private int rankingValue;
   private int frequency;
 
@@ -67,7 +66,7 @@ public abstract class Entity extends AbstractEntityBase {
    */
   public Entity() {
     attributes = new HashSet<>();
-    occurrences = new ArrayList<Occurrence>();  
+    occurrences = new ArrayList<>();
     entityRelations = new HashSet<>();
   }
 
@@ -143,36 +142,24 @@ public abstract class Entity extends AbstractEntityBase {
   }
 
   /**
-   * Gets a bit vector that divides the whole document in spans of equal lengths and determines
-   * whether this entity occurs in a given span (true) or not (false).
-   *
-   * @return the fingerprint vector
-   */
-  public boolean[] getFingerprint() {
-    return fingerprint;
-  }
-
-  /**
-   * Sets a bit vector that divides the whole document in spans of equal lengths and determines
-   * whether this entity occurs in a given span (true) or not (false).
-   *
-   * @param newFingerprint - the new fingerprint vector for this entity
-   */
-  public void setFingerprint(boolean[] newFingerprint) {
-    this.fingerprint = newFingerprint;
-  }
-
-  /**
    * @return a Set of all relations to other entities
    */
   public Set<EntityRelation> getEntityRelations() {
     return entityRelations;
   }
 
+  /**
+   * @return the entity specific word cloud
+   */
   public WordCloud getWordCloud() {
     return wordCloud;
   }
 
+  /**
+   * Sets the entity specific word cloud to the given one.
+   *
+   * @param wordCloud - the word cloud to be set
+   */
   public void setWordCloud(WordCloud wordCloud) {
     this.wordCloud = wordCloud;
   }

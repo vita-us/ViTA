@@ -1,5 +1,6 @@
 package de.unistuttgart.vis.vita.model.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.google.common.collect.Iterables;
  * This class can not be persisted and should be converted to Entity for that.
  */
 public class BasicEntity {
+
   private String displayName;
   private EntityType type;
   private String entityId;
@@ -27,9 +29,12 @@ public class BasicEntity {
   private SortedSet<Attribute> nameAttributes;
   private List<Occurrence> occurrences;
 
+  /**
+   * Creates a new instance of Basic entity generating an UUID.
+   */
   public BasicEntity() {
-    nameAttributes = new TreeSet<>(new AttributeComaparator());
-    occurrences = new ArrayList<Occurrence>();
+    nameAttributes = new TreeSet<>(new AttributeComparator());
+    occurrences = new ArrayList<>();
     entityId = UUID.randomUUID().toString();
   }
 
@@ -66,7 +71,7 @@ public class BasicEntity {
    * @param nameAttributes the names under which the entity is known
    */
   public void setNameAttributes(Set<Attribute> nameAttributes) {
-    this.nameAttributes = new TreeSet<>(new AttributeComaparator());
+    this.nameAttributes = new TreeSet<>(new AttributeComparator());
     this.nameAttributes.addAll(nameAttributes);
   }
 
@@ -75,17 +80,17 @@ public class BasicEntity {
    *
    * @return Set of all occurrences of this entity in the document
    */
-  public List<Occurrence> getOccurences() {
+  public List<Occurrence> getOccurrences() {
     return occurrences;
   }
 
   /**
    * Sets the occurrences for this entity.
    *
-   * @param newOccurences - a set of new occurrences for this entity
+   * @param newOccurrences - a set of new occurrences for this entity
    */
-  public void setOccurences(List<Occurrence> newOccurences) {
-    this.occurrences = newOccurences;
+  public void setOccurrences(List<Occurrence> newOccurrences) {
+    this.occurrences = newOccurrences;
   }
 
   /**
@@ -117,22 +122,20 @@ public class BasicEntity {
 
   @Override
   public String toString() {
-    return "BasicEntity{" +
-           "type=" + type +
-           ", displayName='" + displayName + '\'' +
-           ", occurrences=" + StringUtils.join(occurrences, ", ") +
-           ", namedAttributes=" + StringUtils.join(nameAttributes, ", ") +
-           '}';
+    return "BasicEntity{" + "type=" + type + ", displayName='" + displayName + '\''
+        + ", occurrences=" + StringUtils.join(occurrences, ", ") + ", namedAttributes="
+        + StringUtils.join(nameAttributes, ", ") + '}';
   }
 
   /**
-   * Merges the names and occurrences of the other entity into this one
-   * @param other
+   * Merges the names and occurrences of the other entity into this one.
+   *
+   * @param other - the other entity, whose names and occurrences should be merged into this one
    */
   public void merge(BasicEntity other) {
-    setNameAttributes(Attribute.merge(
-         Iterables.concat(getNameAttributes(), other.getNameAttributes())));
-    occurrences.addAll(other.getOccurences());
+    setNameAttributes(Attribute.merge(Iterables.concat(getNameAttributes(),
+        other.getNameAttributes())));
+    occurrences.addAll(other.getOccurrences());
   }
 }
 
@@ -140,11 +143,15 @@ public class BasicEntity {
 /**
  * Comparator for the names of the entity. Sorts them by the occurrence size, descending.
  */
-class AttributeComaparator implements Comparator<Attribute> {
+class AttributeComparator implements Comparator<Attribute>, Serializable {
+
+  /**
+   * auto generated
+   */
+  private static final long serialVersionUID = -3862453893785126236L;
 
   @Override
   public int compare(Attribute o1, Attribute o2) {
-    return (o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1);
-
+    return o1.getOccurrences().size() > o2.getOccurrences().size() ? -1 : 1;
   }
 }

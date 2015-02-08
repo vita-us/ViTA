@@ -41,7 +41,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
     initialiseWeightsMapElements();
 
     Map<Sentence, Set<BasicEntity>> entitiesInSentenceMap =
-        removeUnnecessaryEntries(getSentenceEntitesMap(basicEntities));
+        removeUnnecessaryEntries(getSentenceEntitiesMap(basicEntities));
 
     createRelationsBetweenEntities(entitiesInSentenceMap);
 
@@ -119,18 +119,18 @@ public class EntityRelationModule extends Module<EntityRelations> {
   }
 
   /**
-   * Creates a Map which shows the relationship between a sentence and its entities
+   * Creates a Map which shows the relationship between a Sentence and its Entities
    * 
-   * @param basicEntities
-   * @return entitesInSentencesMap
+   * @param basicEntities - The Entities.
+   * @return A Map with Sentences as key and all Entities which occur in this sentence as value.
    */
-  private Map<Sentence, Set<BasicEntity>> getSentenceEntitesMap(
+  private Map<Sentence, Set<BasicEntity>> getSentenceEntitiesMap(
       Collection<BasicEntity> basicEntities) {
     Map<Sentence, Set<BasicEntity>> entitesInSentencesMap =
         new HashMap<Sentence, Set<BasicEntity>>();
 
     for (BasicEntity entity : basicEntities) {
-      for (Occurrence occurrence : entity.getOccurences()) {
+      for (Occurrence occurrence : entity.getOccurrences()) {
         Sentence currentSentence = occurrence.getSentence();
         if (!entitesInSentencesMap.containsKey(currentSentence)) {
           Set<BasicEntity> entities = new HashSet<>();
@@ -144,17 +144,31 @@ public class EntityRelationModule extends Module<EntityRelations> {
     return entitesInSentencesMap;
   }
 
+  /**
+   * An auxiliary class for storing the weights of relations. New relations will be added by
+   * {@link WeightsMap#increaseWeightsAsymmetrically(BasicEntity, BasicEntity, int)} and
+   * normalization will not done on its own, you have to call {@link WeightsMap#normalizeWeights()}
+   * before you take the result.
+   */
   private static class WeightsMap {
+    // outer map key is the source, inner map key is the target.
     private Map<BasicEntity, Map<BasicEntity, Integer>> weights = new HashMap<>();
     private Map<BasicEntity, Map<BasicEntity, Double>> normalizedWeights = new HashMap<>();
     private double maxWeight;
 
     /**
-     * /** Increases the weighting factor of the source towards the target
+     * Increases the weighting factor of the source towards the target. Will create a new entry if
+     * there is none for source and target.
+     * 
+     * @param source - The source Entity.
+     * @param target - The target Entity.
+     * @param increment - Defines how strong the relation value should be increased. Will be
+     *        normalized later!
      */
     public void increaseWeightsAsymmetrically(BasicEntity source, BasicEntity target, int increment) {
       Map<BasicEntity, Integer> relationMap;
 
+      // look for source, eventually create new entry
       if (!weights.containsKey(source)) {
         relationMap = new HashMap<>();
         weights.put(source, relationMap);
@@ -164,6 +178,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
 
       int currentValue;
 
+      // look for target, get value for relation
       if (relationMap.containsKey(target)) {
         currentValue = relationMap.get(target);
       } else {
@@ -172,6 +187,7 @@ public class EntityRelationModule extends Module<EntityRelations> {
 
       int newValue = currentValue + increment;
 
+      // did maxHeight change?
       if (newValue > maxWeight) {
         maxWeight = newValue;
       }
@@ -179,6 +195,9 @@ public class EntityRelationModule extends Module<EntityRelations> {
       relationMap.put(target, newValue);
     }
 
+    /**
+     * Normalizes the weights so all weights are between 0 and 1.
+     */
     public void normalizeWeights() {
       if (maxWeight == 0) {
         // no relations, skip just to be sure no division by zero is done
@@ -195,10 +214,25 @@ public class EntityRelationModule extends Module<EntityRelations> {
       }
     }
 
+    /**
+     * Get the normalized weights map. The outer map contains the source as key, the inner map
+     * contains the target as key and a normalized number (between 0 and 1) to show how strong the
+     * relation is.
+     * 
+     * @return the map.
+     */
     public Map<BasicEntity, Map<BasicEntity, Double>> getMap() {
       return normalizedWeights;
     }
 
+    /**
+     * Get the normalized weight for the relation between two entities.
+     * 
+     * @param entity1 - The source entity.
+     * @param entity2 - The target entity.
+     * @return The weight between source and target, a number between 0 and 1. If there is no
+     *         relation it will be 0.
+     */
     public double getNormalizedWeight(BasicEntity entity1, BasicEntity entity2) {
       Map<BasicEntity, Map<BasicEntity, Double>> map = getMap();
       if (!map.containsKey(entity1)) {
