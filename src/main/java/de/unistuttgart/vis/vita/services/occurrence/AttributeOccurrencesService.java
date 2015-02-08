@@ -83,7 +83,7 @@ public class AttributeOccurrencesService extends ExtendedOccurrencesService {
         occurrenceDao.findOccurrencesForAttribute(entityId, attributeId, startOffset, endOffset);
 
     // convert Occurrences into Ranges and return them
-    return convertOccurrencesToRanges(readOccurrences);
+    return Range.mergeOverlappingRanges(convertOccurrencesToRanges(readOccurrences));
   }
 
   @Override

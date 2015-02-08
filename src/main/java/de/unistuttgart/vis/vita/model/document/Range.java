@@ -7,6 +7,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Defines the bounds of a text block with a specific start and end. Is not aware of the actual text
  * within the bounds.
@@ -64,6 +68,33 @@ public class Range implements Comparable<Range> {
   public Range(Chapter chapter, int startOffset, int endOffset, int documentLength) {
     this(TextPosition.fromLocalOffset(chapter, startOffset, documentLength), TextPosition
         .fromLocalOffset(chapter, endOffset, documentLength));
+  }
+
+  /**
+   * Merges ranges in a list so that there are no more overlaps
+   * @param ranges a list of ranges
+   * @return list of sorted, non-overlapping ranges
+   */
+  public static List<Range> mergeOverlappingRanges(List<Range> ranges) {
+    Collections.sort(ranges);
+    TextPosition lastEnd = null;
+    TextPosition lastStart = null;
+    List<Range> result = new ArrayList<>();
+    for (Range range : ranges) {
+      if (lastEnd != null && range.getStart().compareTo(lastEnd) <= 0) {
+        lastEnd = TextPosition.max(lastEnd, range.getEnd());
+      } else {
+        if (lastEnd != null) {
+          result.add(new Range(lastStart, lastEnd));
+        }
+        lastStart = range.getStart();
+        lastEnd = range.getEnd();
+      }
+    }
+    if (lastEnd != null) {
+      result.add(new Range(lastStart, lastEnd));
+    }
+    return result;
   }
 
   /**
