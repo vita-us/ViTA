@@ -24,10 +24,10 @@ describe('OverviewCtrl', function() {
     });
   }));
 
-  it('should create "document" model', inject(function($controller, TestData) {
-    expect(scope.document).not.toBeDefined();
+  it('should create "document" model', inject(function($controller, TestData, Page) {
+    expect(Page.document).not.toBeDefined();
     $httpBackend.flush();
-    expect(scope.document).toEqualData(TestData.singleDocument);
+    expect(Page.document).toEqualData(TestData.singleDocument);
   }));
 
   it('should retrieve the analysis status', inject(function(TestData) {
