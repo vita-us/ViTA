@@ -1,33 +1,145 @@
-<p class="tutorial-intro-description"></p>
+<p class="tutorial-intro-description">
+  Welcome to our Application ViTA.
+</p>
 
 <div id="tutorial-navigation">
   <h3>Contents</h3>
   <ul>
-    <li><a ng-click="scrollTo('overview')">Overview</a></li>
-    <li><a ng-click="scrollTo('graphnetwork')">Graph Network</a></li>
-    <li><a ng-click="scrollTo('wordcloud')">Word Cloud</a></li>
+    <li><a ng-click="scrollTo('preview')">The Preview</a></li>
+    <li><a ng-click="scrollTo('import')">The Import</a></li>
+    <li><a ng-click="scrollTo('overview')">The Overview</a></li>
+    <li><a ng-click="scrollTo('characters')">The Characters</a></li>
+    <li><a ng-click="scrollTo('places')">The Places</a></li>
+    <li><a ng-click="scrollTo('graphnetwork')">The Graph Network</a></li>
+    <li><a ng-click="scrollTo('wordcloud')">The Word Cloud</a></li>
+    <li><a ng-click="scrollTo('plotview')">The Plot View</a></li>
+    <li><a ng-click="scrollTo('fingerprint')">The Fingerprint</a></li>
+    <li><a ng-click="scrollTo('document')">The Document</a></li>
   </ul>
 </div>
 
-
 <div class="tutorial-section">
-  <h2 id="overview" class="section-headline">Overview</h2>
-
+  <h2 id="preview" class="section-headline">The Preview</h2>
   <div class="section-image">
-    <img src="img/tutorial/tutorial--overview.png" alt="Image for the fingerprint visualization">
+    <img src="img/tutorial/tutorial--preview.png" alt="Image for the preview">
   </div>
 
   <p class="section-paragraph">
     <span class="number">1</span>
     <span class="text">
-	  The list of offered interaction possibilities, including the <strong>Fingerprint</strong>, the <strong>Graph
-      Network</strong>, the <strong>Word Cloud</strong>, the <strong>Plot View</strong> and the profile of a character/place
+	  The Import Panel – the user can set the desired analysis parameters
     </span>
     <br/>
     <br/>
     <span class="number">2</span>
     <span class="text">
-	  The general information about the document: the name of the author, the publish year, the main characters, the number of chapters and the total count of words
+	  The list of imported documents, correctly imported documents are marked with a checkmark, failed documents with an exclamation mark and still non-completed with the play icon
+    </span>
+    <br/>
+    <br/>
+    <span class="number">3</span>
+    <span class="text">
+	  A short preview of the imported/chosen document
+    </span>
+    <br/>
+    <br/>
+    <span class="number">4</span>
+    <span class="text">
+	  The user can set the analysis parameters to reanalyze the document
+    </span>
+    <br/>
+    <br/>
+      ViTA allows the import of text-, epub2- and epub3-documents. 
+	  Before starting the import the user can set the analysis parameters.
+	  The user can set the count of the Word Cloud items and the granularity of the Graph Network.
+	  He can enable the stop word list and the filter for unlikely person and place names. At last he can choose between three NLP tools: ANNIE, OpenNLP and Stanford.
+	  <br/>
+	  <br/>
+	  The Preview also provides the user with a list of all documents which have already been imported.
+	  If there is a checkmark before the title of the document in the list, the analysis was correctly executed. 
+	  <br/>If there is an exclamation mark before the title, the analysis has failed. 
+	  The play icon before the title shows that the analysis of the document is still in progress.
+	  <br/>The user has the ability to cancel the analysis of processing documents by clicking on the cancel icon next to the trash icon.
+	  He also has the ability to restart the analysis of the canceled documents, by clicking the restart icon next to the trash icon.
+	  <br/>
+	  On the right a preview of the chosen document is displayed.
+	  Again the user has the possibility to restart the analysis, but with new analysis parameters by clicking on Analysis Parameters next to the Rename button below the preview. 
+	  The reanalyzed document will be added to the list of documents.
+  </p>
+</div> 
+    
+<div class="tutorial-section">
+  <h2 id="import" class="section-headline">The Import</h2>
+  <p class="section-paragraph">
+	  The Import: the purpose of the import is to upload the document and recognize the chapters the document is divided into.
+	  The import of text files is especially difficult as there is no standard way of formatting them.
+	  Therefore ViTA uses the formatting of the internet portal Project Gutenberg, meaning ViTA adapts the import to the templates of text books which are provided by www.gutenberg.org .
+	  <ul>
+	  	<li>Very often books includes meta-data. These are part of the book but not part of the story of the book. 
+	  	<br/>
+	  	<br/> <font color="#5f5f5f">*** START OF {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font>
+	  	<br/> 
+	  	the end of the story text with:
+	  	<br/>  <font color="#5f5f5f">*** END OF {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font> 
+	  	<br/> 
+	  	the line seperator with:
+	  	<br/>  <font color="#5f5f5f">*** {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font>
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>The user can set the meta-Data with:
+	  	<br/> 
+	  	<br/> <em>The Title</em> - <font color="#5f5f5f">TITLE</font>:
+	  	<br/> <em>The Author</em> - <font color="#5f5f5f">AUTHOR</font>:
+	  	<br/> <em>The Release Date</em> - <font color="#5f5f5f">RELEASE DATE</font>:
+	  	<br/> <em>The Publisher</em> - <font color="#5f5f5f">PUBLISHER</font>:
+	  	<br/> <em>The Genre</em> - <font color="#5f5f5f">GENRE</font>:
+	  	<br/> <em>The Edition</em> - <font color="#5f5f5f">EDITION</font>:
+	  	<br/>
+	  	<br/>
+	  	</li> 
+	  	<li>Comments are set with "[" and ends with "]" in the text: 
+	  	<br/>
+	  	<br/><font color="#5f5f5f">Here is [the comment] the text</font> 
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>Chapters are set with "#" :
+	  	<br/> 
+	  	<br/> <font color="#5f5f5f"># Chapter 1</font>
+	  	<br/> <font color="#5f5f5f"><em>Text of Chapter 1</em> </font>
+	  	<br/>
+	  	<br/> <font color="#5f5f5f"># Chapter 2</font>
+	  	<br/> <font color="#5f5f5f"><em>Text of Chapter 2</em></font>
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>Line Breaks uses two "-" :
+	  	<br/>
+	  	<br/> <font color="#5f5f5f">Text1</font>
+	  	<br/> <font color="#5f5f5f">-</font> 
+	  	<br/> <font color="#5f5f5f">-</font> 
+	  	<br/> <font color="#5f5f5f">Text2</font>
+	  	</li>
+	  </ul>
+  </p>
+</div>
+
+<div class="tutorial-section">
+  <h2 id="overview" class="section-headline">The Overview</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--overview2.png" alt="Image for the fingerprint visualization">
+  </div>
+  <p class="section-paragraph">
+    <span class="number">1</span>
+    <span class="text">
+	  The list of offered interaction possibilities, including the <strong>Fingerprint</strong>, the <strong>Graph Network</strong>, the <strong>Word Cloud</strong>, the <strong>Plot View</strong> and the profile of a character/place
+    </span>
+    <br/>
+    <br/>
+    <span class="number">2</span>
+    <span class="text">
+	  The general information about the document: the name of the author, the year of publication, the main characters, the number of chapters and the total count of words
     </span>
     <br/>
     <br/>
@@ -37,35 +149,51 @@
     </span>
     <br/>
     <br/>
-    The <strong>Overview</strong> – a document is imported/chosen and the analysis and interaction
-    can start.
-    This view gives the user some general facts about the document, for example the most frequent
-    occurred characters. Furthermore the <strong>Overview</strong> gives you links to the various
-    analyzations.
-    Thereby, the user has the opportunity to choose the right label in the list of interaction
-    possibilities on the left, or he can select the corresponding picture.
-    Besides the <strong>Overview</strong>, the tool ViTA offers 7 other views on the chosen
-    document.
+      The <strong>Overview</strong> – a document is imported/chosen and the analysis and interaction can start.
+	  This view gives the user some general facts about the document, for example the most frequent occurred characters. Furthermore the <strong>Overview</strong> gives you links to the various views.
+ 	  Thereby, the user can use the appropriate label in the list of interaction possibilities on the left, or he can select the corresponding picture.
+	  Besides the <strong>Overview</strong>, the tool ViTA offers 7 other views on the chosen document.
   </p>
 </div>
 <div class="tutorial-section">
-  <h2 id="graphnetwork" class="section-headline">Graph Network</h2>
-
+  <h2 id="characters" class="section-headline">The Characters</h2>
   <div class="section-image">
-    <img src="img/tutorial/tutorial--graphnetwork.png" alt="Image for the graphnetwork visualization">
+    <img src="img/tutorial/tutorial--characters2.png" alt="Image for the characters">
+  </div>
+  <p class="section-paragraph">
+     This view provides the user with a list of characters in the document and their related profile.
+     The most frequently occurring character is already selected.
+     The profile of a character provides the user with the gender, the alternative names, the entities this character occurs most frequently with, and the Fingerprint of this character.
+     <br/>
+	 With a click on a co-occurrence, the displayed <a ng-click="scrollTo('fingerprint')">Fingerprint</a> of the character turns into a combination <a ng-href="#/tutorial#fingerprint">combination Fingerprint</a> using the already selected character and the chosen co-occurrence.
+  </p>
+</div>
+<div class="tutorial-section">
+  <h2 id="places" class="section-headline">The Places</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--places2.png" alt="Image for the places">
+  </div>
+  <p class="section-paragraph">
+     Equivalent to the <a ng-click="scrollTo('characters')">Characters</a> this view provides the user with a list of the occurring places.
+  </p>
+</div>
+<div class="tutorial-section">
+  <h2 id="graphnetwork" class="section-headline">The Graph Network</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--graphnetwork2.png" alt="Image for the graphnetwork visualization">
   </div>
 
   <p class="section-paragraph">
     <span class="number">1</span>
     <span class="text">
-	  Intersection <strong>Fingerprint</strong> between two characters parallel to the edge between the two nodes
+	  Intersection <strong>Fingerprint</strong> between two characters connected by the selected edge
     </span>
     <br/>
     <br/>
     <span class="number">2</span>
     <span class="text">
 	  The visualization <strong>Graph Network</strong> consists of nodes and edges. Nodes represents characters, edges represents the connection between two characters. 
-	  At the beginning the most important characters are already selected
+	  At the beginning the most important characters are already selected. Clicking on an edge highlights that edge and leads to the Fingerprint of the connected characters being displayed.
     </span>
     <br/>
     <br/>
@@ -78,38 +206,36 @@
     <br/>
     <span class="number">4</span>
     <span class="text">
-	  Search field – the user can search a character to select him for the <strong>Graph
+	  Search field – the user can search a character to select him for the <strong>Graph Network</strong>
       Network</strong>
     </span>
     <br/>
     <br/>
-    The visualization <strong>Graph Network</strong> is a representation with nodes and edges of the
-    connection between the characters in the document. Each node represents a character and each
-    edge represents the connection between the two characters.
-    The more important the character, the bigger the node. The more the characters occurs together
-    in a sentence, the wider the edge between the nodes.
-    Right at the start, the most important characters (with the maintained color) are already
-    selected and shown in the visualization.
-    The most common characters with the assigned color are shown in the <strong>Graph
-    Network</strong> with the same color.
-    The user can add more characters to his selection or deselect characters by clicking on the
-    desired name in the list on the right. With the selection, the border of the name is getting
-    fat.
-    If the user clicks on an edge between two nodes, the Fingerprint between the two characters will
-    be displayed above the <strong>Graph Network</strong>.
-    With a click on the citation in the Fingerprint, the user is forwarded to the Document.
+    <span class="number">5</span>
+    <span class="text">
+	  The user can set the range to get the <strong>Graph Network</strong> for a certain interval of the document
+    </span>
+    <br/>
+    <br/>
+      The visualization <strong>Graph Network</strong> is a representation with nodes and edges of the connection between the characters in the document. Each node represents a character and each edge represents the connection between the two characters. 
+      The more important the character, the bigger the node. The more the characters occurs together in a sentence, the wider the edge between the nodes. 
+      Right at the start, the most important characters (with the maintained color) are already selected and shown in the visualization. 
+      The most common characters with the assigned color are shown in the <strong>Graph Network</strong> with that same color.
+	  The user can add more characters to his selection or deselect characters by clicking on the desired name in the list on the right.
+	  If the user crosses an edge between two nodes with the mouse, the edge will be highlighted. If he clicks on it, the Fingerprint between the two characters will be displayed above the <strong>Graph Network</strong>.
+	  With a click on the citation in the Fingerprint, the user is forwarded to the Document.
+    The <strong>Graph Network</strong> includes another important feature. The user has the ability to set the range for the <strong>Graph Network</strong>. A user might for example only want to see the <strong>Graph Network</strong> between chapter 3 and chapter 6.
   </p>
 </div>
 <div class="tutorial-section">
-  <h2 id="wordcloud" class="section-headline">Word Cloud</h2>
-
+  <h2 id="wordcloud" class="section-headline">The Word Cloud</h2>
   <div class="section-image">
-    <img src="img/tutorial/tutorial--wordcloud.png" alt="Image for the word cloud visualization">
+    <img src="img/tutorial/tutorial--wordcloud2.png" alt="Image for the word cloud visualization">
   </div>
   <p class="section-paragraph">
     <span class="number">1</span>
     <span class="text">
-	  The visualization <strong>Word Cloud</strong> – the common the word occurs, the bigger is the size of the word
+	  The visualization <strong>Word Cloud</strong> – the more often a word occurs, the larger it is displayed
     </span>
     <br/>
     <br/>
@@ -125,15 +251,90 @@
     </span>
     <br/>
     <br/>
-    The visualization <strong>Word Cloud</strong> is a known visualization.
-    The <strong>Word Cloud</strong> has the functionality, to get a quick gathering of the content.
-    Common words in the document are displayed in a bigger size than less common.
-    In this case, the user has the opportunity to get the Word Cloud <strong>Word Cloud</strong> of
-    the whole document with a click on global in the list on the right.
-    Otherwise he can get the <strong>Word Cloud</strong> of a single character.
-    This <strong>Word Cloud</strong> is compounded of words, which often occurs with the chosen
-    character in a sentence.
-    The colors of the most common characters are maintained and the characters are displayed with
-    the assigned color in the <strong>Word Cloud</strong>.
+      The visualization <strong>Word Cloud</strong> is a well-known visualization.
+      The <strong>Word Cloud</strong> is a good visualization to quickly show the most important themes and words of a document.
+      Common words in the document are displayed in a bigger size than less common ones.
+      In this case, the user has the opportunity to see the <strong>Word Cloud</strong> of the whole document with a click on global in the list on the right.
+      Alternatively he can see the <strong>Word Cloud</strong> of a single character.
+      This <strong>Word Cloud</strong> of a character shows words that occur most commonly within the same sentence as that character.
+      The colors of the most common characters are maintained and the characters are displayed with the assigned color in the <strong>Word Cloud</strong>.
   </p>
 </div>
+<div class="tutorial-section">
+  <h2 id="plotview" class="section-headline">The Plotview</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--plotview2.png" alt="Image for the plotview visualization">
+  </div>
+  <p class="section-paragraph">
+     The <strong>Plot View</strong> is a unique and experimental visualization. The 10 most significant characters are illustrated as lines and every chapter by a node.
+     Lines run from the very left, representing the beginning of the document, to very right, representing the the end of the document.
+     Nodes with a character name next to them show the first occurrence of the respective character.
+     If two or more lines meet in a node, that means that the corresponding characters occurred frequently in the chapter represented by the node.
+     Hovering over a node results in a tooltip being shown which lists the characters and places most commonly occurring at this chapter.
+     Hovering over a line highlights the whole line and the label of the character name belonging to the line.
+  </p>
+</div>
+<div class="tutorial-section">
+  <h2 id="fingerprint" class="section-headline">The Fingerprint</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--fingerprint2.png" alt="Image for the fingerprint visualization">
+  </div>
+  <p class="section-paragraph">
+    <span class="number">1</span>
+    <span class="text">
+	  The <strong>Combination Fingerprint</strong> – <strong>Fingerprint</strong> of multiple characters
+    </span>
+    <br/>
+    <br/>
+    <span class="number">2</span>
+    <span class="text">
+	  With a click on <em>Toggle separators</em> the user can show or hide the separators inside the <strong>Fingerprint</strong> representing the chapters/parts of the document.
+    </span>
+    <br/>
+    <br/>
+      The <strong>Fingerprint</strong> is a visualization that shows the temporal course of characters in a document.
+      The start of the bar represents the beginning and the end of the bar represents the ending of the document.
+      Dark blocks within the <strong>Fingerprint</strong> represent occurrences of a character in the interval represented by the block.
+      Longer blocks signify repeated occurrences over a longer part of the document. Short blocks appear when a character is only mentioned briefly.
+      In order to have a longer block the character does not need to be mentioned in every consecutive sentence, it is sufficient to be mentioned every few sentences.
+      To select a character the user has to click on the name of the desired character in the list. For deselection the user has to click the same name once again.
+      The user also has the ability to select multiple characters to get the <strong>Combination Fingerprint</strong>.
+	  The <strong>Combination Fingerprint</strong> is a <strong>Fingerprint</strong> of the selected characters. 
+	  If the chosen characters occur together in a sentence, dark blocks will appear just like in the case of the normal <strong>Fingerprint</strong>.
+	  </br>
+	  If the user clicks on one of the blocks, he will be forwarded to the <a ng-click="scrollTo('document')">Document</a>. In the <a ng-click="scrollTo('document')">Document</a> a citation of the occurrence will be highlighted with a specific color.
+  </p>
+</div>
+<div class="tutorial-section">
+  <h2 id="document" class="section-headline">The Document</h2>
+  <div class="section-image">
+    <img src="img/tutorial/tutorial--document2.png" alt="Image for the document visualization">
+  </div>
+  <p class="section-paragraph">
+  <span class="number">1</span>
+    <span class="text">
+	  The list of chapters the document is divided in
+    </span>
+    <br/>
+    <br/>
+    <span class="number">2</span>
+    <span class="text">
+	  The <a ng-click="scrollTo('fingerprint')">Fingerprint</a> – if the user hovers over a block of the <a ng-click="scrollTo('fingerprint')">Fingerprint</a> the corresponding text passage will be displayed as a tooltip.
+    </span>
+    <br/>
+    <br/>
+     The <strong>Document</strong> is a representation of the text. 
+     ViTA is able to recognize the included chapters of the document.
+     The chapters are shown in the list on the left. The text is displayed on the right. 
+     <br/>
+     If the user is forwarded by the <a ng-click="scrollTo('fingerprint')">Fingerprint</a>, the <a ng-click="scrollTo('graphnetwork')">Graph Network</a>, the <a ng-click="scrollTo('wordcloud')">Word Cloud</a> or by any other means, the keyword from the other views will then be highlighted in the <strong>Document</strong>.
+	 The <strong>Document</strong> also includes another important feature.
+	 On the right a vertical <a ng-click="scrollTo('fingerprint')">The Fingerprint</a> is displayed. If the user was forwarded by the <strong>Fingerprint</strong>, then that same <strong>Fingerprint</strong>
+   will be vertically displayed here. If a word in the <strong>Word Cloud</strong> was clicked or a word was searched in the <strong>Document</strong>, then all occurrences of that word will be displayed in the <strong>Fingerprint</strong>
+	 If the user hovers over a block within the <a ng-click="scrollTo('fingerprint')">Fingerprint</a>, the corresponding text passage will be displayed as a tooltip.
+	 <br/>
+	The User can jump to the next/previous occurrence by clicking on the button with the up/down arrow. He also has the ability to reset the highlighting. Another feature is to search a word or a text passage with the input field on the left in the bottom.
+     
+  </p>
+</div>
+
