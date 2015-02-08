@@ -5,7 +5,6 @@
 <div id="tutorial-navigation">
   <h3>Contents</h3>
   <ul>
-   	<li><a ng-href="#/tutorial#import">The Import</a></li>
   	<li><a ng-href="#/tutorial#preview">The Preview</a></li>
     <li><a ng-href="#/tutorial#overview">The Overview</a></li>
     <li><a ng-href="#/tutorial#characters">The Characters</a></li>
@@ -53,11 +52,65 @@
 	  The user can set the count of the Word Cloud items and the granularity of the Graph Network.
 	  He can enable the stop word list and the filter for unlikely person and place names. At last he can choose between three NLP tools: ANNIE, OpenNLP and Stanford.
 	  <br/>
+	  <br/>
+	  The Import: the function of the import is to input the document and recognize the chapters the document is divided in.
+	  Espescially the import of text documents makes difficulties because the system does not specify the formatting of text books.
+	  ViTA uses the formatting of the internet portal Project Gutenberg meaning ViTA adapts the import to the templates of text books which are provided in the page www.gutenberg.org .
+	  <ul>
+	  
+	  	<li>Very often books includes meta-data. These are part of the book but not part of the story of the book. 
+	  	<br/>
+	  	<br/> <font color="#5f5f5f">*** START OF {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font>
+	  	<br/> 
+	  	the end of the story text with:
+	  	<br/>  <font color="#5f5f5f">*** END OF {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font> 
+	  	<br/> 
+	  	the line seperator with:
+	  	<br/>  <font color="#5f5f5f">*** {OPTIONAL: YOU CAN ENTER FOR EXMAPLE THE BOOKNAME HERE} ***</font>
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>The user can set the meta-Data with:
+	  	<br/> 
+	  	<br/> <em>The Title</em> - <font color="#5f5f5f">TITLE</font>:
+	  	<br/> <em>The Author</em> - <font color="#5f5f5f">AUTHOR</font>:
+	  	<br/> <em>The Release Date</em> - <font color="#5f5f5f">RELEASE DATE</font>:
+	  	<br/> <em>The Publisher</em> - <font color="#5f5f5f">PUBLISHER</font>:
+	  	<br/> <em>The Genre</em> - <font color="#5f5f5f">GENRE</font>:
+	  	<br/> <em>The Edition</em> - <font color="#5f5f5f">EDITION</font>:
+	  	<br/>
+	  	<br/>
+	  	</li> 
+	  	<li>Comments are set with "[" and ends with "]" in the text: 
+	  	<br/>
+	  	<br/><font color="#5f5f5f">Here is [the comment] the text</font> 
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>Chapters are set with "#" :
+	  	<br/> 
+	  	<br/> <font color="#5f5f5f"># Chapter 1</font>
+	  	<br/> <font color="#5f5f5f"><em>Text of Chapter 1</em> </font>
+	  	<br/>
+	  	<br/> <font color="#5f5f5f"># Chapter 2</font>
+	  	<br/> <font color="#5f5f5f"><em>Text of Chapter 2</em></font>
+	  	<br/>
+	  	<br/>
+	  	</li>
+	  	<li>Line Breaks uses two "-" :
+	  	<br/>
+	  	<br/> <font color="#5f5f5f">Text1</font>
+	  	<br/> <font color="#5f5f5f">-</font> 
+	  	<br/> <font color="#5f5f5f">-</font> 
+	  	<br/> <font color="#5f5f5f">Text2</font>
+	  	</li>
+	  </ul>
+	  <br/>
 	  The Preview also provides the user with a list of all documents which have already been imported.
 	  If there is a checkmark before the title of the document in the list, the analysis was correctly executed. 
-	  If there is an exclamation mark before the title, the analysis has failed. 
+	  <br/>If there is an exclamation mark before the title, the analysis has failed. 
 	  The play icon before the title shows that the analysis of the document is still in progress.
-	  The user has the ability to cancel the analysis of processing documents by clicking on the cancel icon next to the trash icon.
+	  <br/>The user has the ability to cancel the analysis of processing documents by clicking on the cancel icon next to the trash icon.
 	  He also has the ability to restart the analysis of the canceled documents, by clicking the restart icon next to the trash icon.
 	  <br/>
 	  On the right a preview of the chosen document is displayed.
@@ -262,8 +315,8 @@
     </span>
     <br/>
     <br/>
-     The <strong>Document</strong> is a representation of the text in the document. 
-     ViTA is able to  recognize the included chapters of the document.
+     The <strong>Document</strong> is a representation of the text. 
+     ViTA is able to recognize the included chapters of the document.
      The chapters are shown in the list on the left. The text is displayed on the right. 
      <br/>
      If the user is forwarded by the <a ng-href="#/tutorial#fingerprint">Fingerprint</a>, the <a ng-href="#/tutorial#graphnetwork">Graph Network</a>, the <a ng-href="#/tutorial#wordcloud">Word Cloud</a> or by any other means, the keyword from the other views will then be highlighted in the <strong>Document</strong>.
