@@ -28,7 +28,7 @@
             documentId: $routeParams.documentId
           }, function(progress) {
             $scope.progress = progress;
-            if (progress.persons.isReady && !$scope.persons) {
+            if (progress.persons.isReady && $scope.persons.length <= 0) {
               loadPersons();
             }
           });
